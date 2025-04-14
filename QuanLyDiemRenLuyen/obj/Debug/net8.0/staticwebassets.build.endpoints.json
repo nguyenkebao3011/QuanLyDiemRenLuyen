@@ -1,0 +1,170 @@
+{
+  "Version": 1,
+  "ManifestType": "Build",
+  "Endpoints": [
+    {
+      "Route": "js/swagger-custom.dfyrqwjk2w.js",
+      "AssetFile": "js/swagger-custom.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4248"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:27:26 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dfyrqwjk2w"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew="
+        },
+        {
+          "Name": "label",
+          "Value": "js/swagger-custom.js"
+        }
+      ]
+    },
+    {
+      "Route": "js/swagger-custom.js",
+      "AssetFile": "js/swagger-custom.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4248"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:27:26 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew="
+        }
+      ]
+    },
+    {
+      "Route": "test.fkhg94ffnd.html",
+      "AssetFile": "test.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3046"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fkhg94ffnd"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+        },
+        {
+          "Name": "label",
+          "Value": "test.html"
+        }
+      ]
+    },
+    {
+      "Route": "test.html",
+      "AssetFile": "test.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3046"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+        }
+      ]
+    }
+  ]
+}

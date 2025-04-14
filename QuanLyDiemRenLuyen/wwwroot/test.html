@@ -1,0 +1,57 @@
+﻿// Lấy thông tin sinh viên
+axios.get('http://localhost:5163/api/SinhViens/Lay_sinhvien_theo_vaitro', {
+    headers: {
+        Authorization: `Bearer ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiREhUSDQ5MTg3MiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlNpbmhWaWVuIiwiZXhwIjoxNzQ0NjM0ODIyLCJpc3MiOiJRdWFuTHlEUkwiLCJhdWQiOiJRdWFuTHlEUkxDbGllbnQifQ.8cbADyMxjIwfDvB5rGsN8DbGJcxNFsj8CPtbCidQbMY}`
+    }
+})
+.then(response => {
+    const sinhVien = response.data;
+    // Điền thông tin vào form
+    document.getElementById('maSV').value = sinhVien.MaSV;
+    document.getElementById('hoTen').value = sinhVien.HoTen;
+    document.getElementById('email').value = sinhVien.Email;
+    document.getElementById('soDienThoai').value = sinhVien.SoDienThoai;
+    document.getElementById('diaChi').value = sinhVien.DiaChi;
+    // ... các trường khác
+})
+.catch(error => {
+    console.error('Lỗi khi lấy thông tin sinh viên:', error);
+});
+
+// Gửi cập nhật
+document.getElementById('updateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('MaSV', document.getElementById('maSV').value);
+    formData.append('HoTen', document.getElementById('hoTen').value);
+    formData.append('Email', document.getElementById('email').value);
+    formData.append('SoDienThoai', document.getElementById('soDienThoai').value);
+    formData.append('DiaChi', document.getElementById('diaChi').value);
+    // ... các trường khác
+    const avatarFile = document.getElementById('avatar').files[0];
+    if (avatarFile) {
+        formData.append('avatar', avatarFile);
+    }
+
+    try {
+        const response = await axios.put('http://localhost:5163/api/SinhViens/update-profile', formData, {
+            headers: {
+                Authorization: `Bearer ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiREhUSDQ5MTg3MiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlNpbmhWaWVuIiwiZXhwIjoxNzQ0NjM0ODIyLCJpc3MiOiJRdWFuTHlEUkwiLCJhdWQiOiJRdWFuTHlEUkxDbGllbnQifQ.8cbADyMxjIwfDvB5rGsN8DbGJcxNFsj8CPtbCidQbMY}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        console.log('Cập nhật thành công:', response.data);
+    } catch (error) {
+        console.error('Lỗi khi cập nhật:', error);
+    }
+});
+
+<form id="updateForm">
+    <label>Mã SV: <input type="text" id="maSV" readonly></label><br>
+    <label>Họ Tên: <input type="text" id="hoTen"></label><br>
+    <label>Email: <input type="email" id="email"></label><br>
+    <label>Số Điện Thoại: <input type="text" id="soDienThoai"></label><br>
+    <label>Địa Chỉ: <input type="text" id="diaChi"></label><br>
+    <label>Ảnh Đại Diện: <input type="file" id="avatar"></label><br>
+    <button type="submit">Cập Nhật</button>
+</form>

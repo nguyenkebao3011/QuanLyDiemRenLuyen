@@ -1,0 +1,228 @@
+{
+  "Version": 1,
+  "Hash": "EyTCpWzIP53Z7ZrNzYUHjN2JMMFmToFR9u5W0EksSwE=",
+  "Source": "QuanLyDiemRenLuyen",
+  "BasePath": "_content/QuanLyDiemRenLuyen",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "QuanLyDiemRenLuyen\\wwwroot",
+      "Source": "QuanLyDiemRenLuyen",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "js/swagger-custom#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dfyrqwjk2w",
+      "Integrity": "9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\swagger-custom.js"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "test#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fkhg94ffnd",
+      "Integrity": "76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\test.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "js/swagger-custom.dfyrqwjk2w.js",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4248"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:27:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dfyrqwjk2w"
+        },
+        {
+          "Name": "label",
+          "Value": "js/swagger-custom.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew="
+        }
+      ]
+    },
+    {
+      "Route": "js/swagger-custom.js",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4248"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:27:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9w6ApwnOjTGYGheduNoE20qi2fHxaf2YF02nJuDq2Ew="
+        }
+      ]
+    },
+    {
+      "Route": "test.fkhg94ffnd.html",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3046"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fkhg94ffnd"
+        },
+        {
+          "Name": "label",
+          "Value": "test.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+        }
+      ]
+    },
+    {
+      "Route": "test.html",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3046"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+        }
+      ]
+    }
+  ]
+}

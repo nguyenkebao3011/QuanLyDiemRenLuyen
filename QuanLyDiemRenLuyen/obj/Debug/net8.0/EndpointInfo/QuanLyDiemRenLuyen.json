@@ -1,0 +1,1192 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QuanLyDiemRenLuyen",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Location/provinces": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Location/districts/{provinceCode}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "parameters": [
+          {
+            "name": "provinceCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Location/wards/{districtCode}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "parameters": [
+          {
+            "name": "districtCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SinhVien/Lay_sinhvien_theo_vaitro": {
+      "get": {
+        "tags": [
+          "SinhVien"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SinhVien/update-profile": {
+      "put": {
+        "tags": [
+          "SinhVien"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "MaSV": {
+                    "type": "string"
+                  },
+                  "HoTen": {
+                    "type": "string"
+                  },
+                  "MaLop": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "SoDienThoai": {
+                    "type": "string"
+                  },
+                  "DiaChi": {
+                    "type": "string"
+                  },
+                  "NgaySinh": {
+                    "type": "string"
+                  },
+                  "GioiTinh": {
+                    "type": "string"
+                  },
+                  "MaVaiTro": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "TrangThai": {
+                    "type": "string"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "MaSV": {
+                  "style": "form"
+                },
+                "HoTen": {
+                  "style": "form"
+                },
+                "MaLop": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "SoDienThoai": {
+                  "style": "form"
+                },
+                "DiaChi": {
+                  "style": "form"
+                },
+                "NgaySinh": {
+                  "style": "form"
+                },
+                "GioiTinh": {
+                  "style": "form"
+                },
+                "MaVaiTro": {
+                  "style": "form"
+                },
+                "TrangThai": {
+                  "style": "form"
+                },
+                "avatar": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TaiKhoans": {
+      "get": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaiKhoan"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaiKhoan"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaiKhoan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TaiKhoans/{id}": {
+      "get": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaiKhoan"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaiKhoan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TaiKhoans/login": {
+      "post": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TaiKhoans/reset-all-passwords": {
+      "post": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChiTietThongBao": {
+        "type": "object",
+        "properties": {
+          "MaChiTietThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "DaDoc": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "NgayDoc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaSvNavigation": {
+            "$ref": "#/components/schemas/SinhVien"
+          },
+          "MaThongBaoNavigation": {
+            "$ref": "#/components/schemas/ThongBao"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DangKyHoatDong": {
+        "type": "object",
+        "properties": {
+          "MaDangKy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHoatDong": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "NgayDangKy": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "DiemDanhHoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiemDanhHoatDong"
+            },
+            "nullable": true
+          },
+          "MaHoatDongNavigation": {
+            "$ref": "#/components/schemas/HoatDong"
+          },
+          "MaSvNavigation": {
+            "$ref": "#/components/schemas/SinhVien"
+          },
+          "MinhChungHoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MinhChungHoatDong"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiemDanhHoatDong": {
+        "type": "object",
+        "properties": {
+          "MaDiemDanh": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaDangKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ThoiGianDiemDanh": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "GhiChu": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaDangKyNavigation": {
+            "$ref": "#/components/schemas/DangKyHoatDong"
+          },
+          "MaQlNavigation": {
+            "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiemRenLuyen": {
+        "type": "object",
+        "properties": {
+          "MaDiemRenLuyen": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "TongDiem": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "XepLoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayChot": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKyNavigation": {
+            "$ref": "#/components/schemas/HocKy"
+          },
+          "MaSvNavigation": {
+            "$ref": "#/components/schemas/SinhVien"
+          },
+          "PhanHoiDiemRenLuyens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhanHoiDiemRenLuyen"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GiaoVien": {
+        "type": "object",
+        "properties": {
+          "MaGv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "DiaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgaySinh": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "GioiTinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "AnhDaiDien": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "Lops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lop"
+            },
+            "nullable": true
+          },
+          "MaTaiKhoanNavigation": {
+            "$ref": "#/components/schemas/TaiKhoan"
+          },
+          "ThanhVienHoiDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThanhVienHoiDong"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HoatDong": {
+        "type": "object",
+        "properties": {
+          "MaHoatDong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TenHoatDong": {
+            "type": "string",
+            "nullable": true
+          },
+          "MoTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayBatDau": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "NgayKetThuc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "DiaDiem": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoLuongToiDa": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "DiemCong": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "DangKyHoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangKyHoatDong"
+            },
+            "nullable": true
+          },
+          "MaHocKyNavigation": {
+            "$ref": "#/components/schemas/HocKy"
+          },
+          "MaQlNavigation": {
+            "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HocKy": {
+        "type": "object",
+        "properties": {
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TenHocKy": {
+            "type": "string",
+            "nullable": true
+          },
+          "NamHoc": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayBatDau": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "NgayKetThuc": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "DiemRenLuyens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiemRenLuyen"
+            },
+            "nullable": true
+          },
+          "HoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoatDong"
+            },
+            "nullable": true
+          },
+          "HoiDongChamDiems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoiDongChamDiem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HoiDongChamDiem": {
+        "type": "object",
+        "properties": {
+          "MaHoiDong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TenHoiDong": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "NgayThanhLap": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "GhiChu": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKyNavigation": {
+            "$ref": "#/components/schemas/HocKy"
+          },
+          "ThanhVienHoiDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThanhVienHoiDong"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "MaDangNhap": {
+            "type": "string",
+            "nullable": true
+          },
+          "MatKhau": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Lop": {
+        "type": "object",
+        "properties": {
+          "MaLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "NienKhoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaGv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaGvNavigation": {
+            "$ref": "#/components/schemas/GiaoVien"
+          },
+          "SinhViens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SinhVien"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MinhChungHoatDong": {
+        "type": "object",
+        "properties": {
+          "MaMinhChung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaDangKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "DuongDanFile": {
+            "type": "string",
+            "nullable": true
+          },
+          "MoTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaDangKyNavigation": {
+            "$ref": "#/components/schemas/DangKyHoatDong"
+          },
+          "PhanHoiDiemRenLuyens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhanHoiDiemRenLuyen"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PhanHoiDiemRenLuyen": {
+        "type": "object",
+        "properties": {
+          "MaPhanHoi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaDiemRenLuyen": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "MaMinhChung": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "NoiDungPhanHoi": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayPhanHoi": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDungXuLy": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayXuLy": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaDiemRenLuyenNavigation": {
+            "$ref": "#/components/schemas/DiemRenLuyen"
+          },
+          "MaMinhChungNavigation": {
+            "$ref": "#/components/schemas/MinhChungHoatDong"
+          },
+          "MaQlNavigation": {
+            "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuanLyKhoa": {
+        "type": "object",
+        "properties": {
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "Khoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "DiemDanhHoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiemDanhHoatDong"
+            },
+            "nullable": true
+          },
+          "HoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoatDong"
+            },
+            "nullable": true
+          },
+          "MaTaiKhoanNavigation": {
+            "$ref": "#/components/schemas/TaiKhoan"
+          },
+          "PhanHoiDiemRenLuyens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhanHoiDiemRenLuyen"
+            },
+            "nullable": true
+          },
+          "ThongBaos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThongBao"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SinhVien": {
+        "type": "object",
+        "properties": {
+          "MaSV": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "DiaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgaySinh": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "GioiTinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "AnhDaiDien": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaVaiTro": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "ChiTietThongBaos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietThongBao"
+            },
+            "nullable": true
+          },
+          "DangKyHoatDongs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangKyHoatDong"
+            },
+            "nullable": true
+          },
+          "DiemRenLuyens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiemRenLuyen"
+            },
+            "nullable": true
+          },
+          "MaLopNavigation": {
+            "$ref": "#/components/schemas/Lop"
+          },
+          "MaTaiKhoanNavigation": {
+            "$ref": "#/components/schemas/TaiKhoan"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TaiKhoan": {
+        "type": "object",
+        "properties": {
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenDangNhap": {
+            "type": "string",
+            "nullable": true
+          },
+          "MatKhau": {
+            "type": "string",
+            "nullable": true
+          },
+          "VaiTro": {
+            "type": "string",
+            "nullable": true
+          },
+          "GiaoVien": {
+            "$ref": "#/components/schemas/GiaoVien"
+          },
+          "QuanLyKhoa": {
+            "$ref": "#/components/schemas/QuanLyKhoa"
+          },
+          "SinhVien": {
+            "$ref": "#/components/schemas/SinhVien"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThanhVienHoiDong": {
+        "type": "object",
+        "properties": {
+          "MaThanhVien": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaHoiDong": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "MaGv": {
+            "type": "string",
+            "nullable": true
+          },
+          "VaiTroTrongHoiDong": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaGvNavigation": {
+            "$ref": "#/components/schemas/GiaoVien"
+          },
+          "MaHoiDongNavigation": {
+            "$ref": "#/components/schemas/HoiDongChamDiem"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongBao": {
+        "type": "object",
+        "properties": {
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TieuDe": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "LoaiThongBao": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "ChiTietThongBaos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietThongBao"
+            },
+            "nullable": true
+          },
+          "MaQlNavigation": {
+            "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "Please enter JWT with Bearer into field (e.g., 'Bearer {token}')",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

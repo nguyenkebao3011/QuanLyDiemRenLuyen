@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "PackagePath": "staticwebassets\\js\\swagger-custom.js"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "PackagePath": "staticwebassets\\test.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.QuanLyDiemRenLuyen.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.QuanLyDiemRenLuyen.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.QuanLyDiemRenLuyen.props",
+      "PackagePath": "build\\QuanLyDiemRenLuyen.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.QuanLyDiemRenLuyen.props",
+      "PackagePath": "buildMultiTargeting\\QuanLyDiemRenLuyen.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.QuanLyDiemRenLuyen.props",
+      "PackagePath": "buildTransitive\\QuanLyDiemRenLuyen.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
