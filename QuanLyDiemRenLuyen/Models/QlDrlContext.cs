@@ -49,7 +49,7 @@ public partial class QlDrlContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-N9TFSHP\\SQL2022;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -349,7 +349,7 @@ public partial class QlDrlContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.DiaChi)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);

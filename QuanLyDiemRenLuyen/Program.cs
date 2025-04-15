@@ -62,6 +62,8 @@ builder.Services.AddEndpointsApiExplorer();
 // Cấu hình Swagger với Security Definition
 builder.Services.AddSwaggerGen(c =>
 {
+    
+
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuanLyDiemRenLuyen", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -72,7 +74,6 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -97,28 +98,33 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuanLyDiemRenLuyen V1");
-        c.InjectJavascript("/js/swagger-custom.js");
-    });
-}
+
+
 
 app.UseHttpsRedirection();
 
 // Phục vụ file tĩnh (CSS, JS, images)
 app.UseStaticFiles();
 app.UseDefaultFiles();
-
+// Cấu hình Swagger UI làm trang mặc định khi dev
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuanLyDiemRenLuyen v1");
+       
+        c.RoutePrefix = ""; // hoặc "swagger" nếu Swagger nằm tại /swagger
+    });
+}       
 // Cấu hình routing cho MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
+
 // Giữ nguyên routing cho API
 app.MapControllers();
+
 
 app.Run();

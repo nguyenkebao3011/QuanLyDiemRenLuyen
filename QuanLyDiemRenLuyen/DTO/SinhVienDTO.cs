@@ -12,5 +12,7 @@
         public string? GioiTinh { get; set; }
         public int MaVaiTro { get; set; }       
         public string? TrangThai { get; set; }
+
+        public string? AnhDaiDien { get; set; }
     }
 }

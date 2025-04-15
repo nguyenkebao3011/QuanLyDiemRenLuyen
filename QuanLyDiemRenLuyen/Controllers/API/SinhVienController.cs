@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.Models;
 using System.Net.Http;
@@ -133,7 +134,8 @@ namespace QuanLyDiemRenLuyen.Controllers.API
 
         // Phương thức chỉnh sửa thông tin sinh viên
 
-        [HttpPut("update-profile")]
+        [HttpPut("capnhat_thongtin")]
+       
         public async Task<IActionResult> UpdateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile? avatar)
         {
             try
@@ -145,22 +147,13 @@ namespace QuanLyDiemRenLuyen.Controllers.API
                     return Unauthorized(new { message = "Tài khoản không hợp lệ." });
                 }
 
-                // Tìm tài khoản
-                var user = await _context.TaiKhoans
-                    .FirstOrDefaultAsync(u => u.TenDangNhap == username);
-                if (user == null)
-                {
-                    return Unauthorized(new { message = "Tài khoản không tồn tại." });
-                }
-
-
-
                 // Tìm sinh viên
-                var sinhVien = await _context.SinhViens.FindAsync(username);
+                var sinhVien = await _context.SinhViens.FirstOrDefaultAsync(s => s.MaSV == username);
                 if (sinhVien == null)
                 {
                     return NotFound(new { message = "Sinh viên không tồn tại." });
                 }
+
 
                 // Ràng buộc số điện thoại
                 if (!string.IsNullOrEmpty(sinhVienDTO.SoDienThoai))
@@ -187,59 +180,19 @@ namespace QuanLyDiemRenLuyen.Controllers.API
                         return BadRequest(new { message = "Email phải có định dạng @huit.edu.vn." });
                     }
                 }
-
-                // Xử lý địa chỉ (tỉnh, quận, phường, chi tiết)
+   
+                // Kiểm tra và cập nhật địa chỉ
                 if (!string.IsNullOrEmpty(sinhVienDTO.DiaChi))
                 {
-                    var diaChiParts = sinhVienDTO.DiaChi.Split(',').Select(p => p.Trim()).ToList();
-                    if (diaChiParts.Count < 3)
-                    {
-                        return BadRequest(new { message = "Địa chỉ phải chứa ít nhất phường/xã, quận/huyện, tỉnh/thành phố." });
-                    }
-
-                    string tinh = diaChiParts.Last();
-                    string quan = diaChiParts[diaChiParts.Count - 2];
-                    string phuong = diaChiParts[diaChiParts.Count - 3];
-
-                    var client = _httpClientFactory.CreateClient();
-                    var tinhResponse = await client.GetAsync("https://provinces.open-api.vn/api/p/");
-                    if (!tinhResponse.IsSuccessStatusCode)
-                    {
-                        return StatusCode(500, new { message = "Không thể kết nối đến API tỉnh thành." });
-                    }
-
-                    var tinhData = await tinhResponse.Content.ReadAsStringAsync();
-                    if (!tinhData.Contains(tinh, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return BadRequest(new { message = $"Tỉnh/thành phố '{tinh}' không hợp lệ." });
-                    }
-
-                    var quanResponse = await client.GetAsync("https://provinces.open-api.vn/api/d/");
-                    if (!quanResponse.IsSuccessStatusCode)
-                    {
-                        return StatusCode(500, new { message = "Không thể kết nối đến API quận huyện." });
-                    }
-
-                    var quanData = await quanResponse.Content.ReadAsStringAsync();
-                    if (!quanData.Contains(quan, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return BadRequest(new { message = $"Quận/huyện '{quan}' không hợp lệ." });
-                    }
-
-                    var phuongResponse = await client.GetAsync("https://provinces.open-api.vn/api/w/");
-                    if (!phuongResponse.IsSuccessStatusCode)
-                    {
-                        return StatusCode(500, new { message = "Không thể kết nối đến API phường xã." });
-                    }
-
-                    var phuongData = await phuongResponse.Content.ReadAsStringAsync();
-                    if (!phuongData.Contains(phuong, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return BadRequest(new { message = $"Phường/xã '{phuong}' không hợp lệ." });
-                    }
-
+                    // Nếu có địa chỉ mới được cung cấp, thì cập nhật
                     sinhVien.DiaChi = sinhVienDTO.DiaChi;
                 }
+                else
+                {
+                    // Nếu không có địa chỉ mới, thì không thay đổi gì
+                    return BadRequest(new { message = "Địa chỉ không được để trống." });
+                }
+
 
                 // Cập nhật ảnh đại diện
                 if (avatar != null && avatar.Length > 0)
@@ -254,6 +207,7 @@ namespace QuanLyDiemRenLuyen.Controllers.API
                     var fileName = $"{username}_{DateTime.Now.Ticks}{extension}";
                     var filePath = Path.Combine("wwwroot/avatars", fileName);
 
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)); // Đảm bảo thư mục tồn tại
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await avatar.CopyToAsync(stream);
@@ -263,9 +217,26 @@ namespace QuanLyDiemRenLuyen.Controllers.API
                 }
 
                 // Lưu thay đổi
+                _context.SinhViens.Update(sinhVien);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { message = "Cập nhật thông tin thành công.", data = sinhVien });
+                // Trả về thông tin đã cập nhật
+                var updatedSinhVien = new SinhVienDTO
+                {
+                    MaSV = sinhVien.MaSV,
+                    HoTen = sinhVien.HoTen,
+                    MaLop = sinhVien.MaLop,
+                    Email = sinhVien.Email,
+                    SoDienThoai = sinhVien.SoDienThoai,
+                    DiaChi = sinhVien.DiaChi,
+                    NgaySinh = sinhVien.NgaySinh.ToString("yyyy-MM-dd"), // Chuyển DateTime thành string
+                    GioiTinh = sinhVien.GioiTinh,
+                    MaVaiTro = sinhVien.MaVaiTro,
+                    AnhDaiDien = sinhVien.AnhDaiDien,
+                    TrangThai = sinhVien.TrangThai
+                };
+
+                return Ok(new { message = "Cập nhật thông tin thành công.", data = updatedSinhVien });
             }
             catch (Exception ex)
             {

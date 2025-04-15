@@ -43,18 +43,8 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.SinhVienController",
-    "Method": "GetSinhViens",
-    "RelativePath": "api/SinhVien/Lay_sinhvien_theo_vaitro",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.SinhVienController",
     "Method": "UpdateSinhVien",
-    "RelativePath": "api/SinhVien/update-profile",
+    "RelativePath": "api/SinhVien/capnhat_thongtin",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -110,11 +100,26 @@
         "IsRequired": false
       },
       {
+        "Name": "AnhDaiDien",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "avatar",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.SinhVienController",
+    "Method": "GetSinhViens",
+    "RelativePath": "api/SinhVien/Lay_sinhvien_theo_vaitro",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

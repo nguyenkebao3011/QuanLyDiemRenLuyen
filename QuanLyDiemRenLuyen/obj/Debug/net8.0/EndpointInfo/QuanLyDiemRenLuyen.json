@@ -73,7 +73,7 @@
         }
       }
     },
-    "/api/SinhVien/update-profile": {
+    "/api/SinhVien/capnhat_thongtin": {
       "put": {
         "tags": [
           "SinhVien"
@@ -115,6 +115,9 @@
                   "TrangThai": {
                     "type": "string"
                   },
+                  "AnhDaiDien": {
+                    "type": "string"
+                  },
                   "avatar": {
                     "type": "string",
                     "format": "binary"
@@ -150,6 +153,9 @@
                   "style": "form"
                 },
                 "TrangThai": {
+                  "style": "form"
+                },
+                "AnhDaiDien": {
                   "style": "form"
                 },
                 "avatar": {
