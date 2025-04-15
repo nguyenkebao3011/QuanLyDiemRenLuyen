@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace QuanLyDiemRenLuyen.Controllers
+namespace QuanLyDiemRenLuyen.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -55,7 +55,8 @@ namespace QuanLyDiemRenLuyen.Controllers
 
             var filtered = data
                 .Where(item => item.Value["parent_code"].ToString() == districtCode)
-                .Select(item => new {
+                .Select(item => new
+                {
                     code = item.Key,
                     name = item.Value["name"].ToString()
                 });
@@ -63,4 +64,4 @@ namespace QuanLyDiemRenLuyen.Controllers
             return Ok(filtered);
         }
     }
-    }
+}

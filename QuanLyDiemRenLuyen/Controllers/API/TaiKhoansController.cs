@@ -15,7 +15,7 @@ using QuanLyDiemRenLuyen.Models;
 using QuanLyDiemRenLuyen.DTO;
 using Microsoft.AspNetCore.Identity;
 
-namespace QuanLyDiemRenLuyen.Controllers
+namespace QuanLyDiemRenLuyen.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,9 +23,6 @@ namespace QuanLyDiemRenLuyen.Controllers
     {
         private readonly QlDrlContext _context;
         private readonly IConfiguration _config;
-
-
-
         public TaiKhoansController(QlDrlContext context, IConfiguration config)
         {
             _context = context;

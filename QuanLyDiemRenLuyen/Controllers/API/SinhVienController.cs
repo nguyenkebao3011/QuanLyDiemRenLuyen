@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace QuanLyDiemRenLuyen.Controllers
+namespace QuanLyDiemRenLuyen.Controllers.API
 {
     [Authorize] // Bắt buộc phải có JWT       
     [Route("api/[controller]")]
@@ -153,7 +153,7 @@ namespace QuanLyDiemRenLuyen.Controllers
                     return Unauthorized(new { message = "Tài khoản không tồn tại." });
                 }
 
-                
+
 
                 // Tìm sinh viên
                 var sinhVien = await _context.SinhViens.FindAsync(username);

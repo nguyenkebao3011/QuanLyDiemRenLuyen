@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Hệ thống Quản lý Điểm Rèn Luyện</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
+                <h3>QUẢN LÝ ĐIỂM RÈN LUYỆN SINH VIÊN</h3>
+            </div>
+
+            <div class="login-form">
+                <!-- Hiển thị thông báo lỗi từ TempData -->
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <!-- Hiển thị lỗi từ ModelState -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                    </div>
+                }
+
+                <form action="/Account/Login" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label for="MaDangNhap">Tên đăng nhập</label>
+                        <input type="text" id="MaDangNhap" name="MaDangNhap" class="form-control" placeholder="Nhập tên đăng nhập" required value="@Model?.MaDangNhap" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="MatKhau">Mật khẩu</label>
+                        <input type="password" id="MatKhau" name="MatKhau" class="form-control" placeholder="Nhập mật khẩu" required />
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript để debug form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                console.log('Form đang được gửi...');
+                document.getElementById('debug-info').textContent = 'Đang gửi form...';
+            });
+        });
+    </script>
+</body>
+</html>

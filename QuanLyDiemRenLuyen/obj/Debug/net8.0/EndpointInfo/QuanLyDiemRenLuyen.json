@@ -785,15 +785,19 @@
         "additionalProperties": false
       },
       "LoginDto": {
+        "required": [
+          "MaDangNhap",
+          "MatKhau"
+        ],
         "type": "object",
         "properties": {
           "MaDangNhap": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "MatKhau": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

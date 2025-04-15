@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.LocationController",
     "Method": "GetDistricts",
     "RelativePath": "api/Location/districts/{provinceCode}",
     "HttpMethod": "GET",
@@ -16,7 +16,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.LocationController",
     "Method": "GetProvinces",
     "RelativePath": "api/Location/provinces",
     "HttpMethod": "GET",
@@ -26,7 +26,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.LocationController",
     "Method": "GetWards",
     "RelativePath": "api/Location/wards/{districtCode}",
     "HttpMethod": "GET",
@@ -42,7 +42,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVienController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.SinhVienController",
     "Method": "GetSinhViens",
     "RelativePath": "api/SinhVien/Lay_sinhvien_theo_vaitro",
     "HttpMethod": "GET",
@@ -52,7 +52,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVienController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.SinhVienController",
     "Method": "UpdateSinhVien",
     "RelativePath": "api/SinhVien/update-profile",
     "HttpMethod": "PUT",
@@ -118,7 +118,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "GetTaiKhoans",
     "RelativePath": "api/TaiKhoans",
     "HttpMethod": "GET",
@@ -138,7 +138,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "PostTaiKhoan",
     "RelativePath": "api/TaiKhoans",
     "HttpMethod": "POST",
@@ -164,7 +164,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "GetTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "GET",
@@ -190,7 +190,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "PutTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "PUT",
@@ -211,7 +211,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "DeleteTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "DELETE",
@@ -227,7 +227,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "Login",
     "RelativePath": "api/TaiKhoans/login",
     "HttpMethod": "POST",
@@ -243,7 +243,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.API.TaiKhoansController",
     "Method": "ResetAllPasswords",
     "RelativePath": "api/TaiKhoans/reset-all-passwords",
     "HttpMethod": "POST",

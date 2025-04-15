@@ -3,6 +3,88 @@
   "ManifestType": "Build",
   "Endpoints": [
     {
+      "Route": "css/login.53zh007j6l.css",
+      "AssetFile": "css/login.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4045"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 04:09:07 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "53zh007j6l"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E="
+        },
+        {
+          "Name": "label",
+          "Value": "css/login.css"
+        }
+      ]
+    },
+    {
+      "Route": "css/login.css",
+      "AssetFile": "css/login.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4045"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 04:09:07 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E="
+        }
+      ]
+    },
+    {
       "Route": "js/swagger-custom.dfyrqwjk2w.js",
       "AssetFile": "js/swagger-custom.js",
       "Selectors": [],
@@ -111,7 +193,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
         }
       ],
       "EndpointProperties": [
@@ -156,7 +238,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
         }
       ],
       "EndpointProperties": [

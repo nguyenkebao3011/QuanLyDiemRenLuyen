@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "EyTCpWzIP53Z7ZrNzYUHjN2JMMFmToFR9u5W0EksSwE=",
+  "Hash": "nSi5EtKm6wQcene382cd9zqLejX+l94o8oN95F8+Rwk=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -10,17 +10,38 @@
     {
       "Name": "QuanLyDiemRenLuyen\\wwwroot",
       "Source": "QuanLyDiemRenLuyen",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\css\\login.css",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "css/login#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "53zh007j6l",
+      "Integrity": "HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\login.css"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "js/swagger-custom#[.{fingerprint}]?.js",
       "AssetKind": "All",
@@ -38,10 +59,10 @@
       "OriginalItemSpec": "wwwroot\\js\\swagger-custom.js"
     },
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "test#[.{fingerprint}]?.html",
       "AssetKind": "All",
@@ -61,8 +82,90 @@
   ],
   "Endpoints": [
     {
+      "Route": "css/login.53zh007j6l.css",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\css\\login.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4045"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 04:09:07 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "53zh007j6l"
+        },
+        {
+          "Name": "label",
+          "Value": "css/login.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E="
+        }
+      ]
+    },
+    {
+      "Route": "css/login.css",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\css\\login.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4045"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 04:09:07 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-HwSBtk+3FcXxF3GuVCvaXfSRwXzME9nOcf9RYlI0Y2E="
+        }
+      ]
+    },
+    {
       "Route": "js/swagger-custom.dfyrqwjk2w.js",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -107,7 +210,7 @@
     },
     {
       "Route": "js/swagger-custom.js",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\js\\swagger-custom.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -144,7 +247,7 @@
     },
     {
       "Route": "test.fkhg94ffnd.html",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -165,7 +268,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -189,7 +292,7 @@
     },
     {
       "Route": "test.html",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -210,7 +313,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 14 Apr 2025 12:17:35 GMT"
+          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
         },
         {
           "Name": "Cache-Control",

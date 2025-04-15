@@ -7,6 +7,10 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Thêm dòng này vào phần đầu của Program.cs để đảm bảo logging hoạt động
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 // Đăng ký DbContext
 builder.Services.AddDbContext<QlDrlContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QlDrlConnection")));
@@ -14,7 +18,17 @@ builder.Services.AddDbContext<QlDrlContext>(options =>
 // Đăng ký IHttpClientFactory
 builder.Services.AddHttpClient();
 
-builder.Services.AddControllers()
+// Thêm hỗ trợ Session cho trang đăng nhập
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Thêm MVC cho trang đăng nhập
+builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -41,9 +55,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
     };
 });
-builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 
 // Cấu hình Swagger với Security Definition
@@ -78,6 +91,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Sử dụng Session
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -92,10 +108,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
 
-app.UseDefaultFiles();
+// Phục vụ file tĩnh (CSS, JS, images)
 app.UseStaticFiles();
+app.UseDefaultFiles();
+
+// Cấu hình routing cho MVC
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=Login}/{id?}");
+
+// Giữ nguyên routing cho API
+app.MapControllers();
 
 app.Run();
