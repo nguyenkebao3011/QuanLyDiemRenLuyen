@@ -1,9 +1,9 @@
-﻿using QuanLyDiemRenLuyen.Models;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
+using QuanLyDiemRenLuyen.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+
 // Đăng ký DbContext
 builder.Services.AddDbContext<QlDrlContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QlDrlConnection")));
@@ -62,8 +63,6 @@ builder.Services.AddEndpointsApiExplorer();
 // Cấu hình Swagger với Security Definition
 builder.Services.AddSwaggerGen(c =>
 {
-    
-
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuanLyDiemRenLuyen", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -90,22 +89,34 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Thêm cấu hình CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Thay thế bằng URL của frontend
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Sử dụng Session
 app.UseSession();
 
+// Sử dụng CORS
+app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-
-
 
 app.UseHttpsRedirection();
 
 // Phục vụ file tĩnh (CSS, JS, images)
 app.UseStaticFiles();
 app.UseDefaultFiles();
+
 // Cấu hình Swagger UI làm trang mặc định khi dev
 if (app.Environment.IsDevelopment())
 {
@@ -113,18 +124,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuanLyDiemRenLuyen v1");
-       
         c.RoutePrefix = ""; // hoặc "swagger" nếu Swagger nằm tại /swagger
     });
-}       
+}
+
 // Cấu hình routing cho MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-
 // Giữ nguyên routing cho API
 app.MapControllers();
-
 
 app.Run();
