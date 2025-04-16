@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pxnBca26VmoRTpe455hwxeFuDxZjyqAaCUYV+1Ez4Bs=",
+  "Hash": "iMuyeCoyWt+Y3WB2BQgqh2TieJ0+wzdTmohm9KuVVhc=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "QuanLyDiemRenLuyen\\wwwroot",
       "Source": "QuanLyDiemRenLuyen",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "avatars/DHTH603148_638803492432562037#[.{fingerprint}]?.png",
       "AssetKind": "All",
@@ -38,10 +38,10 @@
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638803492432562037.png"
     },
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "avatars/DHTH603148_638803492561840178#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -59,10 +59,10 @@
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638803492561840178.jpg"
     },
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "avatars/DHTH603148_638803492945926678#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -80,10 +80,10 @@
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638803492945926678.jpg"
     },
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "avatars/DHTH603148_638803494347621781#[.{fingerprint}]?.jpeg",
       "AssetKind": "All",
@@ -101,10 +101,10 @@
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg"
     },
     {
-      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
       "BasePath": "_content/QuanLyDiemRenLuyen",
       "RelativePath": "test#[.{fingerprint}]?.html",
       "AssetKind": "All",
@@ -115,8 +115,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "fkhg94ffnd",
-      "Integrity": "76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=",
+      "Fingerprint": "2hs01g8u5y",
+      "Integrity": "2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\test.html"
@@ -125,7 +125,7 @@
   "Endpoints": [
     {
       "Route": "avatars/DHTH603148_638803492432562037.gtzvk55bmt.png",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -146,7 +146,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:27:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -170,7 +170,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803492432562037.png",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -191,7 +191,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:27:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -207,7 +207,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803492561840178.eznjwrrajw.jpg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -228,7 +228,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:27:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -252,7 +252,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803492561840178.jpg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492561840178.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -273,7 +273,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:27:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -289,7 +289,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803492945926678.6hhjw1fwda.jpg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -310,7 +310,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:28:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -334,7 +334,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803492945926678.jpg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492945926678.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -355,7 +355,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:28:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -371,7 +371,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803494347621781.jpeg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -392,7 +392,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:30:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -408,7 +408,7 @@
     },
     {
       "Route": "avatars/DHTH603148_638803494347621781.x01riafabf.jpeg",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803494347621781.jpeg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -429,7 +429,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 16 Apr 2025 02:05:28 GMT"
+          "Value": "Tue, 15 Apr 2025 14:30:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -452,8 +452,8 @@
       ]
     },
     {
-      "Route": "test.fkhg94ffnd.html",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "Route": "test.2hs01g8u5y.html",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -462,7 +462,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3046"
+          "Value": "3102"
         },
         {
           "Name": "Content-Type",
@@ -470,11 +470,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+          "Value": "\"2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
+          "Value": "Mon, 14 Apr 2025 13:36:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -484,7 +484,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fkhg94ffnd"
+          "Value": "2hs01g8u5y"
         },
         {
           "Name": "label",
@@ -492,13 +492,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+          "Value": "sha256-2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY="
         }
       ]
     },
     {
       "Route": "test.html",
-      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -507,7 +507,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3046"
+          "Value": "3102"
         },
         {
           "Name": "Content-Type",
@@ -515,11 +515,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=\""
+          "Value": "\"2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 15 Apr 2025 03:19:07 GMT"
+          "Value": "Mon, 14 Apr 2025 13:36:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -529,7 +529,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk="
+          "Value": "sha256-2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY="
         }
       ]
     }

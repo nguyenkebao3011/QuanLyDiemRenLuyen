@@ -1158,8 +1158,6 @@ D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiem
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.csproj.CoreCompileInputs.cache
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.MvcApplicationPartsAssemblyInfo.cs
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.MvcApplicationPartsAssemblyInfo.cache
-D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.RazorAssemblyInfo.cache
-D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.RazorAssemblyInfo.cs
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.sourcelink.json
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\scopedcss\bundle\QuanLyDiemRenLuyen.styles.css
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\staticwebassets.build.json
