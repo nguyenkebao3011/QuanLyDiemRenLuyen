@@ -176,7 +176,7 @@ body {
 }
 
 .text-danger {
-  color: var(--danger);
+color: var(--danger);
   font-size: 14px;
   margin-top: 5px;
 }

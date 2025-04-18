@@ -9,7 +9,7 @@ public partial class DangKyHoatDong
 
     public string? MaSv { get; set; }
 
-    public int? MaHoatDong { get; set; }
+    public int MaHoatDong { get; set; }
 
     public DateTime? NgayDangKy { get; set; }
 

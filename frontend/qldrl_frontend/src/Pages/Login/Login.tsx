@@ -92,7 +92,7 @@ const Login: React.FC = () => {
               <label htmlFor="username">Tên đăng nhập</label>
               <input
                 type="text"
-                id="username"
+id="username"
                 className="form-control"
                 placeholder="Nhập tên đăng nhập"
                 value={username}

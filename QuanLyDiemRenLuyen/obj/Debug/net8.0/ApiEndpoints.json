@@ -1,5 +1,156 @@
 [
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "GetDangKyHoatDongs",
+    "RelativePath": "api/DangKyHoatDongs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.DangKyHoatDong, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "PostDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dangKyHoatDong",
+        "Type": "QuanLyDiemRenLuyen.Models.DangKyHoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.DangKyHoatDong",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "GetDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.DangKyHoatDong",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "PutDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dangKyHoatDong",
+        "Type": "QuanLyDiemRenLuyen.Models.DangKyHoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "DeleteDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "DangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/dangky",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.DangKyHoatDongDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "XemDanhSachDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/danh-sach-dang-ky",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "Method": "HuyDangKyHoatDong",
+    "RelativePath": "api/DangKyHoatDongs/huy-dangky",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.DangKyHoatDongDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
     "Method": "GetDistricts",
     "RelativePath": "api/Location/districts/{provinceCode}",
