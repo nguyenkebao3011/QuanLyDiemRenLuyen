@@ -102,7 +102,7 @@ namespace QuanLyDiemRenLuyen.Controllers
                     MaSv = maSV,
                     MaHoatDong = request.MaHoatDong,
                     NgayDangKy = DateTime.Now,
-                    TrangThai = "Đang chờ duyệt"
+                    TrangThai = "Đăng ký thành công"
                 };
 
                 // Thêm vào database
