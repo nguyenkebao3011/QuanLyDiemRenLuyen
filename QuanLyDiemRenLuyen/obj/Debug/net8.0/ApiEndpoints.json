@@ -385,6 +385,47 @@
     ]
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "GetHoatDong",
+    "RelativePath": "api/HoatDongs/Loc_Hoat_Dong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BatDauTu",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "KetThucTruoc",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiemMin",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiemMax",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "TrangThai",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
     "Method": "GetDistricts",
     "RelativePath": "api/Location/districts/{provinceCode}",

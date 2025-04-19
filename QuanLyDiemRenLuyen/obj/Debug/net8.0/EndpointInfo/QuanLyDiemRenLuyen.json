@@ -471,6 +471,66 @@
         }
       }
     },
+    "/api/HoatDongs/Loc_Hoat_Dong": {
+      "get": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "parameters": [
+          {
+            "name": "Ten",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BatDauTu",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "KetThucTruoc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "DiemMin",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "DiemMax",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "TrangThai",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HoatDongs/lay_danh_sach_hoatdong": {
       "get": {
         "tags": [
