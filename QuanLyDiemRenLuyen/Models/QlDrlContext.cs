@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Encodings;
 
 namespace QuanLyDiemRenLuyen.Models;
 
@@ -47,6 +48,7 @@ public partial class QlDrlContext : DbContext
 
     public virtual DbSet<ThongBao> ThongBaos { get; set; }
 
+    public virtual DbSet<OTPRecords> OTPRecords { get; set; } 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
         => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
@@ -417,7 +419,8 @@ public partial class QlDrlContext : DbContext
                 .HasForeignKey(d => d.MaHoiDong)
                 .HasConstraintName("FK_ThanhVienHoiDong_HoiDong");
         });
-
+        modelBuilder.Entity<OTPRecords>()
+               .HasIndex(o => o.Email);
         modelBuilder.Entity<ThongBao>(entity =>
         {
             entity.HasKey(e => e.MaThongBao).HasName("PK__ThongBao__04DEB54E5002E3F2");
@@ -436,6 +439,7 @@ public partial class QlDrlContext : DbContext
             entity.HasOne(d => d.MaQlNavigation).WithMany(p => p.ThongBaos)
                 .HasForeignKey(d => d.MaQl)
                 .HasConstraintName("FK_ThongBao_QuanLy");
+         
         });
 
         OnModelCreatingPartial(modelBuilder);

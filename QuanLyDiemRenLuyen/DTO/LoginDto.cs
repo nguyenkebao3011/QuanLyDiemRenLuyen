@@ -9,5 +9,6 @@ namespace QuanLyDiemRenLuyen.DTO
 
         [Required(ErrorMessage = "Mật khẩu không được để trống.")]
         public string MatKhau { get; set; }
+         
     }
 }

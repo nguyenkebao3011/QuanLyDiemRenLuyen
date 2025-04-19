@@ -264,6 +264,400 @@
         }
       }
     },
+    "/api/DiemRenLuyens": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyen"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyen"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyen"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyens/{id}": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyen"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiemRenLuyen"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyens/xem-diem": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "maHocKy",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HoatDongs/lay_danh_sach_hoatdong": {
+      "get": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/HoatDongs/{id}": {
+      "get": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HoatDongs": {
+      "post": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Location/provinces": {
       "get": {
         "tags": [
@@ -332,7 +726,38 @@
         }
       }
     },
-    "/api/SinhVien/capnhat_thongtin": {
+    "/api/SinhVien/Doi_Mat_Khau": {
+      "put": {
+        "tags": [
+          "SinhVien"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SinhVien/cap_nhat_thong_tin": {
       "put": {
         "tags": [
           "SinhVien"
@@ -655,10 +1080,86 @@
           }
         }
       }
+    },
+    "/api/TaiKhoans/forgot-password": {
+      "post": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailServicesDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailServicesDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailServicesDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TaiKhoans/reset-password": {
+      "post": {
+        "tags": [
+          "TaiKhoans"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "MatKhauCu": {
+            "type": "string",
+            "nullable": true
+          },
+          "MatKhauMoi": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChiTietThongBao": {
         "type": "object",
         "properties": {
@@ -829,6 +1330,16 @@
             "items": {
               "$ref": "#/components/schemas/PhanHoiDiemRenLuyen"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EmailServicesDTO": {
+        "type": "object",
+        "properties": {
+          "TenDangNhap": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -1261,6 +1772,20 @@
             "items": {
               "$ref": "#/components/schemas/ThongBao"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "Otp": {
+            "type": "string",
+            "nullable": true
+          },
+          "NewPassword": {
+            "type": "string",
             "nullable": true
           }
         },

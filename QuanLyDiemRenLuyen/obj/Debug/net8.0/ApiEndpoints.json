@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "GetDangKyHoatDongs",
     "RelativePath": "api/DangKyHoatDongs",
     "HttpMethod": "GET",
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "PostDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs",
     "HttpMethod": "POST",
@@ -46,7 +46,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "GetDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/{id}",
     "HttpMethod": "GET",
@@ -72,7 +72,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "PutDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/{id}",
     "HttpMethod": "PUT",
@@ -93,7 +93,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "DeleteDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/{id}",
     "HttpMethod": "DELETE",
@@ -109,7 +109,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "DangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/dangky",
     "HttpMethod": "POST",
@@ -118,14 +118,14 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "QuanLyDiemRenLuyen.DTO.DangKyHoatDongDTO",
+        "Type": "QuanLyDiemRenLuyen.DTO.SinhVien.DangKyHoatDongDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "XemDanhSachDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/danh-sach-dang-ky",
     "HttpMethod": "GET",
@@ -135,7 +135,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DangKyHoatDongsController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "HuyDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/huy-dangky",
     "HttpMethod": "DELETE",
@@ -144,14 +144,248 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "QuanLyDiemRenLuyen.DTO.DangKyHoatDongDTO",
+        "Type": "QuanLyDiemRenLuyen.DTO.SinhVien.DangKyHoatDongDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "GetDiemRenLuyens",
+    "RelativePath": "api/DiemRenLuyens",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.DiemRenLuyen, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "PostDiemRenLuyen",
+    "RelativePath": "api/DiemRenLuyens",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "diemRenLuyen",
+        "Type": "QuanLyDiemRenLuyen.Models.DiemRenLuyen",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.DiemRenLuyen",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "GetDiemRenLuyen",
+    "RelativePath": "api/DiemRenLuyens/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.DiemRenLuyen",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "PutDiemRenLuyen",
+    "RelativePath": "api/DiemRenLuyens/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "diemRenLuyen",
+        "Type": "QuanLyDiemRenLuyen.Models.DiemRenLuyen",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "DeleteDiemRenLuyen",
+    "RelativePath": "api/DiemRenLuyens/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "XemDiemRenLuyenTheoMaHocKy",
+    "RelativePath": "api/DiemRenLuyens/xem-diem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHocKy",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "PostHoatDong",
+    "RelativePath": "api/HoatDongs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hoatDong",
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "GetHoatDong",
+    "RelativePath": "api/HoatDongs/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "PutHoatDong",
+    "RelativePath": "api/HoatDongs/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "hoatDong",
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "DeleteHoatDong",
+    "RelativePath": "api/HoatDongs/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "GetHoatDongs",
+    "RelativePath": "api/HoatDongs/lay_danh_sach_hoatdong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.HoatDong, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
     "Method": "GetDistricts",
     "RelativePath": "api/Location/districts/{provinceCode}",
     "HttpMethod": "GET",
@@ -167,7 +401,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
     "Method": "GetProvinces",
     "RelativePath": "api/Location/provinces",
     "HttpMethod": "GET",
@@ -177,7 +411,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.LocationController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
     "Method": "GetWards",
     "RelativePath": "api/Location/wards/{districtCode}",
     "HttpMethod": "GET",
@@ -193,9 +427,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVienController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.SinhVienController",
     "Method": "UpdateSinhVien",
-    "RelativePath": "api/SinhVien/capnhat_thongtin",
+    "RelativePath": "api/SinhVien/cap_nhat_thong_tin",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -264,7 +498,23 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVienController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.SinhVienController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/SinhVien/Doi_Mat_Khau",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.SinhVien.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.SinhVienController",
     "Method": "GetSinhViens",
     "RelativePath": "api/SinhVien/Lay_sinhvien_theo_vaitro",
     "HttpMethod": "GET",
@@ -274,7 +524,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "GetTaiKhoans",
     "RelativePath": "api/TaiKhoans",
     "HttpMethod": "GET",
@@ -294,7 +544,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "PostTaiKhoan",
     "RelativePath": "api/TaiKhoans",
     "HttpMethod": "POST",
@@ -320,7 +570,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "GetTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "GET",
@@ -346,7 +596,7 @@
     ]
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "PutTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "PUT",
@@ -367,7 +617,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "DeleteTaiKhoan",
     "RelativePath": "api/TaiKhoans/{id}",
     "HttpMethod": "DELETE",
@@ -383,7 +633,23 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/TaiKhoans/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.EmailServicesDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "Login",
     "RelativePath": "api/TaiKhoans/login",
     "HttpMethod": "POST",
@@ -399,13 +665,29 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.TaiKhoansController",
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "ResetAllPasswords",
     "RelativePath": "api/TaiKhoans/reset-all-passwords",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/TaiKhoans/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   }
 ]

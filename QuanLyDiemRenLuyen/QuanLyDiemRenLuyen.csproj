@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="MailKit" Version="4.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
@@ -21,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\GiangVien\" />
+    <Folder Include="Controllers\QuanLyKhoa\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.Models;
 using System.Text;
 
@@ -100,6 +101,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+// Email 
+builder.Services.AddSingleton<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Sử dụng Session
