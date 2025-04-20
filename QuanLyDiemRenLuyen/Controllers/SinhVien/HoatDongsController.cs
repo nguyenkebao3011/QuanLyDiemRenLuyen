@@ -20,7 +20,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         {
             _context = context;
         }
-        [HttpGet("Loc_Hoat_Dong")]
+        [HttpGet("loc_hoat_dong")]
         public IActionResult GetHoatDong([FromQuery] HoatDongFilterDTO filter)
         {
             var query = _context.HoatDongs.AsQueryable();

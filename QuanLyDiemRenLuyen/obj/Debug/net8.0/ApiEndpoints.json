@@ -387,7 +387,7 @@
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
     "Method": "GetHoatDong",
-    "RelativePath": "api/HoatDongs/Loc_Hoat_Dong",
+    "RelativePath": "api/HoatDongs/loc_hoat_dong",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

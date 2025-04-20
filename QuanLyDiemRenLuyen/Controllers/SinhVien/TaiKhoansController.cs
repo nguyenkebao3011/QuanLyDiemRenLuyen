@@ -170,8 +170,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 return BadRequest("Sai tên đăng nhập hoặc mật khẩu");
 
             // Ghi log thông tin (chỉ để debug)
-            Console.WriteLine($"Đăng nhập: {request.MaDangNhap} / {request.MatKhau}");
-            Console.WriteLine($"Tài khoản DB: {user?.TenDangNhap} / {user?.MatKhau}");
+           
 
             // Nếu đúng mật khẩu => tạo token
             var claims = new[]
@@ -246,13 +245,15 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             {
                 _context.OTPRecords.Remove(oldOtp);
             }
-
+            var vietnamTime = DateTime.UtcNow.AddHours(7);
+           
+            var expiryTime = vietnamTime.AddMinutes(1);
             // Lưu OTP mới
             var otpRecord = new OTPRecords
             {
                 Email = email,
                 Otp = otp,
-                Expiry = DateTime.UtcNow.AddMinutes(10)
+                Expiry = expiryTime
             };
             _context.OTPRecords.Add(otpRecord);
             await _context.SaveChangesAsync();
@@ -265,9 +266,11 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] DTO.ResetPasswordRequest request)
         {
+            var vietnamTime = DateTime.UtcNow.AddHours(7);
+            var expiryTime = vietnamTime.AddMinutes(1);
             // Tìm OTP trong bảng OTPRecords
             var otpRecord = await _context.OTPRecords
-                .FirstOrDefaultAsync(o => o.Otp == request.Otp && o.Expiry > DateTime.UtcNow);
+                .FirstOrDefaultAsync(o => o.Otp == request.Otp && o.Expiry > expiryTime);
 
             if (otpRecord == null)
             {

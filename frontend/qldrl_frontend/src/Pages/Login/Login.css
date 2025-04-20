@@ -1,6 +1,6 @@
 :root {
-  --primary: #1a56db;
-  --primary-dark: #1e429f;
+  --primary: #04549f;
+  --primary-dark: #04549f;
   --secondary: #f0f4ff;
   --text-dark: #1f2937;
   --text-light: #6b7280;
@@ -11,32 +11,28 @@
   --gray-200: #e5e7eb;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #f0f4ff 0%, #d8e3ff 100%);
-  min-height: 100vh;
-}
-
 .login-container {
   width: 100%;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  /* align-items: center;
+  justify-content: center; */
+  padding: 0px;
+  flex-direction: row-reverse;
+  margin-top: -95px;
 }
 
+.logo{
+  width: 456px;
+  padding: 10px;
+  
+
+}
 .login-box {
   width: 100%;
   max-width: 480px;
   background-color: var(--white);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transform-style: preserve-3d;
@@ -49,11 +45,8 @@ body {
 }
 
 .login-header {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-dark) 100%
-  );
+  background: #04549f;
+
   color: var(--white);
   padding: 30px 20px;
   text-align: center;
@@ -198,7 +191,11 @@ color: var(--danger);
   font-size: 12px;
   color: var(--text-light);
 }
-
+.lost_password {
+  text-decoration: none;
+  color: var(--text-dark);
+  
+}
 @media (max-width: 480px) {
   .login-header h2 {
     font-size: 20px;
@@ -209,4 +206,147 @@ color: var(--danger);
   .login-form {
     padding: 25px 20px;
   }
+  /* Đảm bảo các lớp hiện có của bạn không bị ghi đè, thêm các kiểu mới cho modal */
+.fixed {
+  position: fixed;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.bg-black {
+  background-color: #000;
+}
+
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
+.right-2 {
+  right: 0.5rem;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.hover\:text-gray-700:hover {
+  color: #4b5563;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.w-6 {
+  width: 1.5rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-green-600 {
+  color: #059669;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+/* Đảm bảo các lớp form-control, btn, btn-primary, btn-loading đã được định nghĩa trong Login.css */
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.btn-loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 }

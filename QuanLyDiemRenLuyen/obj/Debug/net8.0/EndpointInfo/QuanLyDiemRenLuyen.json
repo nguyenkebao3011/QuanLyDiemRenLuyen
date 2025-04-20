@@ -471,7 +471,7 @@
         }
       }
     },
-    "/api/HoatDongs/Loc_Hoat_Dong": {
+    "/api/HoatDongs/loc_hoat_dong": {
       "get": {
         "tags": [
           "HoatDongs"
@@ -1524,6 +1524,11 @@
           "NgayTao": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "SoLuongDaDangKy": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "DangKyHoatDongs": {

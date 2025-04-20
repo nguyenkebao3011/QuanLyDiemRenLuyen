@@ -58,31 +58,29 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                // Kiểm tra trạng thái hoạt động
-                if (hoatDong.TrangThai != "Chưa bắt đầu")
-                {
-                    return BadRequest(new { message = "Chỉ được đăng ký các hoạt động chưa bắt đầu" });
-                }
+                //// Kiểm tra trạng thái hoạt động
+                //if (hoatDong.TrangThai != "Chưa bắt đầu" && "Đang diên ra")
+                //{
+                //    return BadRequest(new { message = "Chỉ được đăng ký các hoạt động chưa bắt đầu" });
+                //}
 
-                // Kiểm tra thời gian đăng ký (cách NgayBatDau ít nhất 3 ngày)
-                if (!hoatDong.NgayBatDau.HasValue)
-                {
-                    return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hợp lệ" });
-                }
+                //// Kiểm tra thời gian đăng ký (cách NgayBatDau ít nhất 3 ngày)
+                //if (!hoatDong.NgayBatDau.HasValue)
+                //{
+                //    return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hợp lệ" });
+                //}
 
-                var ngayHienTai = DateTime.Now;
-                var thoiGianToiThieu = ngayHienTai.AddDays(3);
-                if (hoatDong.NgayBatDau < thoiGianToiThieu)
-                {
-                    return BadRequest(new { message = "Hoạt động này không thể đăng ký vì thời gian bắt đầu đã quá gần (ít hơn 3 ngày)" });
-                }
+                //var ngayHienTai = DateTime.Now;
+                //var thoiGianToiThieu = ngayHienTai.AddDays(3);
+                //if (hoatDong.NgayBatDau < thoiGianToiThieu)
+                //{
+                //    return BadRequest(new { message = "Hoạt động này không thể đăng ký vì thời gian bắt đầu đã quá gần (ít hơn 3 ngày)" });
+                //}
 
                 // Kiểm tra số lượng đăng ký
                 if (hoatDong.SoLuongToiDa.HasValue)
                 {
-                    var soLuongDaDangKy = await _context.DangKyHoatDongs
-                        .CountAsync(d => d.MaHoatDong == request.MaHoatDong);
-                    if (soLuongDaDangKy >= hoatDong.SoLuongToiDa.Value)
+                    if (hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa.Value)
                     {
                         return BadRequest(new { message = "Hoạt động đã đủ số lượng sinh viên đăng ký" });
                     }
@@ -107,6 +105,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
                 // Thêm vào database
                 _context.DangKyHoatDongs.Add(dangKy);
+                hoatDong.SoLuongDaDangKy = (hoatDong.SoLuongDaDangKy ?? 0) + 1;
                 await _context.SaveChangesAsync();
 
                 // Trả về dữ liệu không chứa navigation properties
