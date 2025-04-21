@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   BookOpen,
@@ -16,22 +17,42 @@ import {
 import "./Dashboard.css";
 
 // Import các components
-import QuanLyDanhMuc from "../../../components/Admin/QuanLyDanhMuc";
-import HoatDongNamHoc from "../../../components/Admin/HoatDongNamHoc";
-import ChamDiemRenLuyen from "../../../components/Admin/ChamDiemRenLuyen";
-import ThongBaoDiemDanh from "../../../components/Admin/ThongBaoDiemDanh";
-import CapNhatMinhChung from "../../../components/Admin/CapNhatMinhChung";
-import PhanHoiDiemRenLuyen from "../../../components/Admin/PhanHoiDiemRenLuyen";
-import ThongKeBaoCao from "../../../components/Admin/ThongKeBaoCao";
-import HoiDongChamDiem from "../../../components/Admin/HoiDongChamDiem";
+import QuanLyDanhMuc from "../../../components/Admin/views/QuanLyDanhMuc";
+import HoatDongNamHoc from "../../../components/Admin/views/HoatDongNamHoc";
+import ChamDiemRenLuyen from "../../../components/Admin/views/ChamDiemRenLuyen";
+import ThongBaoDiemDanh from "../../../components/Admin/views/ThongBaoDiemDanh";
+import CapNhatMinhChung from "../../../components/Admin/views/CapNhatMinhChung";
+import PhanHoiDiemRenLuyen from "../../../components/Admin/views/PhanHoiDiemRenLuyen";
+import ThongKeBaoCao from "../../../components/Admin/views/ThongKeBaoCao";
+import HoiDongChamDiem from "../../../components/Admin/views/HoiDongChamDiem";
+import TongQuanHeThong from "../../../components/Admin/views/TongQuanHeThong";
+import TaoHoatDong from "../../../components/Admin/views/TaoHoatDong";
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [viewParam, setViewParam] = useState<string | null>(null);
 
   const username = localStorage.getItem("username") || "Admin";
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const menuParam = params.get("menu");
+    const viewParam = params.get("view");
+
+    if (menuParam) {
+      setActiveMenu(menuParam);
+    }
+
+    if (viewParam) {
+      setViewParam(viewParam);
+    }
+  }, []);
+
   const renderContent = () => {
+    if (activeMenu === "activities" && viewParam === "create") {
+      return <TaoHoatDong />;
+    }
     switch (activeMenu) {
       case "category":
         return <QuanLyDanhMuc />;
@@ -87,63 +108,90 @@ const Dashboard: React.FC = () => {
           <ul>
             <li
               className={activeMenu === "dashboard" ? "active" : ""}
-              onClick={() => setActiveMenu("dashboard")}
+              onClick={() => {
+                setActiveMenu("dashboard");
+                window.history.pushState({}, "", "?menu=dashboard");
+              }}
             >
               <BookOpen size={18} />
               <span>Tổng quan</span>
             </li>
             <li
               className={activeMenu === "category" ? "active" : ""}
-              onClick={() => setActiveMenu("category")}
+              onClick={() => {
+                setActiveMenu("category");
+                window.history.pushState({}, "", "?menu=category");
+              }}
             >
               <Users size={18} />
               <span>Quản lý danh mục</span>
             </li>
             <li
               className={activeMenu === "activities" ? "active" : ""}
-              onClick={() => setActiveMenu("activities")}
+              onClick={() => {
+                setActiveMenu("activities");
+                window.history.pushState({}, "", "?menu=activities");
+              }}
             >
               <Calendar size={18} />
               <span>Hoạt động năm học</span>
             </li>
             <li
               className={activeMenu === "scoring" ? "active" : ""}
-              onClick={() => setActiveMenu("scoring")}
+              onClick={() => {
+                setActiveMenu("scoring");
+                window.history.pushState({}, "", "?menu=scoring");
+              }}
             >
               <Award size={18} />
               <span>Chấm điểm rèn luyện</span>
             </li>
             <li
               className={activeMenu === "notification" ? "active" : ""}
-              onClick={() => setActiveMenu("notification")}
+              onClick={() => {
+                setActiveMenu("notification");
+                window.history.pushState({}, "", "?menu=notification");
+              }}
             >
               <Bell size={18} />
               <span>Thông báo điểm danh</span>
             </li>
             <li
               className={activeMenu === "evidence" ? "active" : ""}
-              onClick={() => setActiveMenu("evidence")}
+              onClick={() => {
+                setActiveMenu("evidence");
+                window.history.pushState({}, "", "?menu=evidence");
+              }}
             >
               <FileText size={18} />
               <span>Cập nhật minh chứng</span>
             </li>
             <li
               className={activeMenu === "feedback" ? "active" : ""}
-              onClick={() => setActiveMenu("feedback")}
+              onClick={() => {
+                setActiveMenu("feedback");
+                window.history.pushState({}, "", "?menu=feedback");
+              }}
             >
               <MessageSquare size={18} />
               <span>Phản hồi điểm rèn luyện</span>
             </li>
             <li
               className={activeMenu === "statistics" ? "active" : ""}
-              onClick={() => setActiveMenu("statistics")}
+              onClick={() => {
+                setActiveMenu("statistics");
+                window.history.pushState({}, "", "?menu=statistics");
+              }}
             >
               <BarChart2 size={18} />
               <span>Thống kê, báo cáo</span>
             </li>
             <li
               className={activeMenu === "committee" ? "active" : ""}
-              onClick={() => setActiveMenu("committee")}
+              onClick={() => {
+                setActiveMenu("committee");
+                window.history.pushState({}, "", "?menu=committee");
+              }}
             >
               <UserCheck size={18} />
               <span>Hội đồng chấm điểm</span>
@@ -185,140 +233,6 @@ const Dashboard: React.FC = () => {
         </header>
 
         <div className="content-body">{renderContent()}</div>
-      </div>
-    </div>
-  );
-};
-
-// Component tổng quan
-const TongQuanHeThong: React.FC = () => {
-  return (
-    <div className="dashboard-overview">
-      <div className="stats-cards">
-        <div className="stat-card">
-          <div className="stat-icon student-icon">
-            <Users size={24} />
-          </div>
-          <div className="stat-details">
-            <h3>Sinh viên</h3>
-            <p className="stat-value">1,234</p>
-            <p className="stat-desc">Tổng số sinh viên</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon teacher-icon">
-            <Users size={24} />
-          </div>
-          <div className="stat-details">
-            <h3>Giáo viên</h3>
-            <p className="stat-value">56</p>
-            <p className="stat-desc">Tổng số giáo viên</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon activity-icon">
-            <Calendar size={24} />
-          </div>
-          <div className="stat-details">
-            <h3>Hoạt động</h3>
-            <p className="stat-value">28</p>
-            <p className="stat-desc">Hoạt động đang diễn ra</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon feedback-icon">
-            <MessageSquare size={24} />
-          </div>
-          <div className="stat-details">
-            <h3>Phản hồi</h3>
-            <p className="stat-value">12</p>
-            <p className="stat-desc">Phản hồi chưa xử lý</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="dashboard-widgets">
-        <div className="widget recent-activities">
-          <div className="widget-header">
-            <h3>Hoạt động gần đây</h3>
-            <button className="view-all">Xem tất cả</button>
-          </div>
-          <div className="widget-content">
-            <ul className="activity-list">
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Calendar size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Hoạt động tình nguyện mùa hè</p>
-                  <p className="activity-time">Hôm nay, 10:30</p>
-                </div>
-                <span className="activity-status new">Mới</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Award size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Chấm điểm rèn luyện học kỳ 1</p>
-                  <p className="activity-time">Hôm qua, 15:45</p>
-                </div>
-                <span className="activity-status in-progress">Đang xử lý</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <MessageSquare size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">
-                    Phản hồi điểm rèn luyện từ Nguyễn Văn A
-                  </p>
-                  <p className="activity-time">24/07/2023, 09:15</p>
-                </div>
-                <span className="activity-status completed">Đã xử lý</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Bell size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Thông báo hết hạn điểm danh</p>
-                  <p className="activity-time">22/07/2023, 18:00</p>
-                </div>
-                <span className="activity-status completed">Đã xử lý</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="widget quick-actions">
-          <div className="widget-header">
-            <h3>Thao tác nhanh</h3>
-          </div>
-          <div className="widget-content">
-            <div className="quick-action-grid">
-              <button className="quick-action-btn">
-                <Users size={20} />
-                <span>Thêm sinh viên</span>
-              </button>
-              <button className="quick-action-btn">
-                <Calendar size={20} />
-                <span>Tạo hoạt động</span>
-              </button>
-              <button className="quick-action-btn">
-                <Bell size={20} />
-                <span>Gửi thông báo</span>
-              </button>
-              <button className="quick-action-btn">
-                <BarChart2 size={20} />
-                <span>Xuất báo cáo</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

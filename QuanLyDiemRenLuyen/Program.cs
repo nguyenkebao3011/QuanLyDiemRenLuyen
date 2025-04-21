@@ -16,7 +16,7 @@ builder.Logging.AddDebug();
 // Đăng ký DbContext
 builder.Services.AddDbContext<QlDrlContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QlDrlConnection")));
-
+builder.Services.AddControllers();
 // Đăng ký IHttpClientFactory
 builder.Services.AddHttpClient();
 

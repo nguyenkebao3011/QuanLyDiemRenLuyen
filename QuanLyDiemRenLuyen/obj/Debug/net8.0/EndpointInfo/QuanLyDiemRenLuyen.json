@@ -471,6 +471,60 @@
         }
       }
     },
+    "/api/HoatDong/tao_hoat_dong": {
+      "post": {
+        "tags": [
+          "HoatDong"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoatDong"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HoatDong/lay_thong_tin_hd/{id}": {
+      "get": {
+        "tags": [
+          "HoatDong"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HoatDongs/loc_hoat_dong": {
       "get": {
         "tags": [

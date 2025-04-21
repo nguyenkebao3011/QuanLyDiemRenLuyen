@@ -276,6 +276,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
+    "Method": "GetHoatDongById",
+    "RelativePath": "api/HoatDong/lay_thong_tin_hd/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
+    "Method": "CreateHoatDong",
+    "RelativePath": "api/HoatDong/tao_hoat_dong",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hoatDong",
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
     "Method": "PostHoatDong",
     "RelativePath": "api/HoatDongs",
