@@ -13,8 +13,17 @@ import { useNavigate } from "react-router-dom";
 const TongQuanHeThong: React.FC = () => {
   const navigate = useNavigate();
 
+  // Sửa lại hàm handleCreateActivity để sử dụng window.history.pushState thay vì navigate
   const handleCreateActivity = () => {
-    navigate("/admin/dashboard?menu=activities&view=create");
+    // Thay đổi URL và cập nhật lịch sử
+    window.history.pushState(
+      {},
+      "",
+      "/admin/dashboard?menu=activities&view=create"
+    );
+
+    // Kích hoạt sự kiện popstate để Dashboard component biết URL đã thay đổi
+    window.dispatchEvent(new Event("popstate"));
   };
 
   return (

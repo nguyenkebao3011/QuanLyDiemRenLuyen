@@ -176,7 +176,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, user.TenDangNhap),
-        new Claim(ClaimTypes.Role, user.VaiTro)
+        new Claim(ClaimTypes.Role, user.VaiTro),
+        new Claim("maTaiKhoan", user.MaTaiKhoan),
     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -194,7 +195,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 username = user.TenDangNhap,
-                role = user.VaiTro
+                role = user.VaiTro,
+                maTaiKhoan = user.MaTaiKhoan,
             });
         }
         [HttpPost("reset-all-passwords")]

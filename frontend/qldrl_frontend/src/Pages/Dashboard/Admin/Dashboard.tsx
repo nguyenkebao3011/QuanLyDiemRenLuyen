@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -36,23 +38,41 @@ const Dashboard: React.FC = () => {
   const username = localStorage.getItem("username") || "Admin";
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const menuParam = params.get("menu");
-    const viewParam = params.get("view");
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const menuParam = params.get("menu");
+      const viewParam = params.get("view");
 
-    if (menuParam) {
-      setActiveMenu(menuParam);
-    }
+      if (menuParam) {
+        setActiveMenu(menuParam);
+      }
 
-    if (viewParam) {
-      setViewParam(viewParam);
-    }
+      if (viewParam) {
+        setViewParam(viewParam);
+      } else {
+        setViewParam(null);
+      }
+    };
+
+    // Gọi lần đầu khi component mount
+    handleUrlChange();
+
+    // Thêm event listener để lắng nghe sự thay đổi URL
+    window.addEventListener("popstate", handleUrlChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("popstate", handleUrlChange);
+    };
   }, []);
 
   const renderContent = () => {
+    // Kiểm tra nếu đang ở menu activities và view là create
     if (activeMenu === "activities" && viewParam === "create") {
       return <TaoHoatDong />;
     }
+
+    // Các trường hợp khác
     switch (activeMenu) {
       case "category":
         return <QuanLyDanhMuc />;

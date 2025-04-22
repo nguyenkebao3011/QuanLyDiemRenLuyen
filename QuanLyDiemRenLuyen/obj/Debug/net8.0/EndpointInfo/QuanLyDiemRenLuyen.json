@@ -772,6 +772,49 @@
         }
       }
     },
+    "/api/HocKy/lay_hoc_ky": {
+      "get": {
+        "tags": [
+          "HocKy"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HocKy/tao_hoc_ky": {
+      "post": {
+        "tags": [
+          "HocKy"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKy"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKy"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Location/provinces": {
       "get": {
         "tags": [
@@ -820,6 +863,30 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/QuanLyKhoa/lay_ql_khoa": {
+      "get": {
+        "tags": [
+          "QuanLyKhoa"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/QuanLyKhoa/thong_tin": {
+      "get": {
+        "tags": [
+          "QuanLyKhoa"
         ],
         "responses": {
           "200": {

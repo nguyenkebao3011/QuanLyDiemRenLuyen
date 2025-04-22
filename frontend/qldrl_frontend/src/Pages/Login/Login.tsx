@@ -78,6 +78,7 @@ const Login: React.FC = () => {
       saveToken(response.data.token);
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("maTaiKhoan", response.data.maTaiKhoan);
 
       // Chuyển hướng dựa trên vai trò
       redirectBasedOnRole(response.data.role);
@@ -94,7 +95,9 @@ const Login: React.FC = () => {
   };
 
   // Xử lý quên mật khẩu: Gửi yêu cầu OTP
-  const handleForgotPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleForgotPassword = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     if (!tenDangNhap.trim()) {
       setForgotMessage("Vui lòng nhập mã số sinh viên!");
@@ -135,7 +138,9 @@ const Login: React.FC = () => {
   };
 
   // Xử lý đặt lại mật khẩu
-  const handleResetPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleResetPassword = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     if (!otp.trim()) {
       setForgotMessage("Vui lòng nhập OTP!");
@@ -252,7 +257,7 @@ const Login: React.FC = () => {
                 </button>
               </div>
             </form>
-                        <a
+            <a
               className="lost_password"
               href="#"
               onClick={(e) => {
@@ -262,7 +267,7 @@ const Login: React.FC = () => {
             >
               Quên mật khẩu
             </a>
-           
+
             <div className="debug-info">
               Hệ thống Quản lý Điểm Rèn Luyện Sinh Viên
             </div>
@@ -293,7 +298,9 @@ const Login: React.FC = () => {
                 />
               </svg>
             </button>
-            <h2 className="text-xl font-bold mb-4 text-center">Quên Mật Khẩu</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">
+              Quên Mật Khẩu
+            </h2>
 
             {forgotStep === 1 && (
               <div>

@@ -458,6 +458,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
+    "Method": "GetHocKy",
+    "RelativePath": "api/HocKy/lay_hoc_ky",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
+    "Method": "CreateHocKy",
+    "RelativePath": "api/HocKy/tao_hoc_ky",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hocKy",
+        "Type": "QuanLyDiemRenLuyen.Models.HocKy",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
     "Method": "GetDistricts",
     "RelativePath": "api/Location/districts/{provinceCode}",
@@ -497,6 +523,26 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLyKhoaController",
+    "Method": "GetKhoa",
+    "RelativePath": "api/QuanLyKhoa/lay_ql_khoa",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLyKhoaController",
+    "Method": "GetLoggedInQuanLyKhoaInfo",
+    "RelativePath": "api/QuanLyKhoa/thong_tin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
