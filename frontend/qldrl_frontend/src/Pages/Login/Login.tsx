@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
-import axios, { AxiosError } from "axios";
+"use client";
+
+import type React from "react";
+import { useState, useEffect } from "react";
+import axios, { type AxiosError } from "axios";
 import "./Login.css";
-import { saveToken, getRole, isLoggedIn, logout } from "../../untils/auth";
+import { saveToken, getRole, isLoggedIn } from "../../untils/auth";
 
 // Định nghĩa các kiểu TypeScript
 interface ApiResponse {
@@ -15,6 +18,14 @@ interface ForgotPasswordRequest {
 interface ResetPasswordRequest {
   Otp: string;
   NewPassword: string;
+}
+
+interface ThongBao {
+  MaThongBao: number;
+  TieuDe: string;
+  NoiDung: string;
+  NgayDang: string;
+  TrangThai: string;
 }
 
 const Login: React.FC = () => {
@@ -34,6 +45,13 @@ const Login: React.FC = () => {
   const [forgotMessage, setForgotMessage] = useState("");
   const [isForgotLoading, setIsForgotLoading] = useState(false);
 
+  // State cho danh sách thông báo
+  const [thongBaos, setThongBaos] = useState<ThongBao[]>([]);
+  const [loadingThongBao, setLoadingThongBao] = useState(true);
+  const [activeTab, setActiveTab] = useState<
+    "thongbao" | "daihoc" | "saudaihoc" | "nganhan"
+  >("thongbao");
+
   useEffect(() => {
     // Kiểm tra nếu đã đăng nhập
     if (isLoggedIn()) {
@@ -42,7 +60,26 @@ const Login: React.FC = () => {
         redirectBasedOnRole(role);
       }
     }
+
+    // Lấy danh sách thông báo
+    fetchThongBaos();
   }, []);
+
+  const fetchThongBaos = async () => {
+    setLoadingThongBao(true);
+    try {
+      const response = await axios.get(
+        "http://localhost:5163/api/ThongBao/lay_thong_bao"
+      );
+      if (response.status === 200) {
+        setThongBaos(response.data);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách thông báo:", error);
+    } finally {
+      setLoadingThongBao(false);
+    }
+  };
 
   const redirectBasedOnRole = (role: string) => {
     switch (role.toLowerCase()) {
@@ -110,7 +147,9 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post<ApiResponse>(
         "http://localhost:5163/api/TaiKhoans/forgot-password",
-        { TenDangNhap: tenDangNhap } as ForgotPasswordRequest
+        {
+          TenDangNhap: tenDangNhap,
+        } as ForgotPasswordRequest
       );
 
       setForgotMessage(response.data.message);
@@ -161,7 +200,10 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post<ApiResponse>(
         "http://localhost:5163/api/TaiKhoans/reset-password",
-        { Otp: otp, NewPassword: newPassword } as ResetPasswordRequest
+        {
+          Otp: otp,
+          NewPassword: newPassword,
+        } as ResetPasswordRequest
       );
 
       setForgotMessage(response.data.message);
@@ -193,83 +235,168 @@ const Login: React.FC = () => {
     setForgotMessage("");
   };
 
+  // Lấy tháng từ ngày
+  const getMonth = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.getMonth() + 1;
+    } catch (error) {
+      return "";
+    }
+  };
+
+  // Lấy ngày từ ngày
+  const getDay = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.getDate();
+    } catch (error) {
+      return "";
+    }
+  };
+
   return (
-    <div className="logins-container">
-      <img
-        className="logo"
-        src="./hinhanh/logo-huit-web-chinh-moi-mau-xanh-02.svg"
-        alt=""
-      />
-      <div className="login-container">
-        <div className="login-box">
-          <div className="login-header">
-            <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
-            <h3>QUẢN LÝ ĐIỂM RÈN LUYỆN SINH VIÊN</h3>
+    <div className="login-page-container">
+      <div className="login-header">
+        <img
+          className="logo"
+          src="./hinhanh/logo-huit-web-chinh-moi-mau-xanh-02.svg"
+          alt="Logo trường"
+        />
+        <h1>TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HỒ CHÍ MINH</h1>
+      </div>
+
+      <div className="login-content">
+        <div className="activities-section">
+          <div className="activities-tabs">
+            <button
+              className={`tab-button ${
+                activeTab === "thongbao" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("thongbao")}
+            >
+              THÔNG BÁO CHUNG
+            </button>
+            <button
+              className={`tab-button ${activeTab === "daihoc" ? "active" : ""}`}
+              onClick={() => setActiveTab("daihoc")}
+            >
+              ĐẠI HỌC - CAO ĐẲNG
+            </button>
+            <button
+              className={`tab-button ${
+                activeTab === "saudaihoc" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("saudaihoc")}
+            >
+              SAU ĐẠI HỌC
+            </button>
+            <button
+              className={`tab-button ${
+                activeTab === "nganhan" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("nganhan")}
+            >
+              NGẮN HẠN
+            </button>
           </div>
 
-          <div className="login-form">
-            <div className="school-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 15.99L12 18.72L7 15.99V12.27L12 15L17 12.27V15.99Z" />
-              </svg>
+          <div className="thong-bao-list">
+            {loadingThongBao ? (
+              <div className="loading-thong-bao">Đang tải dữ liệu...</div>
+            ) : (
+              thongBaos.map((thongBao) => (
+                <div key={thongBao.MaThongBao} className="thong-bao-item">
+                  <div className="thong-bao-date">
+                    <div className="thong-bao-month">
+                      Tháng {getMonth(thongBao.NgayDang)}
+                    </div>
+                    <div className="thong-bao-day">
+                      {getDay(thongBao.NgayDang)}
+                    </div>
+                  </div>
+                  <div className="thong-bao-content">
+                    <h3 className="thong-bao-title">{thongBao.TieuDe}</h3>
+                    <a
+                      href={`/thong-bao/${thongBao.MaThongBao}`}
+                      className="xem-chi-tiet"
+                    >
+                      Xem chi tiết
+                    </a>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div className="login-section">
+          <div className="login-box">
+            <div className="login-header">
+              <h2>CỔNG THÔNG TIN SINH VIÊN</h2>
+              <h3>ĐĂNG NHẬP HỆ THỐNG</h3>
             </div>
 
-            {errorMessage && (
-              <div className="alert alert-danger">{errorMessage}</div>
-            )}
-
-            <form onSubmit={handleLogin}>
-              <div className="form-group">
-                <label htmlFor="username">Tên đăng nhập</label>
-                <input
-                  type="text"
-                  id="username"
-                  className="form-control"
-                  placeholder="Nhập tên đăng nhập"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
+            <div className="login-form">
+              <div className="school-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 15.99L12 18.72L7 15.99V12.27L12 15L17 12.27V15.99Z" />
+                </svg>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="password">Mật khẩu</label>
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control"
-                  placeholder="Nhập mật khẩu"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
+              {errorMessage && (
+                <div className="alert alert-danger">{errorMessage}</div>
+              )}
 
-              <div className="form-group">
-                <button
-                  type="submit"
-                  className={`btn btn-primary btn-block ${
-                    isLoading ? "btn-loading" : ""
-                  }`}
-                  disabled={isLoading}
+              <form onSubmit={handleLogin}>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    id="username"
+                    className="form-control"
+                    placeholder="Nhập mã sinh viên"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input
+                    type="password"
+                    id="password"
+                    className="form-control"
+                    placeholder="Nhập mật khẩu"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <button
+                    type="submit"
+                    className={`btn btn-primary btn-block ${
+                      isLoading ? "btn-loading" : ""
+                    }`}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Đang xử lý..." : "ĐĂNG NHẬP"}
+                  </button>
+                </div>
+              </form>
+
+              <div className="login-links">
+                <a
+                  className="lost-password"
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsForgotPasswordOpen(true);
+                  }}
                 >
-                  {isLoading ? "Đang xử lý..." : "Đăng nhập"}
-                </button>
+                  Quên mật khẩu?
+                </a>
               </div>
-            </form>
-            <a
-              className="lost_password"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsForgotPasswordOpen(true);
-              }}
-            >
-              Quên mật khẩu
-            </a>
-
-            <div className="debug-info">
-              Hệ thống Quản lý Điểm Rèn Luyện Sinh Viên
             </div>
           </div>
         </div>
@@ -277,12 +404,9 @@ const Login: React.FC = () => {
 
       {/* Modal Quên Mật Khẩu */}
       {isForgotPasswordOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={closeForgotPasswordModal}
-            >
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <button className="modal-close" onClick={closeForgotPasswordModal}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -298,13 +422,11 @@ const Login: React.FC = () => {
                 />
               </svg>
             </button>
-            <h2 className="text-xl font-bold mb-4 text-center">
-              Quên Mật Khẩu
-            </h2>
+            <h2 className="modal-title">Quên Mật Khẩu</h2>
 
             {forgotStep === 1 && (
               <div>
-                <div className="form-group mb-4">
+                <div className="form-group">
                   <label htmlFor="tenDangNhap">Mã số sinh viên</label>
                   <input
                     type="text"
@@ -318,30 +440,38 @@ const Login: React.FC = () => {
                 </div>
                 {forgotMessage && (
                   <div
-                    className={`mb-4 text-center ${
+                    className={`message ${
                       forgotMessage.includes("OTP đã được gửi")
-                        ? "text-green-600"
-                        : "text-red-600"
+                        ? "success"
+                        : "error"
                     }`}
                   >
                     {forgotMessage}
                   </div>
                 )}
-                <button
-                  className={`btn btn-primary btn-block ${
-                    isForgotLoading ? "btn-loading" : ""
-                  }`}
-                  onClick={handleForgotPassword}
-                  disabled={isForgotLoading}
-                >
-                  {isForgotLoading ? "Đang xử lý..." : "Gửi OTP"}
-                </button>
+                <div className="modal-actions">
+                  <button
+                    className="btn-cancel"
+                    onClick={closeForgotPasswordModal}
+                  >
+                    Đóng
+                  </button>
+                  <button
+                    className={`btn btn-primary ${
+                      isForgotLoading ? "btn-loading" : ""
+                    }`}
+                    onClick={handleForgotPassword}
+                    disabled={isForgotLoading}
+                  >
+                    {isForgotLoading ? "Đang xử lý..." : "Gửi OTP"}
+                  </button>
+                </div>
               </div>
             )}
 
             {forgotStep === 2 && (
               <div>
-                <div className="form-group mb-4">
+                <div className="form-group">
                   <label htmlFor="otp">OTP</label>
                   <input
                     type="text"
@@ -355,30 +485,38 @@ const Login: React.FC = () => {
                 </div>
                 {forgotMessage && (
                   <div
-                    className={`mb-4 text-center ${
+                    className={`message ${
                       forgotMessage.includes("OTP đã được gửi")
-                        ? "text-green-600"
-                        : "text-red-600"
+                        ? "success"
+                        : "error"
                     }`}
                   >
                     {forgotMessage}
                   </div>
                 )}
-                <button
-                  className={`btn btn-primary btn-block ${
-                    isForgotLoading ? "btn-loading" : ""
-                  }`}
-                  onClick={handleNextToReset}
-                  disabled={isForgotLoading}
-                >
-                  Tiếp tục
-                </button>
+                <div className="modal-actions">
+                  <button
+                    className="btn-cancel"
+                    onClick={closeForgotPasswordModal}
+                  >
+                    Đóng
+                  </button>
+                  <button
+                    className={`btn btn-primary ${
+                      isForgotLoading ? "btn-loading" : ""
+                    }`}
+                    onClick={handleNextToReset}
+                    disabled={isForgotLoading}
+                  >
+                    Tiếp tục
+                  </button>
+                </div>
               </div>
             )}
 
             {forgotStep === 3 && (
               <div>
-                <div className="form-group mb-4">
+                <div className="form-group">
                   <label htmlFor="newPassword">Mật khẩu mới</label>
                   <input
                     type="password"
@@ -390,7 +528,7 @@ const Login: React.FC = () => {
                     disabled={isForgotLoading}
                   />
                 </div>
-                <div className="form-group mb-4">
+                <div className="form-group">
                   <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
                   <input
                     type="password"
@@ -404,24 +542,30 @@ const Login: React.FC = () => {
                 </div>
                 {forgotMessage && (
                   <div
-                    className={`mb-4 text-center ${
-                      forgotMessage.includes("thành công")
-                        ? "text-green-600"
-                        : "text-red-600"
+                    className={`message ${
+                      forgotMessage.includes("thành công") ? "success" : "error"
                     }`}
                   >
                     {forgotMessage}
                   </div>
                 )}
-                <button
-                  className={`btn btn-primary btn-block ${
-                    isForgotLoading ? "btn-loading" : ""
-                  }`}
-                  onClick={handleResetPassword}
-                  disabled={isForgotLoading}
-                >
-                  {isForgotLoading ? "Đang xử lý..." : "Đặt lại mật khẩu"}
-                </button>
+                <div className="modal-actions">
+                  <button
+                    className="btn-cancel"
+                    onClick={closeForgotPasswordModal}
+                  >
+                    Đóng
+                  </button>
+                  <button
+                    className={`btn btn-primary ${
+                      isForgotLoading ? "btn-loading" : ""
+                    }`}
+                    onClick={handleResetPassword}
+                    disabled={isForgotLoading}
+                  >
+                    {isForgotLoading ? "Đang xử lý..." : "Đặt lại mật khẩu"}
+                  </button>
+                </div>
               </div>
             )}
           </div>

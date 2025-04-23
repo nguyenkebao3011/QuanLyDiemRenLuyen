@@ -1323,6 +1323,397 @@
           }
         }
       }
+    },
+    "/api/ThongBao/lay_thong_bao": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_thong_bao_phan_trang": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "trang",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "soLuong",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoDTOPaginatedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoDTOPaginatedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoDTOPaginatedResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_thong_bao_theo_loai/{loaiThongBao}": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "loaiThongBao",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_chi_tiet_thong_bao/{maThongBao}": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "maThongBao",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoChiTietDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoChiTietDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongBaoChiTietDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_thong_bao_sinh_vien/{maSv}": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "maSv",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_thong_bao_chua_doc/{maSv}": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "maSv",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/danh_dau_da_doc": {
+      "post": {
+        "tags": [
+          "ThongBao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhDauDaDocRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhDauDaDocRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhDauDaDocRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ThongBao/tim_kiem_thong_bao": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "tuKhoa",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/dem_thong_bao_chua_doc/{maSv}": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "maSv",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1428,6 +1819,20 @@
           "MaHoatDong": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DanhDauDaDocRequest": {
+        "type": "object",
+        "properties": {
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSV": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2058,6 +2463,29 @@
         },
         "additionalProperties": false
       },
+      "SinhVienDocThongBaoDTO": {
+        "type": "object",
+        "properties": {
+          "MaSV": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayDoc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TaiKhoan": {
         "type": "object",
         "properties": {
@@ -2159,6 +2587,149 @@
           },
           "MaQlNavigation": {
             "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongBaoChiTietDTO": {
+        "type": "object",
+        "properties": {
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TieuDe": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "LoaiThongBao": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenNguoiTao": {
+            "type": "string",
+            "nullable": true
+          },
+          "Khoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoLuotXem": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "DanhSachSinhVienDaDoc": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SinhVienDocThongBaoDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongBaoDTO": {
+        "required": [
+          "Khoa",
+          "LoaiThongBao",
+          "MaQl",
+          "NoiDung",
+          "SoLuotXem",
+          "TenNguoiTao",
+          "TieuDe",
+          "TrangThai"
+        ],
+        "type": "object",
+        "properties": {
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TieuDe": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "LoaiThongBao": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenNguoiTao": {
+            "type": "string",
+            "nullable": true
+          },
+          "Khoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoLuotXem": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "DaDoc": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongBaoDTOPaginatedResult": {
+        "type": "object",
+        "properties": {
+          "TongSoTrang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TrangHienTai": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "SoLuongMoiTrang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TongSoMuc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "DanhSach": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThongBaoDTO"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

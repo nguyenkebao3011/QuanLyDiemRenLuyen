@@ -49,7 +49,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
             {
                 return NotFound($"Không tìm thấy hoạt động với ID {id}.");
             }
-
             return Ok(hoatDong);
         }
     }
