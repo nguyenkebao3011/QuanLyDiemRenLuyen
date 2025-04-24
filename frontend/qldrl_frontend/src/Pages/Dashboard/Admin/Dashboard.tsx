@@ -107,7 +107,7 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-header">
-          <h2>QLĐRL Sinh Viên</h2>
+          <h2>Quản lý điểm rèn luyện khoa CNTT</h2>
           <button
             className="toggle-btn"
             onClick={() => setSidebarOpen(!sidebarOpen)}

@@ -40,6 +40,26 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 return StatusCode(500, $"Lỗi khi thêm hoạt động: {ex.Message}");
             }
         }
+        //GET : api/lay_hoat_dong_all
+        [HttpGet("lay_hoat_dong_all")]
+        public async Task<ActionResult<IEnumerable<HoatDong>>> GetHoatDongs()
+        {
+            return await _context.HoatDongs.ToListAsync();
+        }
+
+        // GET: api/HoatDongs/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HoatDong>> GetHoatDong(int id)
+        {
+            var hoatDong = await _context.HoatDongs.FindAsync(id);
+
+            if (hoatDong == null)
+            {
+                return NotFound();
+            }
+
+            return hoatDong;
+        }
         // GET: api/HoatDong/{id}
         [HttpGet("lay_thong_tin_hd/{id}")]
         public async Task<IActionResult> GetHoatDongById(int id)

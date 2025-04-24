@@ -1,5 +1,5 @@
-"use client";
 import type React from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   Calendar,
@@ -7,10 +7,14 @@ import {
   BarChart2,
   Bell,
   Award,
+  FileText,
 } from "lucide-react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const TongQuanHeThong: React.FC = () => {
+  const [recentActivities, setRecentActivities] = useState<any[]>([]);
+  const [loadingActivities, setLoadingActivities] = useState<boolean>(true);
   const navigate = useNavigate();
 
   // Sửa lại hàm handleCreateActivity để sử dụng window.history.pushState thay vì navigate
@@ -24,6 +28,98 @@ const TongQuanHeThong: React.FC = () => {
 
     // Kích hoạt sự kiện popstate để Dashboard component biết URL đã thay đổi
     window.dispatchEvent(new Event("popstate"));
+  };
+
+  // Thêm useEffect để lấy dữ liệu hoạt động gần đây
+  useEffect(() => {
+    fetchRecentActivities();
+  }, []);
+
+  // Hàm lấy dữ liệu hoạt động gần đây từ API
+  const fetchRecentActivities = async () => {
+    setLoadingActivities(true);
+    try {
+      const response = await axios.get(
+        "http://localhost:5163/api/HoatDong/lay_hoat_dong_all"
+      );
+      if (response.status === 200) {
+        // Lấy 4 hoạt động gần đây nhất
+        const recentData = response.data.slice(0, 4);
+        setRecentActivities(recentData);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách hoạt động gần đây:", error);
+    } finally {
+      setLoadingActivities(false);
+    }
+  };
+
+  // Hàm xác định icon dựa trên trạng thái hoạt động
+  const getActivityIcon = (trangThai: string) => {
+    switch (trangThai) {
+      case "Đang mở đăng ký":
+        return <Calendar size={16} />;
+      case "Đã đóng đăng ký":
+        return <Bell size={16} />;
+      case "Đang diễn ra":
+        return <Award size={16} />;
+      case "Đã kết thúc":
+        return <FileText size={16} />;
+      default:
+        return <Calendar size={16} />;
+    }
+  };
+
+  // Hàm xác định trạng thái hiển thị
+  const getActivityStatus = (trangThai: string) => {
+    switch (trangThai) {
+      case "Đang mở đăng ký":
+        return { class: "new", text: "Mới" };
+      case "Đã đóng đăng ký":
+        return { class: "in-progress", text: "Đang xử lý" };
+      case "Đang diễn ra":
+        return { class: "in-progress", text: "Đang diễn ra" };
+      case "Đã kết thúc":
+        return { class: "completed", text: "Đã kết thúc" };
+      default:
+        return { class: "new", text: "Mới" };
+    }
+  };
+
+  // Hàm định dạng ngày giờ
+  const formatDateTime = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      // Kiểm tra nếu là hôm nay
+      if (date.toDateString() === today.toDateString()) {
+        return `Hôm nay, ${date.getHours()}:${date
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      // Kiểm tra nếu là hôm qua
+      if (date.toDateString() === yesterday.toDateString()) {
+        return `Hôm qua, ${date.getHours()}:${date
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      // Ngày khác
+      return `${date.getDate()}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()}, ${date.getHours()}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
+    } catch (error) {
+      return "Không xác định";
+    }
   };
 
   return (
@@ -78,53 +174,63 @@ const TongQuanHeThong: React.FC = () => {
         <div className="widget recent-activities">
           <div className="widget-header">
             <h3>Hoạt động gần đây</h3>
-            <button className="view-all">Xem tất cả</button>
+            <button
+              className="view-all"
+              onClick={() => {
+                window.history.pushState(
+                  {},
+                  "",
+                  "/admin/dashboard?menu=activities"
+                );
+                window.dispatchEvent(new Event("popstate"));
+              }}
+            >
+              Xem tất cả
+            </button>
           </div>
           <div className="widget-content">
-            <ul className="activity-list">
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Calendar size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Hoạt động tình nguyện mùa hè</p>
-                  <p className="activity-time">Hôm nay, 10:30</p>
-                </div>
-                <span className="activity-status new">Mới</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Award size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Chấm điểm rèn luyện học kỳ 1</p>
-                  <p className="activity-time">Hôm qua, 15:45</p>
-                </div>
-                <span className="activity-status in-progress">Đang xử lý</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <MessageSquare size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">
-                    Phản hồi điểm rèn luyện từ Nguyễn Văn A
-                  </p>
-                  <p className="activity-time">24/07/2023, 09:15</p>
-                </div>
-                <span className="activity-status completed">Đã xử lý</span>
-              </li>
-              <li className="activity-item">
-                <div className="activity-icon">
-                  <Bell size={16} />
-                </div>
-                <div className="activity-details">
-                  <p className="activity-title">Thông báo hết hạn điểm danh</p>
-                  <p className="activity-time">22/07/2023, 18:00</p>
-                </div>
-                <span className="activity-status completed">Đã xử lý</span>
-              </li>
-            </ul>
+            {loadingActivities ? (
+              <div className="loading-activities">Đang tải dữ liệu...</div>
+            ) : (
+              <ul className="activity-list">
+                {recentActivities.length > 0 ? (
+                  recentActivities.map((activity) => {
+                    const status = getActivityStatus(
+                      activity.TrangThai || activity.trangThai
+                    );
+                    return (
+                      <li
+                        key={activity.MaHoatDong || activity.maHoatDong}
+                        className="activity-item"
+                      >
+                        <div className="activity-icon">
+                          {getActivityIcon(
+                            activity.TrangThai || activity.trangThai
+                          )}
+                        </div>
+                        <div className="activity-details">
+                          <p className="activity-title">
+                            {activity.TenHoatDong || activity.tenHoatDong}
+                          </p>
+                          <p className="activity-time">
+                            {formatDateTime(
+                              activity.NgayBatDau || activity.ngayBatDau
+                            )}
+                          </p>
+                        </div>
+                        <span className={`activity-status ${status.class}`}>
+                          {status.text}
+                        </span>
+                      </li>
+                    );
+                  })
+                ) : (
+                  <li className="no-activities">
+                    Không có hoạt động nào gần đây
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
         </div>
 

@@ -448,6 +448,21 @@ body {
   color: var(--success);
 }
 
+.loading-activities {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.no-activities {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
 .quick-action-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

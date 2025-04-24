@@ -502,6 +502,84 @@
         }
       }
     },
+    "/api/HoatDong/lay_hoat_dong_all": {
+      "get": {
+        "tags": [
+          "HoatDong"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HoatDong"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/HoatDong/{id}": {
+      "get": {
+        "tags": [
+          "HoatDong"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoatDong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/HoatDong/lay_thong_tin_hd/{id}": {
       "get": {
         "tags": [

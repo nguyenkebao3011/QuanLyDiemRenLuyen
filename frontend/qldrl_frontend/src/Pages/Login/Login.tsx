@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect } from "react";
 import axios, { type AxiosError } from "axios";
@@ -24,7 +22,7 @@ interface ThongBao {
   MaThongBao: number;
   TieuDe: string;
   NoiDung: string;
-  NgayDang: string;
+  NgayTao: string;
   TrangThai: string;
 }
 
@@ -74,6 +72,7 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         setThongBaos(response.data);
       }
+      console.log("Danh sách thông báo:", response.data);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách thông báo:", error);
     } finally {
@@ -260,14 +259,14 @@ const Login: React.FC = () => {
       <div className="login-header">
         <img
           className="logo"
-          src="./hinhanh/logo-huit-web-chinh-moi-mau-xanh-02.svg"
+          src="https://sinhvien.huit.edu.vn/Content/AConfig/images/sv_header_login.png"
           alt="Logo trường"
         />
-        <h1>TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HỒ CHÍ MINH</h1>
+        <h1>QUẢN LÝ ĐIỂM RÈN LUYỆN KHOA CÔNG NGHỆ THÔNG TIN</h1>
       </div>
 
       <div className="login-content">
-        <div className="activities-section">
+        <div className="thong-bao-container">
           <div className="activities-tabs">
             <button
               className={`tab-button ${
@@ -309,10 +308,10 @@ const Login: React.FC = () => {
                 <div key={thongBao.MaThongBao} className="thong-bao-item">
                   <div className="thong-bao-date">
                     <div className="thong-bao-month">
-                      Tháng {getMonth(thongBao.NgayDang)}
+                      Tháng {getMonth(thongBao.NgayTao)}
                     </div>
                     <div className="thong-bao-day">
-                      {getDay(thongBao.NgayDang)}
+                      {getDay(thongBao.NgayTao)}
                     </div>
                   </div>
                   <div className="thong-bao-content">
@@ -330,73 +329,65 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        <div className="login-section">
-          <div className="login-box">
-            <div className="login-header">
-              <h2>CỔNG THÔNG TIN SINH VIÊN</h2>
-              <h3>ĐĂNG NHẬP HỆ THỐNG</h3>
-            </div>
+        <div className="login-box">
+          <div className="login-box-header">
+            <h2>CỔNG THÔNG TIN SINH VIÊN</h2>
+            <h3>ĐĂNG NHẬP HỆ THỐNG</h3>
+          </div>
 
-            <div className="login-form">
-              <div className="school-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 15.99L12 18.72L7 15.99V12.27L12 15L17 12.27V15.99Z" />
-                </svg>
+          <div className="login-form">
+            {errorMessage && (
+              <div className="alert alert-danger">{errorMessage}</div>
+            )}
+
+            <form onSubmit={handleLogin}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="username"
+                  className="form-control"
+                  placeholder="Nhập mã đăng nhập"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
               </div>
 
-              {errorMessage && (
-                <div className="alert alert-danger">{errorMessage}</div>
-              )}
-
-              <form onSubmit={handleLogin}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="username"
-                    className="form-control"
-                    placeholder="Nhập mã sinh viên"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-control"
-                    placeholder="Nhập mật khẩu"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <button
-                    type="submit"
-                    className={`btn btn-primary btn-block ${
-                      isLoading ? "btn-loading" : ""
-                    }`}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Đang xử lý..." : "ĐĂNG NHẬP"}
-                  </button>
-                </div>
-              </form>
-
-              <div className="login-links">
-                <a
-                  className="lost-password"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsForgotPasswordOpen(true);
-                  }}
+              <div className="form-group">
+                <input
+                  type="password"
+                  id="password"
+                  className="form-control"
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <button
+                  type="submit"
+                  className={`btn btn-primary btn-block ${
+                    isLoading ? "btn-loading" : ""
+                  }`}
+                  disabled={isLoading}
                 >
-                  Quên mật khẩu?
-                </a>
+                  {isLoading ? "Đang xử lý..." : "ĐĂNG NHẬP"}
+                </button>
               </div>
+            </form>
+
+            <div className="login-links">
+              <a
+                className="lost-password"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsForgotPasswordOpen(true);
+                }}
+              >
+                Quên mật khẩu?
+              </a>
             </div>
           </div>
         </div>

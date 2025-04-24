@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./css/ThongBao.css"; // Import CSS file for styling
+import "./css/ThongBao.css";
 
 interface ThongBao {
   maThongBao: number;
@@ -32,49 +32,6 @@ const ThongBaoComponent: React.FC = () => {
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách thông báo:", error);
-      // Tạo dữ liệu mẫu nếu không lấy được từ API
-      setThongBaos([
-        {
-          maThongBao: 1,
-          tieuDe:
-            "Thông báo về việc tăng cường phòng, chống ma túy trong nhà trường",
-          noiDung:
-            "Thông báo về việc tăng cường phòng, chống ma túy trong nhà trường",
-          ngayDang: "2024-04-22T10:00:00",
-          trangThai: "Đã đăng",
-          loaiThongBao: "Thông báo chung",
-        },
-        {
-          maThongBao: 2,
-          tieuDe:
-            "Thông báo về việc tổ chức thi cuối kỳ hệ Đại học chính quy học kỳ 2 năm học 2024-2025 (đợt 1)",
-          noiDung:
-            "Thông báo về việc tổ chức thi cuối kỳ hệ Đại học chính quy học kỳ 2 năm học 2024-2025 (đợt 1)",
-          ngayDang: "2024-04-21T14:30:00",
-          trangThai: "Đã đăng",
-          loaiThongBao: "Đại học - Cao đẳng",
-        },
-        {
-          maThongBao: 3,
-          tieuDe:
-            "Nhận tiền khen thưởng sinh viên tốt nghiệp kỹ sư loại giỏi hệ Đại học chính quy khóa 11 trong lễ tốt nghiệp và trao bằng tốt nghiệp đợt 1 năm 2025",
-          noiDung:
-            "Nhận tiền khen thưởng sinh viên tốt nghiệp kỹ sư loại giỏi hệ Đại học chính quy khóa 11 trong lễ tốt nghiệp và trao bằng tốt nghiệp đợt 1 năm 2025",
-          ngayDang: "2024-04-18T09:15:00",
-          trangThai: "Đã đăng",
-          loaiThongBao: "Thông báo chung",
-        },
-        {
-          maThongBao: 4,
-          tieuDe:
-            "Thông báo về việc nộp giấy KSK và tổ chức KSK ban đầu đối với sinh viên khóa 15ĐH, năm học 2024-2025",
-          noiDung:
-            "Thông báo về việc nộp giấy KSK và tổ chức KSK ban đầu đối với sinh viên khóa 15ĐH, năm học 2024-2025",
-          ngayDang: "2024-04-17T11:00:00",
-          trangThai: "Đã đăng",
-          loaiThongBao: "Đại học - Cao đẳng",
-        },
-      ]);
     } finally {
       setLoadingThongBao(false);
     }

@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -31,7 +29,7 @@ const ChiTietThongBao: React.FC = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:5163/api/ThongBao/lay-chi-tiet-thong-bao/${id}`
+          `http://localhost:5163/api/ThongBao/lay_chi_tiet_thong_bao/${id}`
         );
         if (response.status === 200) {
           setThongBao(response.data);
@@ -41,7 +39,7 @@ const ChiTietThongBao: React.FC = () => {
           if (maSv) {
             try {
               await axios.post(
-                "http://localhost:5163/api/ThongBao/danh-dau-da-doc",
+                "http://localhost:5163/api/ThongBao/danh_dau_da_doc",
                 {
                   MaThongBao: Number(id),
                   MaSV: maSv,
@@ -54,33 +52,6 @@ const ChiTietThongBao: React.FC = () => {
         }
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết thông báo:", error);
-        setError("Không thể tải thông tin thông báo. Vui lòng thử lại sau.");
-
-        // Tạo dữ liệu mẫu nếu không lấy được từ API
-        setThongBao({
-          maThongBao: Number(id),
-          tieuDe:
-            "Thông báo về việc tăng cường phòng, chống ma túy trong nhà trường",
-          noiDung: `<p>Kính gửi các bạn sinh viên,</p>
-          <p>Thư viện Trường Đại học Công Thương đang tổ chức hoạt động hỗ trợ nhập liệu tài liệu mới về kho. Đây là cơ hội tốt để các bạn sinh viên tích lũy điểm rèn luyện và có thêm kinh nghiệm làm việc.</p>
-          <p><strong>Thông tin chi tiết:</strong></p>
-          <ul>
-              <li>Thời gian: Từ ngày 23/04/2025 đến ngày 23/04/2025</li>
-              <li>Địa điểm: Thư viện Trường Đại học Công Thương</li>
-              <li>Điểm cộng: 2 điểm rèn luyện</li>
-              <li>Số lượng: 8 sinh viên</li>
-          </ul>
-          <p>Các bạn sinh viên quan tâm vui lòng đăng ký tham gia qua hệ thống đăng ký hoạt động trước ngày 22/04/2025.</p>
-          <p>Trân trọng,</p>
-          <p>Phòng Công tác Sinh viên</p>`,
-          ngayTao: "2024-04-22T10:00:00",
-          maQl: "QL001",
-          loaiThongBao: "Thông báo chung",
-          trangThai: "Đã đăng",
-          tenNguoiTao: "Nguyễn Văn A",
-          khoa: "Phòng Công tác Sinh viên",
-          soLuotXem: 120,
-        });
       } finally {
         setLoading(false);
       }
