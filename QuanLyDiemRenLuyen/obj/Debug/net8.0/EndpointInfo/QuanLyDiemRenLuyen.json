@@ -471,7 +471,28 @@
         }
       }
     },
-<<<<<<< Updated upstream
+    "/api/giangvien/DiemRenLuyens/{maSinhVien}giang-vien/xem-diem-ren-luyen": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "maSinhVien",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HoatDong/tao_hoat_dong": {
       "post": {
         "tags": [
@@ -594,20 +615,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-=======
-    "/api/giangvien/DiemRenLuyens/{maSinhVien}giang-vien/xem-diem-ren-luyen": {
-      "get": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "parameters": [
-          {
-            "name": "maSinhVien",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
->>>>>>> Stashed changes
             }
           }
         ],
@@ -618,11 +625,7 @@
         }
       }
     },
-<<<<<<< Updated upstream
-    "/api/HoatDongs/loc_hoat_dong": {
-=======
     "/api/HoatDongs/loc-hoat-dong": {
->>>>>>> Stashed changes
       "get": {
         "tags": [
           "HoatDongs"
@@ -968,7 +971,6 @@
         }
       }
     },
-<<<<<<< Updated upstream
     "/api/QuanLyKhoa/lay_ql_khoa": {
       "get": {
         "tags": [
@@ -993,10 +995,7 @@
         }
       }
     },
-    "/api/SinhVien/Lay_sinhvien_theo_vaitro": {
-=======
     "/api/SinhVien/lay-sinhvien-theo-vai-tro": {
->>>>>>> Stashed changes
       "get": {
         "tags": [
           "SinhVien"
@@ -1320,7 +1319,7 @@
         }
       }
     },
-    "/api/TaiKhoans/dang-nhap": {
+    "/api/TaiKhoans/login": {
       "post": {
         "tags": [
           "TaiKhoans"

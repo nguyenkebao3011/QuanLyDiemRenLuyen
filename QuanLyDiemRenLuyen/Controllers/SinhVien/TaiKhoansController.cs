@@ -153,7 +153,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
         //    return Ok("Đã hash xong toàn bộ mật khẩu.");
         //}
-        [HttpPost("dang-nhap")]
+        [HttpPost("login")]
         public IActionResult Login(LoginDto request)
         {
             var user = _context.TaiKhoans

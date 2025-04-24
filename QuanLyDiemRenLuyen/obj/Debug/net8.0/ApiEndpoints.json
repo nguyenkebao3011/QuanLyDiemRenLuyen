@@ -276,7 +276,22 @@
     "ReturnTypes": []
   },
   {
-<<<<<<< Updated upstream
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.DiemRenLuyensController",
+    "Method": "GetDiemRenLuyenTheoHocKy",
+    "RelativePath": "api/giangvien/DiemRenLuyens/{maSinhVien}giang-vien/xem-diem-ren-luyen",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maSinhVien",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
     "Method": "GetHoatDong",
     "RelativePath": "api/HoatDong/{id}",
@@ -326,17 +341,11 @@
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
     "Method": "GetHoatDongById",
     "RelativePath": "api/HoatDong/lay_thong_tin_hd/{id}",
-=======
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.DiemRenLuyensController",
-    "Method": "GetDiemRenLuyenTheoHocKy",
-    "RelativePath": "api/giangvien/DiemRenLuyens/{maSinhVien}giang-vien/xem-diem-ren-luyen",
->>>>>>> Stashed changes
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-<<<<<<< Updated upstream
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
@@ -355,10 +364,6 @@
       {
         "Name": "hoatDong",
         "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
-=======
-        "Name": "maSinhVien",
-        "Type": "System.String",
->>>>>>> Stashed changes
         "IsRequired": true
       }
     ],
@@ -810,22 +815,6 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
-    "Method": "Login",
-    "RelativePath": "api/TaiKhoans/dang-nhap",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "QuanLyDiemRenLuyen.DTO.LoginDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
     "Method": "ResetPassword",
     "RelativePath": "api/TaiKhoans/doi-mat-khau",
     "HttpMethod": "POST",
@@ -841,33 +830,64 @@
     "ReturnTypes": []
   },
   {
-<<<<<<< Updated upstream
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
-    "Method": "DanhDauDaDoc",
-    "RelativePath": "api/ThongBao/danh_dau_da_doc",
-=======
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
-    "Method": "ForgotPassword",
-    "RelativePath": "api/TaiKhoans/quen-mat-khau",
->>>>>>> Stashed changes
+    "Method": "Login",
+    "RelativePath": "api/TaiKhoans/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-<<<<<<< Updated upstream
-        "Type": "QuanLyDiemRenLuyen.Controllers.DanhDauDaDocRequest",
-=======
-        "Type": "QuanLyDiemRenLuyen.DTO.EmailServicesDTO",
->>>>>>> Stashed changes
+        "Type": "QuanLyDiemRenLuyen.DTO.LoginDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-<<<<<<< Updated upstream
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/TaiKhoans/quen-mat-khau",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.DTO.EmailServicesDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
+    "Method": "ResetAllPasswords",
+    "RelativePath": "api/TaiKhoans/reset-tat-ca-mat-khau",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
+    "Method": "DanhDauDaDoc",
+    "RelativePath": "api/ThongBao/danh_dau_da_doc",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.DanhDauDaDocRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
     "Method": "DemThongBaoChuaDoc",
     "RelativePath": "api/ThongBao/dem_thong_bao_chua_doc/{maSv}",
@@ -1073,15 +1093,5 @@
         "StatusCode": 200
       }
     ]
-=======
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.TaiKhoansController",
-    "Method": "ResetAllPasswords",
-    "RelativePath": "api/TaiKhoans/reset-tat-ca-mat-khau",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
->>>>>>> Stashed changes
   }
 ]
