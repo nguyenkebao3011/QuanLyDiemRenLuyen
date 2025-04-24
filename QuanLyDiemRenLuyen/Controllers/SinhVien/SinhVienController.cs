@@ -29,7 +29,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
 
         // GET: api/SinhViens
-        [HttpGet("Lay_sinhvien_theo_vaitro")]
+        [HttpGet("lay-sinhvien-theo-vai-tro")]
         public async Task<IActionResult> GetSinhViens()
         {
             var username = User.Identity.Name;
@@ -134,7 +134,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
 
         // Phương thức chỉnh sửa thông tin sinh viên
-        [HttpPut("Doi_Mat_Khau")]
+        [HttpPut("doi-mat-khau")]
 
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
@@ -170,7 +170,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok(new { message = "Mật khẩu đã được thay đổi thành công." });
         }
-        [HttpPut("cap_nhat_thong_tin")]
+        [HttpPut("cap-nhat-thong-tin")]
 
 
         public async Task<IActionResult> UpdateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile? avatar)

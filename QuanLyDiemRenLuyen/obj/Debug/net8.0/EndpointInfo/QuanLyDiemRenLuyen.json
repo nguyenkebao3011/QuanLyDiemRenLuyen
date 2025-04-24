@@ -5,7 +5,7 @@
     "version": "v1"
   },
   "paths": {
-    "/api/DangKyHoatDongs/dangky": {
+    "/api/DangKyHoatDongs/dang-ky": {
       "post": {
         "tags": [
           "DangKyHoatDongs"
@@ -471,6 +471,7 @@
         }
       }
     },
+<<<<<<< Updated upstream
     "/api/HoatDong/tao_hoat_dong": {
       "post": {
         "tags": [
@@ -593,6 +594,20 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+=======
+    "/api/giangvien/DiemRenLuyens/{maSinhVien}giang-vien/xem-diem-ren-luyen": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "parameters": [
+          {
+            "name": "maSinhVien",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+>>>>>>> Stashed changes
             }
           }
         ],
@@ -603,7 +618,11 @@
         }
       }
     },
+<<<<<<< Updated upstream
     "/api/HoatDongs/loc_hoat_dong": {
+=======
+    "/api/HoatDongs/loc-hoat-dong": {
+>>>>>>> Stashed changes
       "get": {
         "tags": [
           "HoatDongs"
@@ -663,7 +682,7 @@
         }
       }
     },
-    "/api/HoatDongs/lay_danh_sach_hoatdong": {
+    "/api/HoatDongs/lay-danh-sach-hoat-dong": {
       "get": {
         "tags": [
           "HoatDongs"
@@ -949,6 +968,7 @@
         }
       }
     },
+<<<<<<< Updated upstream
     "/api/QuanLyKhoa/lay_ql_khoa": {
       "get": {
         "tags": [
@@ -974,6 +994,9 @@
       }
     },
     "/api/SinhVien/Lay_sinhvien_theo_vaitro": {
+=======
+    "/api/SinhVien/lay-sinhvien-theo-vai-tro": {
+>>>>>>> Stashed changes
       "get": {
         "tags": [
           "SinhVien"
@@ -985,7 +1008,7 @@
         }
       }
     },
-    "/api/SinhVien/Doi_Mat_Khau": {
+    "/api/SinhVien/doi-mat-khau": {
       "put": {
         "tags": [
           "SinhVien"
@@ -1016,7 +1039,7 @@
         }
       }
     },
-    "/api/SinhVien/cap_nhat_thong_tin": {
+    "/api/SinhVien/cap-nhat-thong-tin": {
       "put": {
         "tags": [
           "SinhVien"
@@ -1297,7 +1320,7 @@
         }
       }
     },
-    "/api/TaiKhoans/login": {
+    "/api/TaiKhoans/dang-nhap": {
       "post": {
         "tags": [
           "TaiKhoans"
@@ -1328,7 +1351,7 @@
         }
       }
     },
-    "/api/TaiKhoans/reset-all-passwords": {
+    "/api/TaiKhoans/reset-tat-ca-mat-khau": {
       "post": {
         "tags": [
           "TaiKhoans"
@@ -1340,7 +1363,7 @@
         }
       }
     },
-    "/api/TaiKhoans/forgot-password": {
+    "/api/TaiKhoans/quen-mat-khau": {
       "post": {
         "tags": [
           "TaiKhoans"
@@ -1371,7 +1394,7 @@
         }
       }
     },
-    "/api/TaiKhoans/reset-password": {
+    "/api/TaiKhoans/doi-mat-khau": {
       "post": {
         "tags": [
           "TaiKhoans"

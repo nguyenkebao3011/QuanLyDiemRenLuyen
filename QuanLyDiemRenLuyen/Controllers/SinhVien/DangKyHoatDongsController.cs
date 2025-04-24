@@ -25,7 +25,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
 
 
-        [HttpPost("dangky")]
+        [HttpPost("dang-ky")]
         public async Task<IActionResult> DangKyHoatDong([FromBody] DangKyHoatDongDTO request)
         {
             try

@@ -153,7 +153,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
         //    return Ok("Đã hash xong toàn bộ mật khẩu.");
         //}
-        [HttpPost("login")]
+        [HttpPost("dang-nhap")]
         public IActionResult Login(LoginDto request)
         {
             var user = _context.TaiKhoans
@@ -199,7 +199,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 maTaiKhoan = user.MaTaiKhoan,
             });
         }
-        [HttpPost("reset-all-passwords")]
+        [HttpPost("reset-tat-ca-mat-khau")]
         public IActionResult ResetAllPasswords()
         {
             var passwordHasher = new PasswordHasher<string>();
@@ -218,9 +218,20 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             return Ok("Đã reset tất cả mật khẩu thành '123456'.");
         }
 
-        [HttpPost("forgot-password")]
+        [HttpPost("quen-mat-khau")]
         public async Task<IActionResult> ForgotPassword([FromBody] EmailServicesDTO request)
         {
+            // Xóa các OTP đã hết hạn
+            var now = DateTime.UtcNow.AddMinutes(10);
+            var expiredOtps = await _context.OTPRecords
+             .Where(o => o.Expiry <= now)
+             .ToListAsync();
+
+            if (expiredOtps.Any())
+            {
+                _context.OTPRecords.RemoveRange(expiredOtps);
+                await _context.SaveChangesAsync();
+            }
             // Tìm tài khoản dựa trên TenDangNhap (MaSoSinhVien)
             var taiKhoan = await _context.TaiKhoans
                 .Include(tk => tk.SinhVien)
@@ -265,11 +276,11 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok(new { message = "OTP đã được gửi đến email của bạn." });
         }
-        [HttpPost("reset-password")]
+        [HttpPost("doi-mat-khau")]
         public async Task<IActionResult> ResetPassword([FromBody] DTO.ResetPasswordRequest request)
         {
             var vietnamTime = DateTime.UtcNow.AddHours(7);
-            var expiryTime = vietnamTime.AddMinutes(1);
+            var expiryTime = vietnamTime.AddMinutes(5);
             // Tìm OTP trong bảng OTPRecords
             var otpRecord = await _context.OTPRecords
                 .FirstOrDefaultAsync(o => o.Otp == request.Otp && o.Expiry > expiryTime);

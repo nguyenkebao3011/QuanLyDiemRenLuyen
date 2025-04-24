@@ -20,7 +20,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         {
             _context = context;
         }
-        [HttpGet("loc_hoat_dong")]
+        [HttpGet("loc-hoat-dong")]
         public IActionResult GetHoatDong([FromQuery] HoatDongFilterDTO filter)
         {
             var query = _context.HoatDongs.AsQueryable();
@@ -69,7 +69,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
         }
         // GET: api/HoatDongs
-        [HttpGet("lay_danh_sach_hoatdong")]
+        [HttpGet("lay-danh-sach-hoat-dong")]
         public async Task<ActionResult<IEnumerable<HoatDong>>> GetHoatDongs()
         {
             return await _context.HoatDongs.ToListAsync();

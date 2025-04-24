@@ -23,7 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< Updated upstream
     <Folder Include="Controllers\GiangVien\" />
+=======
+    <Folder Include="Controllers\QuanLyKhoa\" />
+>>>>>>> Stashed changes
     <Folder Include="Data\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
