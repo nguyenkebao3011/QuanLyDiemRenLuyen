@@ -29,7 +29,7 @@ namespace QuanLyDiemRenLuyen.DTO
 
             message.Body = new TextPart("html")
             {
-                Text = $"<h3>Đây là OTP reset mật khẩu.</h3><p>OTP của bạn là: <strong>{otp}</strong></p><p>.OTP này có hiệu lực trong 10 phút.</p>"
+                Text = $"<h3>Chào bạn, đây là OTP reset mật khẩu.</h3><p>OTP của bạn là: <strong>{otp}</strong></p><p>.OTP này có hiệu lực trong 5 phút.</p>"
             };
 
             using (var client = new SmtpClient())

@@ -1,5 +1,79 @@
+<<<<<<< Updated upstream
 /* Reset CSS */
 * {
+=======
+:root {
+  --primary: #04549f;
+  --primary-dark: #04549f;
+  --secondary: #f0f4ff;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --danger: #ef4444;
+  --success: #10b981;
+  --white: #ffffff;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+}
+
+.login-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  /* align-items: center;
+  justify-content: center; */
+  padding: 0px;
+  flex-direction: row-reverse;
+  margin-top: -119px;
+}
+
+.logo{
+  width: 456px;
+  padding: 10px;
+  
+
+}
+.login-box {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+
+.login-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.login-header {
+  background: #04549f;
+  color: var(--white);
+  padding: 30px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(30deg);
+}
+
+.login-header h2 {
+>>>>>>> Stashed changes
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -277,10 +351,15 @@ body {
 }
 
 .btn-primary {
+<<<<<<< Updated upstream
   background-color: #ff5722;
   color: white;
   font-weight: bold;
   text-transform: uppercase;
+=======
+  background-color: #04549f;
+  color: var(--white);
+>>>>>>> Stashed changes
 }
 
 .btn-primary:hover {
@@ -296,6 +375,7 @@ body {
   opacity: 0.7;
   cursor: not-allowed;
 }
+<<<<<<< Updated upstream
 
 .login-links {
   margin-top: 15px;
@@ -465,3 +545,175 @@ body {
     flex-direction: column;
   }
 }
+=======
+/* CSS cho trang đặt lại mật khẩu */
+.reset-password-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.reset-password-box {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.reset-password-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+}
+
+.reset-password-box h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #8E54E9;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(142, 84, 233, 0.2);
+}
+
+.btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-weight: 500;
+  width: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #3a65d8 0%, #7b46d7 100%);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.text-red-600 {
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.text-green-600 {
+  color: #16a34a;
+  font-size: 14px;
+}
+
+.block {
+  display: block;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-size: 14px;
+}
+
+.text-blue-600:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Animation cho chuyển đổi giữa các bước */
+form {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hiệu ứng khi tải */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.btn-loading:before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 10px;
+  vertical-align: text-bottom;
+}
+/* nofication */
+
+}
+>>>>>>> Stashed changes

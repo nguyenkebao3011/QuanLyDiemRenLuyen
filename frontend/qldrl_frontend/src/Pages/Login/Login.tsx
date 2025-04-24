@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios, { type AxiosError } from "axios";
 import "./Login.css";
 import { saveToken, getRole, isLoggedIn } from "../../untils/auth";
+<<<<<<< Updated upstream
 
 // Định nghĩa các kiểu TypeScript
 interface ApiResponse {
@@ -19,6 +20,9 @@ interface ResetPasswordRequest {
   Otp: string;
   NewPassword: string;
 }
+=======
+import { Link } from "react-router-dom"; // Thêm Link từ react-router-dom
+>>>>>>> Stashed changes
 
 interface ThongBao {
   MaThongBao: number;
@@ -29,12 +33,12 @@ interface ThongBao {
 }
 
 const Login: React.FC = () => {
-  // State cho đăng nhập
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+<<<<<<< Updated upstream
   // State cho quên mật khẩu
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotStep, setForgotStep] = useState<number>(1); // 1: Nhập mã số sinh viên, 2: Nhập OTP, 3: Đặt lại mật khẩu
@@ -52,8 +56,9 @@ const Login: React.FC = () => {
     "thongbao" | "daihoc" | "saudaihoc" | "nganhan"
   >("thongbao");
 
+=======
+>>>>>>> Stashed changes
   useEffect(() => {
-    // Kiểm tra nếu đã đăng nhập
     if (isLoggedIn()) {
       const role = getRole();
       if (role) {
@@ -111,26 +116,23 @@ const Login: React.FC = () => {
         }
       );
 
-      // Lưu token và thông tin người dùng
       saveToken(response.data.token);
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("maTaiKhoan", response.data.maTaiKhoan);
 
-      // Chuyển hướng dựa trên vai trò
       redirectBasedOnRole(response.data.role);
     } catch (error: any) {
       if (error.response) {
-        console.error("Error response:", error.response.data);
         setErrorMessage(error.response.data);
       } else {
-        console.error("Unknown error:", error);
         setErrorMessage("Đã xảy ra lỗi khi đăng nhập.");
       }
       setIsLoading(false);
     }
   };
 
+<<<<<<< Updated upstream
   // Xử lý quên mật khẩu: Gửi yêu cầu OTP
   const handleForgotPassword = async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -299,6 +301,21 @@ const Login: React.FC = () => {
             >
               NGẮN HẠN
             </button>
+=======
+  return (
+    <div className="logins-container">
+      <img
+        className="logo"
+        src="./hinhanh/logo-huit-web-chinh-moi-mau-xanh-02.svg"
+        alt=""
+      />
+  
+      <div className="login-container">
+        <div className="login-box">
+          <div className="login-header">
+            <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
+            <h3>QUẢN LÝ ĐIỂM RÈN LUYỆN SINH VIÊN</h3>
+>>>>>>> Stashed changes
           </div>
 
           <div className="thong-bao-list">
@@ -397,10 +414,22 @@ const Login: React.FC = () => {
                   Quên mật khẩu?
                 </a>
               </div>
+<<<<<<< Updated upstream
+=======
+            </form>
+
+            <Link to="/reset-password" className="lost_password">
+              Quên mật khẩu
+            </Link>
+
+            <div className="debug-info">
+              Hệ thống Quản lý Điểm Rèn Luyện Sinh Viên
+>>>>>>> Stashed changes
             </div>
           </div>
         </div>
       </div>
+<<<<<<< Updated upstream
 
       {/* Modal Quên Mật Khẩu */}
       {isForgotPasswordOpen && (
@@ -571,6 +600,12 @@ const Login: React.FC = () => {
           </div>
         </div>
       )}
+=======
+      <footer>
+      
+        
+      </footer>
+>>>>>>> Stashed changes
     </div>
   );
 };
