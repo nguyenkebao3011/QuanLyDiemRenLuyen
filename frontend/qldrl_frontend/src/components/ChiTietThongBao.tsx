@@ -6,16 +6,16 @@ import { ArrowLeft, Calendar, User } from "lucide-react";
 import "./css/ChiTietThongBao.css";
 
 interface ThongBaoChiTiet {
-  maThongBao: number;
-  tieuDe: string;
-  noiDung: string;
-  ngayTao: string;
-  maQl: string;
-  loaiThongBao: string;
-  trangThai: string;
-  tenNguoiTao: string;
-  khoa: string;
-  soLuotXem: number;
+  MaThongBao: number;
+  TieuDe: string;
+  NoiDung: string;
+  NgayTao: string;
+  MaQl: string;
+  LoaiThongBao: string;
+  TrangThai: string;
+  TenNguoiTao: string;
+  Khoa: string;
+  SoLuotXem: number;
 }
 
 const ChiTietThongBao: React.FC = () => {
@@ -106,23 +106,23 @@ const ChiTietThongBao: React.FC = () => {
         <div className="thong-bao-meta">
           <span className="thong-bao-date">
             <Calendar size={16} />{" "}
-            {thongBao ? formatDate(thongBao.ngayTao) : ""}
+            {thongBao ? formatDate(thongBao.NgayTao) : ""}
           </span>
           <span className="thong-bao-author">
-            <User size={16} /> {thongBao?.tenNguoiTao} - {thongBao?.khoa}
+            <User size={16} /> {thongBao?.TenNguoiTao} - {thongBao?.Khoa}
           </span>
           <span className="thong-bao-views">
-            Lượt xem: {thongBao?.soLuotXem}
+            Lượt xem: {thongBao?.SoLuotXem}
           </span>
         </div>
       </div>
 
       <div className="chi-tiet-thong-bao-content">
-        <h1 className="chi-tiet-thong-bao-title">{thongBao?.tieuDe}</h1>
+        <h1 className="chi-tiet-thong-bao-title">{thongBao?.TieuDe}</h1>
 
         <div
           className="chi-tiet-thong-bao-body"
-          dangerouslySetInnerHTML={{ __html: thongBao?.noiDung || "" }}
+          dangerouslySetInnerHTML={{ __html: thongBao?.NoiDung || "" }}
         />
       </div>
     </div>

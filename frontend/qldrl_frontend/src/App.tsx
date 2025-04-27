@@ -11,6 +11,7 @@ import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard"; // Trang chính 
 import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard"; // Trang chính cho Sinh viên
 import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard"; // Trang chính cho Giáo viên
 import { isLoggedIn, getRole } from "./untils/auth"; // Các hàm xử lý token và vai trò
+import ChiTietThongBao from "./components/ChiTietThongBao";
 
 const App: React.FC = () => {
   // Hàm xử lý điều hướng dựa trên vai trò
@@ -50,10 +51,11 @@ const App: React.FC = () => {
       <Routes>
         {/* Trang đăng nhập */}
         <Route path="/login" element={<Login />} />
-         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* Điều hướng mặc định */}
         <Route path="/" element={<RedirectByRole />} />
-
+        {/* Các route khác */}
+        <Route path="/thong-bao/:id" element={<ChiTietThongBao />} />
         {/* Dashboard cho Admin */}
         <Route
           path="/admin/dashboard"

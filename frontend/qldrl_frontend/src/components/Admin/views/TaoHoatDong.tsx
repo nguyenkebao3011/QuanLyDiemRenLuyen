@@ -64,8 +64,15 @@ const TaoHoatDong: React.FC = () => {
   const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [startDateError, setStartDateError] = useState<string | null>(null);
+  const [endDateError, setEndDateError] = useState<string | null>(null);
 
-  // Tạo instance axios với cấu hình mặc định
+  // State để lưu giá trị ngày giờ
+  const [startDate, setStartDate] = useState<string>("");
+  const [startTime, setStartTime] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+
   const api = axios.create({
     baseURL: "http://localhost:5163/api",
     headers: {
@@ -74,7 +81,6 @@ const TaoHoatDong: React.FC = () => {
     },
   });
 
-  // Lấy thông tin học kỳ và quản lý khoa từ API
   useEffect(() => {
     fetchData();
   }, []);
@@ -83,13 +89,10 @@ const TaoHoatDong: React.FC = () => {
     setLoadingData(true);
     setError(null);
     try {
-      // Lấy thông tin học kỳ sử dụng axios
       const hocKyResponse = await api.get("/HocKy/lay_hoc_ky");
-
       if (hocKyResponse.status === 200) {
         const hocKyData = hocKyResponse.data;
         setHocKys(Array.isArray(hocKyData) ? hocKyData : [hocKyData]);
-
         if (
           hocKyData &&
           (Array.isArray(hocKyData) ? hocKyData.length > 0 : true)
@@ -106,10 +109,8 @@ const TaoHoatDong: React.FC = () => {
       }
 
       const qlKhoaResponse = await api.get("/QuanLyKhoa/thong_tin");
-
       if (qlKhoaResponse.status === 200) {
         const qlKhoaData = qlKhoaResponse.data;
-
         setQuanLyKhoa(qlKhoaData);
         setFormData((prev) => ({
           ...prev,
@@ -139,6 +140,151 @@ const TaoHoatDong: React.FC = () => {
     }
   };
 
+  const formatDateToISO = (date: string, time: string): string => {
+    if (!date || !time) return "";
+    const [day, month, year] = date.split("/");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}T${time}:00`;
+  };
+
+  const formatDateToDDMMYYYY = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const validateDates = (
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string
+  ) => {
+    setStartDateError(null);
+    setEndDateError(null);
+
+    if (!startDate || !startTime || !endDate || !endTime) {
+      setStartDateError("Vui lòng nhập đầy đủ ngày và giờ");
+      setEndDateError("Vui lòng nhập đầy đủ ngày và giờ");
+      return false;
+    }
+
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    const timeRegex = /^\d{2}:\d{2}$/;
+
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      setStartDateError("Định dạng ngày phải là DD/MM/YYYY");
+      setEndDateError("Định dạng ngày phải là DD/MM/YYYY");
+      return false;
+    }
+
+    if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+      setStartDateError("Định dạng giờ phải là HH:MM");
+      setEndDateError("Định dạng giờ phải là HH:MM");
+      return false;
+    }
+
+    const start = new Date(formatDateToISO(startDate, startTime));
+    const end = new Date(formatDateToISO(endDate, endTime));
+    const currentDate = new Date("2025-04-24"); // Ngày hiện tại là 24/04/2025
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      setStartDateError("Ngày giờ không hợp lệ");
+      setEndDateError("Ngày giờ không hợp lệ");
+      return false;
+    }
+
+    // Ràng buộc 1: Ngày kết thúc phải sau ngày bắt đầu
+    if (start >= end) {
+      setEndDateError("Ngày kết thúc phải sau ngày bắt đầu");
+      return false;
+    }
+
+    // Ràng buộc 2: Ngày bắt đầu không được là ngày trong quá khứ
+    if (start < currentDate) {
+      setStartDateError("Ngày bắt đầu không được là ngày trong quá khứ");
+      return false;
+    }
+
+    // Ràng buộc 3: Ngày bắt đầu và ngày kết thúc phải thuộc học kỳ
+    const selectedHocKy = hocKys.find((hk) => hk.MaHocKy === formData.maHocKy);
+    if (!selectedHocKy) {
+      setStartDateError("Vui lòng chọn học kỳ hợp lệ");
+      setEndDateError("Vui lòng chọn học kỳ hợp lệ");
+      return false;
+    }
+
+    const hocKyStart = new Date(selectedHocKy.NgayBatDau);
+    const hocKyEnd = new Date(selectedHocKy.NgayKetThuc);
+
+    if (start < hocKyStart || end > hocKyEnd) {
+      const hocKyStartFormatted = formatDateToDDMMYYYY(
+        selectedHocKy.NgayBatDau
+      );
+      const hocKyEndFormatted = formatDateToDDMMYYYY(selectedHocKy.NgayKetThuc);
+      setStartDateError(
+        `Ngày bắt đầu phải nằm trong học kỳ (${selectedHocKy.TenHocKy} - ${selectedHocKy.NamHoc}) từ ${hocKyStartFormatted} đến ${hocKyEndFormatted}`
+      );
+      setEndDateError(
+        `Ngày kết thúc phải nằm trong học kỳ (${selectedHocKy.TenHocKy} - ${selectedHocKy.NamHoc}) từ ${hocKyStartFormatted} đến ${hocKyEndFormatted}`
+      );
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleDateChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "startDate" | "endDate"
+  ) => {
+    const { value } = e.target;
+    const [year, month, day] = value.split("-");
+    const formattedDate = `${day}/${month}/${year}`;
+
+    if (field === "startDate") {
+      setStartDate(formattedDate);
+      setFormData((prev) => ({
+        ...prev,
+        ngayBatDau: startTime ? `${formattedDate} ${startTime}` : formattedDate,
+      }));
+    } else {
+      setEndDate(formattedDate);
+      setFormData((prev) => ({
+        ...prev,
+        ngayKetThuc: endTime ? `${formattedDate} ${endTime}` : formattedDate,
+      }));
+    }
+  };
+
+  const handleTimeChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "startTime" | "endTime"
+  ) => {
+    const { value } = e.target;
+
+    if (field === "startTime") {
+      setStartTime(value);
+      if (startDate) {
+        setFormData((prev) => ({
+          ...prev,
+          ngayBatDau: `${startDate} ${value}`,
+        }));
+      }
+    } else {
+      setEndTime(value);
+      if (endDate) {
+        setFormData((prev) => ({
+          ...prev,
+          ngayKetThuc: `${endDate} ${value}`,
+        }));
+      }
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -157,8 +303,21 @@ const TaoHoatDong: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setStartDateError(null);
+    setEndDateError(null);
 
-    // Kiểm tra dữ liệu trước khi gửi
+    const isValid = validateDates(startDate, startTime, endDate, endTime);
+    if (!isValid) {
+      setIsLoading(false);
+      return;
+    }
+
+    const formattedData = {
+      ...formData,
+      ngayBatDau: formatDateToISO(startDate, startTime),
+      ngayKetThuc: formatDateToISO(endDate, endTime),
+    };
+
     if (!formData.maHocKy) {
       toast.error("Vui lòng chọn học kỳ");
       setIsLoading(false);
@@ -172,14 +331,10 @@ const TaoHoatDong: React.FC = () => {
     }
 
     try {
-      // Sử dụng axios để gửi dữ liệu
-      const response = await api.post("/HoatDong/tao_hoat_dong", formData);
-
+      const response = await api.post("/HoatDong/tao_hoat_dong", formattedData);
       if (response.status === 200 || response.status === 201) {
         toast.success("Tạo hoạt động thành công!");
         resetForm();
-
-        // Chuyển về trang danh sách hoạt động sau khi tạo thành công
         window.history.pushState({}, "", "/admin/dashboard?menu=activities");
         window.dispatchEvent(new Event("popstate"));
       } else {
@@ -213,10 +368,15 @@ const TaoHoatDong: React.FC = () => {
       maHocKy: hocKys.length > 0 ? hocKys[0].MaHocKy : null,
       maQl: quanLyKhoa?.MaQl || null,
     });
+    setStartDate("");
+    setStartTime("");
+    setEndDate("");
+    setEndTime("");
+    setStartDateError(null);
+    setEndDateError(null);
   };
 
   const handleCancel = () => {
-    // Quay lại trang danh sách hoạt động
     window.history.pushState({}, "", "/admin/dashboard?menu=activities");
     window.dispatchEvent(new Event("popstate"));
   };
@@ -282,35 +442,67 @@ const TaoHoatDong: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="ngayBatDau">
+            <label>
               <Calendar size={16} />
               Ngày bắt đầu <span className="required">*</span>
             </label>
-            <input
-              type="datetime-local"
-              id="ngayBatDau"
-              name="ngayBatDau"
-              value={formData.ngayBatDau}
-              onChange={handleChange}
-              required
-              className="input-field"
-            />
+            <div className="date-time-inputs">
+              <input
+                type="date"
+                value={
+                  startDate ? startDate.split("/").reverse().join("-") : ""
+                }
+                onChange={(e) => handleDateChange(e, "startDate")}
+                required
+                className="date-input"
+              />
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => handleTimeChange(e, "startTime")}
+                required
+                className="time-input"
+              />
+            </div>
+            <p className="date-format-hint">
+              Đã chọn:{" "}
+              {startDate && startTime
+                ? `${startDate} ${startTime}`
+                : "Chưa chọn"}
+            </p>
+            {startDateError && (
+              <div className="error-message">{startDateError}</div>
+            )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="ngayKetThuc">
+            <label>
               <Clock size={16} />
               Ngày kết thúc <span className="required">*</span>
             </label>
-            <input
-              type="datetime-local"
-              id="ngayKetThuc"
-              name="ngayKetThuc"
-              value={formData.ngayKetThuc}
-              onChange={handleChange}
-              required
-              className="input-field"
-            />
+            <div className="date-time-inputs">
+              <input
+                type="date"
+                value={endDate ? endDate.split("/").reverse().join("-") : ""}
+                onChange={(e) => handleDateChange(e, "endDate")}
+                required
+                className="date-input"
+              />
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => handleTimeChange(e, "endTime")}
+                required
+                className="time-input"
+              />
+            </div>
+            <p className="date-format-hint">
+              Đã chọn:{" "}
+              {endDate && endTime ? `${endDate} ${endTime}` : "Chưa chọn"}
+            </p>
+            {endDateError && (
+              <div className="error-message">{endDateError}</div>
+            )}
           </div>
 
           <div className="form-group">

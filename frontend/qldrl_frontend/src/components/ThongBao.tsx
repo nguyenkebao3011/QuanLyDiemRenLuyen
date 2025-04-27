@@ -25,7 +25,7 @@ const ThongBaoComponent: React.FC = () => {
     try {
       setLoadingThongBao(true);
       const response = await axios.get(
-        "http://localhost:5163/api/ThongBao/lay-thong-bao"
+        "http://localhost:5163/api/ThongBao/lay_thong_bao"
       );
       if (response.status === 200) {
         setThongBaos(response.data);
