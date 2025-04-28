@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { Link } from "react-router-dom";
-import "./Login.css"; 
+import "./css/Login.css";
 interface ApiResponse {
   message: string;
 }
@@ -109,7 +109,10 @@ const ResetPassword: React.FC = () => {
 
   return (
     <div className="">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></link>
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+      ></link>
       <div className="reset-password-box">
         <h2 className="text-xl font-bold mb-4 text-center">Đặt Lại Mật Khẩu</h2>
 

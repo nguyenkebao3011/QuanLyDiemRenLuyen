@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import axios, { type AxiosError } from "axios";
-import "./Login.css";
+import "./css/Login.css";
 import { saveToken, getRole, isLoggedIn } from "../../untils/auth";
 
 // Định nghĩa các kiểu TypeScript
@@ -234,25 +234,55 @@ const Login: React.FC = () => {
     setForgotMessage("");
   };
 
-  // Lấy tháng từ ngày
-  const getMonth = (dateString: string) => {
+  // Hàm định dạng ngày tháng
+  function formatDate(dateString: string) {
     try {
       const date = new Date(dateString);
-      return date.getMonth() + 1;
-    } catch (error) {
-      return "";
-    }
-  };
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const year = date.getFullYear();
 
-  // Lấy ngày từ ngày
-  const getDay = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return date.getDate();
+      // Trả về object chứa các thành phần ngày tháng
+      return {
+        month: month,
+        day: day,
+        year: year,
+        formattedMonth: `Tháng\n${month}/${year}`,
+      };
     } catch (error) {
-      return "";
+      return {
+        month: "",
+        day: "",
+        year: "",
+        formattedMonth: "",
+      };
     }
-  };
+  }
+
+  // Hàm kiểm tra thông báo có phải là thông báo mới không (trong tuần hiện tại)
+  function isNewNotification(dateString: string) {
+    try {
+      const today = new Date();
+      const notificationDate = new Date(dateString);
+      // Xác định ngày đầu tiên của tuần hiện tại (Chủ nhật = 0, Thứ 2 = 1, ...)
+      const firstDayOfWeek = new Date(today);
+      const currentDay = today.getDay(); // 0 = Chủ nhật, 1 = Thứ 2, ...
+      firstDayOfWeek.setDate(today.getDate() - currentDay);
+      // Xác định ngày cuối cùng của tuần (Thứ 7)
+      const lastDayOfWeek = new Date(firstDayOfWeek);
+      lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+      // Đặt giờ, phút, giây về 0 cho firstDayOfWeek để so sánh đúng ngày
+      firstDayOfWeek.setHours(0, 0, 0, 0);
+      // Đặt giờ, phút, giây về cuối ngày cho lastDayOfWeek
+      lastDayOfWeek.setHours(23, 59, 59, 999);
+      // Kiểm tra nếu thông báo nằm trong khoảng thời gian của tuần hiện tại
+      return (
+        notificationDate >= firstDayOfWeek && notificationDate <= lastDayOfWeek
+      );
+    } catch (error) {
+      return false;
+    }
+  }
 
   return (
     <div className="login-page-container">
@@ -304,27 +334,35 @@ const Login: React.FC = () => {
             {loadingThongBao ? (
               <div className="loading-thong-bao">Đang tải dữ liệu...</div>
             ) : (
-              thongBaos.map((thongBao) => (
-                <div key={thongBao.MaThongBao} className="thong-bao-item">
-                  <div className="thong-bao-date">
-                    <div className="thong-bao-month">
-                      Tháng {getMonth(thongBao.NgayTao)}
+              thongBaos.map((thongBao) => {
+                const dateInfo = formatDate(thongBao.NgayTao);
+                const isNew = isNewNotification(thongBao.NgayTao);
+
+                return (
+                  <div
+                    key={thongBao.MaThongBao}
+                    className={`thong-bao-item ${isNew ? "thong-bao-new" : ""}`}
+                  >
+                    <div className="thong-bao-date">
+                      <div className="thong-bao-month">
+                        {dateInfo.formattedMonth}
+                      </div>
                     </div>
-                    <div className="thong-bao-day">
-                      {getDay(thongBao.NgayTao)}
+                    <div className="thong-bao-content">
+                      <div className="thong-bao-header">
+                        <h3 className="thong-bao-title">{thongBao.TieuDe}</h3>
+                        {isNew && <span className="thong-bao-badge">MỚI</span>}
+                      </div>
+                      <a
+                        href={`/thong-bao/${thongBao.MaThongBao}`}
+                        className="xem-chi-tiet"
+                      >
+                        Xem chi tiết
+                      </a>
                     </div>
                   </div>
-                  <div className="thong-bao-content">
-                    <h3 className="thong-bao-title">{thongBao.TieuDe}</h3>
-                    <a
-                      href={`/thong-bao/${thongBao.MaThongBao}`}
-                      className="xem-chi-tiet"
-                    >
-                      Xem chi tiết
-                    </a>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\GiangVien\" />
-    <Folder Include="Controllers\QuanLyKhoa\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>

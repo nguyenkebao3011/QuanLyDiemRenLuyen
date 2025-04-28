@@ -11,7 +11,7 @@ import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard"; // Trang chính 
 import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard"; // Trang chính cho Sinh viên
 import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard"; // Trang chính cho Giáo viên
 import { isLoggedIn, getRole } from "./untils/auth"; // Các hàm xử lý token và vai trò
-import ChiTietThongBao from "./components/ChiTietThongBao";
+import ChiTietThongBao from "./Pages/Login/ChiTietThongBao";
 
 const App: React.FC = () => {
   // Hàm xử lý điều hướng dựa trên vai trò

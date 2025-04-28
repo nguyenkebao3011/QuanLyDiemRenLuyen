@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -8,32 +10,76 @@ import {
   Bell,
   Award,
   FileText,
+  Eye,
 } from "lucide-react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+interface HoatDong {
+  MaHoatDong?: number;
+  maHoatDong?: number;
+  TenHoatDong?: string;
+  tenHoatDong?: string;
+  TrangThai?: string;
+  trangThai?: string;
+  NgayBatDau?: string;
+  ngayBatDau?: string;
+}
+
+interface ThongBao {
+  MaThongBao: number;
+  TieuDe: string;
+  NoiDung: string;
+  NgayTao: string;
+  TrangThai: string;
+  SoLuotXem?: number;
+}
+
+interface TongQuanThongKeDTO {
+  TongSinhVien: number;
+  TongGiangVien: number;
+  TongHoatDong: number;
+  TongPhanHoi: number;
+}
 
 const TongQuanHeThong: React.FC = () => {
-  const [recentActivities, setRecentActivities] = useState<any[]>([]);
+  const [recentActivities, setRecentActivities] = useState<HoatDong[]>([]);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(true);
-  const navigate = useNavigate();
+  const [recentNotifications, setRecentNotifications] = useState<ThongBao[]>(
+    []
+  );
+  const [loadingNotifications, setLoadingNotifications] =
+    useState<boolean>(true);
+  const [stats, setStats] = useState<TongQuanThongKeDTO>({
+    TongSinhVien: 0,
+    TongGiangVien: 0,
+    TongHoatDong: 0,
+    TongPhanHoi: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState<boolean>(true);
 
-  // Sửa lại hàm handleCreateActivity để sử dụng window.history.pushState thay vì navigate
-  const handleCreateActivity = () => {
-    // Thay đổi URL và cập nhật lịch sử
-    window.history.pushState(
-      {},
-      "",
-      "/admin/dashboard?menu=activities&view=create"
-    );
-
-    // Kích hoạt sự kiện popstate để Dashboard component biết URL đã thay đổi
-    window.dispatchEvent(new Event("popstate"));
-  };
-
-  // Thêm useEffect để lấy dữ liệu hoạt động gần đây
+  // Thêm useEffect để lấy dữ liệu hoạt động gần đây và thông báo
   useEffect(() => {
     fetchRecentActivities();
+    fetchStats();
   }, []);
+
+  // Hàm lấy dữ liệu thống kê từ API
+  const fetchStats = async () => {
+    setLoadingStats(true);
+    try {
+      const response = await axios.get<TongQuanThongKeDTO>(
+        "http://localhost:5163/api/TongQuanThongKe/thong_ke_tong_quan"
+      );
+      if (response.status === 200) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thống kê:", error);
+      // Giữ giá trị mặc định nếu có lỗi
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   // Hàm lấy dữ liệu hoạt động gần đây từ API
   const fetchRecentActivities = async () => {
@@ -44,11 +90,18 @@ const TongQuanHeThong: React.FC = () => {
       );
       if (response.status === 200) {
         // Lấy 4 hoạt động gần đây nhất
-        const recentData = response.data.slice(0, 4);
+        const recentData = response.data
+          .sort((a: HoatDong, b: HoatDong) => {
+            const dateA = new Date(a.NgayBatDau || a.ngayBatDau || "");
+            const dateB = new Date(b.NgayBatDau || b.ngayBatDau || "");
+            return dateB.getTime() - dateA.getTime();
+          })
+          .slice(0, 4);
         setRecentActivities(recentData);
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách hoạt động gần đây:", error);
+      setRecentActivities([]);
     } finally {
       setLoadingActivities(false);
     }
@@ -84,6 +137,22 @@ const TongQuanHeThong: React.FC = () => {
       default:
         return { class: "new", text: "Mới" };
     }
+  };
+
+  // Hàm xác định trạng thái thông báo
+  const getNotificationStatus = (ngayTao: string) => {
+    const today = new Date();
+    const notificationDate = new Date(ngayTao);
+
+    // Tính số mili giây trong 1 tuần
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+    // Kiểm tra xem thông báo có trong vòng 1 tuần không
+    if (today.getTime() - notificationDate.getTime() <= oneWeek) {
+      return { class: "new", text: "Mới" };
+    }
+
+    return { class: "normal", text: "" };
   };
 
   // Hàm định dạng ngày giờ
@@ -122,6 +191,19 @@ const TongQuanHeThong: React.FC = () => {
     }
   };
 
+  // Hàm xử lý khi tạo hoạt động mới
+  const handleCreateActivity = () => {
+    // Thay đổi URL và cập nhật lịch sử
+    window.history.pushState(
+      {},
+      "",
+      "/admin/dashboard?menu=activities&view=create"
+    );
+
+    // Kích hoạt sự kiện popstate để Dashboard component biết URL đã thay đổi
+    window.dispatchEvent(new Event("popstate"));
+  };
+
   return (
     <div className="dashboard-overview">
       <div className="stats-cards">
@@ -131,7 +213,13 @@ const TongQuanHeThong: React.FC = () => {
           </div>
           <div className="stat-details">
             <h3>Sinh viên</h3>
-            <p className="stat-value">1,234</p>
+            {loadingStats ? (
+              <p className="stat-value loading">...</p>
+            ) : (
+              <p className="stat-value">
+                {stats.TongSinhVien.toLocaleString()}
+              </p>
+            )}
             <p className="stat-desc">Tổng số sinh viên</p>
           </div>
         </div>
@@ -142,7 +230,13 @@ const TongQuanHeThong: React.FC = () => {
           </div>
           <div className="stat-details">
             <h3>Giáo viên</h3>
-            <p className="stat-value">56</p>
+            {loadingStats ? (
+              <p className="stat-value loading">...</p>
+            ) : (
+              <p className="stat-value">
+                {stats.TongGiangVien.toLocaleString()}
+              </p>
+            )}
             <p className="stat-desc">Tổng số giáo viên</p>
           </div>
         </div>
@@ -153,8 +247,14 @@ const TongQuanHeThong: React.FC = () => {
           </div>
           <div className="stat-details">
             <h3>Hoạt động</h3>
-            <p className="stat-value">28</p>
-            <p className="stat-desc">Hoạt động đang diễn ra</p>
+            {loadingStats ? (
+              <p className="stat-value loading">...</p>
+            ) : (
+              <p className="stat-value">
+                {stats.TongHoatDong.toLocaleString()}
+              </p>
+            )}
+            <p className="stat-desc">Tổng số hoạt động</p>
           </div>
         </div>
 
@@ -164,8 +264,12 @@ const TongQuanHeThong: React.FC = () => {
           </div>
           <div className="stat-details">
             <h3>Phản hồi</h3>
-            <p className="stat-value">12</p>
-            <p className="stat-desc">Phản hồi chưa xử lý</p>
+            {loadingStats ? (
+              <p className="stat-value loading">...</p>
+            ) : (
+              <p className="stat-value">{stats.TongPhanHoi.toLocaleString()}</p>
+            )}
+            <p className="stat-desc">Tổng số phản hồi</p>
           </div>
         </div>
       </div>
@@ -196,7 +300,7 @@ const TongQuanHeThong: React.FC = () => {
                 {recentActivities.length > 0 ? (
                   recentActivities.map((activity) => {
                     const status = getActivityStatus(
-                      activity.TrangThai || activity.trangThai
+                      activity.TrangThai || activity.trangThai || ""
                     );
                     return (
                       <li
@@ -205,7 +309,7 @@ const TongQuanHeThong: React.FC = () => {
                       >
                         <div className="activity-icon">
                           {getActivityIcon(
-                            activity.TrangThai || activity.trangThai
+                            activity.TrangThai || activity.trangThai || ""
                           )}
                         </div>
                         <div className="activity-details">
@@ -214,7 +318,7 @@ const TongQuanHeThong: React.FC = () => {
                           </p>
                           <p className="activity-time">
                             {formatDateTime(
-                              activity.NgayBatDau || activity.ngayBatDau
+                              activity.NgayBatDau || activity.ngayBatDau || ""
                             )}
                           </p>
                         </div>
