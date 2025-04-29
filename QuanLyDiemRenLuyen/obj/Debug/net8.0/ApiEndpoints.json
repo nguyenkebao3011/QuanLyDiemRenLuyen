@@ -355,6 +355,27 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
+    "Method": "UpdateHoatDong",
+    "RelativePath": "api/HoatDong/sua_hoat_dong/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "hoatDongUpdate",
+        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
     "Method": "CreateHoatDong",
     "RelativePath": "api/HoatDong/tao_hoat_dong",
     "HttpMethod": "POST",
@@ -364,6 +385,22 @@
       {
         "Name": "hoatDong",
         "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
+    "Method": "DeleteHoatDong",
+    "RelativePath": "api/HoatDong/xoa_hoat_dong/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

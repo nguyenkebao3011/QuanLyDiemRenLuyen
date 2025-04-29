@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Login from "./Pages/Login/Login";
 import ResetPassword from "./Pages/Login/ResetPassword"; // Thêm import này
-import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard"; // Trang chính cho Admin
+import AdminDashboard from "./Pages/Dashboard/Admin/views/Dashboard"; // Trang chính cho Admin
 import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard"; // Trang chính cho Sinh viên
 import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard"; // Trang chính cho Giáo viên
 import { isLoggedIn, getRole } from "./untils/auth"; // Các hàm xử lý token và vai trò

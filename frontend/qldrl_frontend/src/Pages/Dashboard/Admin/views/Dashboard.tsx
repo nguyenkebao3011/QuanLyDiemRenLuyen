@@ -13,25 +13,29 @@ import {
   LogOut,
   Menu,
   X,
-} from "react-feather";
-import "./Dashboard.css";
+  Search,
+  ChevronDown,
+  Home,
+} from "lucide-react";
+import "../css/Dashboard.css";
 
 // Import các components
-import QuanLyDanhMuc from "../../../components/Admin/views/QuanLyDanhMuc";
-import HoatDongNamHoc from "../../../components/Admin/views/HoatDongNamHoc";
-import ChamDiemRenLuyen from "../../../components/Admin/views/ChamDiemRenLuyen";
-import ThongBaoDiemDanh from "../../../components/Admin/views/ThongBaoDiemDanh";
-import CapNhatMinhChung from "../../../components/Admin/views/CapNhatMinhChung";
-import PhanHoiDiemRenLuyen from "../../../components/Admin/views/PhanHoiDiemRenLuyen";
-import ThongKeBaoCao from "../../../components/Admin/views/ThongKeBaoCao";
-import HoiDongChamDiem from "../../../components/Admin/views/HoiDongChamDiem";
-import TongQuanHeThong from "../../../components/Admin/views/TongQuanHeThong";
-import TaoHoatDong from "../../../components/Admin/views/TaoHoatDong";
+import QuanLyDanhMuc from "./QuanLyDanhMuc";
+import HoatDongNamHoc from "./HoatDongNamHoc";
+import ChamDiemRenLuyen from "./ChamDiemRenLuyen";
+import ThongBaoDiemDanh from "./ThongBaoDiemDanh";
+import CapNhatMinhChung from "./CapNhatMinhChung";
+import PhanHoiDiemRenLuyen from "./PhanHoiDiemRenLuyen";
+import ThongKeBaoCao from "./ThongKeBaoCao";
+import HoiDongChamDiem from "./HoiDongChamDiem";
+import TongQuanHeThong from "../../../../components/Admin/HoatDong/TongQuanHeThong";
+import TaoHoatDong from "../../../../components/Admin/HoatDong/TaoHoatDong";
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [viewParam, setViewParam] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   const username = localStorage.getItem("username") || "Admin";
 
@@ -52,25 +56,19 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    // Gọi lần đầu khi component mount
     handleUrlChange();
-
-    // Thêm event listener để lắng nghe sự thay đổi URL
     window.addEventListener("popstate", handleUrlChange);
 
-    // Cleanup
     return () => {
       window.removeEventListener("popstate", handleUrlChange);
     };
   }, []);
 
   const renderContent = () => {
-    // Kiểm tra nếu đang ở menu activities và view là create
     if (activeMenu === "activities" && viewParam === "create") {
       return <TaoHoatDong />;
     }
 
-    // Các trường hợp khác
     switch (activeMenu) {
       case "category":
         return <QuanLyDanhMuc />;
@@ -100,15 +98,46 @@ const Dashboard: React.FC = () => {
     window.location.href = "/login";
   };
 
+  const getMenuTitle = () => {
+    switch (activeMenu) {
+      case "dashboard":
+        return "Tổng quan hệ thống";
+      case "category":
+        return "Quản lý danh mục";
+      case "activities":
+        return viewParam === "create"
+          ? "Tạo hoạt động mới"
+          : "Hoạt động năm học";
+      case "scoring":
+        return "Chấm điểm rèn luyện";
+      case "notification":
+        return "Thông báo điểm danh";
+      case "evidence":
+        return "Cập nhật minh chứng";
+      case "feedback":
+        return "Phản hồi điểm rèn luyện";
+      case "statistics":
+        return "Thống kê, báo cáo";
+      case "committee":
+        return "Hội đồng chấm điểm";
+      default:
+        return "Tổng quan hệ thống";
+    }
+  };
+
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
       <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-header">
-          <h2>Quản lý điểm rèn luyện khoa CNTT</h2>
+          <div className="logo-container">
+            <Home size={24} className="logo-icon" />
+            <h2>Quản lý điểm rèn luyện</h2>
+          </div>
           <button
             className="toggle-btn"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle sidebar"
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -226,23 +255,51 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className={`main-content ${!sidebarOpen ? "expanded" : ""}`}>
         <header className="content-header">
-          <h1>
-            {activeMenu === "dashboard" && "Tổng quan hệ thống"}
-            {activeMenu === "category" && "Quản lý danh mục"}
-            {activeMenu === "activities" && "Hoạt động năm học"}
-            {activeMenu === "scoring" && "Chấm điểm rèn luyện"}
-            {activeMenu === "notification" && "Thông báo điểm danh"}
-            {activeMenu === "evidence" && "Cập nhật minh chứng"}
-            {activeMenu === "feedback" && "Phản hồi điểm rèn luyện"}
-            {activeMenu === "statistics" && "Thống kê, báo cáo"}
-            {activeMenu === "committee" && "Hội đồng chấm điểm"}
-          </h1>
+          <div className="header-left">
+            {/* Chỉ hiển thị nút toggle khi sidebar đóng */}
+            {!sidebarOpen && (
+              <button
+                className="toggle-btn-header"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Toggle sidebar"
+              >
+                <Menu size={24} />
+              </button>
+            )}
+            <h1>{getMenuTitle()}</h1>
+          </div>
+
           <div className="header-actions">
             <div className="search-box">
+              <Search size={18} className="search-icon" />
               <input type="text" placeholder="Tìm kiếm..." />
             </div>
+
+            <div className="user-dropdown">
+              <button
+                className="user-dropdown-btn"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <div className="avatar-small">
+                  {username.charAt(0).toUpperCase()}
+                </div>
+                <span className="username-display">{username}</span>
+                <ChevronDown size={16} />
+              </button>
+
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <button className="dropdown-item">Hồ sơ</button>
+                  <button className="dropdown-item">Cài đặt</button>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="notification-icon">
               <Bell size={20} />
               <span className="badge">3</span>
