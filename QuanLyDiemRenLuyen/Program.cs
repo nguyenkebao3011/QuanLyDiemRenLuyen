@@ -97,7 +97,18 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:3000") // Thay thế bằng URL của frontend
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+            .AllowCredentials(); // Nếu có dùng cookie/token cần cái này
+    });
+});
+// Sử dụng Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
     });
 });
 
@@ -108,9 +119,7 @@ var app = builder.Build();
 
 // Sử dụng Session
 app.UseSession();
-
-// Sử dụng CORS
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

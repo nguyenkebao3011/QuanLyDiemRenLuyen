@@ -1,0 +1,41 @@
+.thongtin-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .thongtin-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .avatar-container {
+    flex-shrink: 0; /* Không để ảnh bị co lại */
+  }
+  
+  .student-avatar {
+    border-radius: 20px;
+    border: 1px solid #b6bacd;
+    width: 150px;
+    height: auto;
+  }
+  
+  .student-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #3c5de0;
+    flex: 1; /* Chiếm phần còn lại của không gian */
+    margin: 37px;
+  }
+  
+  .student-info-table td {
+    padding: 8px 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .student-info-table tr:last-child td {
+    border-bottom: none;
+  }

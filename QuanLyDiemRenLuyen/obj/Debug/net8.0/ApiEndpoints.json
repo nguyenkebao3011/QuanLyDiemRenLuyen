@@ -666,6 +666,11 @@
         "IsRequired": false
       },
       {
+        "Name": "TenLop",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "AnhDaiDien",
         "Type": "System.String",
         "IsRequired": false

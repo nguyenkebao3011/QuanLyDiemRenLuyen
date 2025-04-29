@@ -1080,6 +1080,9 @@
                   "TrangThai": {
                     "type": "string"
                   },
+                  "TenLop": {
+                    "type": "string"
+                  },
                   "AnhDaiDien": {
                     "type": "string"
                   },
@@ -1118,6 +1121,9 @@
                   "style": "form"
                 },
                 "TrangThai": {
+                  "style": "form"
+                },
+                "TenLop": {
                   "style": "form"
                 },
                 "AnhDaiDien": {

@@ -1,6 +1,6 @@
 :root {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
+  --primary: #07559f;
+  --primary-dark: #07559f;
   --primary-light: #e0e7ff;
   --secondary: #f9fafb;
   --text-dark: #1f2937;
@@ -105,8 +105,8 @@ body {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 60px;
   background-color: var(--primary);
   color: var(--white);
   border-radius: 50%;
@@ -547,4 +547,7 @@ body {
   .search-box input {
     width: 100%;
   }
+  /* sinhvien  */
+  /* Phần thông tin sinh viên */
+
 }

@@ -13,6 +13,7 @@
         public int MaVaiTro { get; set; }       
         public string? TrangThai { get; set; }
 
+        public string? TenLop { get; set; } // Thêm trường này
         public string? AnhDaiDien { get; set; }
     }
 }

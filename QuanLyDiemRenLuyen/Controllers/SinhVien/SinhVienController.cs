@@ -43,25 +43,29 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             {
                 // Admin có thể xem tất cả sinh viên
                 var sinhViens = await _context.SinhViens
-                    .Select(sv => new SinhVienDTO
-                    {
-                        MaSV = sv.MaSV,
-                        HoTen = sv.HoTen,
-                        MaLop = sv.MaLop,
-                        Email = sv.Email,
-                        SoDienThoai = sv.SoDienThoai,
-                        DiaChi = sv.DiaChi,
-                        NgaySinh = sv.NgaySinh.ToString("yyyy-MM-dd"),
-                        GioiTinh = sv.GioiTinh,
-                        MaVaiTro = sv.MaVaiTro,
-                        TrangThai = sv.TrangThai
-                    })
-
+                    .Join(
+                        _context.Lops, // Join với bảng Lops
+                        sv => sv.MaLop, // Khóa bên SinhViens
+                        lop => lop.MaLop, // Khóa bên Lops
+                        (sv, lop) => new SinhVienDTO
+                        {
+                            MaSV = sv.MaSV,
+                            HoTen = sv.HoTen,
+                            MaLop = sv.MaLop,
+                            TenLop = lop.TenLop, // Lấy TenLop từ bảng Lops
+                            Email = sv.Email,
+                            SoDienThoai = sv.SoDienThoai,
+                            DiaChi = sv.DiaChi,
+                            NgaySinh = sv.NgaySinh.ToString("yyyy-MM-dd"),
+                            GioiTinh = sv.GioiTinh,
+                            MaVaiTro = sv.MaVaiTro,
+                            TrangThai = sv.TrangThai,
+                            AnhDaiDien = sv.AnhDaiDien != null ? $"http://localhost:5163{sv.AnhDaiDien}" : null
+                        }
+                    )
                     .ToListAsync();
                 return Ok(sinhViens);
-
             }
-
             else if (user.VaiTro.Equals("GiangVien", StringComparison.OrdinalIgnoreCase))
             {
                 // Tìm MaGv của giảng viên từ bảng GiangViens dựa trên MaTaiKhoan
@@ -81,58 +85,67 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 // Lấy danh sách sinh viên trong lớp
                 var sinhViensCuaLop = await _context.SinhViens
                     .Where(sv => sv.MaLop == lopGiangVien.MaLop)
-                    .Select(sv => new SinhVienDTO
-                    {
-                        MaSV = sv.MaSV,
-                        HoTen = sv.HoTen,
-                        MaLop = sv.MaLop,
-                        Email = sv.Email,
-                        SoDienThoai = sv.SoDienThoai,
-                        DiaChi = sv.DiaChi,
-                        NgaySinh = sv.NgaySinh.ToString("yyyy-MM-dd"),
-                        GioiTinh = sv.GioiTinh,
-                        MaVaiTro = sv.MaVaiTro,
-                        TrangThai = sv.TrangThai
-                    })
+                    .Join(
+                        _context.Lops, // Join với bảng Lops
+                        sv => sv.MaLop,
+                        lop => lop.MaLop,
+                        (sv, lop) => new SinhVienDTO
+                        {
+                            MaSV = sv.MaSV,
+                            HoTen = sv.HoTen,
+                            MaLop = sv.MaLop,
+                            TenLop = lop.TenLop, // Lấy TenLop từ bảng Lops
+                            Email = sv.Email,
+                            SoDienThoai = sv.SoDienThoai,
+                            DiaChi = sv.DiaChi,
+                            NgaySinh = sv.NgaySinh.ToString("yyyy-MM-dd"),
+                            GioiTinh = sv.GioiTinh,
+                            MaVaiTro = sv.MaVaiTro,
+                            TrangThai = sv.TrangThai,
+                            AnhDaiDien = sv.AnhDaiDien != null ? $"http://localhost:5163{sv.AnhDaiDien}" : null
+                        }
+                    )
                     .ToListAsync();
 
                 return Ok(sinhViensCuaLop);
             }
-            // Sinh viên chỉ có thể xem chính mình
             else if (user.VaiTro == "SinhVien")
             {
                 // Sinh viên chỉ có thể xem chính mình
                 var sinhVien = await _context.SinhViens
-                    .FirstOrDefaultAsync(sv => sv.MaSV == user.TenDangNhap); // So sánh MaSV với TenDangNhap
+                    .Where(sv => sv.MaSV == user.TenDangNhap)
+                    .Join(
+                        _context.Lops, // Join với bảng Lops
+                        sv => sv.MaLop,
+                        lop => lop.MaLop,
+                        (sv, lop) => new SinhVienDTO
+                        {
+                            MaSV = sv.MaSV,
+                            HoTen = sv.HoTen,
+                            MaLop = sv.MaLop,
+                            TenLop = lop.TenLop, // Lấy TenLop từ bảng Lops
+                            Email = sv.Email,
+                            SoDienThoai = sv.SoDienThoai,
+                            DiaChi = sv.DiaChi,
+                            NgaySinh = sv.NgaySinh.ToString("yyyy-MM-dd"),
+                            GioiTinh = sv.GioiTinh,
+                            MaVaiTro = sv.MaVaiTro,
+                            TrangThai = sv.TrangThai,
+                            AnhDaiDien = sv.AnhDaiDien != null ? $"http://localhost:5163{sv.AnhDaiDien}" : null
+                        }
+                    )
+                    .FirstOrDefaultAsync();
 
                 if (sinhVien == null)
                     return NotFound("Sinh viên không tồn tại.");
 
-                // Ánh xạ sang SinhVienDto để tránh lỗi vòng lặp
-                var sinhVienDto = new SinhVienDTO
-                {
-                    MaSV = sinhVien.MaSV,
-                    HoTen = sinhVien.HoTen,
-                    MaLop = sinhVien.MaLop,
-                    Email = sinhVien.Email,
-                    SoDienThoai = sinhVien.SoDienThoai,
-                    DiaChi = sinhVien.DiaChi,
-                    NgaySinh = sinhVien.NgaySinh.ToString("yyyy-MM-dd"),
-                    GioiTinh = sinhVien.GioiTinh,
-                    MaVaiTro = sinhVien.MaVaiTro,
-                    TrangThai = sinhVien.TrangThai
-                };
-
-                return Ok(sinhVienDto);
+                return Ok(sinhVien);
             }
             else
             {
                 return Forbid("Bạn không có quyền truy cập.");
             }
         }
-
-
-
         // Phương thức chỉnh sửa thông tin sinh viên
         [HttpPut("doi-mat-khau")]
 
