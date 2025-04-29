@@ -148,7 +148,6 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         }
         // Phương thức chỉnh sửa thông tin sinh viên
         [HttpPut("doi-mat-khau")]
-
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             // Kiểm tra nếu mật khẩu cũ trống hoặc không hợp lệ

@@ -6,15 +6,15 @@ import {
   Navigate,
 } from "react-router-dom";
 import Login from "./Pages/Login/Login";
-import ResetPassword from "./Pages/Login/ResetPassword"; // Thêm import này
-import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard"; // Trang chính cho Admin
-import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard"; // Trang chính cho Sinh viên
-import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard"; // Trang chính cho Giáo viên
-import { isLoggedIn, getRole } from "./untils/auth"; // Các hàm xử lý token và vai trò
+import ResetPassword from "./Pages/Login/ResetPassword";
+import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard";
+import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard";
+import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard";
+import { isLoggedIn, getRole } from "./untils/auth";
 import ChiTietThongBao from "./Pages/Login/ChiTietThongBao";
-
+import CapNhatThongTin from "./components/SinhVien/views/CapNhatThongTin";
+import DoiMatKhau from "./components/SinhVien/views/DoiMatKhau";
 const App: React.FC = () => {
-  // Hàm xử lý điều hướng dựa trên vai trò
   const RedirectByRole: React.FC = () => {
     const role = getRole();
     if (role) {
@@ -35,12 +35,10 @@ const App: React.FC = () => {
     return <Navigate to="/login" />;
   };
 
-  // Hàm bảo vệ các route yêu cầu đăng nhập
   const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
     children,
   }) => {
     if (!isLoggedIn()) {
-      // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
       return <Navigate to="/login" />;
     }
     return <>{children}</>;
@@ -49,14 +47,11 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Trang đăng nhập */}
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        {/* Điều hướng mặc định */}
         <Route path="/" element={<RedirectByRole />} />
-        {/* Các route khác */}
         <Route path="/thong-bao/:id" element={<ChiTietThongBao />} />
-        {/* Dashboard cho Admin */}
+        <Route path="/doi-mat-khau" element={<DoiMatKhau />} />
         <Route
           path="/admin/dashboard"
           element={
@@ -65,8 +60,6 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Dashboard cho Giảng viên */}
         <Route
           path="/giangvien/dashboard"
           element={
@@ -75,13 +68,19 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Dashboard cho Sinh viên */}
         <Route
           path="/sinhvien/dashboard"
           element={
             <ProtectedRoute>
               <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chinh-sua-thong-tin"
+          element={
+            <ProtectedRoute>
+              <CapNhatThongTin />
             </ProtectedRoute>
           }
         />

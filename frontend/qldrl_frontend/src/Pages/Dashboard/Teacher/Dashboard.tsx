@@ -45,7 +45,7 @@ const StudentDashboard: React.FC = () => {
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
-  const [darkMode, setDarkMode] = useState<boolean>(false); // State để quản lý dark mode
+  
   const navigate = useNavigate();
 
   const BASE_URL = "http://localhost:5163";

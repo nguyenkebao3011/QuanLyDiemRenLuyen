@@ -1,0 +1,322 @@
+.thongtin-container{
+    margin: 20px;
+}
+  
+  /* Tinh chỉnh nút "Chọn tệp" */
+  .custom-file-upload {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-file-upload:hover {
+    background-color: #0056b3;
+  }
+  
+  .file-input {
+    display: none; /* Ẩn input mặc định */
+  }
+  
+  .info-section {
+    flex: 1;
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .info-item {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .info-item:last-child {
+    margin-right: 0;
+  }
+  
+  .info-item label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+  }
+  
+  .info-item span {
+    color: #333;
+    font-size: 16px;
+  }
+  
+  /* Tinh chỉnh ô input */
+  .info-item input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+  }
+  
+  .info-item input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+  .avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .student-avatar {
+    width: 200px;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+  }
+  
+  .custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .file-input {
+    display: none;
+  }
+
+  .form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .form-actions button,
+  .thongtin-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  * Định dạng phần nhập địa chỉ */
+.address-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.address-inputs select,
+.address-inputs input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.address-inputs select:focus,
+.address-inputs input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.address-inputs select:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.address-inputs input::placeholder {
+  color: #999;
+}
+  .form-actions button[type="submit"],
+  .thongtin-container button {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .form-actions button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .form-actions button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .edit-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+
+}
+
+.edit-button {
+  padding: 20px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 20px;
+}
+.cancel-btn{
+  padding-right: 20px;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+  
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    min-width: 250px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    animation: fadeInOut 4s ease-in-out forwards;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .toast-success {
+    background-color: #4caf50;
+  }
+  
+  .toast-error {
+    background-color: #f44336;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  /* Định dạng form đổi mật khẩu */
+.change-password-form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .change-password-form .info-item input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.2s;
+  }
+  
+  .change-password-form .info-item input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+  
+  .change-password-form .info-item input::placeholder {
+    color: #999;
+  }
+  
+  .change-password-form .info-item label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+  }
+  .change-password-button {
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+  }
+  
+  .change-password-button:hover {
+    background-color: #e0a800;
+  }
+  /* Định dạng container cho input mật khẩu và biểu tượng mắt */
+.password-container {
+    position: relative;
+  }
+  
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* Thêm padding phải để chừa chỗ cho icon */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.2s;
+  }
+  
+  .password-input-wrapper input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+  
+  .password-input-wrapper input::placeholder {
+    color: #999;
+  }
+  
+  /* Định dạng biểu tượng mắt */
+  .password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    font-size: 16px;
+  }
+  
+  .password-toggle-icon:hover {
+    color: #007bff;
+  }
