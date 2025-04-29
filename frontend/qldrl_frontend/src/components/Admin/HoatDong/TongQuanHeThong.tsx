@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -13,33 +11,7 @@ import {
   Eye,
 } from "lucide-react";
 import axios from "axios";
-
-interface HoatDong {
-  MaHoatDong?: number;
-  maHoatDong?: number;
-  TenHoatDong?: string;
-  tenHoatDong?: string;
-  TrangThai?: string;
-  trangThai?: string;
-  NgayBatDau?: string;
-  ngayBatDau?: string;
-}
-
-interface ThongBao {
-  MaThongBao: number;
-  TieuDe: string;
-  NoiDung: string;
-  NgayTao: string;
-  TrangThai: string;
-  SoLuotXem?: number;
-}
-
-interface TongQuanThongKeDTO {
-  TongSinhVien: number;
-  TongGiangVien: number;
-  TongHoatDong: number;
-  TongPhanHoi: number;
-}
+import type { TongQuanThongKeDTO, HoatDong, ThongBao } from "../types";
 
 const TongQuanHeThong: React.FC = () => {
   const [recentActivities, setRecentActivities] = useState<HoatDong[]>([]);
@@ -92,8 +64,8 @@ const TongQuanHeThong: React.FC = () => {
         // Lấy 4 hoạt động gần đây nhất
         const recentData = response.data
           .sort((a: HoatDong, b: HoatDong) => {
-            const dateA = new Date(a.NgayBatDau || a.ngayBatDau || "");
-            const dateB = new Date(b.NgayBatDau || b.ngayBatDau || "");
+            const dateA = new Date(a.NgayBatDau || a.NgayBatDau || "");
+            const dateB = new Date(b.NgayKetThuc || b.NgayKetThuc || "");
             return dateB.getTime() - dateA.getTime();
           })
           .slice(0, 4);
@@ -299,27 +271,18 @@ const TongQuanHeThong: React.FC = () => {
               <ul className="activity-list">
                 {recentActivities.length > 0 ? (
                   recentActivities.map((activity) => {
-                    const status = getActivityStatus(
-                      activity.TrangThai || activity.trangThai || ""
-                    );
+                    const status = getActivityStatus(activity.TrangThai || "");
                     return (
-                      <li
-                        key={activity.MaHoatDong || activity.maHoatDong}
-                        className="activity-item"
-                      >
+                      <li key={activity.MaHoatDong} className="activity-item">
                         <div className="activity-icon">
-                          {getActivityIcon(
-                            activity.TrangThai || activity.trangThai || ""
-                          )}
+                          {getActivityIcon(activity.TrangThai || "")}
                         </div>
                         <div className="activity-details">
                           <p className="activity-title">
-                            {activity.TenHoatDong || activity.tenHoatDong}
+                            {activity.TenHoatDong}
                           </p>
                           <p className="activity-time">
-                            {formatDateTime(
-                              activity.NgayBatDau || activity.ngayBatDau || ""
-                            )}
+                            {formatDateTime(activity.NgayBatDau || "")}
                           </p>
                         </div>
                         <span className={`activity-status ${status.class}`}>

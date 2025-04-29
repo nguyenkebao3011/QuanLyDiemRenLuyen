@@ -13,24 +13,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import "../css/TaoHoatDong.css";
-
-interface HocKy {
-  MaHocKy: number;
-  TenHocKy: string;
-  NamHoc: string;
-  NgayBatDau: string;
-  NgayKetThuc: string;
-}
-
-interface QuanLyKhoa {
-  MaQl: string;
-  MaTaiKhoan: string;
-  HoTen: string;
-  Khoa: string;
-  Email: string;
-  SoDienThoai: string;
-}
+import "../../../Pages/Dashboard/Admin/css/TaoHoatDong.css";
+import { HocKy, QuanLyKhoa } from "../types";
 
 interface HoatDongFormData {
   tenHoatDong: string;
