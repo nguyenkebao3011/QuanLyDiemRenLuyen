@@ -10,52 +10,48 @@ import {
   X,
 } from "react-feather";
 import axios from "axios";
-// import "./StudentDashboard.css";
 import { useNavigate } from "react-router-dom";
 
 import XemHoatDong from "../../../components/SinhVien/views/XemHoatDong";
 import XemDiemRenLuyen from "../../../components/SinhVien/views/XemDiemRenLuyen";
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
-import ThongTinSinhVien from "../../../components/SinhVien/views/ThongTinSinhVien";
+import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
 
 type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
 
-interface Student {
-  MaSV: string;
+interface Lecturer {
+  MaGV: string;
   HoTen: string;
   Email: string;
   SoDienThoai: string;
-  MaTaiKhoan: string;
+  DiaChi: string;
+  NgaySinh: string;
+  GioiTinh: string;
   AnhDaiDien: string | null;
-  DiaChi?: string;
-  NgaySinh?: string;
-  GioiTinh?: string;
-  MaLop?: string;
-  TenLop?: string;
 }
 
-const StudentDashboard: React.FC = () => {
+const TeacherDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [viewParam, setViewParam] = useState<string | null>(null);
-  const [studentName, setStudentName] = useState<string>("Sinh viên");
+  const [teacherName, setTeacherName] = useState<string>("Giảng viên");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [studentData, setStudentData] = useState<Student | null>(null);
+  const [teacherData, setTeacherData] = useState<Lecturer | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
   
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:5163";
+  const BASE_URL = "http://localhost:5163"; // Thay đổi nếu API chạy trên cổng khác
 
   const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> = {
-    dashboard: { title: "Chưa biết thêm gì", icon: <BookOpen size={18} /> },
-    activities: { title: "Chưa biết thêm gì", icon: <Calendar size={18} /> },
-    score: { title: "Chưa biết thêm gì", icon: <Award size={18} /> },
-    notifications: { title: "Chưa biết thêm gì", icon: <Bell size={18} /> },
-    evidence: { title: "Chưa biết thêm gì", icon: <FileText size={18} /> },
+    dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
+    activities: { title: "Các hoạt động", icon: <Calendar size={18} /> },
+    score: { title: "Quản lý điểm rèn luyện", icon: <Award size={18} /> },
+    notifications: { title: "Thông báo", icon: <Bell size={18} /> },
+    evidence: { title: "Phản hồi điểm rèn luyện", icon: <FileText size={18} /> },
   };
 
   const handleAvatarClick = () => {
@@ -73,30 +69,26 @@ const StudentDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchStudentData = async () => {
+    const fetchTeacherData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const username = localStorage.getItem("username");
 
-        if (!token || !username) {
-          throw new Error("Không tìm thấy token hoặc username");
+        if (!token) {
+          throw new Error("Không tìm thấy token");
         }
 
-        const response = await axios.get<Student>(
-          `${BASE_URL}/api/SinhVien/lay-sinhvien-theo-vai-tro`,
+        const response = await axios.get<Lecturer>(
+          `${BASE_URL}/api/GiaoViens/lay-giangvien-theo-vai-tro`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-            params: {
-              username: username,
-            },
           }
         );
 
-        setStudentData(response.data);
-        setStudentName(response.data.HoTen || "Sinh viên");
+        setTeacherData(response.data);
+        setTeacherName(response.data.HoTen || "Giảng Viên");
 
         if (response.data.AnhDaiDien) {
           const avatarPath = response.data.AnhDaiDien;
@@ -108,15 +100,15 @@ const StudentDashboard: React.FC = () => {
           setAvatar(null);
         }
       } catch (error) {
-        console.error("Lỗi khi lấy thông tin sinh viên:", error);
-        setStudentName("Giảng Viên");
+        console.error("Lỗi khi lấy thông tin Giảng viên:", error);
+        setTeacherName("Giảng Viên");
         setAvatar(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudentData();
+    fetchTeacherData();
   }, []);
 
   useEffect(() => {
@@ -159,11 +151,11 @@ const StudentDashboard: React.FC = () => {
       default:
         return (
           <div>
-            <h2>Xin chào, Giảng Viên {studentName}</h2>
-            {studentData ? (
-              <ThongTinSinhVien student={studentData} />
+            <h2>Xin chào {teacherName}</h2>
+            {teacherData ? (
+              <ThongTinGiangVien lecturer={teacherData} />
             ) : (
-              <p>Đang tải thông tin sinh viên...</p>
+              <p>Đang tải thông tin giảng viên...</p>
             )}
           </div>
         );
@@ -186,7 +178,7 @@ const StudentDashboard: React.FC = () => {
   };
 
   return (
-    <div className="student-dashboard-container">
+    <div className="teacher-dashboard-container">
       <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <img
           className="logo"
@@ -215,10 +207,10 @@ const StudentDashboard: React.FC = () => {
               }}
             />
           ) : (
-            <div className="avatar">{studentName.charAt(0).toUpperCase()}</div>
+            <div className="avatar">{teacherName.charAt(0).toUpperCase()}</div>
           )}
           <div className="user-details">
-            <h3>{studentName}</h3>
+            <h3>{teacherName}</h3>
             <p>Giảng Viên</p>
           </div>
         </div>
@@ -264,23 +256,23 @@ const StudentDashboard: React.FC = () => {
                 />
               ) : (
                 <div className="mini-avatar" onClick={handleAvatarClick}>
-                  {studentName.charAt(0).toUpperCase()}
+                  {teacherName.charAt(0).toUpperCase()}
                 </div>
               )}
 
               {menuVisible && (
                 <div className="avatar-dropdown">
-                  <div className="menu-item" onClick={() => navigate("/chinh-sua-thong-tin")}>
-                    ✏️ Chỉnh sửa thông tin
-                  </div>
+                  <div className="menu-item" onClick={() => navigate("/giangvien/chinh-sua-thong-tin")}>
+                 Chỉnh sửa thông tin
+              </div>
                   <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                    🔒 Đổi mật khẩu
+                    Đổi mật khẩu
                   </div>
                   <div className="menu-item" onClick={() => {
                     localStorage.clear();
                     navigate("/login");
                   }}>
-                    🚪 Đăng xuất
+                    Đăng xuất
                   </div>
                 </div>
               )}
@@ -293,4 +285,4 @@ const StudentDashboard: React.FC = () => {
   );
 };
 
-export default StudentDashboard;
+export default TeacherDashboard;

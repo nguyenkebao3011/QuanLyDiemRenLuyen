@@ -95,7 +95,7 @@ const StudentDashboard: React.FC = () => {
           }
         );
 
-        console.log("🔥 Dữ liệu sinh viên:", response.data);
+      
         setStudentData(response.data);
         setStudentName(response.data.HoTen || "Sinh viên");
 
@@ -272,16 +272,16 @@ const StudentDashboard: React.FC = () => {
               {menuVisible && (
                 <div className="avatar-dropdown">
                   <div className="menu-item" onClick={() => navigate("/chinh-sua-thong-tin")}>
-                    ✏️ Chỉnh sửa thông tin
+                     Chỉnh sửa thông tin
                   </div>
                   <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                    🔒 Đổi mật khẩu
+                     Đổi mật khẩu
                   </div>
                   <div className="menu-item" onClick={() => {
                     localStorage.clear();
                     navigate("/login");
                   }}>
-                    🚪 Đăng xuất
+                     Đăng xuất
                   </div>
                 </div>
               )}

@@ -5,23 +5,18 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import Login from "./Pages/Login/Login";
-<<<<<<< HEAD
 import ResetPassword from "./Pages/Login/ResetPassword";
-import AdminDashboard from "./Pages/Dashboard/Admin/Dashboard";
+import AdminDashboard from "./Pages/Dashboard/Admin/views/Dashboard"; // Chọn đường dẫn đúng
 import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard";
 import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard";
 import { isLoggedIn, getRole } from "./untils/auth";
-=======
-import ResetPassword from "./Pages/Login/ResetPassword"; // Thêm import này
-import AdminDashboard from "./Pages/Dashboard/Admin/views/Dashboard"; // Trang chính cho Admin
-import StudentDashboard from "./Pages/Dashboard/SinhVien/Dashboard"; // Trang chính cho Sinh viên
-import TeacherDashboard from "./Pages/Dashboard/Teacher/Dashboard"; // Trang chính cho Giáo viên
-import { isLoggedIn, getRole } from "./untils/auth"; // Các hàm xử lý token và vai trò
->>>>>>> 2aa70d8e9e984bee9dad013ed3a0d58d7b289480
+
 import ChiTietThongBao from "./Pages/Login/ChiTietThongBao";
 import CapNhatThongTin from "./components/SinhVien/views/CapNhatThongTin";
 import DoiMatKhau from "./components/SinhVien/views/DoiMatKhau";
+
 const App: React.FC = () => {
   const RedirectByRole: React.FC = () => {
     const role = getRole();
@@ -60,6 +55,8 @@ const App: React.FC = () => {
         <Route path="/" element={<RedirectByRole />} />
         <Route path="/thong-bao/:id" element={<ChiTietThongBao />} />
         <Route path="/doi-mat-khau" element={<DoiMatKhau />} />
+        <Route path="/giangvien/chinh-sua-thong-tin" element={<CapNhatThongTin />} />
+
         <Route
           path="/admin/dashboard"
           element={
