@@ -1,52 +1,94 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-// Đúng với dữ liệu trả về từ API
+// Định nghĩa kiểu dữ liệu
 interface Lecturer {
-    MaGV: string;
-    HoTen: string;
-    Email: string;
-    SoDienThoai: string;
-    AnhDaiDien: string | null;
-    DiaChi: string;
-    NgaySinh: string;
-    GioiTinh: string;
+  MaGV: string;
+  HoTen: string;
+  Email: string;
+  SoDienThoai: string;
+  AnhDaiDien: string | null;
+  DiaChi: string;
+  NgaySinh: string;
+  GioiTinh: string;
 }
 
-interface Props {
-    lecturer: Lecturer;
-}
+const ThongTinGiangVien: React.FC = () => {
+  const [lecturer, setLecturer] = useState<Lecturer | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
-const ThongTinGiangVien: React.FC<Props> = ({ lecturer }) => {
+  useEffect(() => {
+    const fetchLecturer = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Lấy token từ localStorage
+        if (!token) throw new Error("Không có token!");
+  
+        const res = await axios.get("http://localhost:5163/api/GiaoViens/lay-giangvien-theo-vai-tro", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        setLecturer(res.data.data);
+      } catch (err) {
+        console.error("Lỗi khi gọi API:", err);
+        setError("Không thể tải thông tin giảng viên.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchLecturer();
+  }, []);
+
+  if (loading) return <p>Đang tải thông tin...</p>;
+
+  if (error) return <p>{error}</p>;
+
+  if (!lecturer) {
+    return (
+      <div className="thongtin-container">
+        <h3>Thông tin Giảng Viên</h3>
+        <p>Không có thông tin giảng viên để hiển thị.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="thongtin-container">
       <h3>Thông tin Giảng Viên</h3>
 
       <div className="thongtin-content">
-        {/* Hiển thị ảnh đại diện nếu có */}
-        {lecturer.AnhDaiDien && (
+        {lecturer.AnhDaiDien ? (
           <div className="avatar-container">
             <img
-              src={lecturer.AnhDaiDien}
+               src={`http://localhost:5163${lecturer.AnhDaiDien}`}
               alt="Ảnh đại diện"
-              className="lecturer-avatar"
+              className="student-avatar"
             />
+          </div>
+        ) : (
+          <div className="avatar-container">
+            <div className="default-avatar">
+              {lecturer.HoTen ? lecturer.HoTen.charAt(0).toUpperCase() : "T"}
+            </div>
           </div>
         )}
 
-        {/* Bảng thông tin giảng viên */}
         <table className="student-info-table">
           <tbody>
             <tr className="row">
               <td><strong>Mã giảng viên:</strong></td>
-              <td>{lecturer.MaGV}</td>
+              <td>{lecturer.MaGV || "Chưa có"}</td>
               <td><strong>Họ tên:</strong></td>
-              <td>{lecturer.HoTen}</td>
+              <td>{lecturer.HoTen || "Chưa có"}</td>
             </tr>
             <tr className="row">
               <td><strong>Email:</strong></td>
-              <td>{lecturer.Email}</td>
+              <td>{lecturer.Email || "Chưa có"}</td>
               <td><strong>Số điện thoại:</strong></td>
-              <td>{lecturer.SoDienThoai}</td>
+              <td>{lecturer.SoDienThoai || "Chưa có"}</td>
             </tr>
             <tr className="row">
               <td><strong>Giới tính:</strong></td>
@@ -56,7 +98,7 @@ const ThongTinGiangVien: React.FC<Props> = ({ lecturer }) => {
             </tr>
             <tr className="row">
               <td><strong>Địa chỉ:</strong></td>
-              <td>{lecturer.DiaChi || "Chưa có"}</td>
+              <td colSpan={3}>{lecturer.DiaChi || "Chưa có"}</td>
             </tr>
           </tbody>
         </table>

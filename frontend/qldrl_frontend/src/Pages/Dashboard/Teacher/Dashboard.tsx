@@ -153,7 +153,7 @@ const TeacherDashboard: React.FC = () => {
           <div>
             <h2>Xin chào {teacherName}</h2>
             {teacherData ? (
-              <ThongTinGiangVien lecturer={teacherData} />
+              <ThongTinGiangVien  />
             ) : (
               <p>Đang tải thông tin giảng viên...</p>
             )}
@@ -171,7 +171,8 @@ const TeacherDashboard: React.FC = () => {
       window.location.href = "/login";
     }
   };
-
+  console.log(process.env.REACT_APP_API_URL)
+  
   const handleMenuClick = (menu: MenuKey) => {
     setActiveMenu(menu);
     window.history.pushState({}, "", `?menu=${menu}`);
@@ -198,7 +199,8 @@ const TeacherDashboard: React.FC = () => {
         <div className="user-info">
           {avatar ? (
             <img
-              src={avatar}
+            src={`${process.env.REACT_APP_API_URL}${avatar}`}  
+            
               alt="Avatar"
               className="avatar"
               onError={() => {
@@ -262,9 +264,9 @@ const TeacherDashboard: React.FC = () => {
 
               {menuVisible && (
                 <div className="avatar-dropdown">
-                  <div className="menu-item" onClick={() => navigate("/giangvien/chinh-sua-thong-tin")}>
-                 Chỉnh sửa thông tin
-              </div>
+                  <div className="menu-item" onClick={() => navigate("/cap-nhat-thong-tin-giang-vien")}>
+                    Cập nhật thông tin
+                  </div>
                   <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
                     Đổi mật khẩu
                   </div>

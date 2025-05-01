@@ -16,6 +16,7 @@ import { isLoggedIn, getRole } from "./untils/auth";
 import ChiTietThongBao from "./Pages/Login/ChiTietThongBao";
 import CapNhatThongTin from "./components/SinhVien/views/CapNhatThongTin";
 import DoiMatKhau from "./components/SinhVien/views/DoiMatKhau";
+import CapNhatThongTinGiangVien from "./components/GiangVien/views/CapNhatThongTinGiangVien";
 
 const App: React.FC = () => {
   const RedirectByRole: React.FC = () => {
@@ -55,7 +56,7 @@ const App: React.FC = () => {
         <Route path="/" element={<RedirectByRole />} />
         <Route path="/thong-bao/:id" element={<ChiTietThongBao />} />
         <Route path="/doi-mat-khau" element={<DoiMatKhau />} />
-        <Route path="/giangvien/chinh-sua-thong-tin" element={<CapNhatThongTin />} />
+        <Route path="/cap-nhat-thong-tin-giang-vien" element={<CapNhatThongTinGiangVien />} />
 
         <Route
           path="/admin/dashboard"

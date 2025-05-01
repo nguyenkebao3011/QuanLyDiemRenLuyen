@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "arVttIH1CuEBsTFkny8zlWaxbq75oy0pj/10rBB2CK8=",
+  "Hash": "1Uc8yHhF6StechdNqq+TX8etMliAmRNq2oyMnJaa2jc=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -267,6 +267,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638815665974672468.jpg"
+    },
+    {
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "avatars/hung.nguyen@huit.edu.vn_638817399485623523#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "llvcgwdcfv",
+      "Integrity": "B3V+1Se5cITh/s+e+q/6aX8w0+6lQXwfhl2MyYbs6Jg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg"
     },
     {
       "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
@@ -1100,6 +1121,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-8cu/FuiWGWFeraawz9DN8ZBYG7h9FhWvt94WF6wTFNU="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/hung.nguyen@huit.edu.vn_638817399485623523.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "42579"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"B3V+1Se5cITh/s+e+q/6aX8w0+6lQXwfhl2MyYbs6Jg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 01 May 2025 16:45:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-B3V+1Se5cITh/s+e+q/6aX8w0+6lQXwfhl2MyYbs6Jg="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/hung.nguyen@huit.edu.vn_638817399485623523.llvcgwdcfv.jpg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "42579"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"B3V+1Se5cITh/s+e+q/6aX8w0+6lQXwfhl2MyYbs6Jg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 01 May 2025 16:45:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "llvcgwdcfv"
+        },
+        {
+          "Name": "label",
+          "Value": "avatars/hung.nguyen@huit.edu.vn_638817399485623523.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-B3V+1Se5cITh/s+e+q/6aX8w0+6lQXwfhl2MyYbs6Jg="
         }
       ]
     },

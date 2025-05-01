@@ -13,7 +13,7 @@ interface Student {
   NgaySinh?: string;
   GioiTinh?: string;
   MaLop?: string;
-  TenLop?: string; // Thêm trường này
+  TenLop?: string; 
 }
 
 interface Props {
