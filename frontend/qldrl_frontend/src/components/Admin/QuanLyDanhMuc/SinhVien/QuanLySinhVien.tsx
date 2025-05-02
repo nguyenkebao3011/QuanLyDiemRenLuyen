@@ -5,25 +5,28 @@ import {
   Plus,
   Edit2,
   Trash2,
-  Filter,
   RefreshCw,
   Download,
   AlertCircle,
 } from "lucide-react";
 import "./QuanLySinhVien.css";
-import { SinhVien } from "../../types";
+import { SinhVien, Lop } from "../../types";
 import ThemSinhVien from "./ThemSinhVien";
 import SuaSinhVien from "./SuaSinhVien";
 import XacNhanXoaSinhVien from "./XacNhanXoaSinhVien";
-
 const API_URL = "http://localhost:5163/api";
 
 const QuanLySinhVien: React.FC = () => {
   const [sinhVienList, setSinhVienList] = useState<SinhVien[]>([]);
   const [filteredList, setFilteredList] = useState<SinhVien[]>([]);
+  const [lopList, setLopList] = useState<Lop[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  // State cho bộ lọc
+  const [filterLop, setFilterLop] = useState<string>("");
+  const [filterTrangThai, setFilterTrangThai] = useState<string>("");
+  const [filterGioiTinh, setFilterGioiTinh] = useState<string>("");
 
   // State cho modals
   const [showAddModal, setShowAddModal] = useState(false);
@@ -36,14 +39,30 @@ const QuanLySinhVien: React.FC = () => {
     name: string | null;
   }>({ MaSV: "", name: null });
 
+  // Hàm lấy danh sách lớp
+  const fetchLop = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_URL}/Lop/lay_danh_sach_lop`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setLopList(
+        Array.isArray(response.data) ? response.data : [response.data]
+      );
+    } catch (error: any) {
+      console.error("Lỗi khi lấy danh sách lớp:", error);
+      setError("Không thể tải danh sách lớp");
+    }
+  };
+
   // Hàm lấy danh sách sinh viên
   const fetchSinhVien = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
       const response = await axios.get(
         `${API_URL}/SinhVien/lay-sinhvien-theo-vai-tro`,
         {
@@ -52,7 +71,6 @@ const QuanLySinhVien: React.FC = () => {
           },
         }
       );
-
       const dataArr = Array.isArray(response.data)
         ? response.data
         : [response.data];
@@ -64,8 +82,6 @@ const QuanLySinhVien: React.FC = () => {
         error.response?.data?.message ||
           "Có lỗi xảy ra khi tải dữ liệu sinh viên"
       );
-
-      // Xử lý lỗi 401 - Unauthorized
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
@@ -80,28 +96,45 @@ const QuanLySinhVien: React.FC = () => {
   // Gọi API khi component mount
   useEffect(() => {
     fetchSinhVien();
+    fetchLop();
   }, []);
 
-  // Lọc danh sách khi searchTerm thay đổi
+  // Lọc danh sách khi searchTerm hoặc bộ lọc thay đổi
   useEffect(() => {
+    let filtered = sinhVienList;
+
+    // Lọc theo searchTerm
     if (searchTerm) {
-      const filtered = sinhVienList.filter(
+      filtered = filtered.filter(
         (sv) =>
           sv.HoTen?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           sv.MaSV?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           sv.MaLop?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           sv.Email?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredList(filtered);
-    } else {
-      setFilteredList(sinhVienList);
     }
-  }, [searchTerm, sinhVienList]);
+
+    // Lọc theo lớp
+    if (filterLop) {
+      filtered = filtered.filter((sv) => sv.MaLop === filterLop);
+    }
+
+    // Lọc theo trạng thái
+    if (filterTrangThai) {
+      filtered = filtered.filter((sv) => sv.TrangThai === filterTrangThai);
+    }
+
+    // Lọc theo giới tính
+    if (filterGioiTinh) {
+      filtered = filtered.filter((sv) => sv.GioiTinh === filterGioiTinh);
+    }
+
+    setFilteredList(filtered);
+  }, [searchTerm, filterLop, filterTrangThai, filterGioiTinh, sinhVienList]);
 
   // Format ngày sinh để hiển thị
   const formatDate = (dateString: Date | string | null | undefined): string => {
     if (!dateString) return "-";
-
     try {
       const date = new Date(dateString);
       return date.toISOString().split("T")[0]; // Format YYYY-MM-DD
@@ -118,6 +151,10 @@ const QuanLySinhVien: React.FC = () => {
   // Xử lý làm mới dữ liệu
   const handleRefresh = () => {
     fetchSinhVien();
+    setSearchTerm("");
+    setFilterLop("");
+    setFilterTrangThai("");
+    setFilterGioiTinh("");
   };
 
   // Xử lý mở modal thêm sinh viên
@@ -140,12 +177,8 @@ const QuanLySinhVien: React.FC = () => {
   // Xử lý xóa sinh viên
   const handleDelete = async () => {
     if (!deletingSinhVien.MaSV) return;
-
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
-      //Gọi API xóa sinh viên
       await axios.delete(
         `${API_URL}/QuanLySinhVien/xoa_sinh_vien/${deletingSinhVien.MaSV}`,
         {
@@ -154,19 +187,12 @@ const QuanLySinhVien: React.FC = () => {
           },
         }
       );
-
-      // Tạm thời dùng setTimeout để giả lập API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Cập nhật state sau khi xóa
       setSinhVienList(
         sinhVienList.filter((sv) => sv.MaSV !== deletingSinhVien.MaSV)
       );
       setFilteredList(
         filteredList.filter((sv) => sv.MaSV !== deletingSinhVien.MaSV)
       );
-
-      // Đóng modal và reset state
       setDeletingSinhVien({ MaSV: "", name: null });
       alert("Xóa sinh viên thành công");
     } catch (error: any) {
@@ -177,7 +203,6 @@ const QuanLySinhVien: React.FC = () => {
 
   // Xử lý xuất Excel
   const handleExportExcel = () => {
-    // Xử lý xuất Excel
     alert("Chức năng xuất Excel đang được phát triển");
   };
 
@@ -185,7 +210,8 @@ const QuanLySinhVien: React.FC = () => {
     if (sinhVien.MaLopNavigation && sinhVien.MaLopNavigation.tenLop) {
       return sinhVien.MaLopNavigation.tenLop;
     }
-    return sinhVien.MaLop || "";
+    const lop = lopList.find((l) => l.MaLop === sinhVien.MaLop);
+    return lop ? lop.TenLop : sinhVien.MaLop || "";
   };
 
   return (
@@ -193,10 +219,6 @@ const QuanLySinhVien: React.FC = () => {
       <div className="management-header">
         <h2>Quản lý sinh viên</h2>
         <div className="action-buttons">
-          <button className="filter-btn">
-            <Filter size={16} />
-            <span>Lọc</span>
-          </button>
           <button className="refresh-btn" onClick={handleRefresh}>
             <RefreshCw size={16} />
             <span>Làm mới</span>
@@ -212,15 +234,65 @@ const QuanLySinhVien: React.FC = () => {
         </div>
       </div>
 
-      <div className="search-box">
-        <Search size={18} className="search-icon" />
-        <input
-          type="text"
-          placeholder="Tìm kiếm sinh viên theo tên, mã SV, lớp..."
-          className="search-input"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
+      <div className="filter-search-container">
+        <div className="filter-box">
+          <div className="form-group">
+            <label htmlFor="filterLop">Lớp</label>
+            <select
+              id="filterLop"
+              value={filterLop}
+              onChange={(e) => setFilterLop(e.target.value)}
+            >
+              <option value="">Tất cả lớp</option>
+              {lopList.map((lop) => (
+                <option key={lop.MaLop} value={lop.MaLop}>
+                  {lop.TenLop}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="filterTrangThai">Trạng thái</label>
+            <select
+              id="filterTrangThai"
+              value={filterTrangThai}
+              onChange={(e) => setFilterTrangThai(e.target.value)}
+            >
+              <option value="">Tất cả trạng thái</option>
+              <option value="HoatDong">Hoạt động</option>
+              <option value="Khoa">Khóa</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="filterGioiTinh">Giới tính</label>
+            <select
+              id="filterGioiTinh"
+              value={filterGioiTinh}
+              onChange={(e) => setFilterGioiTinh(e.target.value)}
+            >
+              <option value="">Tất cả giới tính</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+        </div>
+        <div className="search-box">
+          <form onSubmit={() => handleSearch} className="search-form">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Tìm kiếm hoạt động..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              <button type="submit" className="search-button">
+                <Search size={18} />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
       {error && (
@@ -299,6 +371,7 @@ const QuanLySinhVien: React.FC = () => {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSuccess={fetchSinhVien}
+        lopList={lopList}
       />
 
       <SuaSinhVien
@@ -307,6 +380,7 @@ const QuanLySinhVien: React.FC = () => {
         onSuccess={fetchSinhVien}
         sinhVienId={editingSinhVien.MaSV}
         data={editingSinhVien.data}
+        lopList={lopList}
       />
 
       <XacNhanXoaSinhVien

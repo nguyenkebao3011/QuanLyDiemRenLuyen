@@ -151,7 +151,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                             GioiTinh = sinhVienDTO.GioiTinh,
                             AnhDaiDien = anhDaiDienPath,
                             MaVaiTro = sinhVienDTO.MaVaiTro,
-                            TrangThai = sinhVienDTO.TrangThai ?? "1"
+                            TrangThai = sinhVienDTO.TrangThai ?? "HoatDong"
                         };
 
                         // Thêm sinh viên vào database
@@ -329,7 +329,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
 
                     // Lưu thông tin tài khoản để xóa sau
                     string maTaiKhoan = sinhVien.MaTaiKhoan;
-                    string anhDaiDien = sinhVien.AnhDaiDien;
+                    string ?anhDaiDien = sinhVien.AnhDaiDien;
 
                     // Xóa sinh viên
                     _context.SinhViens.Remove(sinhVien);

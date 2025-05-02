@@ -1,10 +1,13 @@
+/* Container chính */
 .giang-vien-management {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
 }
 
+/* Header */
 .management-header {
   display: flex;
   justify-content: space-between;
@@ -13,86 +16,110 @@
 }
 
 .management-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--gray-800);
+  font-size: 1.5rem;
+  color: #0055a4;
+  margin: 0;
 }
 
+/* Action buttons */
 .action-buttons {
   display: flex;
   gap: 10px;
-}
-
-.action-buttons button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: var(--border-radius);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
+  flex-wrap: wrap;
 }
 
 .filter-btn,
 .refresh-btn,
-.export-btn {
-  background-color: var(--white);
-  border: 1px solid var(--gray-200);
-  color: var(--gray-700);
+.export-btn,
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.filter-btn:hover,
-.refresh-btn:hover,
+.filter-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.filter-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.refresh-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.refresh-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.export-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
 .export-btn:hover {
-  background-color: var(--gray-100);
+  background-color: #e0e0e0;
 }
 
 .add-btn {
-  background-color: var(--primary);
-  border: 1px solid var(--primary);
-  color: var(--white);
+  background-color: #0055a4;
+  color: white;
 }
 
 .add-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: #004080;
 }
 
+/* Phần tìm kiếm */
 .search-box {
-  position: relative;
   margin-bottom: 20px;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray-400);
 }
 
 .search-input {
   width: 100%;
-  padding: 10px 12px 10px 40px;
-  border: 1px solid var(--gray-300);
-  border-radius: var(--border-radius);
-  font-size: 14px;
+  max-width: 300px; /* Giới hạn chiều rộng tương tự HoatDongNamHoc */
+  padding: 8px 32px 8px 12px; /* Padding để chứa biểu tượng */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23666" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>')
+    no-repeat right 8px center;
+  background-size: 16px 16px;
+  transition: border-color 0.2s;
 }
 
 .search-input:focus {
+  border-color: #0055a4;
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
-.lecturer-table-container {
-  flex: 1;
-  overflow: auto;
-  border: 1px solid var(--gray-200);
-  border-radius: var(--border-radius);
+/* Thông báo lỗi */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
   margin-bottom: 20px;
-  background-color: var(--white);
+}
+
+/* Bảng giảng viên */
+.lecturer-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
 }
 
 .lecturer-table {
@@ -102,33 +129,26 @@
 
 .lecturer-table th,
 .lecturer-table td {
-  padding: 12px 16px;
+  padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid #eaeaea;
 }
 
 .lecturer-table th {
-  background-color: var(--gray-50);
+  background-color: #f5f5f5;
   font-weight: 600;
-  font-size: 14px;
-  color: var(--gray-700);
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  color: #333;
 }
 
 .lecturer-table td {
-  font-size: 14px;
-  color: var(--gray-800);
+  font-size: 0.9rem;
+  color: #555;
 }
 
-.lecturer-table tr:hover {
-  background-color: var(--gray-50);
-}
-
+/* Cột thao tác */
 .action-cell {
   display: flex;
-  gap: 8px;
+  gap: 5px;
 }
 
 .edit-btn,
@@ -136,217 +156,121 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
-  border-radius: 4px;
-  transition: var(--transition);
 }
 
 .edit-btn {
-  color: var(--info);
-}
-
-.edit-btn:hover {
-  background-color: rgba(59, 130, 246, 0.1);
+  color: #ffc107;
 }
 
 .delete-btn {
-  color: var(--danger);
+  color: #dc3545;
 }
 
+.edit-btn:hover,
 .delete-btn:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: #f5f5f5;
 }
 
+/* Thông báo tải và không có dữ liệu */
+.loading-message {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Phân trang */
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
 }
 
 .pagination-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--white);
-  border: 1px solid var(--gray-200);
+  padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-700);
+  background: none;
   cursor: pointer;
-  transition: var(--transition);
-}
-
-.pagination-btn:hover {
-  background-color: var(--gray-100);
+  font-size: 0.9rem;
+  color: #333;
 }
 
 .pagination-btn.active {
-  background-color: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
+  background-color: #0055a4;
+  color: white;
+  border-color: #0055a4;
 }
 
-/* Form overlay styles */
-.form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+.pagination-btn:hover:not(.active) {
+  background-color: #f5f5f5;
 }
 
-.lecturer-form {
-  background-color: var(--white);
-  border-radius: var(--border-radius);
-  padding: 24px;
-  width: 100%;
-  max-width: 800px;
-  box-shadow: var(--shadow-lg);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--gray-200);
-}
-
-.form-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--gray-800);
-  margin: 0;
-}
-
-.form-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.form-group {
-  flex: 1;
-}
-
-.form-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-700);
-  margin-bottom: 6px;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--gray-300);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.cancel-btn,
-.save-btn {
-  padding: 10px 16px;
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.cancel-btn {
-  background-color: var(--white);
-  border: 1px solid var(--gray-300);
-  color: var(--gray-700);
-}
-
-.cancel-btn:hover {
-  background-color: var(--gray-100);
-}
-
-.save-btn {
-  background-color: var(--primary);
-  border: 1px solid var(--primary);
-  color: var(--white);
-}
-
-.save-btn:hover {
-  background-color: var(--primary-dark);
-}
-
-.save-btn:disabled,
-.cancel-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Loading and error states */
-.loading-message,
-.empty-message,
-.error-message {
-  padding: 20px;
-  text-align: center;
-  color: var(--gray-600);
-  font-size: 14px;
-}
-
-.error-message {
-  color: var(--danger);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding: 12px;
-  background-color: rgba(239, 68, 68, 0.1);
-  border-radius: var(--border-radius);
-}
-
-/* Responsive styles */
+/* Responsive design */
 @media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-  }
-
   .management-header {
     flex-direction: column;
+    gap: 15px;
     align-items: flex-start;
-    gap: 16px;
   }
 
   .action-buttons {
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 8px;
+    justify-content: space-between;
+  }
+  .hoat-dong-filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .search-form {
+    flex: 1;
+    max-width: 400px;
+  }
+
+  .search-input-container {
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+
+  .search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+  }
+
+  .lecturer-table th,
+  .lecturer-table td {
+    padding: 10px;
+    font-size: 0.85rem;
   }
 }

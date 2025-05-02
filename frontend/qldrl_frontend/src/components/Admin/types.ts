@@ -87,3 +87,8 @@ export interface GiaoVien {
   TrangThai: string | null;
   MaTaiKhoanNavigation?: TaiKhoan;
 }
+// Định nghĩa type cho lớp
+export interface Lop {
+  MaLop: string;
+  TenLop: string;
+}

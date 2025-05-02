@@ -35,7 +35,6 @@
   transition: var(--transition);
 }
 
-.filter-btn,
 .refresh-btn,
 .export-btn {
   background-color: var(--white);
@@ -43,7 +42,6 @@
   color: var(--gray-700);
 }
 
-.filter-btn:hover,
 .refresh-btn:hover,
 .export-btn:hover {
   background-color: var(--gray-100);
@@ -59,9 +57,36 @@
   background-color: var(--primary-dark);
 }
 
+.filter-search-container {
+  margin-bottom: 20px;
+}
+
+.filter-box {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-box .form-group {
+  flex: 1;
+}
+
+.filter-box select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+}
+
+.filter-box select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
 .search-box {
   position: relative;
-  margin-bottom: 20px;
 }
 
 .search-icon {
@@ -338,6 +363,10 @@
     flex-direction: column;
   }
 
+  .filter-box {
+    flex-direction: column;
+  }
+
   .management-header {
     flex-direction: column;
     align-items: flex-start;
@@ -348,5 +377,55 @@
     width: 100%;
     overflow-x: auto;
     padding-bottom: 8px;
+  }
+  /* Định nghĩa chung cho phần tìm kiếm */
+  .search-box {
+    flex: 1;
+    max-width: 400px;
+    margin-bottom: 20px; /* Để khớp với khoảng cách trong HoatDongNamHoc */
+  }
+
+  .search-form {
+    flex: 1;
+    max-width: 100%;
+  }
+
+  .search-input-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px; /* Padding để tạo không gian cho nút tìm kiếm */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+  }
+
+  .search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 30px; /* Đảm bảo nút không quá lớn */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Responsive design (tùy chọn) */
+  @media (max-width: 768px) {
+    .search-box {
+      max-width: 100%;
+      width: 100%;
+    }
   }
 }

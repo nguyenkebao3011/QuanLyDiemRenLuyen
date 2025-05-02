@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH387104_638817948854602473.png",
+      "PackagePath": "staticwebassets\\avatars\\DHTH387104_638817948854602473.png"
+    },
+    {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638803492432562037.png",
       "PackagePath": "staticwebassets\\avatars\\DHTH603148_638803492432562037.png"
     },
@@ -37,8 +41,28 @@
       "PackagePath": "staticwebassets\\avatars\\DHTH603148_638815665974672468.jpg"
     },
     {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638817794895862953.jpeg",
+      "PackagePath": "staticwebassets\\avatars\\GV01_638817794895862953.jpeg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638817801503140603.jpeg",
+      "PackagePath": "staticwebassets\\avatars\\GV01_638817801503140603.jpeg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV03_638817898886213498.jpeg",
+      "PackagePath": "staticwebassets\\avatars\\GV03_638817898886213498.jpeg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV03_638817926905878863.png",
+      "PackagePath": "staticwebassets\\avatars\\GV03_638817926905878863.png"
+    },
+    {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg",
       "PackagePath": "staticwebassets\\avatars\\hung.nguyen@huit.edu.vn_638817399485623523.jpg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\hung.nguyen@huit.edu.vn_638817762322026392.jpeg",
+      "PackagePath": "staticwebassets\\avatars\\hung.nguyen@huit.edu.vn_638817762322026392.jpeg"
     },
     {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\test.html",
