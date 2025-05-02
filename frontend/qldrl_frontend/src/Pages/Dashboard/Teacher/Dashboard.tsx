@@ -9,17 +9,16 @@ import {
   Menu,
   X,
 } from "react-feather";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 
-import XemHoatDong from "../../../components/SinhVien/views/XemHoatDong";
+import XemHoatDong from "../../../components/GiangVien/views/XemHoatDong";
 import XemDiemRenLuyen from "../../../components/SinhVien/views/XemDiemRenLuyen";
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
 
-type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
-
+// Định nghĩa kiểu Lecturer
 interface Lecturer {
   MaGV: string;
   HoTen: string;
@@ -31,6 +30,8 @@ interface Lecturer {
   AnhDaiDien: string | null;
 }
 
+type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
+
 const TeacherDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
@@ -41,9 +42,8 @@ const TeacherDashboard: React.FC = () => {
   const [teacherData, setTeacherData] = useState<Lecturer | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
-  
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const BASE_URL = "http://localhost:5163"; // Thay đổi nếu API chạy trên cổng khác
 
   const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> = {
@@ -73,12 +73,13 @@ const TeacherDashboard: React.FC = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-
+        console.log("Token:", token); // Kiểm tra token có trong localStorage không
         if (!token) {
           throw new Error("Không tìm thấy token");
         }
 
-        const response = await axios.get<Lecturer>(
+        // Định dạng lại kiểu trả về để tương thích với API
+        const response: AxiosResponse<{ data: Lecturer }> = await axios.get(
           `${BASE_URL}/api/GiaoViens/lay-giangvien-theo-vai-tro`,
           {
             headers: {
@@ -87,14 +88,18 @@ const TeacherDashboard: React.FC = () => {
           }
         );
 
-        setTeacherData(response.data);
-        setTeacherName(response.data.HoTen || "Giảng Viên");
+        console.log("Teacher Data:", response.data); // Kiểm tra dữ liệu trả về
 
-        if (response.data.AnhDaiDien) {
-          const avatarPath = response.data.AnhDaiDien;
+        const teacher = response.data.data; // Truy cập vào trường `data` trong response
+        setTeacherData(teacher);
+        setTeacherName(teacher.HoTen || "Giảng Viên");
+
+        if (teacher.AnhDaiDien) {
+          const avatarPath = teacher.AnhDaiDien;
           const avatarUrl = avatarPath.startsWith("http")
             ? avatarPath
             : `${BASE_URL}${avatarPath}`;
+          console.log("Avatar URL:", avatarUrl); // Kiểm tra đường dẫn ảnh
           setAvatar(avatarUrl);
         } else {
           setAvatar(null);
@@ -153,7 +158,7 @@ const TeacherDashboard: React.FC = () => {
           <div>
             <h2>Xin chào {teacherName}</h2>
             {teacherData ? (
-              <ThongTinGiangVien  />
+              <ThongTinGiangVien />
             ) : (
               <p>Đang tải thông tin giảng viên...</p>
             )}
@@ -171,8 +176,7 @@ const TeacherDashboard: React.FC = () => {
       window.location.href = "/login";
     }
   };
-  console.log(process.env.REACT_APP_API_URL)
-  
+
   const handleMenuClick = (menu: MenuKey) => {
     setActiveMenu(menu);
     window.history.pushState({}, "", `?menu=${menu}`);
@@ -199,8 +203,7 @@ const TeacherDashboard: React.FC = () => {
         <div className="user-info">
           {avatar ? (
             <img
-            src={`${process.env.REACT_APP_API_URL}${avatar}`}  
-            
+              src={avatar}
               alt="Avatar"
               className="avatar"
               onError={() => {
@@ -268,12 +271,9 @@ const TeacherDashboard: React.FC = () => {
                     Cập nhật thông tin
                   </div>
                   <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                    Đổi mật khẩu
+                     Đổi mật khẩu
                   </div>
-                  <div className="menu-item" onClick={() => {
-                    localStorage.clear();
-                    navigate("/login");
-                  }}>
+                  <div className="menu-item" onClick={handleLogout}>
                     Đăng xuất
                   </div>
                 </div>
@@ -281,7 +281,7 @@ const TeacherDashboard: React.FC = () => {
             </div>
           </div>
         </header>
-        <div className="content-body">{renderContent()}</div>
+        <main>{renderContent()}</main>
       </div>
     </div>
   );

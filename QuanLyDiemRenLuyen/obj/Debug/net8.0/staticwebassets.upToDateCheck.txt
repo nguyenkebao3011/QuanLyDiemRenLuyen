@@ -7,5 +7,10 @@ wwwroot\avatars\DHTH603148_638815576878119305.jpeg
 wwwroot\avatars\DHTH603148_638815659665733859.jpg
 wwwroot\avatars\DHTH603148_638815660192944905.png
 wwwroot\avatars\DHTH603148_638815665974672468.jpg
+wwwroot\avatars\GV01_638817794895862953.jpeg
+wwwroot\avatars\GV01_638817801503140603.jpeg
+wwwroot\avatars\GV03_638817898886213498.jpeg
+wwwroot\avatars\GV03_638817926905878863.png
 wwwroot\avatars\hung.nguyen@huit.edu.vn_638817399485623523.jpg
+wwwroot\avatars\hung.nguyen@huit.edu.vn_638817762322026392.jpeg
 wwwroot\test.html

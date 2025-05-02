@@ -4,11 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Thêm dòng này vào phần đầu của Program.cs để đảm bảo logging hoạt động
+// Cấu hình logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
@@ -17,6 +18,7 @@ builder.Logging.AddDebug();
 builder.Services.AddDbContext<QlDrlContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QlDrlConnection")));
 builder.Services.AddControllers();
+
 // Đăng ký IHttpClientFactory
 builder.Services.AddHttpClient();
 
@@ -88,38 +90,31 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
+    // Thêm bộ lọc để hỗ trợ IFormFile
+    c.OperationFilter<FormFileOperationFilter>();
 });
 
-// Thêm cấu hình CORS
+// Gộp chính sách CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Thay thế bằng URL của frontend
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
-            .AllowCredentials(); // Nếu có dùng cookie/token cần cái này
-    });
-});
-// Sử dụng Cors
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+              .AllowCredentials();
     });
 });
 
-
-// Email 
+// Email
 builder.Services.AddSingleton<IEmailService, EmailService>();
+
 var app = builder.Build();
 
 // Sử dụng Session
 app.UseSession();
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -137,7 +132,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuanLyDiemRenLuyen v1");
-        c.RoutePrefix = ""; // hoặc "swagger" nếu Swagger nằm tại /swagger
+        c.RoutePrefix = "";
     });
 }
 
@@ -150,3 +145,63 @@ app.MapControllerRoute(
 app.MapControllers();
 
 app.Run();
+
+// Bộ lọc để hỗ trợ IFormFile trong Swagger
+public class FormFileOperationFilter : IOperationFilter
+{
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        var fileParameters = context.MethodInfo.GetParameters()
+            .Where(p => p.ParameterType == typeof(IFormFile))
+            .ToList();
+
+        if (!fileParameters.Any()) return;
+
+        operation.RequestBody = new OpenApiRequestBody
+        {
+            Content = new Dictionary<string, OpenApiMediaType>
+            {
+                ["multipart/form-data"] = new OpenApiMediaType
+                {
+                    Schema = new OpenApiSchema
+                    {
+                        Type = "object",
+                        Properties = new Dictionary<string, OpenApiSchema>
+                        {
+                            ["AnhDaiDien"] = new OpenApiSchema
+                            {
+                                Type = "string",
+                                Format = "binary"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All);
+            });
+
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+        {
+            options.SerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All);
+        });
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseRouting();
+        app.UseCors(builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Content-Type"));
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
+    }
+}

@@ -32,7 +32,6 @@ const CapNhatThongTinGiangVien: React.FC = () => {
   const [lecturerData, setLecturerData] = useState<Lecturer | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [formData, setFormData] = useState({
-    Email: "",
     SoDienThoai: "",
     DiaChi: "",
     Province: "",
@@ -115,7 +114,20 @@ const CapNhatThongTinGiangVien: React.FC = () => {
     }
   }, [formData.District]);
 
-  // Hàm lấy thông tin giảng viên (dùng lại ở nhiều nơi)
+  // Hàm tách địa chỉ thành các thành phần
+  const parseAddress = (address: string) => {
+    if (!address) return { street: "", ward: "", district: "", province: "" };
+
+    const parts = address.split(",").map((part) => part.trim());
+    const street = parts[0] || "";
+    const ward = parts[1] || "";
+    const district = parts[2] || "";
+    const province = parts[3] || "";
+
+    return { street, ward, district, province };
+  };
+
+  // Hàm lấy thông tin giảng viên
   const fetchLecturerData = async () => {
     try {
       setLoading(true);
@@ -142,13 +154,48 @@ const CapNhatThongTinGiangVien: React.FC = () => {
       }
 
       setLecturerData(lecturer);
+
+      // Tách địa chỉ từ lecturerData.DiaChi
+      const { street, ward, district, province } = parseAddress(lecturer.DiaChi || "");
+
+      // Tìm mã code tương ứng cho Province, District, Ward
+      let provinceCode = "";
+      let districtCode = "";
+      let wardCode = "";
+
+      const provinceMatch = provinces.find((p) => p.name === province);
+      if (provinceMatch) {
+        provinceCode = provinceMatch.code.toString();
+        const districtResponse = await axios.get(
+          `${PROVINCE_API}p/${provinceCode}?depth=2`
+        );
+        setDistricts(districtResponse.data.districts || []);
+
+        const districtMatch = districtResponse.data.districts.find(
+          (d: District) => d.name === district
+        );
+        if (districtMatch) {
+          districtCode = districtMatch.code.toString();
+          const wardResponse = await axios.get(
+            `${PROVINCE_API}d/${districtCode}?depth=2`
+          );
+          setWards(wardResponse.data.wards || []);
+
+          const wardMatch = wardResponse.data.wards.find(
+            (w: Ward) => w.name === ward
+          );
+          if (wardMatch) {
+            wardCode = wardMatch.code.toString();
+          }
+        }
+      }
+
       setFormData({
-        Email: lecturer.Email || "",
         SoDienThoai: lecturer.SoDienThoai || "",
-        DiaChi: lecturer.DiaChi || "",
-        Province: "",
-        District: "",
-        Ward: "",
+        DiaChi: street,
+        Province: provinceCode,
+        District: districtCode,
+        Ward: wardCode,
       });
     } catch (err: any) {
       console.error("Lỗi khi lấy thông tin giảng viên:", err);
@@ -161,10 +208,12 @@ const CapNhatThongTinGiangVien: React.FC = () => {
     }
   };
 
-  // Lấy thông tin giảng viên khi component mount
+  // Gọi fetchLecturerData sau khi provinces được tải
   useEffect(() => {
-    fetchLecturerData();
-  }, [navigate]);
+    if (provinces.length > 0) {
+      fetchLecturerData();
+    }
+  }, [provinces, navigate]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -193,6 +242,7 @@ const CapNhatThongTinGiangVien: React.FC = () => {
         return;
       }
 
+      // Xây dựng địa chỉ đầy đủ từ các thành phần được chọn
       const fullAddress = `${
         formData.DiaChi ? formData.DiaChi + ", " : ""
       }${
@@ -210,17 +260,30 @@ const CapNhatThongTinGiangVien: React.FC = () => {
           : ""
       }`.trim();
 
+      // Chuẩn hóa chuỗi để đảm bảo UTF-8
+      const cleanedAddress = encodeURIComponent(fullAddress)
+        .replace(/%uD83C[\uDF00-\uDFFF]|%uD83D[\uDC00-\uDE4F]/g, "");
+
+      // Kiểm tra điều kiện của các trường
+      if (formData.SoDienThoai && formData.SoDienThoai.length !== 10) {
+        setError("Số điện thoại phải có đúng 10 chữ số");
+        setLoading(false);
+        return;
+      }
+
+      if (!cleanedAddress) {
+        setError("Địa chỉ không được để trống");
+        setLoading(false);
+        return;
+      }
+
       const formDataToSend = new FormData();
-      formDataToSend.append("MaGV", lecturerData.MaGV);
-      formDataToSend.append("HoTen", lecturerData.HoTen);
-      formDataToSend.append("Email", formData.Email);
       formDataToSend.append("SoDienThoai", formData.SoDienThoai);
-      formDataToSend.append("DiaChi", fullAddress);
-      formDataToSend.append("NgaySinh", lecturerData.NgaySinh || "");
-      formDataToSend.append("GioiTinh", lecturerData.GioiTinh || "");
+      formDataToSend.append("DiaChi", decodeURIComponent(cleanedAddress));
+
       if (avatarFile) {
-        formDataToSend.append("AnhDaiDien", avatarFile);
-        console.log("File ảnh được gửi:", avatarFile); // Log để kiểm tra
+        formDataToSend.append("avatar", avatarFile);
+        console.log("File ảnh được gửi:", avatarFile);
       }
 
       const response = await axios.put(
@@ -230,6 +293,7 @@ const CapNhatThongTinGiangVien: React.FC = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
+            "Accept": "application/json"
           },
         }
       );
@@ -238,8 +302,7 @@ const CapNhatThongTinGiangVien: React.FC = () => {
         setSuccessMessage("Cập nhật thông tin thành công!");
         setEditMode(false);
         setAvatarFile(null);
-
-        // Gọi lại API để lấy dữ liệu mới (bao gồm đường dẫn ảnh mới)
+        console.log("Địa chỉ đầy đủ:", fullAddress);
         await fetchLecturerData();
       }
     } catch (err: any) {
@@ -280,50 +343,42 @@ const CapNhatThongTinGiangVien: React.FC = () => {
         {lecturerData ? (
           <div className="thongtin-content">
             <div className="avatar-container">
-              {lecturerData.AnhDaiDien ? (
+              {editMode && avatarFile ? (
+                <img
+                  src={URL.createObjectURL(avatarFile)}
+                  alt="Ảnh đại diện mới"
+                  className="avatar-img"
+                  onError={(e) =>
+                    (e.currentTarget.src = "/path/to/default-avatar.jpg")
+                  }
+                />
+              ) : lecturerData.AnhDaiDien ? (
                 <img
                   src={`${BASE_URL}${lecturerData.AnhDaiDien}`}
                   alt="Ảnh đại diện"
-                  style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+                  className="avatar-img"
                   onError={(e) =>
                     (e.currentTarget.src = "/path/to/default-avatar.jpg")
                   }
                 />
               ) : (
-                <div
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    background: "#ddd",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  Không có ảnh
+                <div className="default-avatar">
+                  {lecturerData.HoTen ? lecturerData.HoTen.charAt(0) : "U"}
                 </div>
               )}
+
               {editMode && (
-                <div>
+                <div className="file-input">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleAvatarChange}
-                    style={{ marginTop: "10px" }}
+                    className="file-input-hidden"
+                    id="avatar-upload"
                   />
-                  {avatarFile && (
-                    <img
-                      src={URL.createObjectURL(avatarFile)}
-                      alt="Ảnh mới"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "50%",
-                        marginTop: "10px",
-                      }}
-                    />
-                  )}
+                  <label htmlFor="avatar-upload" className="chon-tep-btn">
+                    Chọn tệp
+                  </label>
                 </div>
               )}
             </div>
@@ -342,17 +397,7 @@ const CapNhatThongTinGiangVien: React.FC = () => {
               <div className="info-row">
                 <div className="info-item">
                   <label>Email:</label>
-                  {editMode ? (
-                    <input
-                      type="email"
-                      name="Email"
-                      value={formData.Email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  ) : (
-                    <span>{lecturerData.Email || "Chưa có"}</span>
-                  )}
+                  <span>{lecturerData.Email || "Chưa có"}</span>
                 </div>
                 <div className="info-item">
                   <label>Số điện thoại:</label>
@@ -362,7 +407,9 @@ const CapNhatThongTinGiangVien: React.FC = () => {
                       name="SoDienThoai"
                       value={formData.SoDienThoai}
                       onChange={handleInputChange}
-                      required
+                      pattern="[0-9]{10}"
+                      title="Số điện thoại phải có đúng 10 chữ số"
+                      maxLength={10}
                     />
                   ) : (
                     <span>{lecturerData.SoDienThoai || "Chưa có"}</span>
@@ -384,6 +431,14 @@ const CapNhatThongTinGiangVien: React.FC = () => {
                   <label>Địa chỉ:</label>
                   {editMode ? (
                     <div className="address-inputs">
+                      <input
+                        type="text"
+                        name="DiaChi"
+                        value={formData.DiaChi}
+                        onChange={handleInputChange}
+                        placeholder="Số nhà, tên đường..."
+                        required
+                      />
                       <select
                         name="Province"
                         value={formData.Province}
@@ -422,13 +477,6 @@ const CapNhatThongTinGiangVien: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <input
-                        type="text"
-                        name="DiaChi"
-                        value={formData.DiaChi}
-                        onChange={handleInputChange}
-                        placeholder="Số nhà, tên đường..."
-                      />
                     </div>
                   ) : (
                     <span>{lecturerData.DiaChi || "Chưa có"}</span>
@@ -452,7 +500,6 @@ const CapNhatThongTinGiangVien: React.FC = () => {
                 setEditMode(false);
                 setAvatarFile(null);
                 setFormData({
-                  Email: lecturerData.Email || "",
                   SoDienThoai: lecturerData.SoDienThoai || "",
                   DiaChi: lecturerData.DiaChi || "",
                   Province: "",

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 import "./css/Login.css";
+
 interface ApiResponse {
   message: string;
 }
@@ -16,7 +17,7 @@ interface ResetPasswordRequest {
 }
 
 const ResetPassword: React.FC = () => {
-  const [step, setStep] = useState<number>(1); // 1: Nhập tên đăng nhập, 2: Nhập OTP, 3: Đặt lại mật khẩu
+  const [step, setStep] = useState<number>(1);
   const [tenDangNhap, setTenDangNhap] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -24,7 +25,6 @@ const ResetPassword: React.FC = () => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Gửi yêu cầu OTP
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tenDangNhap.trim()) {
@@ -37,16 +37,17 @@ const ResetPassword: React.FC = () => {
 
     try {
       const response = await axios.post<ApiResponse>(
-        "http://localhost:5163/api/TaiKhoans/forgot-password",
+        "http://localhost:5163/api/TaiKhoans/quen-mat-khau",
         { TenDangNhap: tenDangNhap } as ForgotPasswordRequest
       );
-
+      console.log("ForgotPassword response:", response.data);
       setMessage(response.data.message);
-      setStep(2); // Chuyển sang bước nhập OTP
+      setStep(2);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
+      console.error("ForgotPassword error:", axiosError.message, axiosError.response?.data);
       setMessage(
-        axiosError.response?.data.message ||
+        axiosError.response?.data?.message ||
           "Không thể kết nối đến server, vui lòng thử lại sau."
       );
     } finally {
@@ -54,7 +55,6 @@ const ResetPassword: React.FC = () => {
     }
   };
 
-  // Chuyển sang bước đặt lại mật khẩu
   const handleNextToReset = (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp.trim()) {
@@ -62,10 +62,9 @@ const ResetPassword: React.FC = () => {
       return;
     }
     setMessage("");
-    setStep(3); // Chuyển sang bước đặt lại mật khẩu
+    setStep(3);
   };
 
-  // Đặt lại mật khẩu
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp.trim()) {
@@ -86,20 +85,21 @@ const ResetPassword: React.FC = () => {
 
     try {
       const response = await axios.post<ApiResponse>(
-        "http://localhost:5163/api/TaiKhoans/reset-password",
+        "http://localhost:5163/api/TaiKhoans/doi-mat-khau",
         { Otp: otp, NewPassword: newPassword } as ResetPasswordRequest
       );
-
+      console.log("ResetPassword response:", response.data);
       setMessage(response.data.message);
-      setStep(1); // Quay lại bước đầu tiên
+      setStep(1);
       setTenDangNhap("");
       setOtp("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
+      console.error("ResetPassword error:", axiosError.message, axiosError.response?.data);
       setMessage(
-        axiosError.response?.data.message ||
+        axiosError.response?.data?.message ||
           "Không thể kết nối đến server, vui lòng thử lại sau."
       );
     } finally {
@@ -112,7 +112,7 @@ const ResetPassword: React.FC = () => {
       <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
-      ></link>
+      />
       <div className="reset-password-box">
         <h2 className="text-xl font-bold mb-4 text-center">Đặt Lại Mật Khẩu</h2>
 

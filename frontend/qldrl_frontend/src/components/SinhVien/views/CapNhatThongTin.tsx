@@ -282,26 +282,35 @@ const CapNhatThongTin: React.FC = () => {
         <h3>Thông tin sinh viên</h3>
         {studentData && (
           <div className="thongtin-content">
-            {(previewAvatar || studentData?.AnhDaiDien) && (
-              <div className="avatar-container">
-                <img
-                  src={previewAvatar || studentData!.AnhDaiDien!}
-                  alt="Ảnh đại diện"
-                  className="student-avatar"
-                />
-                {editMode && (
-                  <label className="custom-file-upload">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="file-input"
-                    />
-                    Chọn tệp
-                  </label>
-                )}
+          <div className="avatar-container">
+            {previewAvatar || studentData?.AnhDaiDien ? (
+              <img
+                src={previewAvatar || studentData!.AnhDaiDien!}
+                alt="Ảnh đại diện"
+                className="student-avatar"
+              />
+            ) : (
+              <div className="default-avatar">
+                {(studentData?.HoTen?.charAt(0) || "T").toUpperCase()}
               </div>
             )}
+        
+            {editMode && (
+              <label htmlFor="avatar-upload" className="chon-tep-btn">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input-hidden"
+                  id="avatar-upload"
+                />
+                Chọn tệp
+              </label>
+            )}
+        
+             
+          
+          </div>
 
             <div className="info-section">
               <div className="info-row">

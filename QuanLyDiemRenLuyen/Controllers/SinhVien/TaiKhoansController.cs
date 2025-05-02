@@ -170,7 +170,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 return BadRequest("Sai tên đăng nhập hoặc mật khẩu");
 
             // Ghi log thông tin (chỉ để debug)
-           
+
 
             // Nếu đúng mật khẩu => tạo token
             var claims = new[]
@@ -221,18 +221,19 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         [HttpPost("quen-mat-khau")]
         public async Task<IActionResult> ForgotPassword([FromBody] EmailServicesDTO request)
         {
-            // Xóa các OTP đã hết hạn
-            var now = DateTime.UtcNow.AddMinutes(10);
+            var now = DateTime.UtcNow.AddHours(7);
+            Console.WriteLine($"Cleaning expired OTPs before: {now}");
             var expiredOtps = await _context.OTPRecords
-             .Where(o => o.Expiry <= now)
-             .ToListAsync();
+                .Where(o => o.Expiry <= now)
+                .ToListAsync();
 
             if (expiredOtps.Any())
             {
+                Console.WriteLine($"Removing {expiredOtps.Count} expired OTPs");
                 _context.OTPRecords.RemoveRange(expiredOtps);
                 await _context.SaveChangesAsync();
             }
-            // Tìm tài khoản dựa trên TenDangNhap (MaSoSinhVien)
+
             var taiKhoan = await _context.TaiKhoans
                 .Include(tk => tk.SinhVien)
                 .FirstOrDefaultAsync(tk => tk.TenDangNhap == request.TenDangNhap);
@@ -241,27 +242,26 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 return BadRequest(new { message = "Mã số sinh viên không tồn tại." });
             }
 
-            // Lấy email từ SinhVien
             var email = taiKhoan.SinhVien.Email;
             if (string.IsNullOrEmpty(email))
             {
                 return BadRequest(new { message = "Sinh viên này chưa có email." });
             }
 
-            // Tạo OTP (mã 6 chữ số)
             var otp = new Random().Next(100000, 999999).ToString();
+            Console.WriteLine($"Generated OTP: {otp} for Email: {email}");
 
-            // Xóa OTP cũ nếu có
             var oldOtp = await _context.OTPRecords
                 .FirstOrDefaultAsync(o => o.Email == email);
             if (oldOtp != null)
             {
+                Console.WriteLine($"Removing old OTP: {oldOtp.Otp}, Expiry: {oldOtp.Expiry}");
                 _context.OTPRecords.Remove(oldOtp);
+                await _context.SaveChangesAsync();
             }
+
             var vietnamTime = DateTime.UtcNow.AddHours(7);
-           
-            var expiryTime = vietnamTime.AddMinutes(1);
-            // Lưu OTP mới
+            var expiryTime = vietnamTime.AddMinutes(10);
             var otpRecord = new OTPRecords
             {
                 Email = email,
@@ -270,8 +270,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             };
             _context.OTPRecords.Add(otpRecord);
             await _context.SaveChangesAsync();
+            Console.WriteLine($"Saved OTP: {otp}, Email: {email}, Expiry: {expiryTime}");
 
-            // Gửi OTP qua email
+            Console.WriteLine($"Sending OTP: {otp} to Email: {email}");
             await _emailService.SendOtpAsync(email, otp);
 
             return Ok(new { message = "OTP đã được gửi đến email của bạn." });
@@ -279,30 +280,32 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         [HttpPost("doi-mat-khau")]
         public async Task<IActionResult> ResetPassword([FromBody] DTO.ResetPasswordRequest request)
         {
+            Console.WriteLine($"Received OTP: {request.Otp}, NewPassword: {request.NewPassword}");
             var vietnamTime = DateTime.UtcNow.AddHours(7);
-            var expiryTime = vietnamTime.AddMinutes(5);
-            // Tìm OTP trong bảng OTPRecords
+            Console.WriteLine($"VietnamTime: {vietnamTime}");
+
             var otpRecord = await _context.OTPRecords
-                .FirstOrDefaultAsync(o => o.Otp == request.Otp && o.Expiry > expiryTime);
+                .FirstOrDefaultAsync(o => o.Otp == request.Otp && o.Expiry > vietnamTime);
 
             if (otpRecord == null)
             {
+                Console.WriteLine("OTP not found or expired");
                 return BadRequest(new { message = "OTP không hợp lệ hoặc đã hết hạn." });
             }
 
-            // Tìm tài khoản dựa theo email từ bảng OTPRecords
+            Console.WriteLine($"Found OTP: {otpRecord.Otp}, Email: {otpRecord.Email}, Expiry: {otpRecord.Expiry}");
             var taiKhoan = await _context.TaiKhoans
                 .FirstOrDefaultAsync(tk => tk.SinhVien.Email == otpRecord.Email);
 
             if (taiKhoan == null)
             {
+                Console.WriteLine("Account not found for Email: {otpRecord.Email}");
                 return BadRequest(new { message = "Không tìm thấy tài khoản tương ứng với OTP." });
             }
 
-
             var passwordHasher = new PasswordHasher<string>();
             taiKhoan.MatKhau = passwordHasher.HashPassword(null, request.NewPassword);
-            _context.OTPRecords.Remove(otpRecord); // Xóa OTP sau khi dùng xong
+            _context.OTPRecords.Remove(otpRecord);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Đổi mật khẩu thành công." });

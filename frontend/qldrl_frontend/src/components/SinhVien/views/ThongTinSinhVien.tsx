@@ -25,17 +25,21 @@ const ThongTinSinhVien: React.FC<Props> = ({ student }) => {
     <div className="thongtin-container">
       <h3>Thông tin sinh viên</h3>
 
-      <div className="thongtin-content">
-        {/* Hiển thị ảnh đại diện nếu có */}
-        {student.AnhDaiDien && (
+              <div className="thongtin-content">
           <div className="avatar-container">
-            <img
-              src={student.AnhDaiDien}
-              alt="Ảnh đại diện"
-              className="student-avatar"
-            />
+            {student.AnhDaiDien ? (
+              <img
+                src={student.AnhDaiDien}
+                alt="Ảnh đại diện"
+                className="student-avatar"
+              />
+            ) : (
+              <div className="default-avatar">
+                {(student.HoTen?.charAt(0) || "T").toUpperCase()}
+              </div>
+            )}
           </div>
-        )}
+       
 
         {/* Bảng thông tin sinh viên */}
         <table className="student-info-table">

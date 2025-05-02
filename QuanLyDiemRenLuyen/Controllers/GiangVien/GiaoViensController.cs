@@ -11,20 +11,23 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QuanLyDiemRenLuyen.DTO.GiangVien;
 using QuanLyDiemRenLuyen.Models;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace QuanLyDiemRenLuyen.Controllers.GiangVien
 {
-
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class GiaoViensController : ControllerBase
     {
         private readonly QlDrlContext _context;
+        private readonly ILogger<GiaoViensController> _logger;
 
-        public GiaoViensController(QlDrlContext context)
+        public GiaoViensController(QlDrlContext context, ILogger<GiaoViensController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/GiaoViens
@@ -49,7 +52,6 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
         }
 
         // PUT: api/GiaoViens/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGiaoVien(string id, GiaoVien giaoVien)
         {
@@ -80,7 +82,6 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
         }
 
         // POST: api/GiaoViens
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<GiaoVien>> PostGiaoVien(GiaoVien giaoVien)
         {
@@ -119,6 +120,7 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
 
             return NoContent();
         }
+
         // GET: api/GiaoViens/lay-giangvien-theo-vai-tro
         [HttpGet("lay-giangvien-theo-vai-tro")]
         public async Task<ActionResult<GiangVienDTO>> GetGiangVienByRole()
@@ -147,39 +149,38 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                 DiaChi = lecturer.DiaChi,
                 NgaySinh = lecturer.NgaySinh?.ToString("yyyy-MM-dd"),
                 GioiTinh = lecturer.GioiTinh,
-                AnhDaiDien = lecturer.AnhDaiDien 
+                AnhDaiDien = lecturer.AnhDaiDien
             };
 
-            return Ok(new { data = lecturerDTO }); 
+            return Ok(new { data = lecturerDTO });
         }
 
-        // PUT: api/GiaoViens/cap-nhat-thong-tin
         [HttpPut("cap-nhat-thong-tin")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateGiangVien([FromForm] GiangVienDTO giangVienDTO, IFormFile? avatar)
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdateGiaoVien([FromForm] GiangVienDTO giangVienDTO, IFormFile? avatar)
         {
             try
             {
                 // Lấy tên đăng nhập từ token
-                var email = User.Identity?.Name;
-                if (string.IsNullOrEmpty(email))
+                var username = User.Identity?.Name;
+                if (string.IsNullOrEmpty(username))
                 {
                     return Unauthorized(new { message = "Tài khoản không hợp lệ." });
                 }
 
-                // Tìm giảng viên theo email
-                var giangVien = await _context.GiaoViens.FirstOrDefaultAsync(g => g.Email == email);
-                if (giangVien == null)
+                // Tìm giáo viên theo email (username)
+                var giaoVien = await _context.GiaoViens.FirstOrDefaultAsync(g => g.Email == username);
+                if (giaoVien == null)
                 {
-                    return NotFound(new { message = "Giảng viên không tồn tại." });
+                    return NotFound(new { message = "Giáo viên không tồn tại." });
                 }
 
-                // Cập nhật số điện thoại
+                // Ràng buộc số điện thoại
                 if (!string.IsNullOrEmpty(giangVienDTO.SoDienThoai))
                 {
                     if (giangVienDTO.SoDienThoai.Length == 10 && Regex.IsMatch(giangVienDTO.SoDienThoai, @"^\d{10}$"))
                     {
-                        giangVien.SoDienThoai = giangVienDTO.SoDienThoai;
+                        giaoVien.SoDienThoai = giangVienDTO.SoDienThoai;
                     }
                     else
                     {
@@ -187,10 +188,29 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                     }
                 }
 
-                // Cập nhật địa chỉ
+                // Chuẩn hóa và làm sạch địa chỉ
                 if (!string.IsNullOrEmpty(giangVienDTO.DiaChi))
                 {
-                    giangVien.DiaChi = giangVienDTO.DiaChi;
+                    try
+                    {
+                        // Chuẩn hóa chuỗi: giải mã HTML (nếu có) và chuẩn hóa Unicode (NFC)
+                        string cleanedAddress = System.Net.WebUtility.HtmlDecode(giangVienDTO.DiaChi)
+                            .Normalize(NormalizationForm.FormC)
+                            .Trim();
+
+                        // Loại bỏ các ký tự không mong muốn (nếu cần)
+                        cleanedAddress = Regex.Replace(cleanedAddress, @"[\p{Cc}\p{Cf}]+", string.Empty);
+
+                        // Đảm bảo chuỗi sử dụng UTF-8
+                        byte[] utf8Bytes = Encoding.UTF8.GetBytes(cleanedAddress);
+                        cleanedAddress = Encoding.UTF8.GetString(utf8Bytes);
+
+                        giaoVien.DiaChi = cleanedAddress;
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(new { message = "Địa chỉ không hợp lệ. Lỗi: " + ex.Message });
+                    }
                 }
                 else
                 {
@@ -207,7 +227,7 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                         return BadRequest(new { message = "Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png." });
                     }
 
-                    var fileName = $"{email}_{DateTime.Now.Ticks}{extension}";
+                    var fileName = $"{giaoVien.MaGv}_{DateTime.Now.Ticks}{extension}";
                     var filePath = Path.Combine("wwwroot/avatars", fileName);
 
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath)); // Đảm bảo thư mục tồn tại
@@ -216,33 +236,40 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                         await avatar.CopyToAsync(stream);
                     }
 
-                    giangVien.AnhDaiDien = $"/avatars/{fileName}";
+                    giaoVien.AnhDaiDien = $"/avatars/{fileName}";
                 }
 
-                // Cập nhật thông tin giảng viên trong cơ sở dữ liệu
-                _context.GiaoViens.Update(giangVien);
+                // Lưu thay đổi
+                _context.GiaoViens.Update(giaoVien);
                 await _context.SaveChangesAsync();
 
-                // Trả về thông tin đã cập nhật
-                var updatedGiangVien = new GiangVienDTO
+                // Chuẩn hóa dữ liệu trả về
+                var updatedGiaoVien = new GiangVienDTO
                 {
-                    MaGV = giangVien.MaGv,
-                    HoTen = giangVien.HoTen,
-                    Email = giangVien.Email,
-                    SoDienThoai = giangVien.SoDienThoai,
-                    DiaChi = giangVien.DiaChi,
-                    NgaySinh = giangVien.NgaySinh?.ToString("yyyy-MM-dd"), // Chuyển DateTime thành string
-                    GioiTinh = giangVien.GioiTinh,
-                    AnhDaiDien = giangVien.AnhDaiDien
+                    MaGV = giaoVien.MaGv,
+                    HoTen = giaoVien.HoTen?.Normalize(NormalizationForm.FormC),
+                    Email = giaoVien.Email,
+                    SoDienThoai = giaoVien.SoDienThoai,
+                    DiaChi = giaoVien.DiaChi?.Normalize(NormalizationForm.FormC),
+                    NgaySinh = giaoVien.NgaySinh.HasValue ? giaoVien.NgaySinh.Value.ToString("yyyy-MM-dd") : null,
+                    GioiTinh = giaoVien.GioiTinh,
+                    AnhDaiDien = giaoVien.AnhDaiDien
                 };
 
-                return Ok(new { message = "Cập nhật thông tin thành công.", data = updatedGiangVien });
+                // Trả về phản hồi với UTF-8
+                Response.ContentType = "application/json; charset=utf-8";
+                return Ok(new
+                {
+                    message = "Cập nhật thông tin thành công.",
+                    data = updatedGiaoVien
+                });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Đã xảy ra lỗi.", error = ex.Message });
             }
         }
+
         private bool GiaoVienExists(string id)
         {
             return _context.GiaoViens.Any(e => e.MaGv == id);
