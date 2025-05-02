@@ -1274,6 +1274,194 @@
         }
       }
     },
+    "/api/Lop/lay_danh_sach_lop": {
+      "get": {
+        "tags": [
+          "Lop"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LopDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LopDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LopDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Lop/lay_chi_tiet_lop/{id}": {
+      "get": {
+        "tags": [
+          "Lop"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Lop/them_lop": {
+      "post": {
+        "tags": [
+          "Lop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LopDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Lop/cap_nhat_lop/{id}": {
+      "put": {
+        "tags": [
+          "Lop"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LopDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Lop/xoa_lop/{id}": {
+      "delete": {
+        "tags": [
+          "Lop"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLyGiangVien/them_giang_vien": {
       "post": {
         "tags": [
@@ -1300,17 +1488,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GiaoVien"
+                  "$ref": "#/components/schemas/GiangVienDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GiaoVien"
+                  "$ref": "#/components/schemas/GiangVienDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GiaoVien"
+                  "$ref": "#/components/schemas/GiangVienDTO"
                 }
               }
             }
@@ -1355,7 +1543,7 @@
         }
       }
     },
-    "/api/QuanLyGiangVien/xoa_giang_vien{id}": {
+    "/api/QuanLyGiangVien/xoa_giang_vien/{id}": {
       "delete": {
         "tags": [
           "QuanLyGiangVien"
@@ -2716,6 +2904,28 @@
             "items": {
               "$ref": "#/components/schemas/SinhVien"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LopDTO": {
+        "type": "object",
+        "properties": {
+          "MaLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "NienKhoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaGv": {
+            "type": "string",
             "nullable": true
           }
         },

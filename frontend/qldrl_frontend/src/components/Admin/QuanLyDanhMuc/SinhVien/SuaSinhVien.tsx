@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import FormField from "../common/FormField";
-import { SinhVien } from "../../types";
+import { SinhVien, Lop } from "../../types";
 
 interface SuaSinhVienProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface SuaSinhVienProps {
   onSuccess: () => void;
   sinhVienId: string | null;
   data?: SinhVien | null;
+  lopList: Lop[];
 }
 
 const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
@@ -18,6 +19,7 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
   onSuccess,
   sinhVienId,
   data,
+  lopList,
 }) => {
   const API_URL = "http://localhost:5163/api";
 
@@ -37,7 +39,6 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load dữ liệu sinh viên khi component được mở
   useEffect(() => {
     if (isOpen && data) {
       setFormData({
@@ -50,7 +51,7 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
         GioiTinh: data.GioiTinh || "",
         NgaySinh: formatDate(data.NgaySinh),
         MaVaiTro: data.MaVaiTro,
-        TrangThai: data.TrangThai || "1",
+        TrangThai: data.TrangThai || "HoatDong",
       });
     }
   }, [isOpen, data]);
@@ -59,7 +60,6 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
 
   const formatDate = (dateString: Date | string | null | undefined): string => {
     if (!dateString) return "";
-
     try {
       const date = new Date(dateString);
       return date.toISOString().split("T")[0]; // Format YYYY-MM-DD
@@ -84,20 +84,13 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
     setError(null);
 
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
-      // Form data để submit
       const formDataToSubmit = new FormData();
-
-      // Thêm các trường dữ liệu vào FormData
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formDataToSubmit.append(key, value.toString());
         }
       });
-
-      // Gọi API cập nhật sinh viên
 
       await axios.put(
         `${API_URL}/QuanLySinhVien/cap_nhap_sinh_vien/${sinhVienId}`,
@@ -110,13 +103,10 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
         }
       );
 
-      // Tạm thời dùng setTimeout để giả lập API call
-      setTimeout(() => {
-        setIsSubmitting(false);
-        onSuccess();
-        onClose();
-        alert("Cập nhật sinh viên thành công");
-      }, 1000);
+      setIsSubmitting(false);
+      onSuccess();
+      onClose();
+      alert("Cập nhật sinh viên thành công");
     } catch (error: any) {
       console.error("Lỗi khi cập nhật sinh viên:", error);
       setError(
@@ -166,7 +156,12 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
               name="MaLop"
               value={formData.MaLop || ""}
               onChange={handleInputChange}
+              type="select"
               required
+              options={lopList.map((lop) => ({
+                value: lop.MaLop,
+                label: lop.TenLop,
+              }))}
             />
             <FormField
               label="Giới tính"
@@ -191,7 +186,7 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
               name="Email"
               value={formData.Email || ""}
               onChange={handleInputChange}
-              type="Email"
+              type="email"
               required
               placeholder="example@huit.edu.vn"
             />

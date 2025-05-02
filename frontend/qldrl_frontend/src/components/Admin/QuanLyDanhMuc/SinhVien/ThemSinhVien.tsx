@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import FormField from "../../QuanLyDanhMuc/common/FormField";
-import { SinhVien } from "../../types";
+import { SinhVien, Lop } from "../../types";
 
 interface ThemSinhVienProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  lopList: Lop[];
 }
 
 const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  lopList,
 }) => {
   const API_URL = "http://localhost:5163/api";
 
@@ -51,20 +53,14 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
     setError(null);
 
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
-      // Form data để submit
       const formDataToSubmit = new FormData();
-
-      // Thêm các trường dữ liệu vào FormData
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formDataToSubmit.append(key, value.toString());
         }
       });
 
-      // Gọi API thêm sinh viên
       await axios.post(
         `${API_URL}/QuanLySinhVien/them_sinh_vien`,
         formDataToSubmit,
@@ -76,7 +72,10 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
         }
       );
 
-      // Tạm thời dùng setTimeout để giả lập API call
+      setIsSubmitting(false);
+      onSuccess();
+      onClose();
+      alert("Thêm sinh viên thành công");
     } catch (error: any) {
       console.error("Lỗi khi thêm sinh viên:", error);
       setError(
@@ -125,7 +124,12 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
               name="MaLop"
               value={formData.MaLop || ""}
               onChange={handleInputChange}
+              type="select"
               required
+              options={lopList.map((lop) => ({
+                value: lop.MaLop,
+                label: lop.TenLop,
+              }))}
             />
             <FormField
               label="Giới tính"
@@ -150,7 +154,7 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
               name="Email"
               value={formData.Email || ""}
               onChange={handleInputChange}
-              type="Email"
+              type="email"
               required
               placeholder="example@huit.edu.vn"
             />

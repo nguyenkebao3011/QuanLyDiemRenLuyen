@@ -51,12 +51,11 @@ const ThemGiangVien: React.FC<ThemGiangVienProps> = ({
     try {
       // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
       // Gọi API thêm giảng viên
       await axios.post(`${API_URL}/QuanLyGiangVien/them_giang_vien`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
 

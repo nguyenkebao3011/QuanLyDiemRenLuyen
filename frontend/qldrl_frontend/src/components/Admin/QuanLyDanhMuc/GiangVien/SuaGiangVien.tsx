@@ -29,7 +29,7 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
     DiaChi: "",
     GioiTinh: "",
     NgaySinh: "",
-    TrangThai: "1",
+    TrangThai: "HoatDong",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,7 +90,7 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );

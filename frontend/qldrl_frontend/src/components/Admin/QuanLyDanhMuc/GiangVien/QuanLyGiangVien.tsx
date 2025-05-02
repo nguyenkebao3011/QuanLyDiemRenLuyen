@@ -28,28 +28,25 @@ const QuanLyGiangVien: React.FC = () => {
   // State cho modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingGiangVien, setEditingGiangVien] = useState<{
-    id: string;
+    MaGv: string;
     data: GiaoVien | null;
-  }>({ id: "", data: null });
+  }>({ MaGv: "", data: null });
   const [deletingGiangVien, setDeletingGiangVien] = useState<{
-    id: string;
+    MaGv: string;
     name: string | null;
-  }>({ id: "", name: null });
+  }>({ MaGv: "", name: null });
 
   // Hàm lấy danh sách giảng viên
   const fetchGiangVien = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
       const response = await axios.get(`${API_URL}/GiaoViens`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setGiangVienList(response.data);
       setFilteredList(response.data);
     } catch (error: any) {
@@ -58,8 +55,6 @@ const QuanLyGiangVien: React.FC = () => {
         error.response?.data?.message ||
           "Có lỗi xảy ra khi tải dữ liệu giảng viên"
       );
-
-      // Xử lý lỗi 401 - Unauthorized
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
@@ -94,7 +89,6 @@ const QuanLyGiangVien: React.FC = () => {
   // Format ngày sinh để hiển thị
   const formatDate = (dateString: Date | string | null | undefined): string => {
     if (!dateString) return "-";
-
     try {
       const date = new Date(dateString);
       return date.toISOString().split("T")[0]; // Format YYYY-MM-DD
@@ -119,45 +113,37 @@ const QuanLyGiangVien: React.FC = () => {
   };
 
   // Xử lý mở modal sửa giảng viên
-  const handleEditClick = (id: string) => {
-    const giangVien = giangVienList.find((gv) => gv.MaGv === id);
-    setEditingGiangVien({ id, data: giangVien || null });
+  const handleEditClick = (MaGv: string) => {
+    const giangVien = giangVienList.find((gv) => gv.MaGv === MaGv);
+    setEditingGiangVien({ MaGv, data: giangVien || null });
   };
 
   // Xử lý mở modal xóa giảng viên
-  const handleDeleteClick = (id: string) => {
-    const giangVien = giangVienList.find((gv) => gv.MaGv === id);
-    setDeletingGiangVien({ id, name: giangVien?.HoTen || null });
+  const handleDeleteClick = (MaGv: string) => {
+    const giangVien = giangVienList.find((gv) => gv.MaGv === MaGv);
+    setDeletingGiangVien({ MaGv, name: giangVien?.HoTen || null });
   };
 
   // Xử lý xóa giảng viên
   const handleDelete = async () => {
-    if (!deletingGiangVien.id) return;
-
+    if (!deletingGiangVien.MaGv) return;
     try {
-      // Lấy token từ localStorage
       const token = localStorage.getItem("token");
-
-      // Gọi API xóa giảng viên
       await axios.delete(
-        `${API_URL}/QuanLyGiangVien/xoa_giang_vien/${deletingGiangVien.id}`,
+        `${API_URL}/QuanLyGiangVien/xoa_giang_vien/${deletingGiangVien.MaGv}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      // Cập nhật state sau khi xóa
       setGiangVienList(
-        giangVienList.filter((gv) => gv.MaGv !== deletingGiangVien.id)
+        giangVienList.filter((gv) => gv.MaGv !== deletingGiangVien.MaGv)
       );
       setFilteredList(
-        filteredList.filter((gv) => gv.MaGv !== deletingGiangVien.id)
+        filteredList.filter((gv) => gv.MaGv !== deletingGiangVien.MaGv)
       );
-
-      // Đóng modal và reset state
-      setDeletingGiangVien({ id: "", name: null });
+      setDeletingGiangVien({ MaGv: "", name: null });
       alert("Xóa giảng viên thành công");
     } catch (error: any) {
       console.error("Lỗi khi xóa giảng viên:", error);
@@ -197,14 +183,20 @@ const QuanLyGiangVien: React.FC = () => {
       </div>
 
       <div className="search-box">
-        <Search size={18} className="search-icon" />
-        <input
-          type="text"
-          placeholder="Tìm kiếm giảng viên theo tên, mã GV..."
-          className="search-input"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
+        <form onSubmit={() => handleSearch} className="search-form">
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="Tìm kiếm hoạt động..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="search-button">
+              <Search size={18} />
+            </button>
+          </div>
+        </form>
       </div>
 
       {error && (
@@ -246,7 +238,7 @@ const QuanLyGiangVien: React.FC = () => {
                   <td>{gv.DiaChi || "-"}</td>
                   <td>{formatDate(gv.NgaySinh)}</td>
                   <td>{gv.GioiTinh || "-"}</td>
-                  <td>{gv.TrangThai === "HoatDong" ? "Hoạt động" : "Khóa"}</td>
+                  <td>{gv.TrangThai == "HoatDong" ? "Hoạt động" : "Khóa"}</td>
                   <td className="action-cell">
                     <button
                       className="edit-btn"
@@ -284,18 +276,18 @@ const QuanLyGiangVien: React.FC = () => {
       />
 
       <SuaGiangVien
-        isOpen={!!editingGiangVien.id}
-        onClose={() => setEditingGiangVien({ id: "", data: null })}
+        isOpen={!!editingGiangVien.MaGv}
+        onClose={() => setEditingGiangVien({ MaGv: "", data: null })}
         onSuccess={fetchGiangVien}
-        giangVienId={editingGiangVien.id}
+        giangVienId={editingGiangVien.MaGv}
         data={editingGiangVien.data}
       />
 
       <XacNhanXoaGiangVien
-        isOpen={!!deletingGiangVien.id}
-        onClose={() => setDeletingGiangVien({ id: "", name: null })}
+        isOpen={!!deletingGiangVien.MaGv}
+        onClose={() => setDeletingGiangVien({ MaGv: "", name: null })}
         onConfirm={handleDelete}
-        giangVienId={deletingGiangVien.id}
+        giangVienId={deletingGiangVien.MaGv}
         giangVienName={deletingGiangVien.name}
       />
     </div>
