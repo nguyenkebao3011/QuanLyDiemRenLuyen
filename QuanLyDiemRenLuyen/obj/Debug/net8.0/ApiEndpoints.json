@@ -402,7 +402,7 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.GiaoViensController",
-    "Method": "UpdateGiangVien",
+    "Method": "UpdateGiaoVien",
     "RelativePath": "api/GiaoViens/cap-nhat-thong-tin",
     "HttpMethod": "PUT",
     "IsController": true,

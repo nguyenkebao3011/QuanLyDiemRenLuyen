@@ -145,7 +145,7 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post<ApiResponse>(
-        "http://localhost:5163/api/TaiKhoans/forgot-password",
+        "http://localhost:5163/api/TaiKhoans/quen-mat-khau",
         {
           TenDangNhap: tenDangNhap,
         } as ForgotPasswordRequest
@@ -198,7 +198,7 @@ const Login: React.FC = () => {
 
     try {
       const response = await axios.post<ApiResponse>(
-        "http://localhost:5163/api/TaiKhoans/reset-password",
+        "http://localhost:5163/api/TaiKhoans/doi-mat-khau",
         {
           Otp: otp,
           NewPassword: newPassword,
