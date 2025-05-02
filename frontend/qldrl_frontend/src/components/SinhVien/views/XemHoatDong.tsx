@@ -35,12 +35,16 @@ const HoatDongList: React.FC = () => {
   const [trangThai, setTrangThai] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
 
-  // State cho modal
-  const [showModal, setShowModal] = useState(false);
+  // State cho modal đăng ký
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDong | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [modalSuccess, setModalSuccess] = useState<string | null>(null);
   const [modalLoading, setModalLoading] = useState(false);
+
+  // State cho modal xem chi tiết
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedDetailHoatDong, setSelectedDetailHoatDong] = useState<HoatDong | null>(null);
 
   // Hàm lấy token từ localStorage
   const getToken = () => localStorage.getItem("token");
@@ -50,11 +54,11 @@ const HoatDongList: React.FC = () => {
     const token = getToken();
     if (!token) {
       setModalError("Bạn cần đăng nhập để đăng ký hoạt động.");
-      setShowModal(true);
+      setShowRegisterModal(true);
       return;
     }
     setSelectedHoatDong(hoatDong);
-    setShowModal(true);
+    setShowRegisterModal(true);
     setModalError(null);
     setModalSuccess(null);
   };
@@ -96,7 +100,7 @@ const HoatDongList: React.FC = () => {
           )
         );
         setTimeout(() => {
-          setShowModal(false);
+          setShowRegisterModal(false);
           setSelectedHoatDong(null);
           setModalSuccess(null);
         }, 1500);
@@ -118,7 +122,7 @@ const HoatDongList: React.FC = () => {
 
   // Hàm hủy đăng ký
   const cancelRegister = () => {
-    setShowModal(false);
+    setShowRegisterModal(false);
     setSelectedHoatDong(null);
     setModalError(null);
     setModalSuccess(null);
@@ -286,6 +290,27 @@ const HoatDongList: React.FC = () => {
     return date.toLocaleDateString("vi-VN");
   };
 
+  // Hàm định dạng thời gian diễn ra từ NgayBatDau và NgayKetThuc
+  const formatThoiGianDienRa = (ngayBatDau: string, ngayKetThuc: string) => {
+    const start = new Date(ngayBatDau);
+    const end = new Date(ngayKetThuc);
+    if (start.toDateString() !== end.toDateString()) return "Chưa xác định";
+    const formatTime = (date: Date) => date.toTimeString().slice(0, 5); // Lấy HH:mm
+    return `${formatTime(start)}-${formatTime(end)}`;
+  };
+
+  // Hàm mở modal xem chi tiết
+  const handleViewDetail = (hoatDong: HoatDong) => {
+    setSelectedDetailHoatDong(hoatDong);
+    setShowDetailModal(true);
+  };
+
+  // Hàm đóng modal xem chi tiết
+  const closeDetailModal = () => {
+    setShowDetailModal(false);
+    setSelectedDetailHoatDong(null);
+  };
+
   return (
     <div className="hoatdong-container">
       <h2 className="hoatdong-title">Danh sách hoạt động</h2>
@@ -394,7 +419,7 @@ const HoatDongList: React.FC = () => {
       )}
 
       {/* Modal xác nhận đăng ký */}
-      {showModal && (
+      {showRegisterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3 className="modal-title">Xác nhận đăng ký</h3>
@@ -512,9 +537,47 @@ const HoatDongList: React.FC = () => {
         </div>
       )}
 
+      {/* Modal xem chi tiết */}
+      {showDetailModal && selectedDetailHoatDong && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">Chi tiết hoạt động</h3>
+            <div className="modal-body">
+              <p>
+                <strong>Tên hoạt động:</strong> {selectedDetailHoatDong.TenHoatDong}
+              </p>
+              <p>
+                <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}. Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ, chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham gia sẽ bị trừ điểm như quy định hiện hành. Mong các bạn thực hiện nghiêm túc!
+              </p>
+              <p>
+                <strong>Số lượng sinh viên có thể đăng ký:</strong>{" "}
+                {Math.max(0, selectedDetailHoatDong.SoLuongToiDa - selectedDetailHoatDong.SoLuongDaDangKy)}
+              </p>
+              <p>
+                <strong>Số điểm cộng:</strong> {selectedDetailHoatDong.DiemCong}
+              </p>
+              <p>
+                <strong>Thời gian:</strong> {formatDate(selectedDetailHoatDong.NgayBatDau)} từ{" "}
+                {formatThoiGianDienRa(selectedDetailHoatDong.NgayBatDau, selectedDetailHoatDong.NgayKetThuc)}
+              </p>
+              <p>
+                <strong>Địa điểm:</strong> {selectedDetailHoatDong.DiaDiem}
+              </p>
+              <p>
+                <strong>Quy định về đồng phục: </strong> Đối với các hoạt động trong trường: Các bạn vui lòng thực hiện đúng đồng phục (áo sơ mi, áo thể chất, áo khoa,...). Đối với các hoạt động ngoài trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà trường để thuận tiện cho công tác quản lý điểm danh sinh viên. Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù hợp với hoạt động.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button onClick={closeDetailModal} className="btn-cancel">
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="">
-          
           <p>Đang tải dữ liệu...</p>
         </div>
       ) : error ? (
@@ -602,7 +665,11 @@ const HoatDongList: React.FC = () => {
                     <p>
                       <i className="icon-star"></i> <strong>Điểm cộng:</strong> {hd.DiemCong}
                     </p>
-                    <p><i className="icon-watch"></i> <strong>Thời gian diễn ra : </strong> {hd.ThoiGianDienRa}</p>
+                    <p>
+                      <i className="icon-watch"></i>{" "}
+                      <strong>Thời gian diễn ra:</strong>{" "}
+                      {formatThoiGianDienRa(hd.NgayBatDau, hd.NgayKetThuc)}
+                    </p>
                   </div>
                 </div>
                 <div className="hoatdong-footer">
@@ -613,7 +680,9 @@ const HoatDongList: React.FC = () => {
                   >
                     Đăng ký tham gia
                   </button>
-                  <button className="btn-chitiet">Xem chi tiết</button>
+                  <button className="btn-chitiet" onClick={() => handleViewDetail(hd)}>
+                    Xem chi tiết
+                  </button>
                 </div>
               </div>
             ))}
@@ -625,7 +694,7 @@ const HoatDongList: React.FC = () => {
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
-              « 
+              «
             </button>
             <span className="page-info">
               Trang {currentPage} / {totalPages}
@@ -635,7 +704,7 @@ const HoatDongList: React.FC = () => {
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
             >
-               »
+              »
             </button>
           </div>
         </>

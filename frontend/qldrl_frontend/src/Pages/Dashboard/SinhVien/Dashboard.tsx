@@ -18,6 +18,7 @@ import XemDiemRenLuyen from "../../../components/SinhVien/views/XemDiemRenLuyen"
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinSinhVien from "../../../components/SinhVien/views/ThongTinSinhVien";
+import HoatDongDaDangKy from "../../../components/SinhVien/views/HoatDongDaDangKy";
 
 type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
 
@@ -95,7 +96,6 @@ const StudentDashboard: React.FC = () => {
           }
         );
 
-      
         setStudentData(response.data);
         setStudentName(response.data.HoTen || "Sinh viên");
 
@@ -162,7 +162,10 @@ const StudentDashboard: React.FC = () => {
           <div>
             <h2>Xin chào, {studentName}</h2>
             {studentData ? (
-              <ThongTinSinhVien student={studentData} />
+              <>
+                <ThongTinSinhVien student={studentData} />
+                <HoatDongDaDangKy />
+              </>
             ) : (
               <p>Đang tải thông tin sinh viên...</p>
             )}
@@ -272,16 +275,16 @@ const StudentDashboard: React.FC = () => {
               {menuVisible && (
                 <div className="avatar-dropdown">
                   <div className="menu-item" onClick={() => navigate("/chinh-sua-thong-tin")}>
-                     Chỉnh sửa thông tin
+                    Chỉnh sửa thông tin
                   </div>
                   <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                     Đổi mật khẩu
+                    Đổi mật khẩu
                   </div>
                   <div className="menu-item" onClick={() => {
                     localStorage.clear();
                     navigate("/login");
                   }}>
-                     Đăng xuất
+                    Đăng xuất
                   </div>
                 </div>
               )}

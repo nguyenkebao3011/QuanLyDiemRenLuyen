@@ -11,12 +11,12 @@
       "RelativeMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|solutionrelative:quanlydiemrenluyen\\controllers\\sinhvien\\hoatdongscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|d:\\ki1_nam4\\doanchuyennganh\\quanlydiemrenluyen_git\\quanlydiemrenluyen\\quanlydiemrenluyen\\dto\\sinhvien\\dangkyhoatdongdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|solutionrelative:quanlydiemrenluyen\\dto\\sinhvien\\dangkyhoatdongdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|d:\\ki1_nam4\\doanchuyennganh\\quanlydiemrenluyen_git\\quanlydiemrenluyen\\quanlydiemrenluyen\\models\\hoatdong.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|solutionrelative:quanlydiemrenluyen\\models\\hoatdong.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|d:\\ki1_nam4\\doanchuyennganh\\quanlydiemrenluyen_git\\quanlydiemrenluyen\\quanlydiemrenluyen\\dto\\sinhvien\\dangkyhoatdongdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|solutionrelative:quanlydiemrenluyen\\dto\\sinhvien\\dangkyhoatdongdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C195F3E3-C425-4FFB-9327-7C4281E25FAE}|QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj|d:\\ki1_nam4\\doanchuyennganh\\quanlydiemrenluyen_git\\quanlydiemrenluyen\\quanlydiemrenluyen\\models\\qldrlcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -205,8 +205,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\QuanLySinhVienController.cs",
               "ViewState": "AgIAAEcBAAAAAAAAAAAmwG0BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-02T09:27:35.416Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-02T09:27:35.416Z"
             },
             {
               "$type": "Document",
@@ -218,8 +217,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Models\\QlDrlContext.cs",
               "ViewState": "AgIAADAAAAAAAAAAAAAAADUAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T10:51:23.684Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T10:51:23.684Z"
             },
             {
               "$type": "Document",
@@ -229,27 +227,27 @@
               "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\HoatDongsController.cs",
               "ToolTip": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\HoatDongsController.cs",
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\HoatDongsController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAxwEsAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAYwEsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-19T15:23:57.266Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "HoatDong.cs",
               "DocumentMoniker": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Models\\HoatDong.cs",
               "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Models\\HoatDong.cs",
               "ToolTip": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Models\\HoatDong.cs",
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Models\\HoatDong.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAcwCEAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAowCEAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-20T10:44:41.725Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "DangKyHoatDongDTO.cs",
               "DocumentMoniker": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\DTO\\SinhVien\\DangKyHoatDongDTO.cs",
               "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\DTO\\SinhVien\\DangKyHoatDongDTO.cs",
@@ -257,8 +255,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\DTO\\SinhVien\\DangKyHoatDongDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-19T08:26:48.017Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-19T08:26:48.017Z"
             },
             {
               "$type": "Document",
@@ -268,7 +265,7 @@
               "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DangKyHoatDongsController.cs",
               "ToolTip": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DangKyHoatDongsController.cs",
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DangKyHoatDongsController.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAmwFAAAABQAAAAAAAAAA==",
+              "ViewState": "AgIAAKMAAAAAAAAAAAAuwKsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-19T08:42:32.735Z",
               "EditorCaption": ""
@@ -305,8 +302,7 @@
               "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.203\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
               "ViewState": "AgIAACABAAAAAAAAAAAewAkBAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-05-02T11:40:12.56Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-02T11:40:12.56Z"
             },
             {
               "$type": "Document",
@@ -642,8 +638,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen.csproj",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-04-24T05:43:45.109Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-24T05:43:45.109Z"
             },
             {
               "$type": "Document",

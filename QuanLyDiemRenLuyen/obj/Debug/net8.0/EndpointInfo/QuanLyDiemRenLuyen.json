@@ -2752,10 +2752,6 @@
             "format": "int32",
             "nullable": true
           },
-          "ThoiGianDienRa": {
-            "type": "string",
-            "nullable": true
-          },
           "DangKyHoatDongs": {
             "type": "array",
             "items": {

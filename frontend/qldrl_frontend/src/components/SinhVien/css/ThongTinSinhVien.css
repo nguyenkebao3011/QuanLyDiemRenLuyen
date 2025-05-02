@@ -55,4 +55,137 @@
     color: white;
   } 
 
-  
+  /* hoạt động đã đăng ký */
+  .activities-container {
+  margin-top: 20px;
+  padding: 30px;
+  background: #45968c;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #2752d3;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.activities-title {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ffcc00;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.activities-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: #ffcc00;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { width: 50px; }
+  50% { width: 70px; }
+  100% { width: 50px; }
+}
+
+.activities-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.activity-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.activity-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.activity-name {
+  font-size: 20px;
+  color: #ffcc00;
+  margin: 0;
+}
+
+.activity-status {
+  font-size: 14px;
+  padding: 5px 12px;
+  background: #e74c3c;
+  color: #fff;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.activity-details p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #ddd;
+}
+
+.activity-details strong {
+  color: #fff;
+}
+
+.points {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 18px;
+  background: rgba(46, 204, 113, 0.2);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.no-activities {
+  text-align: center;
+  font-size: 18px;
+  color: #e74c3c;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.error-message {
+  text-align: center;
+  font-size: 18px;
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}

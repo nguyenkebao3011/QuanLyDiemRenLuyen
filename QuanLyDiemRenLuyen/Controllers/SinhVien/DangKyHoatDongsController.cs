@@ -76,37 +76,26 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 }
 
                 // Kiểm tra xung đột ngày và giờ với các hoạt động đã đăng ký
-                if (!hoatDong.NgayBatDau.HasValue || string.IsNullOrEmpty(hoatDong.ThoiGianDienRa))
+                if (!hoatDong.NgayBatDau.HasValue || !hoatDong.NgayKetThuc.HasValue)
                 {
-                    return BadRequest(new { message = "Hoạt động không có ngày hoặc giờ hợp lệ" });
+                    return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hoặc kết thúc hợp lệ" });
                 }
 
+                // Kiểm tra xem hoạt động có cùng ngày không
                 var ngayBatDauMoi = hoatDong.NgayBatDau.Value.Date;
-                var thoiGianDienRaMoi = hoatDong.ThoiGianDienRa.Trim();
-
-                // Hàm phân tích ThoiGianDienRa
-                bool ParseThoiGianDienRa(string thoiGian, out TimeSpan start, out TimeSpan end)
+                var ngayKetThucMoi = hoatDong.NgayKetThuc.Value.Date;
+                if (ngayBatDauMoi != ngayKetThucMoi)
                 {
-                    start = TimeSpan.Zero;
-                    end = TimeSpan.Zero;
-                    try
-                    {
-                        var parts = thoiGian.Split('-');
-                        if (parts.Length != 2) return false;
-                        if (!TimeSpan.TryParse(parts[0].Trim(), out start) || !TimeSpan.TryParse(parts[1].Trim(), out end))
-                            return false;
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
+                    return BadRequest(new { message = "Hoạt động không diễn ra trong cùng một ngày" });
                 }
 
-                // Phân tích thời gian của hoạt động mới
-                if (!ParseThoiGianDienRa(thoiGianDienRaMoi, out TimeSpan startTimeNew, out TimeSpan endTimeNew))
+                // Lấy thời gian diễn ra từ NgayBatDau và NgayKetThuc
+                var startTimeNew = hoatDong.NgayBatDau.Value.TimeOfDay;
+                var endTimeNew = hoatDong.NgayKetThuc.Value.TimeOfDay;
+
+                if (startTimeNew > endTimeNew)
                 {
-                    return BadRequest(new { message = "Định dạng thời gian diễn ra không hợp lệ" });
+                    return BadRequest(new { message = "Thời gian bắt đầu phải trước thời gian kết thúc" });
                 }
 
                 // Lấy danh sách hoạt động đã đăng ký vào bộ nhớ
@@ -116,27 +105,35 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         dk => dk.MaHoatDong,
                         hd => hd.MaHoatDong,
                         (dk, hd) => new { dk, hd })
-                    .Where(x => x.hd.NgayBatDau.HasValue && x.hd.ThoiGianDienRa != null)
+                    .Where(x => x.hd.NgayBatDau.HasValue && x.hd.NgayKetThuc.HasValue)
                     .Select(x => new
                     {
                         x.hd.MaHoatDong,
                         NgayBatDau = x.hd.NgayBatDau.Value,
-                        x.hd.ThoiGianDienRa
+                        NgayKetThuc = x.hd.NgayKetThuc.Value
                     })
                     .ToListAsync();
 
                 // Kiểm tra xung đột lịch trong bộ nhớ
                 bool xungDotLich = dangKyHoatDongs.Any(x =>
                 {
+                    // Kiểm tra cùng ngày
                     if (x.NgayBatDau.Date != ngayBatDauMoi) return false;
-                    if (!ParseThoiGianDienRa(x.ThoiGianDienRa.Trim(), out TimeSpan startTimeExisting, out TimeSpan endTimeExisting))
-                        return false;
-                    return startTimeNew <= endTimeExisting && endTimeNew >= startTimeExisting && x.MaHoatDong != request.MaHoatDong;
+                    if (x.NgayBatDau.Date != x.NgayKetThuc.Date) return false; // Bỏ qua nếu hoạt động đã đăng ký không cùng ngày
+
+                    // Lấy thời gian diễn ra của hoạt động đã đăng ký
+                    var startTimeExisting = x.NgayBatDau.TimeOfDay;
+                    var endTimeExisting = x.NgayKetThuc.TimeOfDay;
+
+                    // Kiểm tra chồng lấn
+                    return startTimeNew <= endTimeExisting &&
+                           endTimeNew >= startTimeExisting &&
+                           x.MaHoatDong != request.MaHoatDong;
                 });
 
                 if (xungDotLich)
                 {
-                    return BadRequest(new { message = "Bạn đã đăng ký một hoạt động khác trùng giờ và trùng ngày. Hãy đăng ký hoạt động khác!" });
+                    return BadRequest(new { message = "Sinh viên đã đăng ký một hoạt động khác có khung giờ chồng lấn cùng ngày" });
                 }
 
                 // Tạo bản ghi đăng ký mới
