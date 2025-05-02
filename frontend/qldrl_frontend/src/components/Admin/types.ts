@@ -52,3 +52,38 @@ export interface TongQuanThongKeDTO {
   TongHoatDong: number;
   TongPhanHoi: number;
 }
+export interface SinhVien {
+  MaSV: string;
+  MaTaiKhoan: string;
+  HoTen: string | null;
+  MaLop: string | null;
+  Email: string | null;
+  SoDienThoai: string | null;
+  DiaChi: string | null;
+  NgaySinh: Date | string;
+  GioiTinh: string | null;
+  AnhDaiDien: string | null;
+  MaVaiTro: number;
+  TrangThai: string | null;
+  MaLopNavigation?: any;
+  MaTaiKhoanNavigation?: TaiKhoan;
+}
+export interface TaiKhoan {
+  MaTaiKhoan: string;
+  TenDangNhap: string;
+  MatKhau: string;
+  VaiTro: string;
+}
+export interface GiaoVien {
+  MaGv: string;
+  MaTaiKhoan: string;
+  HoTen: string | null;
+  Email: string | null;
+  SoDienThoai: string | null;
+  DiaChi: string | null;
+  NgaySinh: Date | string | null;
+  GioiTinh: string | null;
+  AnhDaiDien: string | null;
+  TrangThai: string | null;
+  MaTaiKhoanNavigation?: TaiKhoan;
+}

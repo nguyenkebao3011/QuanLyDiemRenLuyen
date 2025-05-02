@@ -182,9 +182,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok(new { message = "Mật khẩu đã được thay đổi thành công." });
         }
+
         [HttpPut("cap-nhat-thong-tin")]
-
-
         public async Task<IActionResult> UpdateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile? avatar)
         {
             try

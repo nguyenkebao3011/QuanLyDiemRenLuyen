@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css/CapNhatSinhVien.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+
 interface ChangePasswordForm {
   oldPassword: string;
   newPassword: string;
@@ -93,7 +94,11 @@ const DoiMatKhau: React.FC = () => {
       }
     } catch (err: any) {
       if (err.response) {
-        setError(`Đổi mật khẩu thất bại: ${err.response.data.message || err.response.data}`);
+        setError(
+          `Đổi mật khẩu thất bại: ${
+            err.response.data.message || err.response.data
+          }`
+        );
         if (err.response.status === 401) {
           localStorage.removeItem("token");
           navigate("/login");
@@ -132,7 +137,9 @@ const DoiMatKhau: React.FC = () => {
                     placeholder="Nhập mật khẩu cũ"
                   />
                   <i
-                    className={`fas ${showPassword.oldPassword ? "fa-eye-slash" : "fa-eye"} password-toggle-icon`}
+                    className={`fas ${
+                      showPassword.oldPassword ? "fa-eye-slash" : "fa-eye"
+                    } password-toggle-icon`}
                     onClick={() => toggleShowPassword("oldPassword")}
                   ></i>
                 </div>
@@ -151,7 +158,9 @@ const DoiMatKhau: React.FC = () => {
                     placeholder="Nhập mật khẩu mới"
                   />
                   <i
-                    className={`fas ${showPassword.newPassword ? "fa-eye-slash" : "fa-eye"} password-toggle-icon`}
+                    className={`fas ${
+                      showPassword.newPassword ? "fa-eye-slash" : "fa-eye"
+                    } password-toggle-icon`}
                     onClick={() => toggleShowPassword("newPassword")}
                   ></i>
                 </div>
@@ -170,7 +179,9 @@ const DoiMatKhau: React.FC = () => {
                     placeholder="Xác nhận mật khẩu mới"
                   />
                   <i
-                    className={`fas ${showPassword.confirmPassword ? "fa-eye-slash" : "fa-eye"} password-toggle-icon`}
+                    className={`fas ${
+                      showPassword.confirmPassword ? "fa-eye-slash" : "fa-eye"
+                    } password-toggle-icon`}
                     onClick={() => toggleShowPassword("confirmPassword")}
                   ></i>
                 </div>
@@ -191,7 +202,9 @@ const DoiMatKhau: React.FC = () => {
         </form>
       </div>
 
-      {successMessage && <div className="toast toast-success">{successMessage}</div>}
+      {successMessage && (
+        <div className="toast toast-success">{successMessage}</div>
+      )}
       {error && <div className="toast toast-error">{error}</div>}
     </div>
   );
