@@ -14,6 +14,7 @@ type HoatDong = {
   SoLuongDaDangKy: number;
   DiemCong: number;
   TrangThai: string;
+  ThoiGianDienRa: string;
 };
 
 const HoatDongList: React.FC = () => {
@@ -23,7 +24,7 @@ const HoatDongList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiUrl, setApiUrl] = useState("http://localhost:5163/api/HoatDongs/lay-danh-sach-hoat-dong");
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   // State cho bộ lọc
   const [ten, setTen] = useState("");
@@ -250,6 +251,7 @@ const HoatDongList: React.FC = () => {
             SoLuongDaDangKy: 50,
             DiemCong: 5,
             TrangThai: "Sắp diễn ra",
+            ThoiGianDienRa: "1000",
           },
           {
             MaHoatDong: 2,
@@ -262,6 +264,7 @@ const HoatDongList: React.FC = () => {
             SoLuongDaDangKy: 20,
             DiemCong: 3,
             TrangThai: "Đang diễn ra",
+            ThoiGianDienRa: "1000",
           },
         ]);
       }
@@ -510,8 +513,8 @@ const HoatDongList: React.FC = () => {
       )}
 
       {loading ? (
-        <div className="loading-spinner">
-          <div className="spinner"></div>
+        <div className="">
+          
           <p>Đang tải dữ liệu...</p>
         </div>
       ) : error ? (
@@ -599,6 +602,7 @@ const HoatDongList: React.FC = () => {
                     <p>
                       <i className="icon-star"></i> <strong>Điểm cộng:</strong> {hd.DiemCong}
                     </p>
+                    <p><i className="icon-watch"></i> <strong>Thời gian diễn ra : </strong> {hd.ThoiGianDienRa}</p>
                   </div>
                 </div>
                 <div className="hoatdong-footer">

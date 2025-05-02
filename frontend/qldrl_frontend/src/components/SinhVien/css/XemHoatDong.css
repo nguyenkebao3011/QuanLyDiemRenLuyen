@@ -86,6 +86,7 @@
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
+  background-color: #ffc518;
 }
 
 .status-badge.đang-diễn-ra {
@@ -344,6 +345,9 @@
 
 .icon-star::before {
   content: "⭐";
+}
+.icon-watch::before{ 
+  content: "🕒";
 }
 
 /* Responsive */

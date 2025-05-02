@@ -58,25 +58,6 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                //// Kiểm tra trạng thái hoạt động
-                //if (hoatDong.TrangThai != "Chưa bắt đầu" && "Đang diên ra")
-                //{
-                //    return BadRequest(new { message = "Chỉ được đăng ký các hoạt động chưa bắt đầu" });
-                //}
-
-                //// Kiểm tra thời gian đăng ký (cách NgayBatDau ít nhất 3 ngày)
-                //if (!hoatDong.NgayBatDau.HasValue)
-                //{
-                //    return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hợp lệ" });
-                //}
-
-                //var ngayHienTai = DateTime.Now;
-                //var thoiGianToiThieu = ngayHienTai.AddDays(3);
-                //if (hoatDong.NgayBatDau < thoiGianToiThieu)
-                //{
-                //    return BadRequest(new { message = "Hoạt động này không thể đăng ký vì thời gian bắt đầu đã quá gần (ít hơn 3 ngày)" });
-                //}
-
                 // Kiểm tra số lượng đăng ký
                 if (hoatDong.SoLuongToiDa.HasValue)
                 {
@@ -92,6 +73,70 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 if (daDangKy)
                 {
                     return BadRequest(new { message = "Sinh viên đã đăng ký hoạt động này rồi" });
+                }
+
+                // Kiểm tra xung đột ngày và giờ với các hoạt động đã đăng ký
+                if (!hoatDong.NgayBatDau.HasValue || string.IsNullOrEmpty(hoatDong.ThoiGianDienRa))
+                {
+                    return BadRequest(new { message = "Hoạt động không có ngày hoặc giờ hợp lệ" });
+                }
+
+                var ngayBatDauMoi = hoatDong.NgayBatDau.Value.Date;
+                var thoiGianDienRaMoi = hoatDong.ThoiGianDienRa.Trim();
+
+                // Hàm phân tích ThoiGianDienRa
+                bool ParseThoiGianDienRa(string thoiGian, out TimeSpan start, out TimeSpan end)
+                {
+                    start = TimeSpan.Zero;
+                    end = TimeSpan.Zero;
+                    try
+                    {
+                        var parts = thoiGian.Split('-');
+                        if (parts.Length != 2) return false;
+                        if (!TimeSpan.TryParse(parts[0].Trim(), out start) || !TimeSpan.TryParse(parts[1].Trim(), out end))
+                            return false;
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                // Phân tích thời gian của hoạt động mới
+                if (!ParseThoiGianDienRa(thoiGianDienRaMoi, out TimeSpan startTimeNew, out TimeSpan endTimeNew))
+                {
+                    return BadRequest(new { message = "Định dạng thời gian diễn ra không hợp lệ" });
+                }
+
+                // Lấy danh sách hoạt động đã đăng ký vào bộ nhớ
+                var dangKyHoatDongs = await _context.DangKyHoatDongs
+                    .Where(d => d.MaSv == maSV && d.TrangThai == "Đăng ký thành công")
+                    .Join(_context.HoatDongs,
+                        dk => dk.MaHoatDong,
+                        hd => hd.MaHoatDong,
+                        (dk, hd) => new { dk, hd })
+                    .Where(x => x.hd.NgayBatDau.HasValue && x.hd.ThoiGianDienRa != null)
+                    .Select(x => new
+                    {
+                        x.hd.MaHoatDong,
+                        NgayBatDau = x.hd.NgayBatDau.Value,
+                        x.hd.ThoiGianDienRa
+                    })
+                    .ToListAsync();
+
+                // Kiểm tra xung đột lịch trong bộ nhớ
+                bool xungDotLich = dangKyHoatDongs.Any(x =>
+                {
+                    if (x.NgayBatDau.Date != ngayBatDauMoi) return false;
+                    if (!ParseThoiGianDienRa(x.ThoiGianDienRa.Trim(), out TimeSpan startTimeExisting, out TimeSpan endTimeExisting))
+                        return false;
+                    return startTimeNew <= endTimeExisting && endTimeNew >= startTimeExisting && x.MaHoatDong != request.MaHoatDong;
+                });
+
+                if (xungDotLich)
+                {
+                    return BadRequest(new { message = "Bạn đã đăng ký một hoạt động khác trùng giờ và trùng ngày. Hãy đăng ký hoạt động khác!" });
                 }
 
                 // Tạo bản ghi đăng ký mới
@@ -119,12 +164,13 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         dangKy.MaHoatDong,
                         NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null,
                         dangKy.TrangThai,
-                       
-                    } 
+                    }
                 });
             }
             catch (Exception ex)
             {
+                // Ghi log chi tiết để dễ debug
+                Console.WriteLine($"Lỗi khi đăng ký: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { message = "Có lỗi xảy ra khi đăng ký", error = ex.Message });
             }
         }

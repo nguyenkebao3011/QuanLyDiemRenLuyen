@@ -13,6 +13,7 @@ type HoatDong = {
   SoLuongToiDa: number;
   DiemCong: number;
   TrangThai: string;
+  ThoiGianDienRa: string;
 };
 
 const HoatDongList: React.FC = () => {
@@ -22,7 +23,7 @@ const HoatDongList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiUrl, setApiUrl] = useState("http://localhost:5163/api/HoatDongs/lay-danh-sach-hoat-dong");
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   // State cho bộ lọc
   const [ten, setTen] = useState("");
@@ -163,7 +164,8 @@ const HoatDongList: React.FC = () => {
             DiaDiem: "Trường Đại học",
             SoLuongToiDa: 100,
             DiemCong: 5,
-            TrangThai: "Sắp diễn ra"
+            TrangThai: "Sắp diễn ra",
+            ThoiGianDienRa: "10-12",
           },
           {
             MaHoatDong: 2,
@@ -174,7 +176,8 @@ const HoatDongList: React.FC = () => {
             DiaDiem: "Hội trường",
             SoLuongToiDa: 50,
             DiemCong: 3,
-            TrangThai: "Đang diễn ra"
+            TrangThai: "Đang diễn ra",
+            ThoiGianDienRa: "10-12",
           }
         ]);
       }
@@ -380,10 +383,12 @@ const HoatDongList: React.FC = () => {
                 <div className="hoatdong-content">
                   <p className="hoatdong-desc">{hd.MoTa}</p>
                   <div className="hoatdong-details">
-                    <p><i className="icon-calendar"></i> <strong>Thời gian:</strong> {formatDate(hd.NgayBatDau)} → {formatDate(hd.NgayKetThuc)}</p>
-                    <p><i className="icon-location"></i> <strong>Địa điểm:</strong> {hd.DiaDiem}</p>
-                    <p><i className="icon-user"></i> <strong>Số lượng tối đa:</strong> {hd.SoLuongToiDa}</p>
-                    <p><i className="icon-star"></i> <strong>Điểm cộng:</strong> {hd.DiemCong}</p>
+                    <p><i className="icon-calendar"></i> <strong>Thời gian : </strong> {formatDate(hd.NgayBatDau)} → {formatDate(hd.NgayKetThuc)}</p>
+                    <p><i className="icon-location"></i> <strong>Địa điểm : </strong> {hd.DiaDiem}</p>
+                    <p><i className="icon-user"></i> <strong>Số lượng tối đa : </strong> {hd.SoLuongToiDa}</p>
+                    <p><i className="icon-star"></i> <strong>Điểm cộng : </strong> {hd.DiemCong}</p>
+                    <p><i className="icon-watch"></i> <strong>Thời gian diễn ra : </strong> {hd.ThoiGianDienRa}</p>
+
                   </div>
                 </div>
                 <div className="hoatdong-footer">

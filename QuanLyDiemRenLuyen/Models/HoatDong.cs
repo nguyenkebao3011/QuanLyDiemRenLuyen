@@ -31,6 +31,8 @@ public partial class HoatDong
 
     public int? SoLuongDaDangKy { get; set; }
 
+    public string? ThoiGianDienRa { get; set; }   
+
     public virtual ICollection<DangKyHoatDong> DangKyHoatDongs { get; set; } = new List<DangKyHoatDong>();
 
     public virtual HocKy? MaHocKyNavigation { get; set; }
