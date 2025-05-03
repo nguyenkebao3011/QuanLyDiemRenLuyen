@@ -20,6 +20,7 @@
   margin: 0 auto;
   padding: 2rem 1rem;
   color: #333;
+  /* animation: spin 1s linear infinite; */
 }
 
 .hoatdong-title {
@@ -379,6 +380,7 @@
     margin: 0 auto;
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: fadeIn 1s ease-in-out;
   }
   
   .hoatdong-title {
@@ -698,3 +700,6 @@
       transform: rotate(360deg);
     }
   }
+  
+
+  

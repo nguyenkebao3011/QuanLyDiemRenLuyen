@@ -22,30 +22,11 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             _context = context;
         }
 
-        [HttpGet] 
+        
        
 
-        // GET: api/DiemRenLuyens
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DiemRenLuyen>>> GetDiemRenLuyens()
-        {
-            return await _context.DiemRenLuyens.ToListAsync();
-        }
-
-        // GET: api/DiemRenLuyens/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DiemRenLuyen>> GetDiemRenLuyen(int id)
-        {
-            var diemRenLuyen = await _context.DiemRenLuyens.FindAsync(id);
-
-            if (diemRenLuyen == null)
-            {
-                return NotFound();
-            }
-
-            return diemRenLuyen;
-        }
-        [HttpGet("xem-diem")]
+       
+        [HttpGet("xem-diem-theo-tung-hoc-ky")]
         public async Task<IActionResult> XemDiemRenLuyenTheoMaHocKy([FromQuery] int maHocKy)
         {
             try
@@ -113,6 +94,63 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy điểm rèn luyện", error = ex.Message });
+            }
+        }
+        [HttpGet("xem-diem-tat-ca-hoc-ky")]
+        public async Task<IActionResult> XemDiemRenLuyenTatCaHocKy()
+        {
+            try
+            {
+                // Lấy MaSV từ token
+                var maSV = User.Identity.Name;
+                if (string.IsNullOrEmpty(maSV))
+                {
+                    return Unauthorized(new { message = "Không tìm thấy mã sinh viên trong token" });
+                }
+
+                // Kiểm tra xem sinh viên có tồn tại không
+                var sinhVien = await _context.SinhViens.AnyAsync(s => s.MaSV == maSV);
+                if (!sinhVien)
+                {
+                    return BadRequest(new { message = "Sinh viên không tồn tại" });
+                }
+
+                // Lấy danh sách điểm rèn luyện của sinh viên qua tất cả học kỳ
+                var diemRenLuyenList = await _context.DiemRenLuyens
+                    .Where(d => d.MaSv == maSV)
+                    .Join(_context.HocKies,
+                        diem => diem.MaHocKy,
+                        hocKy => hocKy.MaHocKy,
+                        (diem, hocKy) => new
+                        {
+                            diem.MaHocKy,
+                            hocKy.TenHocKy,
+                            diem.TongDiem,
+                            diem.XepLoai,
+                            NgayChot = diem.NgayChot.HasValue ? diem.NgayChot.Value.ToString("yyyy-MM-dd") : null,
+                            diem.TrangThai
+                        })
+                    .ToListAsync();
+
+                // Nếu không có điểm rèn luyện
+                if (!diemRenLuyenList.Any())
+                {
+                    return Ok(new
+                    {
+                        message = "Chưa có điểm rèn luyện cho bất kỳ học kỳ nào",
+                        data = new List<object>()
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Lấy danh sách điểm rèn luyện thành công",
+                    data = diemRenLuyenList
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách điểm rèn luyện", error = ex.Message });
             }
         }
         // PUT: api/DiemRenLuyens/5

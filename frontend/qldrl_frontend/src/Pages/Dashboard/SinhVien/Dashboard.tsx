@@ -258,7 +258,9 @@ const StudentDashboard: React.FC = () => {
             <div className="notification-icon">
               <Bell size={20} />
             </div>
-            <div className="avatar-menu-container" ref={avatarRef}>
+            
+          </div>
+          <div className="avatar-menu-container" ref={avatarRef}>
               {avatar ? (
                 <img
                   src={avatar}
@@ -289,7 +291,6 @@ const StudentDashboard: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
         </header>
         <div className="content-body">{renderContent()}</div>
       </div>

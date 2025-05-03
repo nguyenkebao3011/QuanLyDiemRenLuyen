@@ -23,8 +23,7 @@ interface Props {
 const ThongTinSinhVien: React.FC<Props> = ({ student }) => {
   return (
     <div className="thongtin-container">
-      <h3>Thông tin sinh viên</h3>
-
+      <h3 className="thongtin-test">Thông tin sinh viên</h3>
               <div className="thongtin-content">
           <div className="avatar-container">
             {student.AnhDaiDien ? (

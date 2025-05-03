@@ -57,17 +57,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDongDTO"
+                "$ref": "#/components/schemas/HuyDangKyDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDongDTO"
+                "$ref": "#/components/schemas/HuyDangKyDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDongDTO"
+                "$ref": "#/components/schemas/HuyDangKyDTO"
               }
             }
           }
@@ -79,100 +79,27 @@
         }
       }
     },
-    "/api/DangKyHoatDongs": {
+    "/api/DangKyHoatDongs/lich-su-huy": {
       "get": {
         "tags": [
           "DangKyHoatDongs"
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DangKyHoatDong"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DangKyHoatDong"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DangKyHoatDong"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "DangKyHoatDongs"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
     },
-    "/api/DangKyHoatDongs/{id}": {
+    "/api/DiemRenLuyens/xem-diem-theo-tung-hoc-ky": {
       "get": {
         "tags": [
-          "DangKyHoatDongs"
+          "DiemRenLuyens"
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "maHocKy",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -181,30 +108,27 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DangKyHoatDong"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/DiemRenLuyens/xem-diem-tat-ca-hoc-ky": {
+      "get": {
+        "tags": [
+          "DiemRenLuyens"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyens/{id}": {
       "put": {
         "tags": [
-          "DangKyHoatDongs"
+          "DiemRenLuyens"
         ],
         "parameters": [
           {
@@ -221,17 +145,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
+                "$ref": "#/components/schemas/DiemRenLuyen"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
+                "$ref": "#/components/schemas/DiemRenLuyen"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DangKyHoatDong"
+                "$ref": "#/components/schemas/DiemRenLuyen"
               }
             }
           }
@@ -244,7 +168,7 @@
       },
       "delete": {
         "tags": [
-          "DangKyHoatDongs"
+          "DiemRenLuyens"
         ],
         "parameters": [
           {
@@ -265,42 +189,6 @@
       }
     },
     "/api/DiemRenLuyens": {
-      "get": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiemRenLuyen"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiemRenLuyen"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiemRenLuyen"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "DiemRenLuyens"
@@ -344,129 +232,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/DiemRenLuyens/{id}": {
-      "get": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DiemRenLuyen"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DiemRenLuyen"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DiemRenLuyen"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DiemRenLuyen"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DiemRenLuyen"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DiemRenLuyen"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/DiemRenLuyens/xem-diem": {
-      "get": {
-        "tags": [
-          "DiemRenLuyens"
-        ],
-        "parameters": [
-          {
-            "name": "maHocKy",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -2850,6 +2615,22 @@
             "items": {
               "$ref": "#/components/schemas/ThanhVienHoiDong"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HuyDangKyDTO": {
+        "type": "object",
+        "properties": {
+          "MaHoatDong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LyDoHuy": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
             "nullable": true
           }
         },

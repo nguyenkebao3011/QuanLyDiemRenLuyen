@@ -588,39 +588,8 @@ const HoatDongList: React.FC = () => {
             <button onClick={() => window.location.reload()} className="btn-reload">
               Làm mới trang
             </button>
-            <div className="api-url-changer">
-              <input
-                type="text"
-                value={apiUrl}
-                onChange={(e) => setApiUrl(e.target.value)}
-                className="api-input"
-                placeholder="Nhập URL API mới"
-              />
-              <button onClick={() => {}} className="btn-change-api">
-                Thay đổi API
-              </button>
-            </div>
-            <div className="api-test-options">
-              <p>Các API có thể thử:</p>
-              <button
-                onClick={() => setApiUrl("http://localhost:5163/api/HoatDongs")}
-                className="btn-api-option"
-              >
-                /api/HoatDongs
-              </button>
-              <button
-                onClick={() => setApiUrl("http://localhost:5163/api/HoatDong")}
-                className="btn-api-option"
-              >
-                /api/HoatDong
-              </button>
-              <button
-                onClick={() => setApiUrl("http://localhost:5163/api/HoatDong/danh-sach")}
-                className="btn-api-option"
-              >
-                /api/HoatDong/danh-sach
-              </button>
-            </div>
+           
+          
           </div>
         </div>
       ) : currentHoatDongs.length === 0 ? (

@@ -59,7 +59,7 @@
   .activities-container {
   margin-top: 20px;
   padding: 30px;
-  background: #45968c;
+  background: #f9f9f9;
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   color: #2752d3;
@@ -75,8 +75,7 @@
   font-size: 28px;
   text-align: center;
   margin-bottom: 25px;
-  color: #ffcc00;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
   position: relative;
 }
 
@@ -105,7 +104,7 @@
 }
 
 .activity-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(207, 204, 28, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
@@ -128,14 +127,14 @@
 
 .activity-name {
   font-size: 20px;
-  color: #ffcc00;
+  color: #07559f;
   margin: 0;
 }
 
 .activity-status {
   font-size: 14px;
   padding: 5px 12px;
-  background: #e74c3c;
+  background: #2c7934;
   color: #fff;
   border-radius: 10px;
   text-transform: uppercase;
@@ -144,11 +143,19 @@
 .activity-details p {
   margin: 8px 0;
   font-size: 16px;
-  color: #ddd;
+  color: #6260af;
 }
-
-.activity-details strong {
+.cancel-btn2 {
+  background: var(--primary-color);
   color: #fff;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.activity-details strong {
+  color: #3c5de0;
 }
 
 .points {
@@ -188,4 +195,170 @@
   50% { transform: translateX(5px); }
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-group label {
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.cancel-reason-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 80px;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.confirm-btn {
+  background: #22c55e;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.confirm-btn:hover {
+  background: #16a34a;
+}
+.pagination2 {
+  grid-column: 1 / -1; /* Đảm bảo pagination chiếm toàn bộ chiều rộng của grid */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+
+.thongtin-test {
+  position: relative;
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.thongtin-test::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px; /* cách chữ 8px */
+  transform: translateX(-50%);
+  width: 50px;
+  height: 4px;
+  background: #ffcc00;
+  animation: pulse 2s infinite;
+}
+.activity-list-btn {
+  background-color: #1DA1F2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin: 15px;
+  display: flex;
+  justify-items: flex-end;
+}
+/* hủy đăng ký danh sách */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1DA1F2;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.history-table th {
+  background-color: #f3f4f6;
+  font-weight: bold;
+  color: #374151;
+}
+
+.history-table td {
+  color: #4b5563;
 }

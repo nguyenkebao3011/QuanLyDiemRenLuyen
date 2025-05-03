@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QuanLyDiemRenLuyen.DTO.SinhVien;
 using QuanLyDiemRenLuyen.Models;
 
@@ -17,10 +19,12 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
     public class DangKyHoatDongsController : ControllerBase
     {
         private readonly QlDrlContext _context;
+        private readonly ILogger<DangKyHoatDongsController> _logger;
 
-        public DangKyHoatDongsController(QlDrlContext context)
+        public DangKyHoatDongsController(QlDrlContext context, ILogger<DangKyHoatDongsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
 
@@ -31,19 +35,13 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             try
             {
                 // Lấy MaSV từ token
-                var maSV = User.Identity.Name;
+                var maSV = User.Identity?.Name;
                 if (string.IsNullOrEmpty(maSV))
                 {
                     return Unauthorized(new { message = "Không tìm thấy mã sinh viên trong token" });
                 }
 
-                // Kiểm tra dữ liệu đầu vào
-                if (request.MaHoatDong == null)
-                {
-                    return BadRequest(new { message = "Mã hoạt động không được để trống" });
-                }
-
-                // Kiểm tra xem sinh viên có tồn tại không
+                // Kiểm tra sinh viên tồn tại
                 var sinhVien = await _context.SinhViens.AnyAsync(s => s.MaSV == maSV);
                 if (!sinhVien)
                 {
@@ -58,120 +56,63 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                // Kiểm tra số lượng đăng ký
-                if (hoatDong.SoLuongToiDa.HasValue)
+                if (hoatDong.TrangThai != "Chưa bắt đầu" && hoatDong.TrangThai != "Đang mở đăng ký")
                 {
-                    if (hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa.Value)
-                    {
-                        return BadRequest(new { message = "Hoạt động đã đủ số lượng sinh viên đăng ký" });
-                    }
+                    return BadRequest(new { message = "Chỉ có thể đăng ký các hoạt động chưa bắt đầu hoặc đang mở đăng ký" });
                 }
 
-                // Kiểm tra xem sinh viên đã đăng ký hoạt động này chưa
+                // Kiểm tra số lượng tối đa
+                if (hoatDong.SoLuongToiDa.HasValue && hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa)
+                {
+                    return BadRequest(new { message = "Hoạt động đã đủ số lượng đăng ký" });
+                }
+
+                // Kiểm tra đã đăng ký chưa
                 var daDangKy = await _context.DangKyHoatDongs
                     .AnyAsync(d => d.MaSv == maSV && d.MaHoatDong == request.MaHoatDong);
                 if (daDangKy)
                 {
-                    return BadRequest(new { message = "Sinh viên đã đăng ký hoạt động này rồi" });
+                    return BadRequest(new { message = "Sinh viên đã đăng ký hoạt động này" });
                 }
 
-                // Kiểm tra xung đột ngày và giờ với các hoạt động đã đăng ký
-                if (!hoatDong.NgayBatDau.HasValue || !hoatDong.NgayKetThuc.HasValue)
+                // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hoặc kết thúc hợp lệ" });
-                }
-
-                // Kiểm tra xem hoạt động có cùng ngày không
-                var ngayBatDauMoi = hoatDong.NgayBatDau.Value.Date;
-                var ngayKetThucMoi = hoatDong.NgayKetThuc.Value.Date;
-                if (ngayBatDauMoi != ngayKetThucMoi)
-                {
-                    return BadRequest(new { message = "Hoạt động không diễn ra trong cùng một ngày" });
-                }
-
-                // Lấy thời gian diễn ra từ NgayBatDau và NgayKetThuc
-                var startTimeNew = hoatDong.NgayBatDau.Value.TimeOfDay;
-                var endTimeNew = hoatDong.NgayKetThuc.Value.TimeOfDay;
-
-                if (startTimeNew > endTimeNew)
-                {
-                    return BadRequest(new { message = "Thời gian bắt đầu phải trước thời gian kết thúc" });
-                }
-
-                // Lấy danh sách hoạt động đã đăng ký vào bộ nhớ
-                var dangKyHoatDongs = await _context.DangKyHoatDongs
-                    .Where(d => d.MaSv == maSV && d.TrangThai == "Đăng ký thành công")
-                    .Join(_context.HoatDongs,
-                        dk => dk.MaHoatDong,
-                        hd => hd.MaHoatDong,
-                        (dk, hd) => new { dk, hd })
-                    .Where(x => x.hd.NgayBatDau.HasValue && x.hd.NgayKetThuc.HasValue)
-                    .Select(x => new
+                    // Thêm bản ghi đăng ký
+                    var dangKy = new DangKyHoatDong
                     {
-                        x.hd.MaHoatDong,
-                        NgayBatDau = x.hd.NgayBatDau.Value,
-                        NgayKetThuc = x.hd.NgayKetThuc.Value
-                    })
-                    .ToListAsync();
+                        MaSv = maSV,
+                        MaHoatDong = request.MaHoatDong,
+                        NgayDangKy = DateTime.Now,
+                        TrangThai = "Đăng ký thành công"
+                    };
+                    _context.DangKyHoatDongs.Add(dangKy);
 
-                // Kiểm tra xung đột lịch trong bộ nhớ
-                bool xungDotLich = dangKyHoatDongs.Any(x =>
-                {
-                    // Kiểm tra cùng ngày
-                    if (x.NgayBatDau.Date != ngayBatDauMoi) return false;
-                    if (x.NgayBatDau.Date != x.NgayKetThuc.Date) return false; // Bỏ qua nếu hoạt động đã đăng ký không cùng ngày
+                    // Tăng SoLuongDaDangKy
+                    hoatDong.SoLuongDaDangKy += 1;
 
-                    // Lấy thời gian diễn ra của hoạt động đã đăng ký
-                    var startTimeExisting = x.NgayBatDau.TimeOfDay;
-                    var endTimeExisting = x.NgayKetThuc.TimeOfDay;
-
-                    // Kiểm tra chồng lấn
-                    return startTimeNew <= endTimeExisting &&
-                           endTimeNew >= startTimeExisting &&
-                           x.MaHoatDong != request.MaHoatDong;
-                });
-
-                if (xungDotLich)
-                {
-                    return BadRequest(new { message = "Sinh viên đã đăng ký một hoạt động khác có khung giờ chồng lấn cùng ngày" });
+                    // Lưu thay đổi
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
                 }
 
-                // Tạo bản ghi đăng ký mới
-                var dangKy = new DangKyHoatDong
-                {
-                    MaSv = maSV,
-                    MaHoatDong = request.MaHoatDong,
-                    NgayDangKy = DateTime.Now,
-                    TrangThai = "Đăng ký thành công"
-                };
-
-                // Thêm vào database
-                _context.DangKyHoatDongs.Add(dangKy);
-                hoatDong.SoLuongDaDangKy = (hoatDong.SoLuongDaDangKy ?? 0) + 1;
-                await _context.SaveChangesAsync();
-
-                // Trả về dữ liệu không chứa navigation properties
-                return Ok(new
-                {
-                    message = "Đăng ký hoạt động thành công",
-                    data = new
-                    {
-                        dangKy.MaDangKy,
-                        dangKy.MaSv,
-                        dangKy.MaHoatDong,
-                        NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null,
-                        dangKy.TrangThai,
-                    }
-                });
+                return Ok(new { message = "Đăng ký hoạt động thành công" });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Lỗi cơ sở dữ liệu khi đăng ký hoạt động cho MaSV: {MaSV}, MaHoatDong: {MaHoatDong}", User.Identity?.Name, request.MaHoatDong);
+                return StatusCode(500, new { message = "Lỗi cơ sở dữ liệu, vui lòng thử lại sau", error = dbEx.InnerException?.Message });
             }
             catch (Exception ex)
             {
-                // Ghi log chi tiết để dễ debug
-                Console.WriteLine($"Lỗi khi đăng ký: {ex.Message}\nStackTrace: {ex.StackTrace}");
-                return StatusCode(500, new { message = "Có lỗi xảy ra khi đăng ký", error = ex.Message });
+                _logger.LogError(ex, "Lỗi khi đăng ký hoạt động cho MaSV: {MaSV}, MaHoatDong: {MaHoatDong}", User.Identity?.Name, request.MaHoatDong);
+                return StatusCode(500, new { message = "Có lỗi xảy ra, vui lòng thử lại sau", error = ex.Message });
             }
         }
-        
+
+
+
+
         [HttpGet("danh-sach-dang-ky")]
         public async Task<IActionResult> XemDanhSachDangKyHoatDong()
         {
@@ -222,24 +163,38 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             {
                 return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách đăng ký", error = ex.Message });
             }
-        
+
         }
         [HttpDelete("huy-dangky")]
-        public async Task<IActionResult> HuyDangKyHoatDong([FromBody] DangKyHoatDongDTO request)
+        public async Task<IActionResult> HuyDangKyHoatDong([FromBody] HuyDangKyDTO request)
         {
             try
             {
                 // Lấy MaSV từ token
-                var maSV = User.Identity.Name;
+                var maSV = User.Identity?.Name;
                 if (string.IsNullOrEmpty(maSV))
                 {
                     return Unauthorized(new { message = "Không tìm thấy mã sinh viên trong token" });
                 }
 
-                // Kiểm tra dữ liệu đầu vào
-                if (request.MaHoatDong == null)
+                // Kiểm tra LyDoHuy
+                if (!string.IsNullOrEmpty(request.LyDoHuy))
                 {
-                    return BadRequest(new { message = "Mã hoạt động không được để trống" });
+                    var lyDoHuy = request.LyDoHuy.Trim();
+                    if (lyDoHuy.Length == 0 || lyDoHuy.ToLower() == "string")
+                    {
+                        return BadRequest(new { message = "Lý do hủy không hợp lệ, vui lòng cung cấp lý do cụ thể" });
+                    }
+                }
+
+                // Kiểm tra số lần hủy trong 10 ngày
+                var ngayHienTai = DateTime.Now;
+                var ngayBatDau = ngayHienTai.AddDays(-10);
+                var soLanHuy = await _context.LichSuHuyDangKys
+                    .CountAsync(h => h.MaSv == maSV && h.ThoiGianHuy >= ngayBatDau && h.ThoiGianHuy <= ngayHienTai);
+                if (soLanHuy >= 3)
+                {
+                    return BadRequest(new { message = "Bạn đã hủy đăng ký quá 3 lần trong 10 ngày, không thể hủy thêm" });
                 }
 
                 // Kiểm tra hoạt động
@@ -250,10 +205,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                // Kiểm tra trạng thái hoạt động
-                if (hoatDong.TrangThai != "Chưa bắt đầu")
+                if (hoatDong.TrangThai != "Chưa bắt đầu" && hoatDong.TrangThai != "Đang mở đăng ký")
                 {
-                    return BadRequest(new { message = "Chỉ có thể hủy đăng ký các hoạt động chưa bắt đầu" });
+                    return BadRequest(new { message = "Chỉ có thể hủy đăng ký các hoạt động chưa bắt đầu hoặc đang mở đăng ký" });
                 }
 
                 // Kiểm tra thời gian hủy (cách NgayBatDau ít nhất 3 ngày)
@@ -262,114 +216,78 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không có ngày bắt đầu hợp lệ" });
                 }
 
-                var ngayHienTai = DateTime.Now;
                 var thoiGianToiThieu = ngayHienTai.AddDays(3);
                 if (hoatDong.NgayBatDau < thoiGianToiThieu)
                 {
-                    return BadRequest(new { message = "Không thể hủy đăng ký vì thời gian bắt đầu hoạt động đã quá gần (ít hơn 3 ngày)" });
+                    return BadRequest(new { message = "Bạn không thể hủy đăng ký vì thời gian bắt đầu hoạt động đã quá gần (ít hơn 3 ngày)" });
                 }
 
-                // Tìm bản ghi đăng ký
-                var dangKy = await _context.DangKyHoatDongs
-                    .FirstOrDefaultAsync(d => d.MaSv == maSV && d.MaHoatDong == request.MaHoatDong);
-                if (dangKy == null)
+                // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    return BadRequest(new { message = "Sinh viên chưa đăng ký hoạt động này" });
-                }
+                    // Tìm bản ghi đăng ký
+                    var dangKy = await _context.DangKyHoatDongs
+                        .FirstOrDefaultAsync(d => d.MaSv == maSV && d.MaHoatDong == request.MaHoatDong);
+                    if (dangKy == null)
+                    {
+                        return BadRequest(new { message = "Sinh viên chưa đăng ký hoạt động này" });
+                    }
 
-                // Xóa bản ghi đăng ký
-                _context.DangKyHoatDongs.Remove(dangKy);
-                await _context.SaveChangesAsync();
+                    // Giảm SoLuongDaDangKy
+                    if (hoatDong.SoLuongDaDangKy > 0)
+                    {
+                        hoatDong.SoLuongDaDangKy -= 1;
+                        _context.HoatDongs.Update(hoatDong); // Đánh dấu hoatDong cần cập nhật
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return BadRequest(new { message = "Số lượng đăng ký đã ở mức 0, không thể giảm thêm" });
+                    }
+
+                    // Ghi lịch sử hủy
+                    var lichSu = new LichSuHuyDangKy
+                    {
+                        MaSv = maSV,
+                        MaHoatDong = request.MaHoatDong,
+                        
+                        ThoiGianHuy = ngayHienTai,
+                        LyDo = string.IsNullOrEmpty(request.LyDoHuy) ? "Hủy bởi sinh viên" : request.LyDoHuy.Trim(),
+                        TrangThai = "Thành công"
+                    };
+                    _context.LichSuHuyDangKys.Add(lichSu);
+
+                    // Xóa bản ghi đăng ký
+                    _context.DangKyHoatDongs.Remove(dangKy);
+
+                    // Lưu thay đổi
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
 
                 return Ok(new { message = "Hủy đăng ký hoạt động thành công" });
             }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Lỗi cơ sở dữ liệu khi hủy đăng ký cho MaSV: {MaSV}, MaHoatDong: {MaHoatDong}", User.Identity?.Name, request.MaHoatDong);
+                return StatusCode(500, new { message = "Lỗi cơ sở dữ liệu, vui lòng thử lại sau", error = dbEx.InnerException?.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Có lỗi xảy ra khi hủy đăng ký", error = ex.Message });
+                _logger.LogError(ex, "Lỗi khi hủy đăng ký hoạt động cho MaSV: {MaSV}, MaHoatDong: {MaHoatDong}", User.Identity?.Name, request.MaHoatDong);
+                return StatusCode(500, new { message = "Có lỗi xảy ra, vui lòng thử lại sau", error = ex.Message });
             }
         }
-        // GET: api/DangKyHoatDongs
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DangKyHoatDong>>> GetDangKyHoatDongs()
+        [HttpGet("lich-su-huy")]
+        public async Task<IActionResult> GetLichSuHuy()
         {
-            return await _context.DangKyHoatDongs.ToListAsync();
-        }
+            var maSV = User.Identity?.Name;
+            var lichSu = await _context.LichSuHuyDangKys
+                .Where(h => h.MaSv == maSV)
+                .OrderByDescending(h => h.ThoiGianHuy)
+                .ToListAsync();
 
-        // GET: api/DangKyHoatDongs/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DangKyHoatDong>> GetDangKyHoatDong(int id)
-        {
-            var dangKyHoatDong = await _context.DangKyHoatDongs.FindAsync(id);
-
-            if (dangKyHoatDong == null)
-            {
-                return NotFound();
-            }
-
-            return dangKyHoatDong;
-        }
-
-        // PUT: api/DangKyHoatDongs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDangKyHoatDong(int id, DangKyHoatDong dangKyHoatDong)
-        {
-            if (id != dangKyHoatDong.MaDangKy)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(dangKyHoatDong).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DangKyHoatDongExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/DangKyHoatDongs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<DangKyHoatDong>> PostDangKyHoatDong(DangKyHoatDong dangKyHoatDong)
-        {
-            _context.DangKyHoatDongs.Add(dangKyHoatDong);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetDangKyHoatDong", new { id = dangKyHoatDong.MaDangKy }, dangKyHoatDong);
-        }
-
-        // DELETE: api/DangKyHoatDongs/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDangKyHoatDong(int id)
-        {
-            var dangKyHoatDong = await _context.DangKyHoatDongs.FindAsync(id);
-            if (dangKyHoatDong == null)
-            {
-                return NotFound();
-            }
-
-            _context.DangKyHoatDongs.Remove(dangKyHoatDong);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool DangKyHoatDongExists(int id)
-        {
-            return _context.DangKyHoatDongs.Any(e => e.MaDangKy == id);
+            return Ok(new { count = lichSu.Count, data = lichSu });
         }
     }
 }

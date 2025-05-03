@@ -49,6 +49,7 @@ public partial class QlDrlContext : DbContext
     public virtual DbSet<ThongBao> ThongBaos { get; set; }
 
     public virtual DbSet<OTPRecords> OTPRecords { get; set; } 
+    public virtual DbSet<LichSuHuyDangKy> LichSuHuyDangKys { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
         => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
@@ -439,10 +440,50 @@ public partial class QlDrlContext : DbContext
             entity.HasOne(d => d.MaQlNavigation).WithMany(p => p.ThongBaos)
                 .HasForeignKey(d => d.MaQl)
                 .HasConstraintName("FK_ThongBao_QuanLy");
-         
-        });
 
-        OnModelCreatingPartial(modelBuilder);
+        });
+        modelBuilder.Entity<LichSuHuyDangKy>(entity =>
+        {
+            entity.ToTable("LichSuHuyDangKy");
+            entity.HasKey(l => l.Id);
+
+            // Ánh xạ thuộc tính MaSv sang cột MaSV
+            entity.Property(l => l.MaSv)
+                  .HasColumnName("MaSV")
+                  .HasMaxLength(10)
+                  .IsUnicode(false)
+                  .IsRequired();
+
+            // Ánh xạ thuộc tính MaHoatDong sang cột MaHoatDong
+            entity.Property(l => l.MaHoatDong)
+                  .HasColumnName("MaHoatDong")
+                  .IsRequired();
+
+            // Ánh xạ các thuộc tính khác
+            entity.Property(l => l.LyDo)
+                  .HasMaxLength(500)
+                  .IsUnicode(true);
+
+            entity.Property(l => l.ThoiGianHuy)
+                  .HasColumnType("datetime")
+                  .IsRequired();
+
+            entity.Property(l => l.TrangThai)
+                  .HasMaxLength(50)
+                  .IsUnicode(true)
+                  .IsRequired();
+
+            // Cấu hình khóa ngoại
+            entity.HasOne(l => l.SinhVien)
+                  .WithMany()
+                  .HasForeignKey(l => l.MaSv)
+                  .HasConstraintName("FK_LichSuHuyDangKy_SinhVien");
+
+            entity.HasOne(l => l.HoatDong)
+                  .WithMany()
+                  .HasForeignKey(l => l.MaHoatDong)
+                  .HasConstraintName("FK_LichSuHuyDangKy_HoatDong");
+        });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -9,5 +9,7 @@ namespace QuanLyDiemRenLuyen.DTO.SinhVien
     {
        
         public int MaHoatDong { get; set; }
+
+         
     }
 }
