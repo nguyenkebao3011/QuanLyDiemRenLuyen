@@ -189,7 +189,7 @@ const XemDiemRenLuyen: React.FC = () => {
               </p>
             </div>
 
-            <div className="status-badge">
+            <div className="status-badge2">
               <div
                 className={`status-indicator ${
                   selectedHocKy.TrangThai === 'Đã chốt' ? 'status-completed' : 'status-pending'

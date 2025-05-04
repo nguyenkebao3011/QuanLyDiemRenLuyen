@@ -75,16 +75,18 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 if (giangVien == null)
                     return BadRequest("Không tìm thấy thông tin giảng viên.");
 
-                // Tìm lớp của giảng viên dựa trên MaGv
-                var lopGiangVien = await _context.Lops
-                    .FirstOrDefaultAsync(l => l.MaGv == giangVien.MaGv);
+                // Lấy danh sách tất cả các lớp của giảng viên
+                var lopGiangViens = await _context.Lops
+                    .Where(l => l.MaGv == giangVien.MaGv)
+                    .Select(l => l.MaLop)
+                    .ToListAsync();
 
-                if (lopGiangVien == null)
+                if (!lopGiangViens.Any())
                     return BadRequest("Giảng viên không có lớp giảng dạy.");
 
-                // Lấy danh sách sinh viên trong lớp
+                // Lấy danh sách sinh viên trong các lớp của giảng viên
                 var sinhViensCuaLop = await _context.SinhViens
-                    .Where(sv => sv.MaLop == lopGiangVien.MaLop)
+                    .Where(sv => lopGiangViens.Contains(sv.MaLop)) // Lọc sinh viên thuộc các lớp
                     .Join(
                         _context.Lops, // Join với bảng Lops
                         sv => sv.MaLop,
