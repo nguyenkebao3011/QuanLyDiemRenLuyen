@@ -452,7 +452,14 @@
   font-weight: bold;
   padding: 12px 16px;
 }
-
+.tieu-de-lop {
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
 .hang-sinh-vien {
   border-bottom: 1px solid #eee;
 }

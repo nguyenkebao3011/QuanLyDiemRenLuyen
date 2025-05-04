@@ -35,14 +35,18 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
             if (giangVien == null)
                 return BadRequest("Không tìm thấy giảng viên.");
 
-            var lop = await _context.Lops
-                .FirstOrDefaultAsync(l => l.MaGv == giangVien.MaGv);
+            // Lấy danh sách MaLop của các lớp mà giảng viên quản lý
+            var lopMaLopList = await _context.Lops
+                .Where(l => l.MaGv == giangVien.MaGv)
+                .Select(l => l.MaLop)
+                .ToListAsync();
 
-            if (lop == null)
+            if (lopMaLopList == null || !lopMaLopList.Any())
                 return BadRequest("Giảng viên không có lớp giảng dạy.");
 
+            // Kiểm tra sinh viên trong các lớp của giảng viên
             var sinhVien = await _context.SinhViens
-                .FirstOrDefaultAsync(sv => sv.MaSV == maSinhVien && sv.MaLop == lop.MaLop);
+                .FirstOrDefaultAsync(sv => sv.MaSV == maSinhVien && lopMaLopList.Contains(sv.MaLop));
 
             if (sinhVien == null)
                 return NotFound("Sinh viên không thuộc lớp của bạn.");
@@ -57,7 +61,7 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                 })
                 .FirstOrDefaultAsync();
 
-            if (sinhVien == null)
+            if (sinhViens == null)
                 return NotFound("Không tìm thấy sinh viên.");
 
             // Lấy danh sách điểm rèn luyện theo học kỳ
@@ -77,11 +81,10 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                 sinhVien.HoTen,
                 DiemRenLuyenTheoHocKy = danhSachDiem
             });
-
         }
 
-          
-      
-       
-    }
+
+
+
+        }
 }

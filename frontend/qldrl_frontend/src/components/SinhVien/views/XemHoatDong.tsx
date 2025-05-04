@@ -255,7 +255,7 @@ const HoatDongList: React.FC = () => {
             SoLuongDaDangKy: 50,
             DiemCong: 5,
             TrangThai: "Sắp diễn ra",
-            ThoiGianDienRa: "1000",
+            ThoiGianDienRa: "",
           },
           {
             MaHoatDong: 2,
@@ -268,7 +268,7 @@ const HoatDongList: React.FC = () => {
             SoLuongDaDangKy: 20,
             DiemCong: 3,
             TrangThai: "Đang diễn ra",
-            ThoiGianDienRa: "1000",
+            ThoiGianDienRa: "",
           },
         ]);
       }
@@ -287,16 +287,41 @@ const HoatDongList: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN");
+    return date.toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
   };
 
   // Hàm định dạng thời gian diễn ra từ NgayBatDau và NgayKetThuc
   const formatThoiGianDienRa = (ngayBatDau: string, ngayKetThuc: string) => {
     const start = new Date(ngayBatDau);
     const end = new Date(ngayKetThuc);
-    if (start.toDateString() !== end.toDateString()) return "Chưa xác định";
-    const formatTime = (date: Date) => date.toTimeString().slice(0, 5); // Lấy HH:mm
-    return `${formatTime(start)}-${formatTime(end)}`;
+
+    // Hàm định dạng giờ
+    const formatTime = (date: Date) =>
+      date.toLocaleTimeString("vi-VN", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    // So sánh giờ (bỏ qua ngày)
+    const startTime = start.toLocaleTimeString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTime = end.toLocaleTimeString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    // Nếu giờ giống nhau, trả về một khung giờ
+    if (startTime === endTime) {
+      return startTime;
+    }
+
+    // Nếu giờ khác nhau, trả về khoảng giờ
+    return `${startTime}-${endTime}`;
   };
 
   // Hàm mở modal xem chi tiết
@@ -433,7 +458,8 @@ const HoatDongList: React.FC = () => {
                     <strong>Điểm cộng:</strong> {selectedHoatDong.DiemCong}
                   </p>
                   <p>
-                    <strong>Số lượng đã đăng ký:</strong> {selectedHoatDong.SoLuongDaDangKy}
+                    <strong>Số lượng đã đăng ký:</strong>{" "}
+                    {selectedHoatDong.SoLuongDaDangKy}
                   </p>
                   {!modalSuccess && !modalError && (
                     <p>Bạn có chắc chắn muốn đăng ký hoạt động này?</p>
@@ -557,7 +583,8 @@ const HoatDongList: React.FC = () => {
                 <strong>Số điểm cộng:</strong> {selectedDetailHoatDong.DiemCong}
               </p>
               <p>
-                <strong>Thời gian:</strong> {formatDate(selectedDetailHoatDong.NgayBatDau)} từ{" "}
+                <strong>Thời gian:</strong> {formatDate(selectedDetailHoatDong.NgayBatDau)} →{" "}
+                {formatDate(selectedDetailHoatDong.NgayKetThuc)} từ{" "}
                 {formatThoiGianDienRa(selectedDetailHoatDong.NgayBatDau, selectedDetailHoatDong.NgayKetThuc)}
               </p>
               <p>
@@ -588,8 +615,6 @@ const HoatDongList: React.FC = () => {
             <button onClick={() => window.location.reload()} className="btn-reload">
               Làm mới trang
             </button>
-           
-          
           </div>
         </div>
       ) : currentHoatDongs.length === 0 ? (
@@ -625,14 +650,16 @@ const HoatDongList: React.FC = () => {
                       {formatDate(hd.NgayBatDau)} → {formatDate(hd.NgayKetThuc)}
                     </p>
                     <p>
-                      <i className="icon-location"></i> <strong>Địa điểm:</strong> {hd.DiaDiem}
+                      <i className="icon-location"></i> <strong>Địa điểm:</strong>{" "}
+                      {hd.DiaDiem}
                     </p>
                     <p>
                       <i className="icon-user"></i> <strong>Số lượng tối đa:</strong>{" "}
                       {hd.SoLuongToiDa}
                     </p>
                     <p>
-                      <i className="icon-star"></i> <strong>Điểm cộng:</strong> {hd.DiemCong}
+                      <i className="icon-star"></i> <strong>Điểm cộng:</strong>{" "}
+                      {hd.DiemCong}
                     </p>
                     <p>
                       <i className="icon-watch"></i>{" "}
