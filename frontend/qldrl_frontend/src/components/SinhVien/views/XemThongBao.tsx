@@ -116,8 +116,8 @@ const XemThongBao: React.FC = () => {
         </h2>
       </div>
 
-      <div className="thong-bao-content">
-        <div className="thong-bao-list">
+      <div className="thong-bao-content2">
+        <div className="thong-bao-list2">
           {danhSachThongBao.length > 0 ? (
             <ul className="notification-list">
               {danhSachThongBao.map((thongBao) => (
@@ -161,7 +161,7 @@ const XemThongBao: React.FC = () => {
         </div>
 
         {selectedThongBao && (
-          <div className="thong-bao-detail">
+          <div className="thong-bao-detail2">
             <div className="detail-header">
               <h2 className="detail-title">{selectedThongBao.TieuDe}</h2>
               <div className="detail-meta">

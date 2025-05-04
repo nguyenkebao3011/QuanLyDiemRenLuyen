@@ -30,13 +30,13 @@
   }
   
   /* Layout danh sách và chi tiết */
-  .thong-bao-content {
+  .thong-bao-content2 {
     display: flex;
     gap: 24px;
     min-height: 600px;
   }
   
-  .thong-bao-list {
+  .thong-bao-list2 {
     flex: 1;
     max-width: 400px;
     background-color: #fff;
@@ -45,7 +45,7 @@
     overflow: hidden;
   }
   
-  .thong-bao-detail {
+  .thong-bao-detail2 {
     flex: 2;
     background-color: #fff;
     border-radius: 8px;

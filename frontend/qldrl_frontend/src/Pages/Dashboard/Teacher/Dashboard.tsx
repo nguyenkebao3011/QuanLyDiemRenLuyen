@@ -11,12 +11,13 @@ import {
 } from "react-feather";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { Facebook, Mail, Phone, MapPin, Globe } from 'react-feather';
 import XemHoatDong from "../../../components/GiangVien/views/XemHoatDong";
-import XemDiemRenLuyen from "../../../components/SinhVien/views/XemDiemRenLuyen";
+import DanhSachSinhVien from "../../../components/GiangVien/views/DanhSachSinhVien";
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
+import ThongKe from "../../../components/GiangVien/views/ThongKe";
 
 // Định nghĩa kiểu Lecturer
 interface Lecturer {
@@ -31,7 +32,77 @@ interface Lecturer {
 }
 
 type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
-
+const Footer: React.FC = () => {
+  return (
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-column">
+          <div className="footer-logo">
+            <img 
+              src="../hinhanh/HUIT(2).jpeg" 
+              alt="Logo trường HUIT" 
+              className="footer-logo-img" 
+            />
+          </div>
+          <h3>TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h3>
+          <p>HO CHI MINH CITY UNIVERSITY OF INDUSTRY AND TRADE</p>
+        </div>
+        
+        <div className="footer-column">
+          <h4>Liên hệ</h4>
+          <ul className="footer-links">
+            <li>
+              <MapPin size={16} className="footer-icon" />
+              <span>140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</span>
+            </li>
+            <li>
+              <Phone size={16} className="footer-icon" />
+              <span>(028) 3816 1673 - (028) 3816 1674</span>
+            </li>
+            <li>
+              <Mail size={16} className="footer-icon" />
+              <span>contact@huit.edu.vn</span>
+            </li>
+            <li>
+              <Globe size={16} className="footer-icon" />
+              <span>www.huit.edu.vn</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div className="footer-column">
+          <h4>Liên kết nhanh</h4>
+          <ul className="footer-links">
+            <li><a href="/">Trang chủ</a></li>
+            <li><a href="/thong-bao">Thông báo</a></li>
+            <li><a href="/diem-ren-luyen">Điểm rèn luyện</a></li>
+            <li><a href="/hoat-dong">Hoạt động</a></li>
+          </ul>
+        </div>
+        
+        <div className="footer-column">
+          <h4>Kết nối với chúng tôi</h4>
+          <div className="social-links">
+            <a href="https://www.facebook.com/huit.edu.vn" className="social-link">
+              <Facebook size={24} />
+            </a>
+            <a href="mailto:contact@huit.edu.vn" className="social-link">
+              <Mail size={24} />
+            </a>
+          </div>
+          <div className="qr-code">
+            <img src="../hinhanh/qr_code.png" alt="QR Code" />
+            <p>Quét mã để truy cập</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="footer-bottom">
+        <p>© {new Date().getFullYear()} Hệ thống Quản lý điểm rèn luyện - Trường Đại học Công Thương TP.HCM</p>
+      </div>
+    </footer>
+  );
+};
 const TeacherDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
@@ -49,9 +120,9 @@ const TeacherDashboard: React.FC = () => {
   const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> = {
     dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
     activities: { title: "Các hoạt động", icon: <Calendar size={18} /> },
-    score: { title: "Quản lý điểm rèn luyện", icon: <Award size={18} /> },
+    score: { title: "Danh sách sinh viên", icon: <Award size={18} /> },
     notifications: { title: "Thông báo", icon: <Bell size={18} /> },
-    evidence: { title: "Phản hồi điểm rèn luyện", icon: <FileText size={18} /> },
+    evidence: { title: "Thống kê", icon: <FileText size={18} /> },
   };
 
   const handleAvatarClick = () => {
@@ -150,13 +221,13 @@ const TeacherDashboard: React.FC = () => {
       case "notifications":
         return <XemThongBao />;
       case "score":
-        return <XemDiemRenLuyen />;
+        return <DanhSachSinhVien />;
       case "evidence":
-        return <GuiPhanHoi />;
+        return <ThongKe />;
       default:
         return (
           <div>
-            <h2>Xin chào {teacherName}</h2>
+            <h2 >Xin chào, Giảng Viên {teacherName}</h2>
             {teacherData ? (
               <ThongTinGiangVien />
             ) : (
@@ -251,7 +322,9 @@ const TeacherDashboard: React.FC = () => {
             <div className="notification-icon">
               <Bell size={20} />
             </div>
-            <div className="avatar-menu-container" ref={avatarRef}>
+            
+          </div>
+          <div className="avatar-menu-container" ref={avatarRef}>
               {avatar ? (
                 <img
                   src={avatar}
@@ -279,9 +352,10 @@ const TeacherDashboard: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
         </header>
         <main>{renderContent()}</main>
+        {/* <DanhSachSinhVien /> */}
+      <Footer /> 
       </div>
     </div>
   );

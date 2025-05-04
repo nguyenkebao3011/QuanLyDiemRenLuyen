@@ -362,3 +362,173 @@
 .history-table td {
   color: #4b5563;
 }
+
+/* Thông tin giảng viên */
+
+.container-danh-sach {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-danh-sach {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tieu-de {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.tim-kiem-container {
+  position: relative;
+}
+
+.input-tim-kiem {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 250px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-tim-kiem:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.icon-tim-kiem {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+}
+
+.loading-container, .error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+}
+
+.loading-text {
+  color: #3498db;
+  font-size: 16px;
+}
+
+.error-container {
+  background-color: #ffeded;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.error-text {
+  color: #721c24;
+  margin: 0;
+}
+
+.bang-sinh-vien {
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hang-tieu-de {
+  display: flex;
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  padding: 12px 16px;
+}
+
+.hang-sinh-vien {
+  border-bottom: 1px solid #eee;
+}
+
+.hang-sinh-vien:last-child {
+  border-bottom: none;
+}
+
+.body-sinh-vien {
+  display: flex;
+  padding: 12px 16px;
+  align-items: center;
+}
+
+.cot-ma-sv {
+  flex: 1;
+  min-width: 100px;
+}
+
+.cot-ho-ten {
+  flex: 2;
+  min-width: 150px;
+}
+
+.cot-lop {
+  flex: 2;
+  min-width: 150px;
+}
+
+.cot-hanh-dong {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+}
+
+.nut-chi-tiet {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nut-chi-tiet:hover {
+  background-color: #2980b9;
+}
+
+.chi-tiet-sinh-vien {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+
+.hang-chi-tiet {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.hang-chi-tiet:last-child {
+  margin-bottom: 0;
+}
+
+.nhan {
+  font-weight: bold;
+  width: 150px;
+  color: #555;
+}
+
+.gia-tri {
+  flex: 1;
+}
+
+.khong-co-du-lieu {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+}
