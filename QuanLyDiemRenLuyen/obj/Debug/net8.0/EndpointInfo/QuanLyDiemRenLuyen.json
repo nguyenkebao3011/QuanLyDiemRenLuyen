@@ -91,6 +91,137 @@
         }
       }
     },
+    "/api/DiemDanh/DanhSachHoatDong": {
+      "get": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemDanh/DanhSachSinhVien/{maHoatDong}": {
+      "get": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "parameters": [
+          {
+            "name": "maHoatDong",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemDanh/ThongTinHoatDong/{maHoatDong}": {
+      "get": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "parameters": [
+          {
+            "name": "maHoatDong",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemDanh/DiemDanhSinhVien": {
+      "post": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemDanh/DiemDanhNhom": {
+      "post": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}": {
+      "get": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "parameters": [
+          {
+            "name": "maHoatDong",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemRenLuyens/xem-diem-theo-tung-hoc-ky": {
       "get": {
         "tags": [

@@ -92,3 +92,65 @@ export interface Lop {
   MaLop: string;
   TenLop: string;
 }
+
+export interface DangKyHoatDong {
+  MaDangKy: number;
+  MaSv: string | null;
+  MaHoatDong: number;
+  NgayDangKy: string | null;
+  TrangThai: string | null;
+  // Thông tin bổ sung
+  HoTen?: string; // Tên sinh viên
+  Lop?: string; // Lớp của sinh viên
+  DaDiemDanh?: boolean; // Trạng thái điểm danh
+  ThoiGianDiemDanh?: string | null; // Thời gian điểm danh
+  GhiChu?: string | null; // Ghi chú điểm danh
+}
+
+export interface ThongTinHoatDong {
+  MaHoatDong: number;
+  TenHoatDong: string;
+  MoTa: string | null;
+  NgayBatDau: string | null;
+  NgayKetThuc: string | null;
+  DiaDiem: string | null;
+  SoLuongToiDa: number | null;
+  DiemCong: number | null;
+  MaHocKy: number;
+  TenHocKy: string;
+  NamHoc: string;
+  MaQl: string | null;
+  TenQl: string | null;
+  TrangThai: string | null;
+  SoLuongDangKy: number;
+  SoLuongDiemDanh: number;
+  TiLeDiemDanh: number;
+}
+
+export interface BaoCaoDiemDanh {
+  ThongTinHoatDong: {
+    MaHoatDong: number;
+    TenHoatDong: string;
+    HocKy: string;
+    NamHoc: string;
+    NgayBatDau: string | null;
+    NgayKetThuc: string | null;
+    DiaDiem: string | null;
+    DiemCong: number | null;
+    NguoiQuanLy: string | null;
+  };
+  ThongKe: {
+    TongSoSinhVien: number;
+    SoLuongDiemDanh: number;
+    TiLeDiemDanh: number;
+  };
+  DanhSachDiemDanh: {
+    MaSv: string;
+    HoTen: string | null;
+    Lop: string | null;
+    DaDiemDanh: boolean;
+    ThoiGianDiemDanh: string | null;
+    NguoiDiemDanh: string | null;
+    GhiChu: string | null;
+  }[];
+}

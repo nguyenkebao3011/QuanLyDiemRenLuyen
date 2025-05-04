@@ -52,6 +52,96 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "BaoCaoDiemDanh",
+    "RelativePath": "api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHoatDong",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "GetDanhSachHoatDong",
+    "RelativePath": "api/DiemDanh/DanhSachHoatDong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "GetDanhSachSinhVienDangKy",
+    "RelativePath": "api/DiemDanh/DanhSachSinhVien/{maHoatDong}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHoatDong",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "DiemDanhNhom",
+    "RelativePath": "api/DiemDanh/DiemDanhNhom",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "DiemDanhSinhVien",
+    "RelativePath": "api/DiemDanh/DiemDanhSinhVien",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "GetThongTinHoatDong",
+    "RelativePath": "api/DiemDanh/ThongTinHoatDong/{maHoatDong}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHoatDong",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
     "Method": "PostDiemRenLuyen",
     "RelativePath": "api/DiemRenLuyens",
