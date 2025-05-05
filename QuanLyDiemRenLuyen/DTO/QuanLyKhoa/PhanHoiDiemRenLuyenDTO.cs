@@ -1,0 +1,17 @@
+﻿namespace QuanLyDiemRenLuyen.DTO.QuanLyKhoa
+{
+    public class PhanHoiDiemRenLuyenDTO
+    {
+        public int MaPhanHoi { get; set; }
+        public int? MaDiemRenLuyen { get; set; }
+        public int? MaMinhChung { get; set; }
+        public string NoiDungPhanHoi { get; set; }
+        public DateTime? NgayPhanHoi { get; set; }
+        public string? TrangThai { get; set; }
+        public string? MaQl { get; set; }
+        public string? NoiDungXuLy { get; set; }
+        public DateTime? NgayXuLy { get; set; }
+        public string? TenSinhVien { get; set; }
+        public string? Lop { get; set; }
+    }
+}
