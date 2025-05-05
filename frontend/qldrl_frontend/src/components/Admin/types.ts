@@ -1,3 +1,42 @@
+//  các interface cho ThongBao
+export interface ThongBaoDTO {
+  MaThongBao: number;
+  TieuDe: string;
+  NoiDung: string;
+  NgayTao: string;
+  MaQl: string;
+  LoaiThongBao: string;
+  TrangThai: string;
+  TenNguoiTao: string;
+  Khoa: string;
+  SoLuotXem: number;
+  DaDoc: boolean;
+}
+
+export interface ThongBaoChiTietDTO extends ThongBaoDTO {
+  DanhSachSinhVienDaDoc: SinhVienDocThongBaoDTO[];
+}
+
+export interface SinhVienDocThongBaoDTO {
+  MaSV: string;
+  HoTen: string;
+  MaLop: string;
+  NgayDoc: string;
+}
+
+export interface DanhDauDaDocRequest {
+  MaThongBao: number;
+  MaSV: string;
+}
+
+export interface TaoThongBaoTuHoatDongRequest {
+  MaHoatDong: number;
+  TieuDe?: string;
+  NoiDung?: string;
+  MaQl?: string;
+  LoaiThongBao?: string;
+}
+
 export interface HoatDong {
   MaHoatDong: number;
   TenHoatDong: string;
@@ -21,6 +60,7 @@ export interface HoatDong {
     Khoa: string;
   };
 }
+
 export interface HocKy {
   MaHocKy: number;
   TenHocKy: string;
@@ -37,6 +77,7 @@ export interface QuanLyKhoa {
   Email: string;
   SoDienThoai: string;
 }
+
 export interface ThongBao {
   MaThongBao: number;
   TieuDe: string;
@@ -52,6 +93,7 @@ export interface TongQuanThongKeDTO {
   TongHoatDong: number;
   TongPhanHoi: number;
 }
+
 export interface SinhVien {
   MaSV: string;
   MaTaiKhoan: string;
@@ -68,12 +110,14 @@ export interface SinhVien {
   MaLopNavigation?: any;
   MaTaiKhoanNavigation?: TaiKhoan;
 }
+
 export interface TaiKhoan {
   MaTaiKhoan: string;
   TenDangNhap: string;
   MatKhau: string;
   VaiTro: string;
 }
+
 export interface GiaoVien {
   MaGv: string;
   MaTaiKhoan: string;
@@ -87,7 +131,7 @@ export interface GiaoVien {
   TrangThai: string | null;
   MaTaiKhoanNavigation?: TaiKhoan;
 }
-// Định nghĩa type cho lớp
+
 export interface Lop {
   MaLop: string;
   TenLop: string;

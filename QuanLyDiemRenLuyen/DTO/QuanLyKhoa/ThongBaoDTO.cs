@@ -16,6 +16,6 @@ namespace QuanLyDiemRenLuyen.Models.DTOs
         public required string TenNguoiTao { get; set; }
         public required string Khoa { get; set; }
         public required int SoLuotXem { get; set; }
-        public bool DaDoc { get; set; } // Chỉ áp dụng khi lấy thông báo cho sinh viên cụ thể
+        public bool DaDoc { get; set; } 
     }
 }

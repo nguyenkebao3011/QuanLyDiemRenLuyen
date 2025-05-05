@@ -329,8 +329,60 @@ namespace QuanLyDiemRenLuyen.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
-    }
 
+        // POST: api/ThongBao/tao_thong_bao_tu_hoat_dong
+        [HttpPost("tao_thong_bao_tu_hoat_dong")]
+        public async Task<ActionResult> TaoThongBaoTuHoatDong([FromBody] TaoThongBaoTuHoatDongRequest request)
+        {
+            if (request == null || request.MaHoatDong <= 0)
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+
+            try
+            {
+                // Tìm hoạt động trong cơ sở dữ liệu
+                var hoatDong = await _context.HoatDongs.FirstOrDefaultAsync(hd => hd.MaHoatDong == request.MaHoatDong);
+                if (hoatDong == null)
+                {
+                    return NotFound($"Không tìm thấy hoạt động có mã {request.MaHoatDong}");
+                }
+
+                // Sử dụng tiêu đề mặc định nếu không được cung cấp
+                var tieuDeMacDinh = $"Thông báo liên quan đến hoạt động: {hoatDong.TenHoatDong}";
+                var noiDungMacDinh = $"Vui lòng tham gia hoạt động: {hoatDong.TenHoatDong}.";
+
+                var thongBao = new ThongBao
+                {
+                    TieuDe = string.IsNullOrWhiteSpace(request.TieuDe) ? tieuDeMacDinh : request.TieuDe,
+                    NoiDung = string.IsNullOrWhiteSpace(request.NoiDung) ? noiDungMacDinh : request.NoiDung,
+                    NgayTao = DateTime.Now,
+                    TrangThai = "Đã đăng",
+                    MaQl = request.MaQl,
+                    LoaiThongBao = string.IsNullOrWhiteSpace(request.LoaiThongBao) ? "Hoạt động" : request.LoaiThongBao
+                };
+
+                // Lưu thông báo vào cơ sở dữ liệu
+                _context.ThongBaos.Add(thongBao);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(LayChiTietThongBao), new { maThongBao = thongBao.MaThongBao }, thongBao);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
+    }
+        // DTOs cho các request và response
+        public class TaoThongBaoTuHoatDongRequest
+    {
+        public int MaHoatDong { get; set; }
+        public string? TieuDe { get; set; }
+        public string? NoiDung { get; set; }
+        public string? MaQl { get; set; }
+        public string? LoaiThongBao { get; set; }
+    }
     public class DanhDauDaDocRequest
     {
         public int MaThongBao { get; set; }

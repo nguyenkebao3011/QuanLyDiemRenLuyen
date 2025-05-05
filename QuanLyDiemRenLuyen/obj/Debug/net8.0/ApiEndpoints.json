@@ -1630,6 +1630,22 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
+    "Method": "TaoThongBaoTuHoatDong",
+    "RelativePath": "api/ThongBao/tao_thong_bao_tu_hoat_dong",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.TaoThongBaoTuHoatDongRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
     "Method": "TimKiemThongBao",
     "RelativePath": "api/ThongBao/tim_kiem_thong_bao",
     "HttpMethod": "GET",

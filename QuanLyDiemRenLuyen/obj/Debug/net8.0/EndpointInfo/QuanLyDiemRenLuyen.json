@@ -2239,6 +2239,37 @@
         }
       }
     },
+    "/api/ThongBao/tao_thong_bao_tu_hoat_dong": {
+      "post": {
+        "tags": [
+          "ThongBao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/TongQuanThongKe/thong_ke_tong_quan": {
       "get": {
         "tags": [
@@ -3196,6 +3227,32 @@
           },
           "SinhVien": {
             "$ref": "#/components/schemas/SinhVien"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TaoThongBaoTuHoatDongRequest": {
+        "type": "object",
+        "properties": {
+          "MaHoatDong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TieuDe": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "LoaiThongBao": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -3,7 +3,6 @@ import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
-
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,17 +23,20 @@ const ThongKeDiemRenLuyen: React.FC = () => {
   const fetchThongKe = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5163/api/ThongKe/diem-ren-luyen", {
-        params: {
-          lop: "DHTH20A",
-          hocKy: "HK1-2025",
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:5163/api/ThongKe/diem-ren-luyen",
+        {
+          params: {
+            lop: "DHTH20A",
+            hocKy: "HK1-2025",
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        }
+      );
 
       if (response.data) {
         setThongKe(response.data);
@@ -61,12 +63,24 @@ const ThongKeDiemRenLuyen: React.FC = () => {
 
   // Dữ liệu cho biểu đồ tròn
   const chartData = {
-    labels: ["Xuất sắc (≥90)", "Tốt (80-89)", "Khá (65-79)", "Trung bình (50-64)", "Yếu (<50)"],
+    labels: [
+      "Xuất sắc (≥90)",
+      "Tốt (80-89)",
+      "Khá (65-79)",
+      "Trung bình (50-64)",
+      "Yếu (<50)",
+    ],
     datasets: [
       {
         label: "Phân bố điểm rèn luyện",
         data: thongKe
-          ? [thongKe.xuatSac, thongKe.tot, thongKe.kha, thongKe.trungBinh, thongKe.yeu]
+          ? [
+              thongKe.xuatSac,
+              thongKe.tot,
+              thongKe.kha,
+              thongKe.trungBinh,
+              thongKe.yeu,
+            ]
           : [0, 0, 0, 0, 0],
         backgroundColor: [
           "#36A2EB",
