@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.Models;
 using QuanLyDiemRenLuyen.Models.DTOs;
+using QuanLyDiemRenLuyen.DTO.QuanLyKhoa;
 
 namespace QuanLyDiemRenLuyen.Controllers
 {
@@ -174,7 +175,7 @@ namespace QuanLyDiemRenLuyen.Controllers
     }
 
     // các request và response
-    
+
     public class TaoDiemRenLuyenRequest
     {
         public string MaSv { get; set; }

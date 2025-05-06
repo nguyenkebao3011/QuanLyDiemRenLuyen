@@ -222,6 +222,180 @@
         }
       }
     },
+    "/api/DiemRenLuyen/lay_danh_sach": {
+      "get": {
+        "tags": [
+          "DiemRenLuyen"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyen/lay_chi_tiet/{id}": {
+      "get": {
+        "tags": [
+          "DiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiemRenLuyenDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyen/tao_diem_ren_luyen": {
+      "post": {
+        "tags": [
+          "DiemRenLuyen"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoDiemRenLuyenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoDiemRenLuyenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaoDiemRenLuyenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyen/cap_nhat_diem_ren_luyen/{id}": {
+      "put": {
+        "tags": [
+          "DiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatDiemRenLuyenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatDiemRenLuyenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatDiemRenLuyenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DiemRenLuyen/xoa_diem_ren_luyen/{id}": {
+      "delete": {
+        "tags": [
+          "DiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemRenLuyens/xem-diem-theo-tung-hoc-ky": {
       "get": {
         "tags": [
@@ -1358,6 +1532,149 @@
         }
       }
     },
+    "/api/PhanHoiDiemRenLuyen/lay_danh_sach": {
+      "get": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PhanHoiDiemRenLuyen/lay_chi_tiet/{id}": {
+      "get": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhanHoiDiemRenLuyenDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PhanHoiDiemRenLuyen/cap_nhat_xu_ly/{id}": {
+      "put": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatXuLyRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatXuLyRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapNhatXuLyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PhanHoiDiemRenLuyen/xoa_phan_hoi/{id}": {
+      "delete": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLyGiangVien/them_giang_vien": {
       "post": {
         "tags": [
@@ -2270,6 +2587,51 @@
         }
       }
     },
+    "/api/ThongKe/thongke-theo-giang-vien": {
+      "get": {
+        "tags": [
+          "ThongKe"
+        ],
+        "parameters": [
+          {
+            "name": "hocKy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maLop",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongKeDiemRenLuyenDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongKeDiemRenLuyenDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThongKeDiemRenLuyenDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TongQuanThongKe/thong_ke_tong_quan": {
       "get": {
         "tags": [
@@ -2302,6 +2664,39 @@
   },
   "components": {
     "schemas": {
+      "CapNhatDiemRenLuyenRequest": {
+        "type": "object",
+        "properties": {
+          "TongDiem": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "XepLoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CapNhatXuLyRequest": {
+        "type": "object",
+        "properties": {
+          "NoiDungXuLy": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChangePasswordRequest": {
         "type": "object",
         "properties": {
@@ -2500,6 +2895,51 @@
             "items": {
               "$ref": "#/components/schemas/PhanHoiDiemRenLuyen"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiemRenLuyenDTO": {
+        "type": "object",
+        "properties": {
+          "MaDiemRenLuyen": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "TenSinhVien": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "HocKy": {
+            "type": "string",
+            "nullable": true
+          },
+          "TongDiem": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "XepLoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayChot": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -2798,6 +3238,20 @@
         },
         "additionalProperties": false
       },
+      "LoaiDiemDTO": {
+        "type": "object",
+        "properties": {
+          "SoLuong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PhanTram": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDto": {
         "required": [
           "MaDangNhap",
@@ -2963,6 +3417,60 @@
           },
           "MaQlNavigation": {
             "$ref": "#/components/schemas/QuanLyKhoa"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PhanHoiDiemRenLuyenDTO": {
+        "type": "object",
+        "properties": {
+          "MaPhanHoi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaDiemRenLuyen": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "MaMinhChung": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "NoiDungPhanHoi": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayPhanHoi": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDungXuLy": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayXuLy": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "TenSinhVien": {
+            "type": "string",
+            "nullable": true
+          },
+          "Lop": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3231,6 +3739,30 @@
         },
         "additionalProperties": false
       },
+      "TaoDiemRenLuyenRequest": {
+        "type": "object",
+        "properties": {
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "TongDiem": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "XepLoai": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TaoThongBaoTuHoatDongRequest": {
         "type": "object",
         "properties": {
@@ -3441,6 +3973,32 @@
           },
           "DaDoc": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongKeDiemRenLuyenDTO": {
+        "type": "object",
+        "properties": {
+          "TongSoSinhVien": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TrungBinhDiemDRL": {
+            "type": "number",
+            "format": "double"
+          },
+          "LoaiGioi": {
+            "$ref": "#/components/schemas/LoaiDiemDTO"
+          },
+          "LoaiKha": {
+            "$ref": "#/components/schemas/LoaiDiemDTO"
+          },
+          "LoaiTrungBinh": {
+            "$ref": "#/components/schemas/LoaiDiemDTO"
+          },
+          "LoaiYeu": {
+            "$ref": "#/components/schemas/LoaiDiemDTO"
           }
         },
         "additionalProperties": false
