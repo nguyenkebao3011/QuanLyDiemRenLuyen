@@ -1,10 +1,12 @@
+/* Import variables */
+@import url("../../../../Pages/Dashboard/Admin/css/variables.css");
 /* Container chính */
 .giang-vien-management {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-  margin-bottom: 20px;
+  background-color: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-5);
+  margin-bottom: var(--spacing-5);
 }
 
 /* Header */
@@ -12,19 +14,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
 }
 
 .management-header h2 {
-  font-size: 1.5rem;
-  color: #0055a4;
+  font-size: var(--font-size-xl);
+  color: var(--primary);
   margin: 0;
 }
 
 /* Action buttons */
 .action-buttons {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-2);
   flex-wrap: wrap;
 }
 
@@ -34,92 +36,109 @@
 .add-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 8px 12px;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: var(--font-size-sm);
 }
 
 .filter-btn {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--input);
+  color: var(--foreground);
 }
 
 .filter-btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--border);
 }
 
 .refresh-btn {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--input);
+  color: var(--foreground);
 }
 
 .refresh-btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--border);
 }
 
 .export-btn {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--input);
+  color: var(--foreground);
 }
 
 .export-btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--border);
 }
 
 .add-btn {
-  background-color: #0055a4;
-  color: white;
+  background-color: var(--primary);
+  color: var(--card);
 }
 
 .add-btn:hover {
-  background-color: #004080;
+  background-color: var(--primary-hover);
 }
 
 /* Phần tìm kiếm */
 .search-box {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
+}
+
+.search-form {
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input-container {
+  position: relative;
 }
 
 .search-input {
   width: 100%;
-  max-width: 300px; /* Giới hạn chiều rộng tương tự HoatDongNamHoc */
-  padding: 8px 32px 8px 12px; /* Padding để chứa biểu tượng */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  box-sizing: border-box;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23666" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>')
-    no-repeat right 8px center;
-  background-size: 16px 16px;
-  transition: border-color 0.2s;
+  padding: var(--spacing-2) var(--spacing-10) var(--spacing-2) var(--spacing-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--font-size-sm);
+  background-color: var(--input);
 }
 
 .search-input:focus {
-  border-color: #0055a4;
   outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.search-button {
+  position: absolute;
+  right: var(--spacing-1);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--secondary);
+  cursor: pointer;
 }
 
 /* Thông báo lỗi */
 .error-message {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 15px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  background-color: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid var(--danger-light);
+  border-radius: var(--radius);
+  margin-bottom: var(--spacing-5);
 }
 
 /* Bảng giảng viên */
 .lecturer-table-container {
   overflow-x: auto;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
 }
 
 .lecturer-table {
@@ -129,26 +148,30 @@
 
 .lecturer-table th,
 .lecturer-table td {
-  padding: 12px 15px;
+  padding: var(--spacing-3) var(--spacing-4);
   text-align: left;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--border);
 }
 
 .lecturer-table th {
-  background-color: #f5f5f5;
+  background-color: var(--input);
   font-weight: 600;
-  color: #333;
+  color: var(--foreground);
 }
 
 .lecturer-table td {
-  font-size: 0.9rem;
-  color: #555;
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+}
+
+.lecturer-table tr:hover {
+  background-color: var(--input);
 }
 
 /* Cột thao tác */
 .action-cell {
   display: flex;
-  gap: 5px;
+  gap: var(--spacing-1);
 }
 
 .edit-btn,
@@ -156,38 +179,42 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px;
-  border-radius: 4px;
+  padding: var(--spacing-1);
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: var(--transition);
 }
 
 .edit-btn {
-  color: #ffc107;
+  color: var(--warning);
+}
+
+.edit-btn:hover {
+  background-color: var(--warning-light);
 }
 
 .delete-btn {
-  color: #dc3545;
+  color: var(--danger);
 }
 
-.edit-btn:hover,
 .delete-btn:hover {
-  background-color: #f5f5f5;
+  background-color: var(--danger-light);
 }
 
 /* Thông báo tải và không có dữ liệu */
 .loading-message {
   text-align: center;
-  padding: 40px;
-  color: #666;
+  padding: var(--spacing-10);
+  color: var(--secondary);
   font-style: italic;
 }
 
 .empty-message {
   text-align: center;
-  padding: 40px;
-  color: #666;
+  padding: var(--spacing-10);
+  color: var(--secondary);
   font-style: italic;
 }
 
@@ -196,35 +223,65 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
-  margin-top: 20px;
+  gap: var(--spacing-1);
+  margin-top: var(--spacing-5);
 }
 
 .pagination-btn {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: none;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #333;
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
 }
 
 .pagination-btn.active {
-  background-color: #0055a4;
-  color: white;
-  border-color: #0055a4;
+  background-color: var(--primary);
+  color: var(--card);
+  border-color: var(--primary);
 }
 
 .pagination-btn:hover:not(.active) {
-  background-color: #f5f5f5;
+  background-color: var(--input);
+}
+
+/* Form styles */
+.lecturer-form {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  padding: var(--spacing-6);
+  width: 100%;
+  max-width: 800px;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--secondary);
+  cursor: pointer;
+  padding: var(--spacing-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  background-color: var(--input);
+  color: var(--foreground);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .management-header {
     flex-direction: column;
-    gap: 15px;
+    gap: var(--spacing-4);
     align-items: flex-start;
   }
 
@@ -232,12 +289,13 @@
     width: 100%;
     justify-content: space-between;
   }
+
   .hoat-dong-filters {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-5);
     flex-wrap: wrap;
-    gap: 15px;
+    gap: var(--spacing-4);
   }
 
   .search-form {
@@ -251,26 +309,27 @@
 
   .search-input {
     width: 100%;
-    padding: 10px 40px 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    padding: var(--spacing-2) var(--spacing-10) var(--spacing-2)
+      var(--spacing-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-sm);
   }
 
   .search-button {
     position: absolute;
-    right: 5px;
+    right: var(--spacing-1);
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #666;
+    color: var(--secondary);
     cursor: pointer;
   }
 
   .lecturer-table th,
   .lecturer-table td {
-    padding: 10px;
-    font-size: 0.85rem;
+    padding: var(--spacing-2);
+    font-size: var(--font-size-xs);
   }
 }

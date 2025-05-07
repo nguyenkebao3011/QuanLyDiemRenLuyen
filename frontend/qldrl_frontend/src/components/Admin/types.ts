@@ -198,3 +198,161 @@ export interface BaoCaoDiemDanh {
     GhiChu: string | null;
   }[];
 }
+// Định nghĩa các interface cho phản hồi điểm rèn luyện
+export interface PhanHoiDiemRenLuyenListDTO {
+  MaPhanHoi: number;
+  MaDiemRenLuyen: number | null;
+  MaMinhChung: number | null;
+  NoiDungPhanHoi: string | null;
+  NgayPhanHoi: string | null;
+  TrangThai: string | null;
+  MaQl: string | null;
+  NoiDungXuLy: string | null;
+  NgayXuLy: string | null;
+  MaSv: string | null;
+  TenSinhVien: string | null;
+  Lop?: string | null;
+  MaHocKy?: number | null;
+  TongDiem?: number | null;
+  XepLoai?: string | null;
+}
+
+export interface PhanHoiDiemRenLuyenDetailDTO {
+  MaPhanHoi: number;
+  NoiDungPhanHoi: string | null;
+  NgayPhanHoi: string | null;
+  TrangThai: string | null;
+  MaQl: string | null;
+  NoiDungXuLy: string | null;
+  NgayXuLy: string | null;
+  DiemRenLuyen: DiemRenLuyenDTO | null;
+  MinhChung: MinhChungHoatDongDTO | null;
+}
+
+export interface DiemRenLuyenDTO {
+  MaDiemRenLuyen: number;
+  MaSv: string;
+  TenSinhVien: string | null;
+  MaHocKy: number;
+  HocKy: string | null;
+  TongDiem: number | null;
+  XepLoai: string | null;
+  TrangThai: string | null;
+  NgayChot?: string | null;
+}
+
+export interface MinhChungHoatDongDTO {
+  MaMinhChung: number;
+  MaDangKy: number | null;
+  DuongDanFile: string | null;
+  MoTa: string | null;
+  NgayTao: string | null;
+  TrangThai: string | null;
+}
+
+export interface XuLyPhanHoiRequest {
+  MaQl: string;
+  NoiDungXuLy: string;
+  CapNhatTongDiem?: number | null;
+  XepLoai?: string | null;
+  TrangThaiDiemRenLuyen?: string | null;
+}
+
+export interface TaoDiemRenLuyenRequest {
+  MaSv: string;
+  MaHocKy: number | null;
+  TongDiem: number | null;
+  XepLoai: string | null;
+}
+
+export interface CapNhatDiemRenLuyenRequest {
+  TongDiem?: number | null;
+  XepLoai?: string | null;
+  TrangThai?: string | null;
+}
+
+// Định nghĩa các interface cho phản hồi điểm rèn luyện
+export interface PhanHoiDiemRenLuyenDTO {
+  MaPhanHoi: number;
+  MaDiemRenLuyen: number | null;
+  MaMinhChung: number | null;
+  NoiDungPhanHoi: string | null;
+  NgayPhanHoi: string | null;
+  TrangThai: string | null;
+  MaQl: string | null;
+  NoiDungXuLy: string | null;
+  NgayXuLy: string | null;
+  TenSinhVien: string | null;
+  Lop: string | null;
+  MaSv: string | null;
+}
+
+export interface TaoPhanHoiRequest {
+  MaDiemRenLuyen: number | null;
+  MaMinhChung: number | null;
+  NoiDungPhanHoi: string;
+}
+
+export interface CapNhatXuLyRequest {
+  NoiDungXuLy: string;
+  MaQl: string | null;
+}
+
+// Định nghĩa các interface cho minh chứng
+export interface MinhChungDTO {
+  MaMinhChung: number;
+  TenMinhChung: string;
+  DuongDan: string | null;
+  NgayTao: string | null;
+  MaSv: string | null;
+  TenSinhVien: string | null;
+  LoaiMinhChung: string | null;
+  MoTa: string | null;
+  KichThuoc: number | null;
+  DinhDang: string | null;
+}
+
+// Định nghĩa các interface cho thống kê
+export interface ThongKeDiemRenLuyen {
+  TongSoDiem: number;
+  DiemTrungBinh: number;
+  SoLuongXuatSac: number;
+  SoLuongTot: number;
+  SoLuongKha: number;
+  SoLuongTrungBinh: number;
+  SoLuongYeu: number;
+  SoLuongKem: number;
+}
+// DTO types for Hội đồng chấm điểm (Scoring Committee)
+export interface HoiDongChamDiemDTO {
+  MaHoiDong: number;
+  TenHoiDong: string;
+  MaHocKy: number | null;
+  TenHocKy: string | null;
+  NgayThanhLap: string | null;
+  GhiChu: string | null;
+}
+
+export interface HoiDongChamDiemDetailDTO extends HoiDongChamDiemDTO {
+  ThanhViens: ThanhVienHoiDongDTO[];
+}
+
+export interface ThanhVienHoiDongDTO {
+  MaThanhVien: number;
+  MaGv: string | null;
+  HoTen: string | null;
+  Email: string | null;
+  VaiTroTrongHoiDong: string | null;
+}
+
+export interface TaoHoiDongChamDiemRequest {
+  TenHoiDong: string;
+  MaHocKy: number | null;
+  NgayThanhLap: string | null;
+  GhiChu: string | null;
+}
+
+export interface ThemThanhVienRequest {
+  MaGv: string;
+  VaiTroTrongHoiDong: string | null;
+}

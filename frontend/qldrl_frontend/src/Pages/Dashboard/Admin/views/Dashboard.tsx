@@ -24,8 +24,7 @@ import QuanLyDanhMuc from "./QuanLyDanhMuc";
 import HoatDongNamHoc from "./HoatDongNamHoc";
 import ChamDiemRenLuyen from "./ChamDiemRenLuyen";
 import ThongBaoDiemDanh from "./ThongBaoDiemDanh";
-import CapNhatMinhChung from "./CapNhatMinhChung";
-import PhanHoiDiemRenLuyen from "./PhanHoiDiemRenLuyen";
+import PhanHoiDiem from "./PhanHoiDiem";
 import ThongKeBaoCao from "./ThongKeBaoCao";
 import HoiDongChamDiem from "./HoiDongChamDiem";
 import TongQuanHeThong from "../../../../components/Admin/HoatDong/TongQuanHeThong";
@@ -78,10 +77,8 @@ const Dashboard: React.FC = () => {
         return <ChamDiemRenLuyen />;
       case "notification":
         return <ThongBaoDiemDanh />;
-      case "evidence":
-        return <CapNhatMinhChung />;
       case "feedback":
-        return <PhanHoiDiemRenLuyen />;
+        return <PhanHoiDiem />;
       case "statistics":
         return <ThongKeBaoCao />;
       case "committee":
@@ -202,16 +199,6 @@ const Dashboard: React.FC = () => {
             >
               <Bell size={18} />
               <span>Thông báo điểm danh</span>
-            </li>
-            <li
-              className={activeMenu === "evidence" ? "active" : ""}
-              onClick={() => {
-                setActiveMenu("evidence");
-                window.history.pushState({}, "", "?menu=evidence");
-              }}
-            >
-              <FileText size={18} />
-              <span>Cập nhật minh chứng</span>
             </li>
             <li
               className={activeMenu === "feedback" ? "active" : ""}

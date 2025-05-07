@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.DTO.QuanLyKhoa;
 using QuanLyDiemRenLuyen.Models;
-using QuanLyDiemRenLuyen.Models.DTOs;
 
 namespace QuanLyDiemRenLuyen.Controllers
 {
@@ -17,155 +16,185 @@ namespace QuanLyDiemRenLuyen.Controllers
             _context = context;
         }
 
-        // GET: api/PhanHoiDiemRenLuyen/lay_danh_sach
-        [HttpGet("lay_danh_sach")]
-        public async Task<ActionResult<IEnumerable<PhanHoiDiemRenLuyenDTO>>> LayDanhSachPhanHoi()
+        // 1. Lấy danh sách phản hồi của sinh viên (dành cho quản lý khoa xem)
+        // GET: api/PhanHoiDiemRenLuyen/danh_sach
+        [HttpGet("danh_sach")]
+        public async Task<ActionResult<IEnumerable<PhanHoiDiemRenLuyenListDTO>>> GetAllPhanHoi()
         {
-            try
-            {
-                var phanHois = await _context.PhanHoiDiemRenLuyens
-                    .Include(p => p.MaDiemRenLuyenNavigation)
-                    .ThenInclude(drl => drl.MaSvNavigation) // Ensure proper inclusion
-                    .Include(p => p.MaMinhChungNavigation)
-                    .OrderByDescending(p => p.NgayPhanHoi)
-                    .Select(p => new PhanHoiDiemRenLuyenDTO
-                    {
-                        MaPhanHoi = p.MaPhanHoi,
-                        MaDiemRenLuyen = p.MaDiemRenLuyen,
-                        MaMinhChung = p.MaMinhChung,
-                        NoiDungPhanHoi = p.NoiDungPhanHoi,
-                        NgayPhanHoi = p.NgayPhanHoi,
-                        TrangThai = p.TrangThai,
-                        MaQl = p.MaQl,
-                        NoiDungXuLy = p.NoiDungXuLy,
-                        NgayXuLy = p.NgayXuLy,
-                        TenSinhVien = p.MaDiemRenLuyenNavigation != null && p.MaDiemRenLuyenNavigation.MaSvNavigation != null
-                            ? p.MaDiemRenLuyenNavigation.MaSvNavigation.HoTen
-                            : null,
-                        Lop = p.MaDiemRenLuyenNavigation != null && p.MaDiemRenLuyenNavigation.MaSvNavigation != null
-                            ? p.MaDiemRenLuyenNavigation.MaSvNavigation.MaLop
-                            : null 
-                    })
-                    .ToListAsync();
-
-                return Ok(phanHois);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
-            }
+            var list = await _context.PhanHoiDiemRenLuyens
+                .Include(p => p.MaDiemRenLuyenNavigation)
+                    .ThenInclude(drl => drl.MaSvNavigation)
+                .Include(p => p.MaMinhChungNavigation)
+                .OrderByDescending(p => p.NgayPhanHoi)
+                .Select(p => new PhanHoiDiemRenLuyenListDTO
+                {
+                    MaPhanHoi = p.MaPhanHoi,
+                    MaDiemRenLuyen = p.MaDiemRenLuyen,
+                    MaMinhChung = p.MaMinhChung,
+                    NoiDungPhanHoi = p.NoiDungPhanHoi,
+                    NgayPhanHoi = p.NgayPhanHoi,
+                    TrangThai = p.TrangThai,
+                    MaQl = p.MaQl,
+                    NoiDungXuLy = p.NoiDungXuLy,
+                    NgayXuLy = p.NgayXuLy,
+                    MaSv = p.MaDiemRenLuyenNavigation.MaSv,
+                    TenSinhVien = p.MaDiemRenLuyenNavigation.MaSvNavigation.HoTen,
+                    MaHocKy = p.MaDiemRenLuyenNavigation.MaHocKy,
+                    TongDiem = p.MaDiemRenLuyenNavigation.TongDiem,
+                    XepLoai = p.MaDiemRenLuyenNavigation.XepLoai
+                })
+                .ToListAsync();
+            return Ok(list);
         }
 
-        // GET: api/PhanHoiDiemRenLuyen/lay_chi_tiet/{id}
-        [HttpGet("lay_chi_tiet/{id}")]
-        public async Task<ActionResult<PhanHoiDiemRenLuyenDTO>> LayChiTietPhanHoi(int id)
+        // 2. Lấy chi tiết phản hồi, kèm điểm rèn luyện và minh chứng liên quan
+        // GET: api/PhanHoiDiemRenLuyen/chi_tiet/{maPhanHoi}
+        [HttpGet("chi_tiet/{maPhanHoi}")]
+        public async Task<ActionResult<PhanHoiDiemRenLuyenDetailDTO>> GetDetail(int maPhanHoi)
         {
-            try
-            {
-                var phanHoi = await _context.PhanHoiDiemRenLuyens
-                    .Include(p => p.MaDiemRenLuyenNavigation)
-                    .Include(p => p.MaMinhChungNavigation)
-                    .Include(p => p.MaDiemRenLuyenNavigation.MaSvNavigation)
-                    .FirstOrDefaultAsync(p => p.MaPhanHoi == id);
+            var ph = await _context.PhanHoiDiemRenLuyens
+                .Include(p => p.MaDiemRenLuyenNavigation)
+                    .ThenInclude(drl => drl.MaSvNavigation)
+                .Include(p => p.MaDiemRenLuyenNavigation)
+                    .ThenInclude(drl => drl.MaHocKyNavigation)
+                .Include(p => p.MaMinhChungNavigation)
+                    .ThenInclude(mc => mc.MaDangKyNavigation)
+                .FirstOrDefaultAsync(p => p.MaPhanHoi == maPhanHoi);
 
-                if (phanHoi == null)
+            if (ph == null) return NotFound();
+
+            var dto = new PhanHoiDiemRenLuyenDetailDTO
+            {
+                MaPhanHoi = ph.MaPhanHoi,
+                NoiDungPhanHoi = ph.NoiDungPhanHoi,
+                NgayPhanHoi = ph.NgayPhanHoi,
+                TrangThai = ph.TrangThai,
+                MaQl = ph.MaQl,
+                NoiDungXuLy = ph.NoiDungXuLy,
+                NgayXuLy = ph.NgayXuLy,
+                // Điểm rèn luyện liên quan
+                DiemRenLuyen = ph.MaDiemRenLuyenNavigation == null ? null : new DiemRenLuyenDTO
                 {
-                    return NotFound($"Không tìm thấy phản hồi có mã {id}");
+                    MaDiemRenLuyen = ph.MaDiemRenLuyenNavigation.MaDiemRenLuyen,
+                    MaSv = ph.MaDiemRenLuyenNavigation.MaSv,
+                    TenSinhVien = ph.MaDiemRenLuyenNavigation.MaSvNavigation?.HoTen,
+                    MaHocKy = ph.MaDiemRenLuyenNavigation.MaHocKy,
+                    HocKy = ph.MaDiemRenLuyenNavigation.MaHocKyNavigation?.TenHocKy,
+                    TongDiem = ph.MaDiemRenLuyenNavigation.TongDiem,
+                    XepLoai = ph.MaDiemRenLuyenNavigation.XepLoai,
+                    TrangThai = ph.MaDiemRenLuyenNavigation.TrangThai
+                },
+                // Minh chứng liên quan (nếu có)
+                MinhChung = ph.MaMinhChungNavigation == null ? null : new MinhChungHoatDongDTO
+                {
+                    MaMinhChung = ph.MaMinhChungNavigation.MaMinhChung,
+                    MaDangKy = ph.MaMinhChungNavigation.MaDangKy,
+                    DuongDanFile = ph.MaMinhChungNavigation.DuongDanFile,
+                    MoTa = ph.MaMinhChungNavigation.MoTa,
+                    NgayTao = ph.MaMinhChungNavigation.NgayTao,
+                    TrangThai = ph.MaMinhChungNavigation.TrangThai,
                 }
-
-                var result = new PhanHoiDiemRenLuyenDTO
-                {
-                    MaPhanHoi = phanHoi.MaPhanHoi,
-                    MaDiemRenLuyen = phanHoi.MaDiemRenLuyen,
-                    MaMinhChung = phanHoi.MaMinhChung,
-                    NoiDungPhanHoi = phanHoi.NoiDungPhanHoi,
-                    NgayPhanHoi = phanHoi.NgayPhanHoi,
-                    TrangThai = phanHoi.TrangThai,
-                    MaQl = phanHoi.MaQl,
-                    NoiDungXuLy = phanHoi.NoiDungXuLy,
-                    NgayXuLy = phanHoi.NgayXuLy,
-                    TenSinhVien = phanHoi.MaDiemRenLuyenNavigation.MaSvNavigation?.HoTen,
-                    Lop = phanHoi.MaDiemRenLuyenNavigation.MaSvNavigation?.MaLop
-                };
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
-            }
+            };
+            return Ok(dto);
         }
 
-        // PUT: api/PhanHoiDiemRenLuyen/cap_nhat_xu_ly/{id}
-        [HttpPut("cap_nhat_xu_ly/{id}")]
-        public async Task<ActionResult> CapNhatXuLyPhanHoi(int id, [FromBody] CapNhatXuLyRequest request)
+        // 3. Quản lý khoa xử lý phản hồi, cập nhật trạng thái và nội dung xử lý (và có thể cập nhật điểm rèn luyện)
+        // PUT: api/PhanHoiDiemRenLuyen/xu_ly/{maPhanHoi}
+        [HttpPut("xu_ly/{maPhanHoi}")]
+        public async Task<ActionResult> XuLyPhanHoi(int maPhanHoi, [FromBody] XuLyPhanHoiRequest request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.NoiDungXuLy))
+            var phanHoi = await _context.PhanHoiDiemRenLuyens
+                .Include(p => p.MaDiemRenLuyenNavigation)
+                .FirstOrDefaultAsync(p => p.MaPhanHoi == maPhanHoi);
+
+            if (phanHoi == null)
+                return NotFound("Không tìm thấy phản hồi.");
+
+            // Cập nhật nội dung xử lý và trạng thái
+            phanHoi.TrangThai = "Đã xử lý";
+            phanHoi.NoiDungXuLy = request.NoiDungXuLy;
+            phanHoi.NgayXuLy = DateTime.Now;
+            phanHoi.MaQl = request.MaQl;
+
+            // Nếu có cập nhật điểm rèn luyện
+            if (request.CapNhatTongDiem != null && phanHoi.MaDiemRenLuyenNavigation != null)
             {
-                return BadRequest("Dữ liệu không hợp lệ.");
+                phanHoi.MaDiemRenLuyenNavigation.TongDiem = request.CapNhatTongDiem;
+                phanHoi.MaDiemRenLuyenNavigation.XepLoai = request.XepLoai ?? phanHoi.MaDiemRenLuyenNavigation.XepLoai;
+                phanHoi.MaDiemRenLuyenNavigation.TrangThai = request.TrangThaiDiemRenLuyen ?? phanHoi.MaDiemRenLuyenNavigation.TrangThai;
             }
 
-            try
-            {
-                var phanHoi = await _context.PhanHoiDiemRenLuyens.FindAsync(id);
-                if (phanHoi == null)
-                {
-                    return NotFound($"Không tìm thấy phản hồi có mã {id}");
-                }
-
-                phanHoi.NoiDungXuLy = request.NoiDungXuLy;
-                phanHoi.NgayXuLy = DateTime.Now;
-                phanHoi.TrangThai = "Đã xử lý";
-                phanHoi.MaQl = request.MaQl;
-
-                _context.PhanHoiDiemRenLuyens.Update(phanHoi);
-                await _context.SaveChangesAsync();
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
-            }
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
-        // DELETE: api/PhanHoiDiemRenLuyen/xoa_phan_hoi/{id}
-        [HttpDelete("xoa_phan_hoi/{id}")]
-        public async Task<ActionResult> XoaPhanHoi(int id)
+        // 4. Lấy minh chứng liên quan đến điểm rèn luyện (tìm theo MaDiemRenLuyen, trả về các minh chứng hoạt động liên quan nếu cần)
+        // GET: api/PhanHoiDiemRenLuyen/minh_chung_diem_ren_luyen/{maDiemRenLuyen}
+        [HttpGet("minh_chung_diem_ren_luyen/{maDiemRenLuyen}")]
+        public async Task<ActionResult<IEnumerable<MinhChungHoatDongDTO>>> GetMinhChungByDiemRenLuyen(int maDiemRenLuyen)
         {
-            try
-            {
-                var phanHoi = await _context.PhanHoiDiemRenLuyens.FindAsync(id);
-                if (phanHoi == null)
+            var diemRenLuyen = await _context.DiemRenLuyens
+                .Include(drl => drl.MaSvNavigation)
+                .Include(drl => drl.MaHocKyNavigation)
+                .FirstOrDefaultAsync(drl => drl.MaDiemRenLuyen == maDiemRenLuyen);
+
+            if (diemRenLuyen == null)
+                return NotFound();
+
+            // Tìm các đăng ký hoạt động của sinh viên trong học kỳ này
+            var dangKyIds = await _context.DangKyHoatDongs
+                .Where(dk => dk.MaSv == diemRenLuyen.MaSv && dk.MaHoatDongNavigation.MaHocKy == diemRenLuyen.MaHocKy)
+                .Select(dk => dk.MaDangKy)
+                .ToListAsync();
+
+            // Lấy minh chứng thuộc các đăng ký đó
+            var minhChungs = await _context.MinhChungHoatDongs
+                .Where(mc => mc.MaDangKy != null && dangKyIds.Contains(mc.MaDangKy.Value))
+                .Select(mc => new MinhChungHoatDongDTO
                 {
-                    return NotFound($"Không tìm thấy phản hồi có mã {id}");
-                }
+                    MaMinhChung = mc.MaMinhChung,
+                    MaDangKy = mc.MaDangKy,
+                    DuongDanFile = mc.DuongDanFile,
+                    MoTa = mc.MoTa,
+                    NgayTao = mc.NgayTao,
+                    TrangThai = mc.TrangThai
+                })
+                .ToListAsync();
 
-                _context.PhanHoiDiemRenLuyens.Remove(phanHoi);
-                await _context.SaveChangesAsync();
+            return Ok(minhChungs);
+        }
 
-                return NoContent();
-            }
-            catch (Exception ex)
+        [HttpDelete("xoa_minh_chung/{maMinhChung}")]
+        public async Task<IActionResult> XoaMinhChung(int maMinhChung)
+        {
+            // Lấy minh chứng cần xóa
+            var minhChung = await _context.MinhChungHoatDongs
+                .Include(mc => mc.PhanHoiDiemRenLuyens)
+                .FirstOrDefaultAsync(mc => mc.MaMinhChung == maMinhChung);
+
+            if (minhChung == null)
+                return NotFound("Không tìm thấy minh chứng.");
+
+            // Xóa các phản hồi liên quan trước
+            if (minhChung.PhanHoiDiemRenLuyens != null && minhChung.PhanHoiDiemRenLuyens.Any())
             {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
+                _context.PhanHoiDiemRenLuyens.RemoveRange(minhChung.PhanHoiDiemRenLuyens);
             }
+
+            // Sau đó xóa minh chứng
+            _context.MinhChungHoatDongs.Remove(minhChung);
+
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
-
-    //  các request và response
-  
-
-    public class TaoPhanHoiRequest
+   
+    public class XuLyPhanHoiRequest
     {
-        public int? MaDiemRenLuyen { get; set; }
-        public int? MaMinhChung { get; set; }
-        public string NoiDungPhanHoi { get; set; }
-    }
-
-    public class CapNhatXuLyRequest
-    {
+        public string MaQl { get; set; }
         public string NoiDungXuLy { get; set; }
-        public string? MaQl { get; set; }
+        public double? CapNhatTongDiem { get; set; } // Nếu cần cập nhật điểm cho sinh viên
+        public string? XepLoai { get; set; }
+        public string? TrangThaiDiemRenLuyen { get; set; }
     }
 }

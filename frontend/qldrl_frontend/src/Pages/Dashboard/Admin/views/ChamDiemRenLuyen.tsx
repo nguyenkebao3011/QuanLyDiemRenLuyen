@@ -199,7 +199,7 @@ export default function DiemDanh() {
       setMaQL("QL02"); // Mã mặc định từ hình ảnh bạn cung cấp
       showToast("Cảnh báo", "Sử dụng mã quản lý mặc định", "warning");
     }
-  }, [api]);
+  }, []);
 
   // Lấy danh sách hoạt động
   const fetchDanhSachHoatDong = useCallback(async () => {
