@@ -11,13 +11,13 @@ import {
 } from "react-feather";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { Facebook, Mail, Phone, MapPin, Globe } from 'react-feather';
+import { Facebook, Mail, Phone, MapPin, Globe } from "react-feather";
 import XemHoatDong from "../../../components/GiangVien/views/XemHoatDong";
 import DanhSachSinhVien from "../../../components/GiangVien/views/DanhSachSinhVien";
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
-import ThongKe from "../../../components/GiangVien/views/ThongKe";
+import { ThongKe } from "../../../components/GiangVien/views/ThongKe";
 
 // Định nghĩa kiểu Lecturer
 interface Lecturer {
@@ -31,23 +31,28 @@ interface Lecturer {
   AnhDaiDien: string | null;
 }
 
-type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
+type MenuKey =
+  | "dashboard"
+  | "activities"
+  | "score"
+  | "notifications"
+  | "evidence";
 const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-column">
           <div className="footer-logo">
-            <img 
-              src="../hinhanh/HUIT(2).jpeg" 
-              alt="Logo trường HUIT" 
-              className="footer-logo-img" 
+            <img
+              src="../hinhanh/HUIT(2).jpeg"
+              alt="Logo trường HUIT"
+              className="footer-logo-img"
             />
           </div>
           <h3>TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h3>
           <p>HO CHI MINH CITY UNIVERSITY OF INDUSTRY AND TRADE</p>
         </div>
-        
+
         <div className="footer-column">
           <h4>Liên hệ</h4>
           <ul className="footer-links">
@@ -69,21 +74,32 @@ const Footer: React.FC = () => {
             </li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Liên kết nhanh</h4>
           <ul className="footer-links">
-            <li><a href="/">Trang chủ</a></li>
-            <li><a href="/thong-bao">Thông báo</a></li>
-            <li><a href="/diem-ren-luyen">Điểm rèn luyện</a></li>
-            <li><a href="/hoat-dong">Hoạt động</a></li>
+            <li>
+              <a href="/">Trang chủ</a>
+            </li>
+            <li>
+              <a href="/thong-bao">Thông báo</a>
+            </li>
+            <li>
+              <a href="/diem-ren-luyen">Điểm rèn luyện</a>
+            </li>
+            <li>
+              <a href="/hoat-dong">Hoạt động</a>
+            </li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Kết nối với chúng tôi</h4>
           <div className="social-links">
-            <a href="https://www.facebook.com/huit.edu.vn" className="social-link">
+            <a
+              href="https://www.facebook.com/huit.edu.vn"
+              className="social-link"
+            >
               <Facebook size={24} />
             </a>
             <a href="mailto:contact@huit.edu.vn" className="social-link">
@@ -96,9 +112,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} Hệ thống Quản lý điểm rèn luyện - Trường Đại học Công Thương TP.HCM</p>
+        <p>
+          © {new Date().getFullYear()} Hệ thống Quản lý điểm rèn luyện - Trường
+          Đại học Công Thương TP.HCM
+        </p>
       </div>
     </footer>
   );
@@ -117,13 +136,14 @@ const TeacherDashboard: React.FC = () => {
   const navigate = useNavigate();
   const BASE_URL = "http://localhost:5163"; // Thay đổi nếu API chạy trên cổng khác
 
-  const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> = {
-    dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
-    activities: { title: "Các hoạt động", icon: <Calendar size={18} /> },
-    score: { title: "Danh sách sinh viên", icon: <Award size={18} /> },
-    notifications: { title: "Thông báo", icon: <Bell size={18} /> },
-    evidence: { title: "Thống kê", icon: <FileText size={18} /> },
-  };
+  const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> =
+    {
+      dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
+      activities: { title: "Các hoạt động", icon: <Calendar size={18} /> },
+      score: { title: "Danh sách sinh viên", icon: <Award size={18} /> },
+      notifications: { title: "Thông báo", icon: <Bell size={18} /> },
+      evidence: { title: "Thống kê", icon: <FileText size={18} /> },
+    };
 
   const handleAvatarClick = () => {
     setMenuVisible(!menuVisible);
@@ -227,7 +247,7 @@ const TeacherDashboard: React.FC = () => {
       default:
         return (
           <div>
-            <h2 >Xin chào, Giảng Viên {teacherName}</h2>
+            <h2>Xin chào, Giảng Viên {teacherName}</h2>
             {teacherData ? (
               <ThongTinGiangVien />
             ) : (
@@ -322,40 +342,45 @@ const TeacherDashboard: React.FC = () => {
             <div className="notification-icon">
               <Bell size={20} />
             </div>
-            
           </div>
           <div className="avatar-menu-container" ref={avatarRef}>
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt="avatar nhỏ"
-                  className="mini-avatar"
-                  onClick={handleAvatarClick}
-                />
-              ) : (
-                <div className="mini-avatar" onClick={handleAvatarClick}>
-                  {teacherName.charAt(0).toUpperCase()}
-                </div>
-              )}
+            {avatar ? (
+              <img
+                src={avatar}
+                alt="avatar nhỏ"
+                className="mini-avatar"
+                onClick={handleAvatarClick}
+              />
+            ) : (
+              <div className="mini-avatar" onClick={handleAvatarClick}>
+                {teacherName.charAt(0).toUpperCase()}
+              </div>
+            )}
 
-              {menuVisible && (
-                <div className="avatar-dropdown">
-                  <div className="menu-item" onClick={() => navigate("/cap-nhat-thong-tin-giang-vien")}>
-                    Cập nhật thông tin
-                  </div>
-                  <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                     Đổi mật khẩu
-                  </div>
-                  <div className="menu-item" onClick={handleLogout}>
-                    Đăng xuất
-                  </div>
+            {menuVisible && (
+              <div className="avatar-dropdown">
+                <div
+                  className="menu-item"
+                  onClick={() => navigate("/cap-nhat-thong-tin-giang-vien")}
+                >
+                  Cập nhật thông tin
                 </div>
-              )}
-            </div>
+                <div
+                  className="menu-item"
+                  onClick={() => navigate("/doi-mat-khau")}
+                >
+                  Đổi mật khẩu
+                </div>
+                <div className="menu-item" onClick={handleLogout}>
+                  Đăng xuất
+                </div>
+              </div>
+            )}
+          </div>
         </header>
         <main>{renderContent()}</main>
         {/* <DanhSachSinhVien /> */}
-      <Footer /> 
+        <Footer />
       </div>
     </div>
   );

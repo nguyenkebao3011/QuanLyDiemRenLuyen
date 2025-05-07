@@ -144,7 +144,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
             {hocKys && hocKys.length > 0
               ? hocKys.map((hk) => (
                   <option key={hk.MaHocKy} value={hk.TenHocKy}>
-                    Học kỳ {hk.MaHocKy} - {hk.NamHoc || ""}
+                    {hk.TenHocKy} năm học {hk.NamHoc || ""}
                   </option>
                 ))
               : uniqueHocKy.map((hocKy) => (

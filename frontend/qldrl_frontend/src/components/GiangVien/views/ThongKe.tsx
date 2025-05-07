@@ -138,3 +138,8 @@
 // };
 
 // export default ThongKeComponent;
+import React from "react";
+
+export const ThongKe = () => {
+  return <div>ThongKe</div>;
+};

@@ -9,7 +9,7 @@ import ThongBaoStats from "../../../../components/Admin/ThongBao/ThongBaoStats";
 import type {
   ThongBaoDTO,
   ThongBaoChiTietDTO,
-} from "../../../../components/Admin/types";
+} from "../../../../components//Admin/types";
 import "../css/ThongBaoDiemDanh.css";
 import type { QuanLyKhoa } from "../../../../components/Admin/types";
 
@@ -71,9 +71,12 @@ const ThongBaoManagement: React.FC = () => {
       setFilteredThongBaos(data);
 
       // Cập nhật thống kê
-      const totalViews = data.reduce((sum, item) => sum + item.SoLuotXem, 0);
+      const totalViews = data.reduce(
+        (sum: number, item: ThongBaoDTO) => sum + item.SoLuotXem,
+        0
+      );
       const uniqueReaders = new Set();
-      data.forEach((item) => {
+      data.forEach((item: ThongBaoDTO) => {
         // Giả định rằng mỗi lượt xem là một người đọc duy nhất
         uniqueReaders.add(item.SoLuotXem > 0 ? item.MaThongBao : null);
       });
@@ -82,7 +85,8 @@ const ThongBaoManagement: React.FC = () => {
         totalThongBao: data.length,
         totalViews,
         totalReaders: uniqueReaders.size - (uniqueReaders.has(null) ? 1 : 0),
-        unreadCount: data.filter((item) => item.SoLuotXem === 0).length,
+        unreadCount: data.filter((item: ThongBaoDTO) => item.SoLuotXem === 0)
+          .length,
       });
     } catch (err) {
       console.error("Lỗi khi lấy danh sách thông báo:", err);
@@ -136,7 +140,7 @@ const ThongBaoManagement: React.FC = () => {
         } else {
           // Nếu từ khóa ngắn, tìm kiếm cục bộ
           const filtered = thongBaos.filter(
-            (item) =>
+            (item: ThongBaoDTO) =>
               item.TieuDe.toLowerCase().includes(term.toLowerCase()) ||
               (item.NoiDung &&
                 item.NoiDung.toLowerCase().includes(term.toLowerCase()))
@@ -167,7 +171,7 @@ const ThongBaoManagement: React.FC = () => {
         // Áp dụng lọc theo loại
         if (selectedLoaiThongBao !== "all") {
           const furtherFiltered = filtered.filter(
-            (item) =>
+            (item: ThongBaoDTO) =>
               item.LoaiThongBao.toLowerCase() ===
               selectedLoaiThongBao.toLowerCase()
           );
