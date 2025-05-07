@@ -103,6 +103,7 @@ const ThongTinGiangVien: React.FC = () => {
           </tbody>
         </table>
       </div>
+      
     </div>
   );
 };

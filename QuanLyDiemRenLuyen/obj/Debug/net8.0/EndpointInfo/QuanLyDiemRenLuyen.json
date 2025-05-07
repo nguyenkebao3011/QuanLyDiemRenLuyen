@@ -1532,6 +1532,18 @@
         }
       }
     },
+    "/api/Lops/lay_danh_sach_lop_theo_giang_vien": {
+      "get": {
+        "tags": [
+          "Lops"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/PhanHoiDiemRenLuyen/lay_danh_sach": {
       "get": {
         "tags": [

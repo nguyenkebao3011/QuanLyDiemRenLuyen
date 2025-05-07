@@ -1069,6 +1069,88 @@
       ]
     },
     {
+      "Route": "avatars/DHTH603148_638822420539074725.jpeg",
+      "AssetFile": "avatars/DHTH603148_638822420539074725.jpeg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 07 May 2025 12:14:13 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/DHTH603148_638822420539074725.n2u5k1fxmi.jpeg",
+      "AssetFile": "avatars/DHTH603148_638822420539074725.jpeg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 07 May 2025 12:14:13 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "n2u5k1fxmi"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ="
+        },
+        {
+          "Name": "label",
+          "Value": "avatars/DHTH603148_638822420539074725.jpeg"
+        }
+      ]
+    },
+    {
       "Route": "avatars/GV01_638817794895862953.jpeg",
       "AssetFile": "avatars/GV01_638817794895862953.jpeg",
       "Selectors": [],

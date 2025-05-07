@@ -973,6 +973,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.LopsController",
+    "Method": "LayDanhSachLopTheoGiangVien",
+    "RelativePath": "api/Lops/lay_danh_sach_lop_theo_giang_vien",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.PhanHoiDiemRenLuyenController",
     "Method": "CapNhatXuLyPhanHoi",
     "RelativePath": "api/PhanHoiDiemRenLuyen/cap_nhat_xu_ly/{id}",

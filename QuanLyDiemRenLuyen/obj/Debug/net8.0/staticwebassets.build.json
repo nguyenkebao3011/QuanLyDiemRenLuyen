@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "bLW2M4WEg1Z33YFdVgaVrCxUotlAz8CD4I+jCftSvWA=",
+  "Hash": "A0Y1AEGluPlRZdSPHPHxwAU6R4pWVHIlwM7KrGgccqc=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -309,6 +309,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638818215400796796.jpeg"
+    },
+    {
+      "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638822420539074725.jpeg",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "avatars/DHTH603148_638822420539074725#[.{fingerprint}]?.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "n2u5k1fxmi",
+      "Integrity": "gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\avatars\\DHTH603148_638822420539074725.jpeg"
     },
     {
       "Identity": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638817794895862953.jpeg",
@@ -1453,6 +1474,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-/FrdRj0bnbjnpiNnuz6h8tiFbav0np3KhlmErweX1bM="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/DHTH603148_638822420539074725.jpeg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638822420539074725.jpeg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 07 May 2025 12:14:13 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/DHTH603148_638822420539074725.n2u5k1fxmi.jpeg",
+      "AssetFile": "D:\\Ki1_nam4\\DoAnChuyenNganh\\QuanLyDiemRenLuyen_git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\DHTH603148_638822420539074725.jpeg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 07 May 2025 12:14:13 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "n2u5k1fxmi"
+        },
+        {
+          "Name": "label",
+          "Value": "avatars/DHTH603148_638822420539074725.jpeg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gXCaNb/7NiPB/bSscDnAxtJMtl6vC+7BhpaqBxidoMQ="
         }
       ]
     },
