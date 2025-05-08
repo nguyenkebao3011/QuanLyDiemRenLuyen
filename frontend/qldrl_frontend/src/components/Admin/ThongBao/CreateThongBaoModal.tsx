@@ -1,8 +1,9 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import { X, Send, AlertCircle, Check } from "lucide-react";
+import { X, Send, AlertCircle } from "lucide-react";
 import type { HoatDong, TaoThongBaoTuHoatDongRequest } from "../types";
 import { ApiService } from "../../../untils/services/service-api";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
 interface CreateThongBaoModalProps {
   isOpen: boolean;
@@ -20,7 +21,6 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
   const [hoatDongs, setHoatDongs] = useState<HoatDong[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<TaoThongBaoTuHoatDongRequest>({
     MaHoatDong: 0,
@@ -34,12 +34,21 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
     null
   );
 
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
   useEffect(() => {
     if (isOpen) {
       fetchHoatDongs();
     }
   }, [isOpen]);
-
   useEffect(() => {
     if (selectedHoatDong) {
       setFormData((prev) => ({
@@ -76,6 +85,11 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
     } catch (err) {
       setError("Không thể tải danh sách hoạt động. Vui lòng thử lại sau.");
       console.error(err);
+      setNotification({
+        show: true,
+        message: "Không thể tải danh sách hoạt động. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -110,34 +124,58 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
     }
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.MaHoatDong <= 0) {
       setError("Vui lòng chọn một hoạt động");
+      setNotification({
+        show: true,
+        message: "Vui lòng chọn một hoạt động",
+        type: "error",
+      });
       return;
     }
 
     if (!formData.TieuDe?.trim()) {
       setError("Vui lòng nhập tiêu đề thông báo");
+      setNotification({
+        show: true,
+        message: "Vui lòng nhập tiêu đề thông báo",
+        type: "error",
+      });
       return;
     }
 
     try {
       setLoading(true);
       setError(null);
+      console.log("Form data:", formData);
       await ApiService.taoThongBaoTuHoatDong(formData);
-      setSuccess("Tạo thông báo thành công!");
+      setNotification({
+        show: true,
+        message: "Tạo thông báo thành công!",
+        type: "success",
+      });
 
       // Reset form sau 2 giây
       setTimeout(() => {
-        setSuccess(null);
+        setNotification((prev) => ({ ...prev, show: false }));
         onSuccess();
         onClose();
       }, 2000);
     } catch (err) {
       setError("Không thể tạo thông báo. Vui lòng thử lại sau.");
       console.error(err);
+      setNotification({
+        show: true,
+        message: "Không thể tạo thông báo. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -169,17 +207,18 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
           </button>
         </div>
 
-        {error && (
+        {notification.show && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={closeNotification}
+          />
+        )}
+
+        {error && !notification.show && (
           <div className="error-message">
             <AlertCircle className="error-icon" />
             <span>{error}</span>
-          </div>
-        )}
-
-        {success && (
-          <div className="success-message">
-            <Check className="success-icon" />
-            <span>{success}</span>
           </div>
         )}
 

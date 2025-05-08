@@ -27,6 +27,7 @@ import type {
   TaoHoiDongChamDiemRequest,
   HoiDongChamDiemDetailDTO,
   HoiDongChamDiemDTO,
+  Lop,
 } from "../../components/Admin/types";
 
 const API_URL = "http://localhost:5163/api";
@@ -261,10 +262,12 @@ export const ApiService = {
     return response.data;
   },
 
-  xoaPhanHoi: async (id: number): Promise<void> => {
+  xoaMinhChung: async (id: number): Promise<void> => {
     await api.delete(`/PhanHoiDiemRenLuyen/xoa_minh_chung/${id}`);
   },
-
+  xoaPhanHoi: async (id: number): Promise<void> => {
+    await api.delete(`/PhanHoiDiemRenLuyen/xoa_phan_hoi/${id}`);
+  },
   taoPhanHoi: async (
     request: TaoPhanHoiRequest
   ): Promise<PhanHoiDiemRenLuyenDTO> => {
@@ -520,6 +523,238 @@ export const ApiService = {
     } catch (error) {
       console.error("Lỗi khi lấy danh sách giáo viên:", error);
       return [];
+    }
+  },
+
+  // GiaoVien services
+  themGiangVien: async (formData: Partial<GiaoVien>): Promise<GiaoVien> => {
+    try {
+      const response = await api.post(
+        `/QuanLyGiangVien/them_giang_vien`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi thêm giảng viên:", error);
+      throw error;
+    }
+  },
+
+  capNhatGiangVien: async (
+    maGv: string,
+    formData: Partial<GiaoVien>
+  ): Promise<GiaoVien> => {
+    try {
+      const response = await api.put(
+        `/QuanLyGiangVien/cap_nhat_giang_vien/${maGv}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi cập nhật giảng viên ${maGv}:`, error);
+      throw error;
+    }
+  },
+
+  xoaGiangVien: async (maGv: string): Promise<void> => {
+    try {
+      await api.delete(`/QuanLyGiangVien/xoa_giang_vien/${maGv}`);
+    } catch (error) {
+      console.error(`Lỗi khi xóa giảng viên ${maGv}:`, error);
+      throw error;
+    }
+  },
+  // SinhVien services
+  themSinhVien: async (formData: Partial<SinhVien>): Promise<SinhVien> => {
+    try {
+      const formDataToSubmit = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formDataToSubmit.append(key, value.toString());
+        }
+      });
+
+      const response = await api.post(
+        `/QuanLySinhVien/them_sinh_vien`,
+        formDataToSubmit,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi thêm sinh viên:", error);
+      throw error;
+    }
+  },
+
+  capNhatSinhVien: async (
+    maSV: string,
+    formData: Partial<SinhVien>
+  ): Promise<SinhVien> => {
+    try {
+      const formDataToSubmit = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formDataToSubmit.append(key, value.toString());
+        }
+      });
+
+      const response = await api.put(
+        `/QuanLySinhVien/cap_nhap_sinh_vien/${maSV}`,
+        formDataToSubmit,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi cập nhật sinh viên ${maSV}:`, error);
+      throw error;
+    }
+  },
+
+  xoaSinhVien: async (maSV: string): Promise<void> => {
+    try {
+      await api.delete(`/QuanLySinhVien/xoa_sinh_vien/${maSV}`);
+    } catch (error) {
+      console.error(`Lỗi khi xóa sinh viên ${maSV}:`, error);
+      throw error;
+    }
+  },
+
+  layDanhSachSinhVienTheoVaiTro: async (): Promise<SinhVien[]> => {
+    try {
+      const response = await api.get(`/SinhVien/lay-sinhvien-theo-vai-tro`);
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách sinh viên theo vai trò:", error);
+      return [];
+    }
+  },
+
+  layDanhSachLop: async (): Promise<Lop[]> => {
+    try {
+      const response = await api.get(`/Lop/lay_danh_sach_lop`);
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách lớp:", error);
+      return [];
+    }
+  },
+  // DiemDanh services
+  layDanhSachHoatDongDiemDanh: async (): Promise<HoatDong[]> => {
+    try {
+      const response = await api.get("/DiemDanh/DanhSachHoatDong");
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách hoạt động điểm danh:", error);
+      throw error;
+    }
+  },
+
+  layDanhSachSinhVienDiemDanh: async (
+    maHoatDong: number
+  ): Promise<DangKyHoatDong[]> => {
+    try {
+      const response = await api.get(
+        `/DiemDanh/DanhSachSinhVien/${maHoatDong}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        `Lỗi khi lấy danh sách sinh viên điểm danh cho hoạt động ${maHoatDong}:`,
+        error
+      );
+      throw error;
+    }
+  },
+
+  layThongTinHoatDong: async (
+    maHoatDong: number
+  ): Promise<ThongTinHoatDong> => {
+    try {
+      const response = await api.get(
+        `/DiemDanh/ThongTinHoatDong/${maHoatDong}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy thông tin hoạt động ${maHoatDong}:`, error);
+      throw error;
+    }
+  },
+
+  layBaoCaoDiemDanh: async (maHoatDong: number): Promise<BaoCaoDiemDanh> => {
+    try {
+      const response = await api.get(`/DiemDanh/BaoCaoDiemDanh/${maHoatDong}`);
+      return response.data;
+    } catch (error) {
+      console.error(
+        `Lỗi khi lấy báo cáo điểm danh cho hoạt động ${maHoatDong}:`,
+        error
+      );
+      throw error;
+    }
+  },
+  layDanhSachHoatDong: async (): Promise<HoatDong[]> => {
+    try {
+      const response = await api.get("/HoatDong/lay_hoat_dong_all");
+      if (response.data.items) {
+        return response.data.items;
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách hoạt động:", error);
+      throw error;
+    }
+  },
+
+  taoHoatDong: async (formData: any): Promise<any> => {
+    try {
+      const response = await api.post("/HoatDong/tao_hoat_dong", formData);
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi tạo hoạt động:", error);
+      throw error;
+    }
+  },
+
+  suaHoatDong: async (maHoatDong: number, formData: any): Promise<any> => {
+    try {
+      const response = await api.put(
+        `/HoatDong/sua_hoat_dong/${maHoatDong}`,
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi cập nhật hoạt động ${maHoatDong}:`, error);
+      throw error;
+    }
+  },
+
+  xoaHoatDong: async (maHoatDong: number): Promise<any> => {
+    try {
+      const response = await api.delete(
+        `/HoatDong/xoa_hoat_dong/${maHoatDong}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi xóa hoạt động ${maHoatDong}:`, error);
+      throw error;
     }
   },
 };

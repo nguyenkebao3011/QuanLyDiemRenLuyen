@@ -167,29 +167,53 @@ namespace QuanLyDiemRenLuyen.Controllers
         [HttpDelete("xoa_minh_chung/{maMinhChung}")]
         public async Task<IActionResult> XoaMinhChung(int maMinhChung)
         {
-            // Lấy minh chứng cần xóa
+            // Lấy minh chứng cần xóa (kèm phản hồi liên quan)
             var minhChung = await _context.MinhChungHoatDongs
                 .Include(mc => mc.PhanHoiDiemRenLuyens)
                 .FirstOrDefaultAsync(mc => mc.MaMinhChung == maMinhChung);
 
-            if (minhChung == null)
-                return NotFound("Không tìm thấy minh chứng.");
-
-            // Xóa các phản hồi liên quan trước
-            if (minhChung.PhanHoiDiemRenLuyens != null && minhChung.PhanHoiDiemRenLuyens.Any())
+            if (minhChung != null)
             {
-                _context.PhanHoiDiemRenLuyens.RemoveRange(minhChung.PhanHoiDiemRenLuyens);
+                // Xóa các phản hồi liên quan trước
+                if (minhChung.PhanHoiDiemRenLuyens != null && minhChung.PhanHoiDiemRenLuyens.Any())
+                {
+                    _context.PhanHoiDiemRenLuyens.RemoveRange(minhChung.PhanHoiDiemRenLuyens);
+                }
+
+                // Sau đó xóa minh chứng
+                _context.MinhChungHoatDongs.Remove(minhChung);
+
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
+            else
+            {
+                // Nếu không có minh chứng, vẫn xóa các phản hồi liên quan tới mã minh chứng này
+                var phieuPhanHoiLienQuan = await _context.PhanHoiDiemRenLuyens
+                    .Where(p => p.MaMinhChung == maMinhChung)
+                    .ToListAsync();
 
-            // Sau đó xóa minh chứng
-            _context.MinhChungHoatDongs.Remove(minhChung);
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+                if (phieuPhanHoiLienQuan.Any())
+                {
+                    _context.PhanHoiDiemRenLuyens.RemoveRange(phieuPhanHoiLienQuan);
+                    await _context.SaveChangesAsync();
+                }
+                return NotFound("Không tìm thấy minh chứng hoặc phản hồi liên quan.");
+            }
         }
+        [HttpDelete("xoa_phan_hoi/{maPhanHoi}")]
+            public async Task<IActionResult> XoaPhanHoi(int maPhanHoi)
+            {
+                var phanHoi = await _context.PhanHoiDiemRenLuyens.FindAsync(maPhanHoi);
+                if (phanHoi == null)
+                    return NotFound("Không tìm thấy phản hồi.");
+
+                _context.PhanHoiDiemRenLuyens.Remove(phanHoi);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
     }
-   
-    public class XuLyPhanHoiRequest
+        public class XuLyPhanHoiRequest
     {
         public string MaQl { get; set; }
         public string NoiDungXuLy { get; set; }

@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+"use client";
+
+import type React from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import FormField from "../common/FormField";
-import { SinhVien, Lop } from "../../types";
+import type { SinhVien, Lop } from "../../types";
+import { ApiService } from "../../../../untils/services/service-api";
+import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
 
 interface SuaSinhVienProps {
   isOpen: boolean;
@@ -21,8 +25,6 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
   data,
   lopList,
 }) => {
-  const API_URL = "http://localhost:5163/api";
-
   const [formData, setFormData] = useState<Partial<SinhVien>>({
     HoTen: "",
     MaSV: "",
@@ -38,6 +40,15 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   useEffect(() => {
     if (isOpen && data) {
@@ -78,35 +89,25 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
     }));
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const token = localStorage.getItem("token");
-      const formDataToSubmit = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formDataToSubmit.append(key, value.toString());
-        }
-      });
-
-      await axios.put(
-        `${API_URL}/QuanLySinhVien/cap_nhap_sinh_vien/${sinhVienId}`,
-        formDataToSubmit,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
+      await ApiService.capNhatSinhVien(sinhVienId, formData);
       setIsSubmitting(false);
       onSuccess();
       onClose();
-      alert("Cập nhật sinh viên thành công");
+      setNotification({
+        show: true,
+        message: "Cập nhật sinh viên thành công!",
+        type: "success",
+      });
     } catch (error: any) {
       console.error("Lỗi khi cập nhật sinh viên:", error);
       setError(
@@ -261,6 +262,14 @@ const SuaSinhVien: React.FC<SuaSinhVienProps> = ({
           </div>
         </form>
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </div>
   );
 };

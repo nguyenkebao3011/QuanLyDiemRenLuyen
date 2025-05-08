@@ -13,6 +13,7 @@ import {
 import type { ThongBaoDTO } from "../types";
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
 interface ThongBaoListProps {
   thongBaos: ThongBaoDTO[];
@@ -39,6 +40,17 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
 }) => {
   const [sortBy, setSortBy] = useState<"NgayTao" | "SoLuotXem">("NgayTao");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const handleSort = (field: "NgayTao" | "SoLuotXem") => {
     if (sortBy === field) {
@@ -82,6 +94,19 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
     }
   };
 
+  const handleRefresh = () => {
+    onRefresh();
+    setNotification({
+      show: true,
+      message: "Dữ liệu đã được làm mới!",
+      type: "info",
+    });
+  };
+
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   return (
     <div className="thong-bao-list-container">
       <div className="thong-bao-list-header">
@@ -115,7 +140,7 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
 
           <button
             className="btn-refresh"
-            onClick={onRefresh}
+            onClick={handleRefresh}
             disabled={loading}
           >
             <RefreshCw
@@ -125,6 +150,14 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
           </button>
         </div>
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
 
       {error && (
         <div className="error-message">

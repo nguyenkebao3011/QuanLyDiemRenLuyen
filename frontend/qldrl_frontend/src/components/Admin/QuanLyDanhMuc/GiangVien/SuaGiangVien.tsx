@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import FormField from "../common/FormField";
-import { GiaoVien } from "../../types";
+import type { GiaoVien } from "../../types";
+import { ApiService } from "../../../../untils/services/service-api";
+import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
 
 interface SuaGiangVienProps {
   isOpen: boolean;
@@ -19,8 +21,6 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
   giangVienId,
   data,
 }) => {
-  const API_URL = "http://localhost:5163/api";
-
   const [formData, setFormData] = useState<Partial<GiaoVien>>({
     HoTen: "",
     MaGv: "",
@@ -33,7 +33,15 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "error",
+  });
 
   // Load dữ liệu giảng viên khi component được mở
   useEffect(() => {
@@ -74,36 +82,42 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
     }));
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null);
+    setNotification({ show: false, message: "", type: "error" });
 
     try {
-      // Lấy token từ localStorage
-      const token = localStorage.getItem("token");
+      // Validate form data
+      if (!formData.HoTen || !formData.MaGv) {
+        setNotification({
+          show: true,
+          message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+          type: "error",
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-      // Gọi API cập nhật giảng viên
-      await axios.put(
-        `${API_URL}/QuanLyGiangVien/cap_nhat_giang_vien/${giangVienId}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // Use ApiService instead of direct axios call
+      await ApiService.capNhatGiangVien(giangVienId, formData);
 
       setIsSubmitting(false);
       onSuccess();
       onClose();
-      alert("Cập nhật giảng viên thành công");
     } catch (error: any) {
       console.error("Lỗi khi cập nhật giảng viên:", error);
-      setError(
-        error.response?.data?.message || "Có lỗi xảy ra khi cập nhật giảng viên"
-      );
+      setNotification({
+        show: true,
+        message:
+          error.response?.data?.message ||
+          "Có lỗi xảy ra khi cập nhật giảng viên",
+        type: "error",
+      });
       setIsSubmitting(false);
     }
   };
@@ -118,7 +132,13 @@ const SuaGiangVien: React.FC<SuaGiangVienProps> = ({
           </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {notification.show && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={closeNotification}
+          />
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-row">

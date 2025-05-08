@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+"use client";
+
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -8,13 +10,19 @@ import {
   RefreshCw,
   Download,
   AlertCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import "./QuanLySinhVien.css";
-import { SinhVien, Lop } from "../../types";
+import type { SinhVien, Lop } from "../../types";
 import ThemSinhVien from "./ThemSinhVien";
 import SuaSinhVien from "./SuaSinhVien";
 import XacNhanXoaSinhVien from "./XacNhanXoaSinhVien";
-const API_URL = "http://localhost:5163/api";
+import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
+import "../../../../Pages/Dashboard/Admin/css/notification.css";
+import { ApiService } from "../../../../untils/services/service-api";
+
+const pageSize = 10;
 
 const QuanLySinhVien: React.FC = () => {
   const [sinhVienList, setSinhVienList] = useState<SinhVien[]>([]);
@@ -39,18 +47,25 @@ const QuanLySinhVien: React.FC = () => {
     name: string | null;
   }>({ MaSV: "", name: null });
 
+  // Add currentPage state in the component state declarations
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
   // Hàm lấy danh sách lớp
   const fetchLop = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/Lop/lay_danh_sach_lop`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setLopList(
-        Array.isArray(response.data) ? response.data : [response.data]
-      );
+      const data = await ApiService.layDanhSachLop();
+      setLopList(data);
     } catch (error: any) {
       console.error("Lỗi khi lấy danh sách lớp:", error);
       setError("Không thể tải danh sách lớp");
@@ -62,20 +77,9 @@ const QuanLySinhVien: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${API_URL}/SinhVien/lay-sinhvien-theo-vai-tro`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const dataArr = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-      setSinhVienList(dataArr);
-      setFilteredList(dataArr);
+      const data = await ApiService.layDanhSachSinhVienTheoVaiTro();
+      setSinhVienList(data);
+      setFilteredList(data);
     } catch (error: any) {
       console.error("Lỗi khi lấy danh sách sinh viên:", error);
       setError(
@@ -132,6 +136,15 @@ const QuanLySinhVien: React.FC = () => {
     setFilteredList(filtered);
   }, [searchTerm, filterLop, filterTrangThai, filterGioiTinh, sinhVienList]);
 
+  // Add useEffect to reset currentPage when filters change
+  // Add this after the useEffect for filtering:
+  useEffect(() => {
+    const totalPages = Math.ceil(filteredList.length / pageSize);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [filteredList.length, currentPage]);
+
   // Format ngày sinh để hiển thị
   const formatDate = (dateString: Date | string | null | undefined): string => {
     if (!dateString) return "-";
@@ -155,6 +168,11 @@ const QuanLySinhVien: React.FC = () => {
     setFilterLop("");
     setFilterTrangThai("");
     setFilterGioiTinh("");
+    setNotification({
+      show: true,
+      message: "Dữ liệu đã được làm mới!",
+      type: "info",
+    });
   };
 
   // Xử lý mở modal thêm sinh viên
@@ -178,15 +196,7 @@ const QuanLySinhVien: React.FC = () => {
   const handleDelete = async () => {
     if (!deletingSinhVien.MaSV) return;
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(
-        `${API_URL}/QuanLySinhVien/xoa_sinh_vien/${deletingSinhVien.MaSV}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await ApiService.xoaSinhVien(deletingSinhVien.MaSV);
       setSinhVienList(
         sinhVienList.filter((sv) => sv.MaSV !== deletingSinhVien.MaSV)
       );
@@ -194,16 +204,69 @@ const QuanLySinhVien: React.FC = () => {
         filteredList.filter((sv) => sv.MaSV !== deletingSinhVien.MaSV)
       );
       setDeletingSinhVien({ MaSV: "", name: null });
-      alert("Xóa sinh viên thành công");
+
+      // Replace alert with notification
+      setNotification({
+        show: true,
+        message: "Xóa sinh viên thành công!",
+        type: "success",
+      });
     } catch (error: any) {
       console.error("Lỗi khi xóa sinh viên:", error);
-      alert(error.response?.data?.message || "Có lỗi xảy ra khi xóa sinh viên");
+
+      // Extract error message
+      let errorMessage = "Có lỗi xảy ra khi xóa sinh viên";
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === "string") {
+          errorMessage = error.response.data;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.title) {
+          errorMessage = error.response.data.title;
+        }
+      }
+
+      // Show error notification
+      setNotification({
+        show: true,
+        message: `Lỗi: ${errorMessage}`,
+        type: "error",
+      });
     }
   };
 
   // Xử lý xuất Excel
   const handleExportExcel = () => {
-    alert("Chức năng xuất Excel đang được phát triển");
+    setNotification({
+      show: true,
+      message: "Chức năng xuất Excel đang được phát triển",
+      type: "info",
+    });
+  };
+
+  // Add function to close notification
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
+  // Add function to handle successful add
+  const handleAddSuccess = () => {
+    fetchSinhVien();
+    setNotification({
+      show: true,
+      message: "Thêm sinh viên mới thành công!",
+      type: "success",
+    });
+  };
+
+  // Add function to handle successful edit
+  const handleEditSuccess = () => {
+    fetchSinhVien();
+    setNotification({
+      show: true,
+      message: "Cập nhật sinh viên thành công!",
+      type: "success",
+    });
   };
 
   const getLopName = (sinhVien: SinhVien): string => {
@@ -325,59 +388,81 @@ const QuanLySinhVien: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredList.map((sv, index) => (
-                <tr key={sv.MaSV}>
-                  <td>{index + 1}</td>
-                  <td>{sv.MaSV}</td>
-                  <td>{sv.HoTen || "-"}</td>
-                  <td>{getLopName(sv)}</td>
-                  <td>{sv.Email || "-"}</td>
-                  <td>{sv.SoDienThoai || "-"}</td>
-                  <td>{sv.DiaChi || "-"}</td>
-                  <td>{formatDate(sv.NgaySinh)}</td>
-                  <td>{sv.GioiTinh || "-"}</td>
-                  <td>{sv.TrangThai === "HoatDong" ? "Hoạt động" : "Khóa"}</td>
-                  <td className="action-cell">
-                    <button
-                      className="edit-btn"
-                      onClick={() => handleEditClick(sv.MaSV)}
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDeleteClick(sv.MaSV)}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {filteredList
+                .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                .map((sv, index) => (
+                  <tr key={sv.MaSV}>
+                    <td>{index + 1}</td>
+                    <td>{sv.MaSV}</td>
+                    <td>{sv.HoTen || "-"}</td>
+                    <td>{getLopName(sv)}</td>
+                    <td>{sv.Email || "-"}</td>
+                    <td>{sv.SoDienThoai || "-"}</td>
+                    <td>{sv.DiaChi || "-"}</td>
+                    <td>{formatDate(sv.NgaySinh)}</td>
+                    <td>{sv.GioiTinh || "-"}</td>
+                    <td>
+                      {sv.TrangThai === "HoatDong" ? "Hoạt động" : "Khóa"}
+                    </td>
+                    <td className="action-cell">
+                      <button
+                        className="edit-btn"
+                        onClick={() => handleEditClick(sv.MaSV)}
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDeleteClick(sv.MaSV)}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         )}
       </div>
 
       <div className="pagination">
-        <button className="pagination-btn active">1</button>
-        <button className="pagination-btn">2</button>
-        <button className="pagination-btn">3</button>
-        <button className="pagination-btn">...</button>
-        <button className="pagination-btn">10</button>
+        <button
+          className="pagination-button"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft size={16} />
+        </button>
+
+        <div className="pagination-info">
+          Trang {currentPage} / {Math.ceil(filteredList.length / pageSize)}
+        </div>
+
+        <button
+          className="pagination-button"
+          onClick={() =>
+            setCurrentPage((prev) =>
+              Math.min(prev + 1, Math.ceil(filteredList.length / pageSize))
+            )
+          }
+          disabled={currentPage === Math.ceil(filteredList.length / pageSize)}
+        >
+          <ChevronRight size={16} />
+        </button>
       </div>
 
       {/* Modals */}
       <ThemSinhVien
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
-        onSuccess={fetchSinhVien}
+        onSuccess={handleAddSuccess}
         lopList={lopList}
       />
 
       <SuaSinhVien
         isOpen={!!editingSinhVien.MaSV}
         onClose={() => setEditingSinhVien({ MaSV: "", data: null })}
-        onSuccess={fetchSinhVien}
+        onSuccess={handleEditSuccess}
         sinhVienId={editingSinhVien.MaSV}
         data={editingSinhVien.data}
         lopList={lopList}
@@ -390,6 +475,15 @@ const QuanLySinhVien: React.FC = () => {
         sinhVienId={deletingSinhVien.MaSV}
         sinhVienName={deletingSinhVien.name}
       />
+
+      {/* Add notification component */}
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </div>
   );
 };

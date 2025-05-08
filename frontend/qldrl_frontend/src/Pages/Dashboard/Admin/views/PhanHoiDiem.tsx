@@ -1,17 +1,21 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { ApiService } from "../../../../untils/services/service-api";
 import PhanHoiList from "../../../../components/Admin/PhanHoi/PhanHoiList";
 import PhanHoiDetail from "../../../../components/Admin/PhanHoi/PhanHoiDetail";
 import PhanHoiProcessForm from "../../../../components/Admin/PhanHoi/PhanHoiProcessForm";
 import PhanHoiStats from "../../../../components/Admin/PhanHoi/PhanHoiStats";
+import Notification from "./Notification";
 import type {
   PhanHoiDiemRenLuyenListDTO,
   PhanHoiDiemRenLuyenDetailDTO,
   XuLyPhanHoiRequest,
 } from "../../../../components/Admin/types";
 import "../css/PhanHoiDiem.css";
+
+// Số lượng phần tử mỗi trang
+const pageSize = 10;
 
 const PhanHoiDiem: React.FC = () => {
   // State cho danh sách phản hồi
@@ -38,11 +42,12 @@ const PhanHoiDiem: React.FC = () => {
   const [formLoading, setFormLoading] = useState(false);
 
   // State cho quản lý khoa
-  const [maQl, setMaQl] = useState<string>("QL02"); // Mã mặc định
+  const [maQl, setMaQl] = useState<string>("");
 
   // State cho xác nhận xóa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteMinhChung, setDeleteMinhChung] = useState<number | null>(null); // <-- thêm
 
   // State cho thống kê
   const [stats, setStats] = useState({
@@ -52,6 +57,20 @@ const PhanHoiDiem: React.FC = () => {
     dangXuLy: 0,
   });
 
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Thông báo
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
   // Lấy thông tin quản lý khoa
   const fetchQuanLyKhoa = useCallback(async () => {
     try {
@@ -59,6 +78,11 @@ const PhanHoiDiem: React.FC = () => {
       setMaQl(qlKhoaData.MaQl);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin quản lý khoa:", error);
+      setNotification({
+        show: true,
+        message: "Lỗi khi lấy thông tin quản lý khoa",
+        type: "error",
+      });
     }
   }, []);
 
@@ -91,6 +115,11 @@ const PhanHoiDiem: React.FC = () => {
     } catch (err) {
       console.error("Lỗi khi lấy danh sách phản hồi:", err);
       setError("Không thể tải danh sách phản hồi. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể tải danh sách phản hồi. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -105,6 +134,11 @@ const PhanHoiDiem: React.FC = () => {
     } catch (err) {
       console.error("Lỗi khi lấy chi tiết phản hồi:", err);
       setError("Không thể tải chi tiết phản hồi. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể tải chi tiết phản hồi. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoadingDetail(false);
     }
@@ -116,7 +150,6 @@ const PhanHoiDiem: React.FC = () => {
       setSearchTerm(term);
 
       if (!term.trim()) {
-        // Nếu không có từ khóa tìm kiếm, áp dụng bộ lọc trạng thái
         filterPhanHois(phanHois, "", selectedTrangThai);
         return;
       }
@@ -194,51 +227,79 @@ const PhanHoiDiem: React.FC = () => {
     setFormError(null);
   };
 
+  // Đóng thông báo
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   // Xử lý phản hồi
   const handleProcessPhanHoi = async (id: number, data: XuLyPhanHoiRequest) => {
     setFormLoading(true);
     setFormError(null);
-
     try {
       await ApiService.xuLyPhanHoi(id, data);
-
-      // Đóng form và làm mới dữ liệu
       setIsProcessFormOpen(false);
       fetchPhanHois();
-
-      // Nếu đang xem chi tiết, cập nhật lại chi tiết
+      setNotification({
+        show: true,
+        message: "Xử lý phản hồi thành công!",
+        type: "success",
+      });
       if (selectedPhanHoi === id) {
         fetchPhanHoiDetail(id);
       }
     } catch (err) {
       console.error("Lỗi khi xử lý phản hồi:", err);
       setFormError("Không thể xử lý phản hồi. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể xử lý phản hồi. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setFormLoading(false);
     }
   };
 
-  // Xử lý xóa phản hồi
+  // Xử lý xóa phản hồi hoặc minh chứng
   const handleDelete = (id: number) => {
+    // Lấy thông tin phản hồi, kiểm tra có minh chứng không
+    const ph = phanHois.find((item) => item.MaPhanHoi === id);
     setDeleteId(id);
+    setDeleteMinhChung(ph?.MaMinhChung ?? null);
     setShowDeleteConfirm(true);
   };
 
-  // Xác nhận xóa phản hồi
+  // Xác nhận xóa phản hồi hoặc minh chứng
   const confirmDelete = async () => {
     if (!deleteId) return;
-
     try {
-      await ApiService.xoaPhanHoi(deleteId);
+      if (deleteMinhChung) {
+        await ApiService.xoaMinhChung(deleteMinhChung);
+      } else {
+        await ApiService.xoaPhanHoi(deleteId);
+      }
       fetchPhanHois();
-      // Nếu đang xem chi tiết phản hồi bị xóa, quay lại danh sách
+      setNotification({
+        show: true,
+        message: "Xóa phản hồi thành công!",
+        type: "success",
+      });
       if (selectedPhanHoi === deleteId) {
         setSelectedPhanHoi(null);
         setPhanHoiDetail(null);
       }
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
+      setDeleteMinhChung(null);
     } catch (err) {
       console.error("Lỗi khi xóa phản hồi:", err);
       setError("Không thể xóa phản hồi. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể xóa phản hồi. Vui lòng thử lại sau.",
+        type: "error",
+      });
     }
   };
 
@@ -246,6 +307,7 @@ const PhanHoiDiem: React.FC = () => {
   const cancelDelete = () => {
     setShowDeleteConfirm(false);
     setDeleteId(null);
+    setDeleteMinhChung(null);
   };
 
   // Lấy dữ liệu khi component mount
@@ -253,6 +315,14 @@ const PhanHoiDiem: React.FC = () => {
     fetchQuanLyKhoa();
     fetchPhanHois();
   }, [fetchQuanLyKhoa, fetchPhanHois]);
+
+  // Reset trang khi lọc thay đổi
+  useEffect(() => {
+    const totalPages = Math.ceil(filteredPhanHois.length / pageSize);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [filteredPhanHois.length, currentPage]);
 
   return (
     <div className="phan-hoi-management-container">
@@ -264,6 +334,14 @@ const PhanHoiDiem: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
 
       <PhanHoiStats
         totalPhanHoi={stats.totalPhanHoi}
@@ -280,19 +358,56 @@ const PhanHoiDiem: React.FC = () => {
           onProcess={handleOpenProcessForm}
         />
       ) : (
-        <PhanHoiList
-          phanHois={filteredPhanHois}
-          loading={loading}
-          error={error}
-          searchTerm={searchTerm}
-          selectedTrangThai={selectedTrangThai}
-          onSearchChange={handleSearch}
-          onTrangThaiChange={handleTrangThaiChange}
-          onRefresh={fetchPhanHois}
-          onViewDetail={handleViewDetail}
-          onProcess={handleOpenProcessForm}
-          onDelete={handleDelete}
-        />
+        <>
+          <PhanHoiList
+            phanHois={filteredPhanHois.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )}
+            loading={loading}
+            error={error}
+            searchTerm={searchTerm}
+            selectedTrangThai={selectedTrangThai}
+            onSearchChange={handleSearch}
+            onTrangThaiChange={handleTrangThaiChange}
+            onRefresh={fetchPhanHois}
+            onViewDetail={handleViewDetail}
+            onProcess={handleOpenProcessForm}
+            onDelete={handleDelete}
+          />
+
+          {filteredPhanHois.length > pageSize && (
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="pagination-button"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <div className="pagination-info">
+                Trang {currentPage} /{" "}
+                {Math.ceil(filteredPhanHois.length / pageSize)}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(
+                      prev + 1,
+                      Math.ceil(filteredPhanHois.length / pageSize)
+                    )
+                  )
+                }
+                disabled={
+                  currentPage === Math.ceil(filteredPhanHois.length / pageSize)
+                }
+                className="pagination-button"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Form xử lý phản hồi */}
@@ -315,7 +430,15 @@ const PhanHoiDiem: React.FC = () => {
             </div>
             <div className="modal-content">
               <AlertCircle className="warning-icon" />
-              <p>Bạn có chắc chắn muốn xóa phản hồi này không?</p>
+              {deleteMinhChung ? (
+                <p>
+                  <b>Lưu ý:</b> Phản hồi này có minh chứng! Khi xóa sẽ xóa cả
+                  minh chứng và các phản hồi liên quan. <br />
+                  Bạn có chắc chắn muốn tiếp tục?
+                </p>
+              ) : (
+                <p>Bạn có chắc chắn muốn xóa phản hồi này không?</p>
+              )}
               <p className="warning-text">Hành động này không thể hoàn tác.</p>
             </div>
             <div className="modal-actions">

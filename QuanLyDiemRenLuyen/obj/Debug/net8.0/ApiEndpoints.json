@@ -1171,6 +1171,22 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.PhanHoiDiemRenLuyenController",
+    "Method": "XoaPhanHoi",
+    "RelativePath": "api/PhanHoiDiemRenLuyen/xoa_phan_hoi/{maPhanHoi}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maPhanHoi",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.PhanHoiDiemRenLuyenController",
     "Method": "XuLyPhanHoi",
     "RelativePath": "api/PhanHoiDiemRenLuyen/xu_ly/{maPhanHoi}",
     "HttpMethod": "PUT",

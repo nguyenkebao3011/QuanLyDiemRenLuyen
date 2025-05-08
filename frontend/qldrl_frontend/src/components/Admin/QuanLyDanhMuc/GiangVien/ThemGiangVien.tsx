@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
+import type React from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import FormField from "../common/FormField";
-import { GiaoVien } from "../../types";
+import type { GiaoVien } from "../../types";
+import { ApiService } from "../../../../untils/services/service-api";
+import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
 
 interface ThemGiangVienProps {
   isOpen: boolean;
@@ -15,8 +17,6 @@ const ThemGiangVien: React.FC<ThemGiangVienProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const API_URL = "http://localhost:5163/api";
-
   const [formData, setFormData] = useState<Partial<GiaoVien>>({
     HoTen: "",
     MaGv: "",
@@ -29,7 +29,15 @@ const ThemGiangVien: React.FC<ThemGiangVienProps> = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "error",
+  });
 
   if (!isOpen) return null;
 
@@ -43,31 +51,39 @@ const ThemGiangVien: React.FC<ThemGiangVienProps> = ({
     }));
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null);
+    setNotification({ show: false, message: "", type: "error" });
 
     try {
-      // Lấy token từ localStorage
-      const token = localStorage.getItem("token");
-      // Gọi API thêm giảng viên
-      await axios.post(`${API_URL}/QuanLyGiangVien/them_giang_vien`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (!formData.HoTen || !formData.MaGv) {
+        setNotification({
+          show: true,
+          message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+          type: "error",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      await ApiService.themGiangVien(formData);
 
       setIsSubmitting(false);
       onSuccess();
       onClose();
-      alert("Thêm giảng viên mới thành công");
     } catch (error: any) {
       console.error("Lỗi khi thêm giảng viên:", error);
-      setError(
-        error.response?.data?.message || "Có lỗi xảy ra khi thêm giảng viên"
-      );
+      setNotification({
+        show: true,
+        message:
+          error.response?.data?.message || "Có lỗi xảy ra khi thêm giảng viên",
+        type: "error",
+      });
       setIsSubmitting(false);
     }
   };
@@ -82,7 +98,13 @@ const ThemGiangVien: React.FC<ThemGiangVienProps> = ({
           </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {notification.show && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={closeNotification}
+          />
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-row">

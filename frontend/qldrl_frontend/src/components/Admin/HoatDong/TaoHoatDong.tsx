@@ -12,9 +12,10 @@ import {
   X,
   RefreshCw,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
 import "../../../Pages/Dashboard/Admin/css/TaoHoatDong.css";
-import { HocKy, QuanLyKhoa } from "../types";
+import type { HocKy, QuanLyKhoa } from "../types";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
+import { ApiService } from "../../../untils/services/service-api";
 
 interface HoatDongFormData {
   tenHoatDong: string;
@@ -57,12 +58,15 @@ const TaoHoatDong: React.FC = () => {
   const [endDate, setEndDate] = useState<string>("");
   const [endTime, setEndTime] = useState<string>("");
 
-  const api = axios.create({
-    baseURL: "http://localhost:5163/api",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
   });
 
   useEffect(() => {
@@ -73,36 +77,26 @@ const TaoHoatDong: React.FC = () => {
     setLoadingData(true);
     setError(null);
     try {
-      const hocKyResponse = await api.get("/HocKy/lay_hoc_ky");
-      if (hocKyResponse.status === 200) {
-        const hocKyData = hocKyResponse.data;
-        setHocKys(Array.isArray(hocKyData) ? hocKyData : [hocKyData]);
-        if (
-          hocKyData &&
-          (Array.isArray(hocKyData) ? hocKyData.length > 0 : true)
-        ) {
-          setFormData((prev) => ({
-            ...prev,
-            maHocKy: Array.isArray(hocKyData)
-              ? hocKyData[0].MaHocKy
-              : hocKyData.MaHocKy,
-          }));
-        }
-      } else {
-        setError("Không thể lấy dữ liệu học kỳ");
-      }
-
-      const qlKhoaResponse = await api.get("/QuanLyKhoa/thong_tin");
-      if (qlKhoaResponse.status === 200) {
-        const qlKhoaData = qlKhoaResponse.data;
-        setQuanLyKhoa(qlKhoaData);
+      const hocKyData = await ApiService.layDanhSachHocKy();
+      setHocKys(Array.isArray(hocKyData) ? hocKyData : [hocKyData]);
+      if (
+        hocKyData &&
+        (Array.isArray(hocKyData) ? hocKyData.length > 0 : true)
+      ) {
         setFormData((prev) => ({
           ...prev,
-          maQl: qlKhoaData.MaQl,
+          maHocKy: Array.isArray(hocKyData)
+            ? hocKyData[0].MaHocKy
+            : (hocKyData as HocKy).MaHocKy,
         }));
-      } else {
-        setError("Không thể lấy thông tin quản lý khoa");
       }
+
+      const qlKhoaData = await ApiService.thongTinQuanLyKhoa();
+      setQuanLyKhoa(qlKhoaData);
+      setFormData((prev) => ({
+        ...prev,
+        maQl: qlKhoaData.MaQl,
+      }));
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(
@@ -110,14 +104,20 @@ const TaoHoatDong: React.FC = () => {
             error.response?.data?.message || error.message
           }`
         );
-        toast.error(
-          `Lỗi khi tải dữ liệu: ${
+        setNotification({
+          show: true,
+          message: `Lỗi khi tải dữ liệu: ${
             error.response?.data?.message || error.message
-          }`
-        );
+          }`,
+          type: "error",
+        });
       } else {
         setError("Đã xảy ra lỗi khi tải dữ liệu");
-        toast.error("Đã xảy ra lỗi khi tải dữ liệu");
+        setNotification({
+          show: true,
+          message: "Đã xảy ra lỗi khi tải dữ liệu",
+          type: "error",
+        });
       }
     } finally {
       setLoadingData(false);
@@ -284,6 +284,10 @@ const TaoHoatDong: React.FC = () => {
     }));
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -303,36 +307,50 @@ const TaoHoatDong: React.FC = () => {
     };
 
     if (!formData.maHocKy) {
-      toast.error("Vui lòng chọn học kỳ");
+      setNotification({
+        show: true,
+        message: "Vui lòng chọn học kỳ",
+        type: "error",
+      });
       setIsLoading(false);
       return;
     }
 
     if (!formData.maQl) {
-      toast.error("Không có thông tin quản lý khoa");
+      setNotification({
+        show: true,
+        message: "Không có thông tin quản lý khoa",
+        type: "error",
+      });
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await api.post("/HoatDong/tao_hoat_dong", formattedData);
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Tạo hoạt động thành công!");
-        resetForm();
-        window.history.pushState({}, "", "/admin/dashboard?menu=activities");
-        window.dispatchEvent(new Event("popstate"));
-      } else {
-        toast.error(
-          `Lỗi: ${response.data.message || "Không thể tạo hoạt động"}`
-        );
-      }
+      await ApiService.taoHoatDong(formattedData);
+      setNotification({
+        show: true,
+        message: "Tạo hoạt động thành công!",
+        type: "success",
+      });
+      resetForm();
+      window.history.pushState({}, "", "/admin/dashboard?menu=activities");
+      window.dispatchEvent(new Event("popstate"));
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(
-          `Lỗi: ${error.response?.data?.message || "Không thể tạo hoạt động"}`
-        );
+        setNotification({
+          show: true,
+          message: `Lỗi: ${
+            error.response?.data?.message || "Không thể tạo hoạt động"
+          }`,
+          type: "error",
+        });
       } else {
-        toast.error("Đã xảy ra lỗi khi kết nối với máy chủ");
+        setNotification({
+          show: true,
+          message: "Đã xảy ra lỗi khi kết nối với máy chủ",
+          type: "error",
+        });
       }
     } finally {
       setIsLoading(false);
@@ -388,6 +406,14 @@ const TaoHoatDong: React.FC = () => {
           </div>
         )}
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
 
       <form onSubmit={handleSubmit} className="activity-form">
         <div className="form-grid">

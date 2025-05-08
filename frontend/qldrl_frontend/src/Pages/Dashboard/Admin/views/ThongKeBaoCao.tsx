@@ -191,7 +191,6 @@ const ThongKeBaoCao = () => {
     }
   }, []);
 
-  // Fetch classification report by semester
   const fetchXepLoaiStats = useCallback(async (maHocKy: number) => {
     if (!maHocKy) return;
 
@@ -233,12 +232,10 @@ const ThongKeBaoCao = () => {
     }
   }, []);
 
-  // Handle semester change
   const handleSemesterChange = (maHocKy: number) => {
     setSelectedSemester(maHocKy);
   };
 
-  // Refresh all data
   const handleRefreshAll = () => {
     fetchOverviewStats();
     fetchPhanHoiStats();
@@ -251,12 +248,10 @@ const ThongKeBaoCao = () => {
     }
   };
 
-  // Export report as PDF or Excel
   const handleExportReport = () => {
     alert("Chức năng xuất báo cáo đang được phát triển");
   };
 
-  // Load initial data
   useEffect(() => {
     fetchOverviewStats();
     fetchPhanHoiStats();
@@ -269,7 +264,6 @@ const ThongKeBaoCao = () => {
     fetchSemesters,
   ]);
 
-  // Load semester-dependent data when semester changes
   useEffect(() => {
     if (selectedSemester) {
       fetchDiemStats(selectedSemester);
@@ -283,7 +277,6 @@ const ThongKeBaoCao = () => {
     fetchDiemTheoLopStats,
   ]);
 
-  // Get current semester name
   const getCurrentSemesterName = () => {
     if (!selectedSemester || !semesters.length) return "Chưa chọn học kỳ";
     const semester = semesters.find((s) => s.MaHocKy === selectedSemester);
@@ -313,14 +306,12 @@ const ThongKeBaoCao = () => {
         </div>
       </div>
 
-      {/* Overview Statistics */}
       <OverviewStats
         stats={overviewStats}
         loading={loading.overview}
         error={error.overview}
       />
 
-      {/* Semester Selector */}
       <div className="semester-selection-container">
         <h2>Thống kê theo học kỳ</h2>
         <SemesterSelector
@@ -338,7 +329,6 @@ const ThongKeBaoCao = () => {
       </div>
 
       <div className="stats-grid">
-        {/* Feedback Statistics */}
         <div className="stats-card">
           <PhanHoiStats
             stats={phanHoiStats}
@@ -347,7 +337,6 @@ const ThongKeBaoCao = () => {
           />
         </div>
 
-        {/* Evidence Statistics */}
         <div className="stats-card">
           <MinhChungStats
             stats={minhChungStats}
@@ -357,7 +346,6 @@ const ThongKeBaoCao = () => {
         </div>
       </div>
 
-      {/* Score Statistics */}
       {selectedSemester && (
         <>
           <div className="stats-grid">
@@ -380,7 +368,6 @@ const ThongKeBaoCao = () => {
             </div>
           </div>
 
-          {/* Class Statistics */}
           <div className="stats-card full-width">
             <DiemTheoLopStats
               stats={diemTheoLopStats}

@@ -1,7 +1,16 @@
+"use client";
+
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { ApiService } from "../../../../untils/services/service-api";
-import { AlertCircle, X, CheckCircle2, Info } from "lucide-react";
+import {
+  AlertCircle,
+  X,
+  CheckCircle2,
+  Info,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import HoiDongList from "../../../../components/Admin/HoiDongChamDiem/HoiDongList";
 import HoiDongDetail from "../../../../components/Admin/HoiDongChamDiem/HoiDongDetail";
 import CreateHoiDongForm from "../../../../components/Admin/HoiDongChamDiem/CreateHoiDongForm";
@@ -13,6 +22,9 @@ import type {
 } from "../../../../components/Admin/types";
 import "../css/HoiDongChamDiem.css";
 import "../css/notification.css";
+
+// Add pageSize constant at the top of the file, after imports
+const pageSize = 10;
 
 const Notification = ({
   message,
@@ -92,6 +104,9 @@ const HoiDongChamDiem: React.FC = () => {
     message: "",
     type: "success",
   });
+
+  // Add currentPage state in the component state declarations
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Lấy danh sách hội đồng
   const fetchHoiDongs = useCallback(async () => {
@@ -360,6 +375,15 @@ const HoiDongChamDiem: React.FC = () => {
     fetchHoiDongs();
   }, [fetchHoiDongs]);
 
+  // Add useEffect to reset currentPage when filters change
+  // Add this after the useEffect for loading data:
+  useEffect(() => {
+    const totalPages = Math.ceil(filteredHoiDongs.length / pageSize);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [filteredHoiDongs.length, currentPage]);
+
   // Add a function to close the notification
   const closeNotification = () => {
     setNotification((prev) => ({ ...prev, show: false }));
@@ -385,18 +409,57 @@ const HoiDongChamDiem: React.FC = () => {
           refreshKey={refreshKey}
         />
       ) : (
-        <HoiDongList
-          hoiDongs={filteredHoiDongs}
-          loading={loading}
-          error={error}
-          searchTerm={searchTerm}
-          onSearchChange={handleSearch}
-          onRefresh={handleRefresh}
-          refreshing={refreshing}
-          onCreateNew={() => setIsCreateFormOpen(true)}
-          onView={handleViewDetail}
-          onDelete={confirmDeleteHoiDong}
-        />
+        <>
+          <HoiDongList
+            hoiDongs={filteredHoiDongs.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )}
+            loading={loading}
+            error={error}
+            searchTerm={searchTerm}
+            onSearchChange={handleSearch}
+            onRefresh={handleRefresh}
+            refreshing={refreshing}
+            onCreateNew={() => setIsCreateFormOpen(true)}
+            onView={handleViewDetail}
+            onDelete={confirmDeleteHoiDong}
+          />
+
+          {filteredHoiDongs.length > pageSize && (
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="pagination-button"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              <div className="pagination-info">
+                Trang {currentPage} /{" "}
+                {Math.ceil(filteredHoiDongs.length / pageSize)}
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(
+                      prev + 1,
+                      Math.ceil(filteredHoiDongs.length / pageSize)
+                    )
+                  )
+                }
+                disabled={
+                  currentPage === Math.ceil(filteredHoiDongs.length / pageSize)
+                }
+                className="pagination-button"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Form tạo hội đồng */}

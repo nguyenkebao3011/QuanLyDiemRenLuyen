@@ -17,6 +17,7 @@ import type {
 } from "../types";
 import MinhChungDetail from "../MinhChung/MinhChungDetail";
 import DiemRenLuyenInfo from "../DiemRenLuyen/DiemRenLuyenInfo";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 import "./phan-hoi.css";
 
 interface PhanHoiDetailProps {
@@ -43,6 +44,17 @@ const PhanHoiDetail: React.FC<PhanHoiDetailProps> = ({
   const [showDiemRenLuyenDetail, setShowDiemRenLuyenDetail] =
     useState<boolean>(false);
 
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
   useEffect(() => {
     if (phanHoi?.DiemRenLuyen?.MaDiemRenLuyen) {
       fetchRelatedMinhChungs(phanHoi.DiemRenLuyen.MaDiemRenLuyen);
@@ -58,6 +70,11 @@ const PhanHoiDetail: React.FC<PhanHoiDetailProps> = ({
       setRelatedMinhChungs(data);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách minh chứng:", error);
+      setNotification({
+        show: true,
+        message: "Lỗi khi lấy danh sách minh chứng",
+        type: "error",
+      });
     } finally {
       setLoadingMinhChungs(false);
     }
@@ -108,6 +125,21 @@ const PhanHoiDetail: React.FC<PhanHoiDetailProps> = ({
   const handleViewMinhChung = (minhChung: MinhChungHoatDongDTO) => {
     setSelectedMinhChung(minhChung);
     setShowMinhChungDetail(true);
+  };
+
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
+  const handleProcessClick = () => {
+    if (phanHoi) {
+      onProcess(phanHoi.MaPhanHoi);
+      setNotification({
+        show: true,
+        message: "Đang mở form xử lý phản hồi...",
+        type: "info",
+      });
+    }
   };
 
   if (loading) {
@@ -164,6 +196,14 @@ const PhanHoiDetail: React.FC<PhanHoiDetailProps> = ({
           {phanHoi.TrangThai || "Chưa xác định"}
         </div>
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
 
       <div className="detail-content">
         <div className="student-info-section">
@@ -395,10 +435,7 @@ const PhanHoiDetail: React.FC<PhanHoiDetailProps> = ({
 
       <div className="detail-actions">
         {phanHoi.TrangThai !== "Đã xử lý" && (
-          <button
-            className="btn-process"
-            onClick={() => onProcess(phanHoi.MaPhanHoi)}
-          >
+          <button className="btn-process" onClick={handleProcessClick}>
             <CheckCircle size={16} />
             <span>Xử lý phản hồi</span>
           </button>

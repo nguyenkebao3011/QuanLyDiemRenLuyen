@@ -1,11 +1,12 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { ApiService } from "../../../../untils/services/service-api";
 import ThongBaoList from "../../../../components/Admin/ThongBao/ThongBaoList";
 import ThongBaoDetail from "../../../../components/Admin/ThongBao/ThongBaoDetail";
 import CreateThongBaoModal from "../../../../components/Admin/ThongBao/CreateThongBaoModal";
 import ThongBaoStats from "../../../../components/Admin/ThongBao/ThongBaoStats";
+import Notification from "./Notification";
 import type {
   ThongBaoDTO,
   ThongBaoChiTietDTO,
@@ -13,7 +14,10 @@ import type {
 import "../css/ThongBaoDiemDanh.css";
 import type { QuanLyKhoa } from "../../../../components/Admin/types";
 
-const ThongBaoManagement: React.FC = () => {
+// Add pageSize constant at the top of the file, after imports
+const pageSize = 10;
+
+const ThongBaoDiemDanh: React.FC = () => {
   // State cho danh sách thông báo
   const [thongBaos, setThongBaos] = useState<ThongBaoDTO[]>([]);
   const [filteredThongBaos, setFilteredThongBaos] = useState<ThongBaoDTO[]>([]);
@@ -43,7 +47,19 @@ const ThongBaoManagement: React.FC = () => {
 
   // State cho quản lý khoa
   const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
-  const [maQl, setMaQl] = useState<string>("QL02"); // Mã mặc định
+  const [maQl, setMaQl] = useState<string>("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   // Lấy thông tin quản lý khoa
   const fetchQuanLyKhoa = useCallback(async () => {
@@ -53,6 +69,11 @@ const ThongBaoManagement: React.FC = () => {
       setMaQl(qlKhoaData.MaQl);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin quản lý khoa:", error);
+      setNotification({
+        show: true,
+        message: "Lỗi khi lấy thông tin quản lý khoa",
+        type: "error",
+      });
     }
   }, []);
 
@@ -91,6 +112,11 @@ const ThongBaoManagement: React.FC = () => {
     } catch (err) {
       console.error("Lỗi khi lấy danh sách thông báo:", err);
       setError("Không thể tải danh sách thông báo. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể tải danh sách thông báo. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -105,6 +131,11 @@ const ThongBaoManagement: React.FC = () => {
     } catch (err) {
       console.error("Lỗi khi lấy chi tiết thông báo:", err);
       setError("Không thể tải chi tiết thông báo. Vui lòng thử lại sau.");
+      setNotification({
+        show: true,
+        message: "Không thể tải chi tiết thông báo. Vui lòng thử lại sau.",
+        type: "error",
+      });
     } finally {
       setLoadingDetail(false);
     }
@@ -245,6 +276,16 @@ const ThongBaoManagement: React.FC = () => {
   // Xử lý sau khi tạo thông báo thành công
   const handleCreateSuccess = () => {
     fetchThongBaos();
+    setNotification({
+      show: true,
+      message: "Tạo thông báo mới thành công!",
+      type: "success",
+    });
+  };
+
+  // Function to close notification
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
   };
 
   // Lấy danh sách thông báo khi component mount
@@ -260,6 +301,15 @@ const ThongBaoManagement: React.FC = () => {
       filterByLoaiThongBao(selectedLoaiThongBao);
     }
   }, [searchTerm, selectedLoaiThongBao, handleSearch, filterByLoaiThongBao]);
+
+  // Add useEffect to reset currentPage when filters change
+  // Add this after other useEffect hooks:
+  useEffect(() => {
+    const totalPages = Math.ceil(filteredThongBaos.length / pageSize);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [filteredThongBaos.length, currentPage]);
 
   return (
     <div className="thong-bao-management-container">
@@ -281,6 +331,14 @@ const ThongBaoManagement: React.FC = () => {
         </div>
       </div>
 
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
+
       <ThongBaoStats
         totalThongBao={stats.totalThongBao}
         totalViews={stats.totalViews}
@@ -296,17 +354,56 @@ const ThongBaoManagement: React.FC = () => {
           onBack={handleCloseDetail}
         />
       ) : (
-        <ThongBaoList
-          thongBaos={filteredThongBaos}
-          loading={loading}
-          error={error}
-          searchTerm={searchTerm}
-          selectedLoaiThongBao={selectedLoaiThongBao}
-          onSearchChange={setSearchTerm}
-          onLoaiThongBaoChange={filterByLoaiThongBao}
-          onRefresh={fetchThongBaos}
-          onViewDetail={handleViewDetail}
-        />
+        <>
+          <ThongBaoList
+            thongBaos={filteredThongBaos.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )}
+            loading={loading}
+            error={error}
+            searchTerm={searchTerm}
+            selectedLoaiThongBao={selectedLoaiThongBao}
+            onSearchChange={setSearchTerm}
+            onLoaiThongBaoChange={filterByLoaiThongBao}
+            onRefresh={fetchThongBaos}
+            onViewDetail={handleViewDetail}
+          />
+
+          {filteredThongBaos.length > pageSize && (
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="pagination-button"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              <div className="pagination-info">
+                Trang {currentPage} /{" "}
+                {Math.ceil(filteredThongBaos.length / pageSize)}
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(
+                      prev + 1,
+                      Math.ceil(filteredThongBaos.length / pageSize)
+                    )
+                  )
+                }
+                disabled={
+                  currentPage === Math.ceil(filteredThongBaos.length / pageSize)
+                }
+                className="pagination-button"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       <CreateThongBaoModal
@@ -319,4 +416,4 @@ const ThongBaoManagement: React.FC = () => {
   );
 };
 
-export default ThongBaoManagement;
+export default ThongBaoDiemDanh;

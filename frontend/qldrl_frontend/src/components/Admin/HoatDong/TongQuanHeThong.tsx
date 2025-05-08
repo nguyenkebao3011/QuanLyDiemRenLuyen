@@ -8,10 +8,9 @@ import {
   Bell,
   Award,
   FileText,
-  Eye,
 } from "lucide-react";
-import axios from "axios";
 import type { TongQuanThongKeDTO, HoatDong, ThongBao } from "../types";
+import { ApiService } from "../../../untils/services/service-api";
 
 const TongQuanHeThong: React.FC = () => {
   const [recentActivities, setRecentActivities] = useState<HoatDong[]>([]);
@@ -39,12 +38,8 @@ const TongQuanHeThong: React.FC = () => {
   const fetchStats = async () => {
     setLoadingStats(true);
     try {
-      const response = await axios.get<TongQuanThongKeDTO>(
-        "http://localhost:5163/api/TongQuanThongKe/thong_ke_tong_quan"
-      );
-      if (response.status === 200) {
-        setStats(response.data);
-      }
+      const response = await ApiService.layThongKeTongQuan();
+      setStats(response);
     } catch (error) {
       console.error("Lỗi khi lấy thống kê:", error);
       // Giữ giá trị mặc định nếu có lỗi
@@ -57,20 +52,16 @@ const TongQuanHeThong: React.FC = () => {
   const fetchRecentActivities = async () => {
     setLoadingActivities(true);
     try {
-      const response = await axios.get(
-        "http://localhost:5163/api/HoatDong/lay_hoat_dong_all"
-      );
-      if (response.status === 200) {
-        // Lấy 4 hoạt động gần đây nhất
-        const recentData = response.data
-          .sort((a: HoatDong, b: HoatDong) => {
-            const dateA = new Date(a.NgayBatDau || a.NgayBatDau || "");
-            const dateB = new Date(b.NgayKetThuc || b.NgayKetThuc || "");
-            return dateB.getTime() - dateA.getTime();
-          })
-          .slice(0, 4);
-        setRecentActivities(recentData);
-      }
+      const data = await ApiService.layDanhSachHoatDong();
+      // Lấy 4 hoạt động gần đây nhất
+      const recentData = data
+        .sort((a: HoatDong, b: HoatDong) => {
+          const dateA = new Date(a.NgayBatDau || a.NgayBatDau || "");
+          const dateB = new Date(b.NgayKetThuc || b.NgayKetThuc || "");
+          return dateB.getTime() - dateA.getTime();
+        })
+        .slice(0, 4);
+      setRecentActivities(recentData);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách hoạt động gần đây:", error);
       setRecentActivities([]);

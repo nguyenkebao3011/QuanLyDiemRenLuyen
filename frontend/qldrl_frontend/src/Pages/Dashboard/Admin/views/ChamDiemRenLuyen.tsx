@@ -1,6 +1,5 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import "../css/ChamDiemRenLuyen.css";
 
 // Import components
@@ -22,6 +21,9 @@ import type {
   HocKy,
 } from "../../../../components/Admin/types";
 
+// Import ApiService
+import { ApiService } from "../../../../untils/services/service-api";
+
 export default function DiemDanh() {
   // State cho danh sách hoạt động
   const [danhSachHoatDong, setDanhSachHoatDong] = useState<HoatDong[]>([]);
@@ -37,14 +39,6 @@ export default function DiemDanh() {
   const [loadingHocKy, setLoadingHocKy] = useState(false);
   const [hocKyApiCalled, setHocKyApiCalled] = useState(false);
   const [hocKyMapping, setHocKyMapping] = useState<Record<number, string>>({});
-
-  const api = axios.create({
-    baseURL: "http://localhost:5163/api",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
 
   // State cho danh sách sinh viên
   const [selectedHoatDong, setSelectedHoatDong] = useState<number | null>(null);
@@ -119,41 +113,38 @@ export default function DiemDanh() {
 
     try {
       console.log("Đang lấy danh sách học kỳ...");
-      const hocKyResponse = await api.get("/HocKy/lay_hoc_ky");
+      const hocKyData = await ApiService.layDanhSachHocKy();
 
-      console.log("Kết quả API học kỳ:", hocKyResponse.data);
+      console.log("Kết quả API học kỳ:", hocKyData);
 
-      if (hocKyResponse.status === 200) {
-        const hocKyData = hocKyResponse.data;
+      if (Array.isArray(hocKyData) && hocKyData.length > 0) {
+        setHocKys(hocKyData);
 
-        if (Array.isArray(hocKyData) && hocKyData.length > 0) {
-          setHocKys(hocKyData);
+        // Trích xuất tên học kỳ từ dữ liệu API
+        const uniqueHocKyNames = Array.from(
+          new Set(hocKyData.map((hk) => hk.TenHocKy))
+        );
+        setUniqueHocKy(uniqueHocKyNames);
 
-          // Trích xuất tên học kỳ từ dữ liệu API
-          const uniqueHocKyNames = Array.from(
-            new Set(hocKyData.map((hk) => hk.TenHocKy))
-          );
-          setUniqueHocKy(uniqueHocKyNames);
+        // Tạo mapping từ mã học kỳ sang tên học kỳ
+        const mapping: Record<number, string> = {};
+        hocKyData.forEach((hk) => {
+          mapping[hk.MaHocKy] = hk.TenHocKy;
+        });
+        setHocKyMapping(mapping);
+        console.log("Đã tạo mapping học kỳ:", mapping);
+      } else if (hocKyData && !Array.isArray(hocKyData)) {
+        // Trường hợp trả về một học kỳ duy nhất
+        const singleHocKy = hocKyData as HocKy;
+        setHocKys([singleHocKy]);
+        setUniqueHocKy([singleHocKy.TenHocKy]);
 
-          // Tạo mapping từ mã học kỳ sang tên học kỳ
-          const mapping: Record<number, string> = {};
-          hocKyData.forEach((hk) => {
-            mapping[hk.MaHocKy] = hk.TenHocKy;
-          });
-          setHocKyMapping(mapping);
-          console.log("Đã tạo mapping học kỳ:", mapping);
-        } else if (hocKyData && !Array.isArray(hocKyData)) {
-          // Trường hợp trả về một học kỳ duy nhất
-          setHocKys([hocKyData]);
-          setUniqueHocKy([hocKyData.TenHocKy]);
-
-          // Tạo mapping
-          const mapping: Record<number, string> = {};
-          mapping[hocKyData.MaHocKy] = hocKyData.TenHocKy;
-          setHocKyMapping(mapping);
-        } else {
-          console.log("Không có dữ liệu học kỳ");
-        }
+        // Tạo mapping
+        const mapping: Record<number, string> = {};
+        mapping[singleHocKy.MaHocKy] = singleHocKy.TenHocKy;
+        setHocKyMapping(mapping);
+      } else {
+        console.log("Không có dữ liệu học kỳ");
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách học kỳ:", error);
@@ -168,36 +159,20 @@ export default function DiemDanh() {
     } finally {
       setLoadingHocKy(false);
     }
-  }, [api, hocKyApiCalled]);
+  }, [hocKyApiCalled]);
 
   // Lấy thông tin quản lý
   const fetchQuanLyKhoa = useCallback(async () => {
     try {
-      // Lấy thông tin từ sessionStorage nếu đã có
-      const cachedData = sessionStorage.getItem("quanLyKhoa");
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData);
-        setQuanLyKhoa(parsedData);
-        setMaQL(parsedData.MaQl);
-        console.log("Đã lấy thông tin quản lý khoa từ cache:", parsedData);
-        return;
-      }
+      const qlKhoaData = await ApiService.thongTinQuanLyKhoa();
+      setQuanLyKhoa(qlKhoaData);
+      setMaQL(qlKhoaData.MaQl);
+      console.log("Đã lấy thông tin quản lý khoa:", qlKhoaData);
 
-      const qlKhoaResponse = await api.get("/QuanLyKhoa/thong_tin");
-      if (qlKhoaResponse.status === 200) {
-        const qlKhoaData = qlKhoaResponse.data;
-        setQuanLyKhoa(qlKhoaData);
-        setMaQL(qlKhoaData.MaQl);
-        console.log("Đã lấy thông tin quản lý khoa:", qlKhoaData);
-
-        // Lưu vào sessionStorage để giảm số lần gọi API
-        sessionStorage.setItem("quanLyKhoa", JSON.stringify(qlKhoaData));
-      }
+      // Lưu vào sessionStorage để giảm số lần gọi API
+      sessionStorage.setItem("quanLyKhoa", JSON.stringify(qlKhoaData));
     } catch (error) {
       console.error("Lỗi khi lấy thông tin quản lý khoa:", error);
-      // Sử dụng mã quản lý mặc định nếu cần thiết
-      setMaQL("QL02"); // Mã mặc định từ hình ảnh bạn cung cấp
-      showToast("Cảnh báo", "Sử dụng mã quản lý mặc định", "warning");
     }
   }, []);
 
@@ -205,31 +180,24 @@ export default function DiemDanh() {
   const fetchDanhSachHoatDong = useCallback(async () => {
     setLoadingHoatDong(true);
     try {
-      const response = await axios.get(
-        "http://localhost:5163/api/DiemDanh/DanhSachHoatDong"
-      );
+      const response = await ApiService.layDanhSachHoatDongDiemDanh();
 
-      console.log("API trả về số lượng hoạt động:", response.data.length);
+      console.log("API trả về số lượng hoạt động:", response.length);
 
       // Kiểm tra dữ liệu hoạt động trả về từ API
-      if (response.data.length > 0) {
-        const sampleActivity = response.data[0];
-        console.log("Mẫu hoạt động:", sampleActivity);
-        console.log("MaHocKy:", sampleActivity.MaHocKy);
-        console.log("MaHocKyNavigation:", sampleActivity.MaHocKyNavigation);
-
+      if (response.length > 0) {
+        const sampleActivity = response[0];
         // Kiểm tra xem tất cả hoạt động có MaHocKyNavigation không
-        const withoutNavigation = response.data.filter(
+        const withoutNavigation = response.filter(
           (hd: HoatDong) => !hd.MaHocKyNavigation
         );
         console.log(
           "Số hoạt động không có MaHocKyNavigation:",
           withoutNavigation.length
         );
-
         // Đếm số lượng hoạt động theo học kỳ
         const hkCount: Record<number, number> = {};
-        response.data.forEach((hd: HoatDong) => {
+        response.forEach((hd: HoatDong) => {
           const hk = hd.MaHocKy;
           if (hk !== undefined && hk !== null) {
             hkCount[hk] = (hkCount[hk] || 0) + 1;
@@ -239,13 +207,14 @@ export default function DiemDanh() {
       }
 
       // Bổ sung thông tin học kỳ nếu cần
-      const hoatDongWithHocKy = response.data.map((hd: HoatDong) => {
+      const hoatDongWithHocKy = response.map((hd: HoatDong) => {
         if (!hd.MaHocKyNavigation && hd.MaHocKy && hocKyMapping[hd.MaHocKy]) {
           // Nếu không có MaHocKyNavigation nhưng có MaHocKy, tạo object tạm thời
           return {
             ...hd,
             MaHocKyNavigation: {
               TenHocKy: hocKyMapping[hd.MaHocKy] || `Học kỳ ${hd.MaHocKy}`,
+              NamHoc: "",
             },
           };
         }
@@ -422,16 +391,12 @@ export default function DiemDanh() {
 
     setLoadingSinhVien(true);
     try {
-      const response = await axios.get(
-        `http://localhost:5163/api/DiemDanh/DanhSachSinhVien/${maHoatDong}`
-      );
-      setDanhSachSinhVien(response.data);
-      setFilteredSinhVien(response.data);
+      const response = await ApiService.layDanhSachSinhVienDiemDanh(maHoatDong);
+      setDanhSachSinhVien(response);
+      setFilteredSinhVien(response);
 
       // Lấy danh sách lớp duy nhất
-      const lopsSet = new Set(
-        response.data.map((item: DangKyHoatDong) => item.Lop)
-      );
+      const lopsSet = new Set(response.map((item: DangKyHoatDong) => item.Lop));
       const lops = Array.from(lopsSet).filter(Boolean) as string[];
       setUniqueLop(lops);
     } catch (error) {
@@ -452,10 +417,8 @@ export default function DiemDanh() {
 
     setLoadingThongTin(true);
     try {
-      const response = await axios.get(
-        `http://localhost:5163/api/DiemDanh/ThongTinHoatDong/${maHoatDong}`
-      );
-      setThongTinHoatDong(response.data);
+      const response = await ApiService.layThongTinHoatDong(maHoatDong);
+      setThongTinHoatDong(response);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin hoạt động:", error);
       showToast(
@@ -474,10 +437,8 @@ export default function DiemDanh() {
 
     setLoadingBaoCao(true);
     try {
-      const response = await axios.get(
-        `http://localhost:5163/api/DiemDanh/BaoCaoDiemDanh/${maHoatDong}`
-      );
-      setBaoCaoDiemDanh(response.data);
+      const response = await ApiService.layBaoCaoDiemDanh(maHoatDong);
+      setBaoCaoDiemDanh(response);
     } catch (error) {
       console.error("Lỗi khi lấy báo cáo điểm danh:", error);
       showToast(
@@ -509,16 +470,13 @@ export default function DiemDanh() {
         GhiChu: ghiChu,
       });
 
-      const response = await axios.post(
-        "http://localhost:5163/api/DiemDanh/DiemDanhSinhVien",
-        {
-          MaDangKy: maDangKy,
-          MaQl: maQL,
-          GhiChu: ghiChu,
-        }
+      const response = await ApiService.diemDanhSinhVien(
+        maDangKy,
+        maQL,
+        ghiChu
       );
 
-      if (response.data.success) {
+      if (response.success) {
         showToast("Thành công", "Điểm danh sinh viên thành công", "success");
         // Cập nhật lại danh sách sinh viên
         if (selectedHoatDong) {
@@ -570,16 +528,13 @@ export default function DiemDanh() {
         GhiChu: ghiChu,
       });
 
-      const response = await axios.post(
-        "http://localhost:5163/api/DiemDanh/DiemDanhNhom",
-        {
-          DanhSachMaDangKy: selectedSinhVien,
-          MaQl: maQL,
-          GhiChu: ghiChu,
-        }
+      const response = await ApiService.diemDanhNhom(
+        selectedSinhVien,
+        maQL,
+        ghiChu
       );
 
-      if (response.data.success) {
+      if (response.success) {
         showToast(
           "Thành công",
           `Điểm danh ${selectedSinhVien.length} sinh viên thành công`,

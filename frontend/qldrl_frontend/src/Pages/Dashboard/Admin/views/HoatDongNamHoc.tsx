@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Search,
   Filter,
   Plus,
-  CheckCircle,
   AlertCircle,
-  X,
   RefreshCw,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import axios from "axios";
 import "../css/HoatDongNamHoc.css";
 import ModalDeleteHoatDong from "../../../../components/Admin/HoatDong/ModalDeleteHoatDong";
 import ActionButtonsHoatDong from "../../../../components/Admin/HoatDong/ActionButtonsHoatDong";
 import ModalEditHoatDong from "../../../../components/Admin/HoatDong/ModalEditHoatDong";
 import ModalDetailHoatDong from "../../../../components/Admin/HoatDong/ModalDetailHoatDong";
+import Notification from "./Notification";
 import type {
   HoatDong,
   HocKy,
   QuanLyKhoa,
 } from "../../../../components/Admin/types";
+import { ApiService } from "../../../../untils/services/service-api";
 
 const pageSize = 10;
 
@@ -50,9 +50,15 @@ const HoatDongNamHoc: React.FC = () => {
 
   // State cho thông báo
   const [notification, setNotification] = useState<{
-    type: "success" | "error";
+    show: boolean;
+    type: "success" | "error" | "info";
     message: string;
-  } | null>(null);
+  }>({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
   const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
 
   // State cho modal chi tiết
@@ -63,7 +69,6 @@ const HoatDongNamHoc: React.FC = () => {
 
   useEffect(() => {
     fetchHoatDongs();
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -75,15 +80,8 @@ const HoatDongNamHoc: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      let url = `http://localhost:5163/api/HoatDong/lay_hoat_dong_all`;
-      const response = await axios.get(url);
-      if (response.status === 200) {
-        if (response.data.items) {
-          setHoatDongs(response.data.items);
-        } else {
-          setHoatDongs(response.data);
-        }
-      }
+      const data = await ApiService.layDanhSachHoatDongAll();
+      setHoatDongs(data);
     } catch (err) {
       setError("Không thể tải danh sách hoạt động. Vui lòng thử lại sau.");
     } finally {
@@ -93,21 +91,19 @@ const HoatDongNamHoc: React.FC = () => {
 
   const fetchHocKys = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5163/api/HocKy/lay_hoc_ky"
-      );
-      if (response.status === 200) {
-        setHocKys(response.data);
-      }
-    } catch (err) {}
+      const data = await ApiService.layDanhSachHocKy();
+      setHocKys(data);
+    } catch (err) {
+      console.error("Lỗi khi lấy danh sách học kỳ:", err);
+    }
   };
   const fetchQLKhoa = async () => {
     try {
-      const r = await axios.get(
-        "http://localhost:5163/api/QuanLyKhoa/thong_tin"
-      );
-      setQuanLyKhoa(r.data);
-    } catch {}
+      const data = await ApiService.thongTinQuanLyKhoa();
+      setQuanLyKhoa(data);
+    } catch (err) {
+      console.error("Lỗi khi lấy thông tin quản lý khoa:", err);
+    }
   };
 
   // Filter + search
@@ -164,28 +160,27 @@ const HoatDongNamHoc: React.FC = () => {
   const handleDelete = async () => {
     if (!hoatDongToDelete) return;
     try {
-      const response = await axios.delete(
-        `http://localhost:5163/api/HoatDong/xoa_hoat_dong/${hoatDongToDelete}`
-      );
-      if (response.status === 200) {
-        setNotification({
-          type: "success",
-          message: "Xóa hoạt động thành công!",
-        });
-        fetchHoatDongs();
-      }
+      await ApiService.xoaHoatDong(hoatDongToDelete);
+      setNotification({
+        show: true,
+        type: "success",
+        message: "Xóa hoạt động thành công!",
+      });
+      fetchHoatDongs();
     } catch (err) {
       setNotification({
+        show: true,
         type: "error",
         message: "Không thể xóa hoạt động. Vui lòng thử lại sau.",
       });
     } finally {
       setShowDeleteModal(false);
       setHoatDongToDelete(null);
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
     }
+  };
+
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
   };
 
   const handleViewDetail = (hoatDong: HoatDong) => {
@@ -215,12 +210,19 @@ const HoatDongNamHoc: React.FC = () => {
     setHoatDongToEdit(null);
     fetchHoatDongs();
     setNotification({
+      show: true,
       type: "success",
       message: "Cập nhật hoạt động thành công!",
     });
-    setTimeout(() => {
-      setNotification(null);
-    }, 2500);
+  };
+
+  const handleRefresh = () => {
+    fetchHoatDongs();
+    setNotification({
+      show: true,
+      type: "info",
+      message: "Dữ liệu đã được làm mới!",
+    });
   };
 
   const formatDateTime = (dateString: string) => {
@@ -309,27 +311,18 @@ const HoatDongNamHoc: React.FC = () => {
             </select>
           </div>
 
-          <button className="btn-refresh" onClick={() => fetchHoatDongs()}>
+          <button className="btn-refresh" onClick={handleRefresh}>
             <RefreshCw size={16} /> Làm mới
           </button>
         </div>
       </div>
 
-      {notification && (
-        <div className={`notification ${notification.type}`}>
-          {notification.type === "success" ? (
-            <CheckCircle size={18} />
-          ) : (
-            <AlertCircle size={18} />
-          )}
-          <span>{notification.message}</span>
-          <button
-            onClick={() => setNotification(null)}
-            className="close-notification"
-          >
-            <X size={18} />
-          </button>
-        </div>
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
       )}
 
       {loading ? (

@@ -1,4 +1,5 @@
 import type React from "react";
+import { useState } from "react";
 import {
   X,
   Calendar,
@@ -13,6 +14,7 @@ import {
 import type { ThongBaoChiTietDTO } from "../types";
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
 interface ThongBaoDetailProps {
   thongBao: ThongBaoChiTietDTO | null;
@@ -27,6 +29,17 @@ const ThongBaoDetail: React.FC<ThongBaoDetailProps> = ({
   onClose,
   onBack,
 }) => {
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
   if (loading) {
     return (
       <div className="thong-bao-detail-container">
@@ -50,13 +63,26 @@ const ThongBaoDetail: React.FC<ThongBaoDetailProps> = ({
     }
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handlePrint = () => {
     window.print();
+    setNotification({
+      show: true,
+      message: "Đang chuẩn bị in tài liệu...",
+      type: "info",
+    });
   };
 
   const handleExportPDF = () => {
     // Giả lập chức năng xuất PDF
-    alert("Chức năng xuất PDF đang được phát triển");
+    setNotification({
+      show: true,
+      message: "Chức năng xuất PDF đang được phát triển",
+      type: "info",
+    });
   };
 
   return (
@@ -80,6 +106,14 @@ const ThongBaoDetail: React.FC<ThongBaoDetailProps> = ({
           </button>
         </div>
       </div>
+
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
 
       <div className="thong-bao-detail-content">
         <h1 className="thong-bao-detail-title">{thongBao.TieuDe}</h1>

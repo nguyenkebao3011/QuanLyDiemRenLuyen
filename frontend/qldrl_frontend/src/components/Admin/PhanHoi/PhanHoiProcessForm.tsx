@@ -1,11 +1,12 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Save, AlertCircle } from "lucide-react";
 import type {
   PhanHoiDiemRenLuyenDetailDTO,
   XuLyPhanHoiRequest,
 } from "../types";
 import "../../../Pages/Dashboard/Admin/css/PhanHoiDiem.css";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
 interface PhanHoiProcessFormProps {
   isOpen: boolean;
@@ -33,8 +34,24 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
     XepLoai: null,
     TrangThaiDiemRenLuyen: null,
   });
-
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      MaQl: maQl,
+    }));
+  }, [maQl]);
   const [updateScore, setUpdateScore] = useState<boolean>(false);
+
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -67,8 +84,22 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
     return "Kém";
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.NoiDungXuLy.trim()) {
+      setNotification({
+        show: true,
+        message: "Vui lòng nhập nội dung xử lý",
+        type: "error",
+      });
+      return;
+    }
+
     if (phanHoi) {
       // Nếu không cập nhật điểm, xóa các trường liên quan
       if (!updateScore) {
@@ -76,6 +107,24 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
           formData;
         onSubmit(phanHoi.MaPhanHoi, rest);
       } else {
+        if (!formData.CapNhatTongDiem) {
+          setNotification({
+            show: true,
+            message: "Vui lòng nhập điểm rèn luyện mới",
+            type: "error",
+          });
+          return;
+        }
+
+        if (!formData.TrangThaiDiemRenLuyen) {
+          setNotification({
+            show: true,
+            message: "Vui lòng chọn trạng thái điểm rèn luyện",
+            type: "error",
+          });
+          return;
+        }
+
         onSubmit(phanHoi.MaPhanHoi, formData);
       }
     }
@@ -93,7 +142,15 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
           </button>
         </div>
 
-        {error && (
+        {notification.show && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={closeNotification}
+          />
+        )}
+
+        {error && !notification.show && (
           <div className="error-message">
             <AlertCircle className="error-icon" />
             <span>{error}</span>

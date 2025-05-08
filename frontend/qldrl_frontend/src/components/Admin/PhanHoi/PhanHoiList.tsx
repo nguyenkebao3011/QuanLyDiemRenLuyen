@@ -8,11 +8,13 @@ import {
   CheckCircle,
   Trash2,
   MessageSquare,
+  AlertCircle,
 } from "lucide-react";
 import type { PhanHoiDiemRenLuyenListDTO } from "../types";
 import { format, parseISO } from "date-fns";
-import { vi } from "date-fns/locale";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 import "./phan-hoi.css";
+import { vi } from "date-fns/locale";
 
 interface PhanHoiListProps {
   phanHois: PhanHoiDiemRenLuyenListDTO[];
@@ -45,6 +47,17 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
     "NgayPhanHoi"
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const handleSort = (field: "NgayPhanHoi" | "NgayXuLy") => {
     if (sortBy === field) {
@@ -95,6 +108,19 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
     }
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
+  const handleRefresh = () => {
+    onRefresh();
+    setNotification({
+      show: true,
+      message: "Dữ liệu đã được làm mới!",
+      type: "info",
+    });
+  };
+
   return (
     <div className="phan-hoi-list-container">
       <div className="phan-hoi-list-header">
@@ -127,7 +153,7 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
 
           <button
             className="btn-refresh"
-            onClick={onRefresh}
+            onClick={handleRefresh}
             disabled={loading}
           >
             <RefreshCw
@@ -138,8 +164,17 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
         </div>
       </div>
 
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
+
       {error && (
         <div className="error-message">
+          <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}

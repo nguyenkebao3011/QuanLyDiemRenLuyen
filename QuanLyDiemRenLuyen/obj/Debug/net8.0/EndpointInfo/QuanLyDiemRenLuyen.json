@@ -1921,6 +1921,29 @@
         }
       }
     },
+    "/api/PhanHoiDiemRenLuyen/xoa_phan_hoi/{maPhanHoi}": {
+      "delete": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "parameters": [
+          {
+            "name": "maPhanHoi",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLyGiangVien/them_giang_vien": {
       "post": {
         "tags": [

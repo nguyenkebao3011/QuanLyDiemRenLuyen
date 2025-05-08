@@ -1,4 +1,5 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import type React from "react";
+import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 import {
   Calendar,
   Clock,
@@ -11,9 +12,10 @@ import {
   RefreshCw,
 } from "lucide-react";
 import axios from "axios";
-import { HocKy, QuanLyKhoa, HoatDong } from "../types";
-import { toast } from "react-hot-toast";
+import type { HocKy, QuanLyKhoa, HoatDong } from "../types";
+import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 import "../../../Pages/Dashboard/Admin/css/TaoHoatDong.css";
+import { ApiService } from "../../../untils/services/service-api";
 
 interface ModalEditHoatDongProps {
   show: boolean;
@@ -52,6 +54,17 @@ const ModalEditHoatDong: React.FC<ModalEditHoatDongProps> = ({
   const [startTime, setStartTime] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [endTime, setEndTime] = useState<string>("");
+
+  // Add notification state
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   // Đồng bộ dữ liệu khi mở modal
   useEffect(() => {
@@ -170,6 +183,10 @@ const ModalEditHoatDong: React.FC<ModalEditHoatDongProps> = ({
     return Object.keys(errors).length === 0;
   };
 
+  const closeNotification = () => {
+    setNotification((prev) => ({ ...prev, show: false }));
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -191,11 +208,14 @@ const ModalEditHoatDong: React.FC<ModalEditHoatDongProps> = ({
         NgayBatDau: combineDateTime(startDate, startTime),
         NgayKetThuc: combineDateTime(endDate, endTime),
       };
-      const res = await axios.put(
-        `http://localhost:5163/api/HoatDong/sua_hoat_dong/${form.MaHoatDong}`,
-        dataToSend
-      );
-      toast.success("Cập nhật hoạt động thành công!");
+
+      await ApiService.suaHoatDong(form.MaHoatDong, dataToSend);
+
+      setNotification({
+        show: true,
+        message: "Cập nhật hoạt động thành công!",
+        type: "success",
+      });
       onSuccess && onSuccess();
       onClose();
     } catch (error: any) {
@@ -205,17 +225,33 @@ const ModalEditHoatDong: React.FC<ModalEditHoatDongProps> = ({
           typeof error.response.data === "string"
         ) {
           setGlobalError(error.response.data);
-          toast.error(error.response.data);
+          setNotification({
+            show: true,
+            message: error.response.data,
+            type: "error",
+          });
         } else if (error.response?.data?.message) {
           setGlobalError(error.response.data.message);
-          toast.error(error.response.data.message);
+          setNotification({
+            show: true,
+            message: error.response.data.message,
+            type: "error",
+          });
         } else {
           setGlobalError("Lỗi không xác định khi cập nhật hoạt động!");
-          toast.error("Lỗi không xác định khi cập nhật hoạt động!");
+          setNotification({
+            show: true,
+            message: "Lỗi không xác định khi cập nhật hoạt động!",
+            type: "error",
+          });
         }
       } else {
         setGlobalError("Lỗi khi cập nhật hoạt động!");
-        toast.error("Lỗi khi cập nhật hoạt động!");
+        setNotification({
+          show: true,
+          message: "Lỗi khi cập nhật hoạt động!",
+          type: "error",
+        });
       }
     } finally {
       setIsLoading(false);
@@ -241,6 +277,15 @@ const ModalEditHoatDong: React.FC<ModalEditHoatDongProps> = ({
             </div>
           )}
         </div>
+
+        {notification.show && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={closeNotification}
+          />
+        )}
+
         <form onSubmit={handleSubmit} className="activity-form">
           {globalError && (
             <div className="error-message" style={{ marginBottom: 16 }}>
