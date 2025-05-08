@@ -937,48 +937,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
-    "Method": "GetDistricts",
-    "RelativePath": "api/Location/districts/{provinceCode}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "provinceCode",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
-    "Method": "GetProvinces",
-    "RelativePath": "api/Location/provinces",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.LocationController",
-    "Method": "GetWards",
-    "RelativePath": "api/Location/wards/{districtCode}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "districtCode",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.LopController",
     "Method": "UpdateLop",
     "RelativePath": "api/Lop/cap_nhat_lop/{id}",
@@ -1095,6 +1053,32 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.MinhChungHoatDongsController",
+    "Method": "SubmitMinhChung",
+    "RelativePath": "api/MinhChungHoatDongs/submit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MaDangKy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MoTa",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileAnh",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

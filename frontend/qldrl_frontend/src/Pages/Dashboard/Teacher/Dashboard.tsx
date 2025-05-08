@@ -17,7 +17,7 @@ import DanhSachSinhVien from "../../../components/GiangVien/views/DanhSachSinhVi
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
-import { ThongKe } from "../../../components/GiangVien/views/ThongKe";
+import  ThongKe  from "../../../components/GiangVien/views/ThongKe";
 
 // Định nghĩa kiểu Lecturer
 interface Lecturer {
