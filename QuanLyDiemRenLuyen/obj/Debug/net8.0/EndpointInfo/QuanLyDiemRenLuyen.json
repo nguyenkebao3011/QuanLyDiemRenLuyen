@@ -2856,6 +2856,29 @@
         }
       }
     },
+    "/api/ThongBao/xoa_thong_bao/{maThongBao}": {
+      "delete": {
+        "tags": [
+          "ThongBao"
+        ],
+        "parameters": [
+          {
+            "name": "maThongBao",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ThongKe/thongke-theo-giang-vien": {
       "get": {
         "tags": [

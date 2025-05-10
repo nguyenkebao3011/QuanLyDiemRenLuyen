@@ -6,6 +6,7 @@ import ThongBaoList from "../../../../components/Admin/ThongBao/ThongBaoList";
 import ThongBaoDetail from "../../../../components/Admin/ThongBao/ThongBaoDetail";
 import CreateThongBaoModal from "../../../../components/Admin/ThongBao/CreateThongBaoModal";
 import ThongBaoStats from "../../../../components/Admin/ThongBao/ThongBaoStats";
+import ModalDeleteThongBao from "../../../../components/Admin/ThongBao/ModalDeleteThongBao";
 import Notification from "./Notification";
 import type {
   ThongBaoDTO,
@@ -14,7 +15,6 @@ import type {
 import "../css/ThongBaoDiemDanh.css";
 import type { QuanLyKhoa } from "../../../../components/Admin/types";
 
-// Add pageSize constant at the top of the file, after imports
 const pageSize = 10;
 
 const ThongBaoDiemDanh: React.FC = () => {
@@ -50,6 +50,11 @@ const ThongBaoDiemDanh: React.FC = () => {
   const [maQl, setMaQl] = useState<string>("");
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  // State cho modal xóa thông báo
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [thongBaoToDelete, setThongBaoToDelete] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [notification, setNotification] = useState<{
     show: boolean;
@@ -283,6 +288,57 @@ const ThongBaoDiemDanh: React.FC = () => {
     });
   };
 
+  // Xử lý xóa thông báo
+  const handleDeleteThongBao = (maThongBao: number) => {
+    setThongBaoToDelete(maThongBao);
+    setShowDeleteModal(true);
+  };
+
+  // Xác nhận xóa thông báo
+  const confirmDeleteThongBao = async () => {
+    if (!thongBaoToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await ApiService.xoaThongBao(thongBaoToDelete);
+      setNotification({
+        show: true,
+        message: "Xóa thông báo thành công!",
+        type: "success",
+      });
+
+      // Cập nhật danh sách thông báo sau khi xóa
+      fetchThongBaos();
+
+      // Đóng modal xóa
+      setShowDeleteModal(false);
+      setThongBaoToDelete(null);
+
+      // Nếu đang xem chi tiết thông báo bị xóa, đóng chi tiết
+      if (selectedThongBao === thongBaoToDelete) {
+        handleCloseDetail();
+      }
+    } catch (err) {
+      console.error("Lỗi khi xóa thông báo:", err);
+      let errorMessage = "Không thể xóa thông báo. Vui lòng thử lại sau.";
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "response" in err &&
+        (err as any).response?.data?.message
+      ) {
+        errorMessage = (err as any).response.data.message;
+      }
+      setNotification({
+        show: true,
+        message: errorMessage,
+        type: "error",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // Function to close notification
   const closeNotification = () => {
     setNotification((prev) => ({ ...prev, show: false }));
@@ -368,6 +424,7 @@ const ThongBaoDiemDanh: React.FC = () => {
             onLoaiThongBaoChange={filterByLoaiThongBao}
             onRefresh={fetchThongBaos}
             onViewDetail={handleViewDetail}
+            onDeleteThongBao={handleDeleteThongBao}
           />
 
           {filteredThongBaos.length > pageSize && (
@@ -411,6 +468,13 @@ const ThongBaoDiemDanh: React.FC = () => {
         onClose={handleCloseCreateModal}
         onSuccess={handleCreateSuccess}
         maQl={maQl}
+      />
+
+      <ModalDeleteThongBao
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onDelete={confirmDeleteThongBao}
+        isDeleting={isDeleting}
       />
     </div>
   );

@@ -146,7 +146,9 @@ export const ApiService = {
     const response = await api.get("/ThongBao/lay_thong_bao");
     return response.data;
   },
-
+  xoaThongBao: async (maThongBao: number): Promise<void> => {
+    await api.delete(`/ThongBao/xoa_thong_bao/${maThongBao}`);
+  },
   layChiTietThongBao: async (
     maThongBao: number
   ): Promise<ThongBaoChiTietDTO> => {

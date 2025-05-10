@@ -1,7 +1,6 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
-  Search,
   Plus,
   Edit2,
   Trash2,
@@ -58,7 +57,6 @@ const QuanLyGiangVien: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      // Use ApiService instead of direct axios call
       const data = await ApiService.layDanhSachGiaoVien();
       setGiangVienList(data);
       setFilteredList(data);
@@ -118,8 +116,8 @@ const QuanLyGiangVien: React.FC = () => {
   };
 
   // Xử lý tìm kiếm
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
   };
 
   // Xử lý làm mới dữ liệu
@@ -153,7 +151,6 @@ const QuanLyGiangVien: React.FC = () => {
   const handleDelete = async () => {
     if (!deletingGiangVien.MaGv) return;
     try {
-      // Use ApiService instead of direct axios call
       await ApiService.xoaGiangVien(deletingGiangVien.MaGv);
 
       setGiangVienList(
@@ -164,7 +161,6 @@ const QuanLyGiangVien: React.FC = () => {
       );
       setDeletingGiangVien({ MaGv: "", name: null });
 
-      // Replace alert with notification
       setNotification({
         show: true,
         message: "Xóa giảng viên thành công!",
@@ -173,7 +169,6 @@ const QuanLyGiangVien: React.FC = () => {
     } catch (error: any) {
       console.error("Lỗi khi xóa giảng viên:", error);
 
-      // Extract error message
       let errorMessage = "Có lỗi xảy ra khi xóa giảng viên";
       if (error.response && error.response.data) {
         if (typeof error.response.data === "string") {
@@ -185,7 +180,6 @@ const QuanLyGiangVien: React.FC = () => {
         }
       }
 
-      // Show error notification
       setNotification({
         show: true,
         message: `Lỗi: ${errorMessage}`,
@@ -253,17 +247,17 @@ const QuanLyGiangVien: React.FC = () => {
       </div>
 
       <div className="search-box">
-        <form onSubmit={() => handleSearch} className="search-form">
+        <form onSubmit={handleSearch} className="search-form">
           <div className="search-input-container">
             <input
               type="text"
-              placeholder="Tìm kiếm hoạt động..."
+              placeholder="Tìm kiếm giảng viên..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
             />
             <button type="submit" className="search-button">
-              <Search size={18} />
+              <span>Q</span>
             </button>
           </div>
         </form>

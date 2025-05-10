@@ -173,7 +173,7 @@ const TaoHoatDong: React.FC = () => {
 
     const start = new Date(formatDateToISO(startDate, startTime));
     const end = new Date(formatDateToISO(endDate, endTime));
-    const currentDate = new Date("2025-04-24"); // Ngày hiện tại là 24/04/2025
+    const currentDate = new Date();
 
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       setStartDateError("Ngày giờ không hợp lệ");

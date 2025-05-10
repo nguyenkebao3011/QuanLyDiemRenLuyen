@@ -7,8 +7,8 @@ import {
   Eye,
   Filter,
   RefreshCw,
-  ChevronRight,
   AlertCircle,
+  Trash2,
 } from "lucide-react";
 import type { ThongBaoDTO } from "../types";
 import { format, parseISO } from "date-fns";
@@ -25,6 +25,7 @@ interface ThongBaoListProps {
   onLoaiThongBaoChange: (value: string) => void;
   onRefresh: () => void;
   onViewDetail: (maThongBao: number) => void;
+  onDeleteThongBao?: (maThongBao: number) => void;
 }
 
 const ThongBaoList: React.FC<ThongBaoListProps> = ({
@@ -37,6 +38,7 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
   onLoaiThongBaoChange,
   onRefresh,
   onViewDetail,
+  onDeleteThongBao,
 }) => {
   const [sortBy, setSortBy] = useState<"NgayTao" | "SoLuotXem">("NgayTao");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -247,13 +249,54 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
                         </div>
                       </td>
                       <td>
-                        <button
-                          className="btn-view-detail"
-                          onClick={() => onViewDetail(thongBao.MaThongBao)}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: "8px",
+                          }}
                         >
-                          <span>Chi tiết</span>
-                          <ChevronRight className="chevron-icon" />
-                        </button>
+                          <button
+                            onClick={() => onViewDetail(thongBao.MaThongBao)}
+                            title="Xem chi tiết"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "4px",
+                              border: "none",
+                              backgroundColor: "#e6f7ff",
+                              color: "#1890ff",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <Eye size={16} />
+                          </button>
+                          {onDeleteThongBao && (
+                            <button
+                              onClick={() =>
+                                onDeleteThongBao(thongBao.MaThongBao)
+                              }
+                              title="Xóa"
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: "32px",
+                                height: "32px",
+                                borderRadius: "4px",
+                                border: "none",
+                                backgroundColor: "#fff1f0",
+                                color: "#ff4d4f",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
