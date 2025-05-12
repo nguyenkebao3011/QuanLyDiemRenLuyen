@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import type React from "react";
 import { Eye, Edit, Trash2 } from "lucide-react";
 
 interface ActionButtonsHoatDongProps {
@@ -12,21 +14,21 @@ const ActionButtonsHoatDong: React.FC<ActionButtonsHoatDongProps> = ({
   onEdit,
   onDelete,
 }) => (
-  <>
+  <div className="action-buttons">
     <button
-      className="btn-action btn-view"
       onClick={onView}
       title="Xem chi tiết"
+      className="btn-action btn-view"
     >
-      <Eye size={16} />
+      <Eye size={20} />
     </button>
-    <button className="btn-action btn-edit" onClick={onEdit} title="Chỉnh sửa">
-      <Edit size={16} />
+    <button onClick={onEdit} title="Chỉnh sửa" className="btn-action btn-edit">
+      <Edit size={20} />
     </button>
-    <button className="btn-action btn-delete" onClick={onDelete} title="Xóa">
-      <Trash2 size={16} />
+    <button onClick={onDelete} title="Xóa" className="btn-action btn-delete">
+      <Trash2 size={20} />
     </button>
-  </>
+  </div>
 );
 
 export default ActionButtonsHoatDong;

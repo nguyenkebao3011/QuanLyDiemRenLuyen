@@ -83,7 +83,27 @@ const HoatDongNamHoc: React.FC = () => {
       const data = await ApiService.layDanhSachHoatDongAll();
       setHoatDongs(data);
     } catch (err) {
-      setError("Không thể tải danh sách hoạt động. Vui lòng thử lại sau.");
+      console.error("Lỗi khi tải danh sách hoạt động:", err);
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "response" in err &&
+        (err as any).response?.data?.message
+      ) {
+        setError(`Lỗi: ${(err as any).response.data.message}`);
+      } else {
+        setError("Không thể tải danh sách hoạt động. Vui lòng thử lại sau.");
+      }
+      setNotification({
+        show: true,
+        type: "error",
+        message:
+          (typeof err === "object" &&
+            err !== null &&
+            "response" in err &&
+            (err as any).response?.data?.message) ||
+          "Không thể tải danh sách hoạt động. Vui lòng thử lại sau.",
+      });
     } finally {
       setLoading(false);
     }
@@ -95,6 +115,16 @@ const HoatDongNamHoc: React.FC = () => {
       setHocKys(data);
     } catch (err) {
       console.error("Lỗi khi lấy danh sách học kỳ:", err);
+      setNotification({
+        show: true,
+        type: "error",
+        message:
+          (typeof err === "object" &&
+            err !== null &&
+            "response" in err &&
+            (err as any).response?.data?.message) ||
+          "Không thể tải danh sách học kỳ. Vui lòng thử lại sau.",
+      });
     }
   };
   const fetchQLKhoa = async () => {
@@ -103,6 +133,16 @@ const HoatDongNamHoc: React.FC = () => {
       setQuanLyKhoa(data);
     } catch (err) {
       console.error("Lỗi khi lấy thông tin quản lý khoa:", err);
+      setNotification({
+        show: true,
+        type: "error",
+        message:
+          (typeof err === "object" &&
+            err !== null &&
+            "response" in err &&
+            (err as any).response?.data?.message) ||
+          "Không thể tải thông tin quản lý khoa. Vui lòng thử lại sau.",
+      });
     }
   };
 
@@ -168,10 +208,16 @@ const HoatDongNamHoc: React.FC = () => {
       });
       fetchHoatDongs();
     } catch (err) {
+      console.error("Lỗi khi xóa hoạt động:", err);
       setNotification({
         show: true,
         type: "error",
-        message: "Không thể xóa hoạt động. Vui lòng thử lại sau.",
+        message:
+          (typeof err === "object" &&
+            err !== null &&
+            "response" in err &&
+            (err as any).response?.data?.message) ||
+          "Không thể xóa hoạt động. Vui lòng thử lại sau.",
       });
     } finally {
       setShowDeleteModal(false);

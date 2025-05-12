@@ -50,5 +50,5 @@
   background-color: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  padding: 0; /* Loại bỏ padding để không ảnh hưởng đến ô tìm kiếm */
 }

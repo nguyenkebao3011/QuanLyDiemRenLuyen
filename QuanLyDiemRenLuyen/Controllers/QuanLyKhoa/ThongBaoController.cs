@@ -373,9 +373,44 @@ namespace QuanLyDiemRenLuyen.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
+
+        [HttpDelete("xoa_thong_bao/{maThongBao}")]
+        public async Task<IActionResult> XoaThongBao(int maThongBao)
+        {
+            try
+            {
+                // Tìm thông báo có mã maThongBao
+                var thongBao = await _context.ThongBaos
+                    .Include(t => t.ChiTietThongBaos) // Bao gồm cả chi tiết thông báo liên quan
+                    .FirstOrDefaultAsync(t => t.MaThongBao == maThongBao);
+
+                if (thongBao == null)
+                {
+                    return NotFound($"Không tìm thấy thông báo có mã {maThongBao}");
+                }
+
+                // Xóa các chi tiết thông báo liên quan trước (nếu có)
+                if (thongBao.ChiTietThongBaos != null && thongBao.ChiTietThongBaos.Any())
+                {
+                    _context.ChiTietThongBaos.RemoveRange(thongBao.ChiTietThongBaos);
+                }
+
+                // Xóa thông báo
+                _context.ThongBaos.Remove(thongBao);
+
+                // Lưu thay đổi vào cơ sở dữ liệu
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đã xóa thông báo thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
     }
-        // DTOs cho các request và response
-        public class TaoThongBaoTuHoatDongRequest
+    // DTOs cho các request và response
+    public class TaoThongBaoTuHoatDongRequest
     {
         public int MaHoatDong { get; set; }
         public string? TieuDe { get; set; }

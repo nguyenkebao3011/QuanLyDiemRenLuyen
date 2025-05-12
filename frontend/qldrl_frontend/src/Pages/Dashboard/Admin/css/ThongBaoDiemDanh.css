@@ -898,4 +898,104 @@ form {
     font-size: 14px;
     color: #64748b;
   }
+  .btn-delete {
+    background-color: transparent;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    padding: var(--spacing-1);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+
+  .btn-delete:hover {
+    background-color: var(--danger-light);
+  }
+
+  .delete-icon {
+    color: var(--danger);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: var(--spacing-2);
+    align-items: center;
+  }
+
+  .action-buttons-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-view {
+    background-color: var(--info-light);
+    color: var(--info);
+  }
+
+  .btn-view:hover {
+    background-color: #bae7ff;
+  }
+
+  .btn-delete {
+    background-color: var(--danger-light);
+    color: var(--danger);
+  }
+
+  .btn-delete:hover {
+    background-color: #ffccc7;
+  }
+
+  /* Ensure the action column has enough width */
+  .thong-bao-table td:last-child {
+    min-width: 90px;
+    white-space: nowrap;
+  }
+
+  .warning-message {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    background-color: var(--warning-light);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .warning-icon {
+    color: var(--warning);
+    flex-shrink: 0;
+  }
+
+  .loading-spinner-small {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 2px solid var(--card);
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    margin-right: var(--spacing-2);
+  }
+
+  .btn-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

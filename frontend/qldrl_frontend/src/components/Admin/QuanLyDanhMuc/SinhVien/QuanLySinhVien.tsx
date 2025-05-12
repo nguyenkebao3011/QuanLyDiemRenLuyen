@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
-  Search,
   Plus,
   Edit2,
   Trash2,
@@ -31,12 +30,10 @@ const QuanLySinhVien: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  // State cho bộ lọc
   const [filterLop, setFilterLop] = useState<string>("");
   const [filterTrangThai, setFilterTrangThai] = useState<string>("");
   const [filterGioiTinh, setFilterGioiTinh] = useState<string>("");
 
-  // State cho modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSinhVien, setEditingSinhVien] = useState<{
     MaSV: string;
@@ -47,10 +44,8 @@ const QuanLySinhVien: React.FC = () => {
     name: string | null;
   }>({ MaSV: "", name: null });
 
-  // Add currentPage state in the component state declarations
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Add notification state
   const [notification, setNotification] = useState<{
     show: boolean;
     message: string;
@@ -61,7 +56,6 @@ const QuanLySinhVien: React.FC = () => {
     type: "success",
   });
 
-  // Hàm lấy danh sách lớp
   const fetchLop = async () => {
     try {
       const data = await ApiService.layDanhSachLop();
@@ -72,7 +66,6 @@ const QuanLySinhVien: React.FC = () => {
     }
   };
 
-  // Hàm lấy danh sách sinh viên
   const fetchSinhVien = async () => {
     setLoading(true);
     setError(null);
@@ -97,17 +90,14 @@ const QuanLySinhVien: React.FC = () => {
     }
   };
 
-  // Gọi API khi component mount
   useEffect(() => {
     fetchSinhVien();
     fetchLop();
   }, []);
 
-  // Lọc danh sách khi searchTerm hoặc bộ lọc thay đổi
   useEffect(() => {
     let filtered = sinhVienList;
 
-    // Lọc theo searchTerm
     if (searchTerm) {
       filtered = filtered.filter(
         (sv) =>
@@ -118,17 +108,14 @@ const QuanLySinhVien: React.FC = () => {
       );
     }
 
-    // Lọc theo lớp
     if (filterLop) {
       filtered = filtered.filter((sv) => sv.MaLop === filterLop);
     }
 
-    // Lọc theo trạng thái
     if (filterTrangThai) {
       filtered = filtered.filter((sv) => sv.TrangThai === filterTrangThai);
     }
 
-    // Lọc theo giới tính
     if (filterGioiTinh) {
       filtered = filtered.filter((sv) => sv.GioiTinh === filterGioiTinh);
     }
@@ -136,8 +123,6 @@ const QuanLySinhVien: React.FC = () => {
     setFilteredList(filtered);
   }, [searchTerm, filterLop, filterTrangThai, filterGioiTinh, sinhVienList]);
 
-  // Add useEffect to reset currentPage when filters change
-  // Add this after the useEffect for filtering:
   useEffect(() => {
     const totalPages = Math.ceil(filteredList.length / pageSize);
     if (currentPage > totalPages && totalPages > 0) {
@@ -145,23 +130,20 @@ const QuanLySinhVien: React.FC = () => {
     }
   }, [filteredList.length, currentPage]);
 
-  // Format ngày sinh để hiển thị
   const formatDate = (dateString: Date | string | null | undefined): string => {
     if (!dateString) return "-";
     try {
       const date = new Date(dateString);
-      return date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+      return date.toISOString().split("T")[0];
     } catch (error) {
       return "-";
     }
   };
 
-  // Xử lý tìm kiếm
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Xử lý làm mới dữ liệu
   const handleRefresh = () => {
     fetchSinhVien();
     setSearchTerm("");
@@ -175,24 +157,20 @@ const QuanLySinhVien: React.FC = () => {
     });
   };
 
-  // Xử lý mở modal thêm sinh viên
   const handleAddClick = () => {
     setShowAddModal(true);
   };
 
-  // Xử lý mở modal sửa sinh viên
   const handleEditClick = (MaSV: string) => {
     const sinhVien = sinhVienList.find((sv) => sv.MaSV === MaSV);
     setEditingSinhVien({ MaSV: MaSV, data: sinhVien || null });
   };
 
-  // Xử lý mở modal xóa sinh viên
   const handleDeleteClick = (MaSV: string) => {
     const sinhVien = sinhVienList.find((sv) => sv.MaSV === MaSV);
     setDeletingSinhVien({ MaSV: MaSV, name: sinhVien?.HoTen || null });
   };
 
-  // Xử lý xóa sinh viên
   const handleDelete = async () => {
     if (!deletingSinhVien.MaSV) return;
     try {
@@ -205,7 +183,6 @@ const QuanLySinhVien: React.FC = () => {
       );
       setDeletingSinhVien({ MaSV: "", name: null });
 
-      // Replace alert with notification
       setNotification({
         show: true,
         message: "Xóa sinh viên thành công!",
@@ -214,7 +191,6 @@ const QuanLySinhVien: React.FC = () => {
     } catch (error: any) {
       console.error("Lỗi khi xóa sinh viên:", error);
 
-      // Extract error message
       let errorMessage = "Có lỗi xảy ra khi xóa sinh viên";
       if (error.response && error.response.data) {
         if (typeof error.response.data === "string") {
@@ -226,7 +202,6 @@ const QuanLySinhVien: React.FC = () => {
         }
       }
 
-      // Show error notification
       setNotification({
         show: true,
         message: `Lỗi: ${errorMessage}`,
@@ -235,7 +210,6 @@ const QuanLySinhVien: React.FC = () => {
     }
   };
 
-  // Xử lý xuất Excel
   const handleExportExcel = () => {
     setNotification({
       show: true,
@@ -244,12 +218,10 @@ const QuanLySinhVien: React.FC = () => {
     });
   };
 
-  // Add function to close notification
   const closeNotification = () => {
     setNotification((prev) => ({ ...prev, show: false }));
   };
 
-  // Add function to handle successful add
   const handleAddSuccess = () => {
     fetchSinhVien();
     setNotification({
@@ -259,7 +231,6 @@ const QuanLySinhVien: React.FC = () => {
     });
   };
 
-  // Add function to handle successful edit
   const handleEditSuccess = () => {
     fetchSinhVien();
     setNotification({
@@ -345,13 +316,13 @@ const QuanLySinhVien: React.FC = () => {
             <div className="search-input-container">
               <input
                 type="text"
-                placeholder="Tìm kiếm hoạt động..."
+                placeholder="Tìm kiếm sinh viên..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
               />
               <button type="submit" className="search-button">
-                <Search size={18} />
+                <span>Q</span>
               </button>
             </div>
           </form>
@@ -451,7 +422,6 @@ const QuanLySinhVien: React.FC = () => {
         </button>
       </div>
 
-      {/* Modals */}
       <ThemSinhVien
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -476,7 +446,6 @@ const QuanLySinhVien: React.FC = () => {
         sinhVienName={deletingSinhVien.name}
       />
 
-      {/* Add notification component */}
       {notification.show && (
         <Notification
           message={notification.message}

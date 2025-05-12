@@ -2020,6 +2020,22 @@
     ]
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
+    "Method": "XoaThongBao",
+    "RelativePath": "api/ThongBao/xoa_thong_bao/{maThongBao}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maThongBao",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.ThongKe",
     "Method": "GetThongKeTheoGiangVien",
     "RelativePath": "api/ThongKe/thongke-theo-giang-vien",
