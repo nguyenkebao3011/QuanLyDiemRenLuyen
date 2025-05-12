@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.DTO.SinhVien;
 using QuanLyDiemRenLuyen.Models;
@@ -23,7 +24,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         {
             _context = context;
         }
-
+        
         [HttpPost("them_sinh_vien")]
         public async Task<ActionResult<SinhVienDTO>> CreateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile anhDaiDien = null)
         {
@@ -364,6 +365,8 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 }
             }
         }
+      
+
         private bool SinhVienExists(string id)
         {
             return _context.SinhViens.Any(e => e.MaSV == id);

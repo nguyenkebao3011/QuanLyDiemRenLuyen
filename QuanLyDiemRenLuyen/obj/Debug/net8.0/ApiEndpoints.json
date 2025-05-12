@@ -1822,6 +1822,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThemNhieuSinhVienController",
+    "Method": "Import",
+    "RelativePath": "api/ThemNhieuSinhVien/Them_nhieu_sinh_vien",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "QuanLyDiemRenLuyen.Controllers.ThemNhieuSinhVienController\u002BImportData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
     "Method": "DanhDauDaDoc",
     "RelativePath": "api/ThongBao/danh_dau_da_doc",

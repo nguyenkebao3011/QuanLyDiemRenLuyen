@@ -250,9 +250,14 @@ const TeacherDashboard: React.FC = () => {
             <h2>Xin chào, Giảng Viên {teacherName}</h2>
             {teacherData ? (
               <ThongTinGiangVien />
+              
             ) : (
               <p>Đang tải thông tin giảng viên...</p>
-            )}
+            )
+            }
+            <XemThongBao></XemThongBao>
+            <XemHoatDong></XemHoatDong>
+            <ThongKe></ThongKe>
           </div>
         );
     }

@@ -182,7 +182,7 @@ const XemDiemRenLuyen: React.FC = () => {
             <div className="hoc-ky-header">
               <h4 className="hoc-ky-title">{selectedHocKy.TenHocKy}</h4>
               <p className="ngay-chot">
-                Ngày chốt:{' '}
+                Ngày cập nhật:{' '}
                 {selectedHocKy.NgayChot
                   ? new Date(selectedHocKy.NgayChot).toLocaleDateString('vi-VN')
                   : 'Chưa chốt'}

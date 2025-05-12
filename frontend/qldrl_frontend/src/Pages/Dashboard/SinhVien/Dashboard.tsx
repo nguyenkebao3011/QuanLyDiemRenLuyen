@@ -237,6 +237,8 @@ const StudentDashboard: React.FC = () => {
               <>
                 <ThongTinSinhVien student={studentData} />
                 <HoatDongDaDangKy />
+                
+               <XemThongBao/>
               </>
             ) : (
               <p>Đang tải thông tin sinh viên...</p>

@@ -1,0 +1,759 @@
+/* HoatDongDaDangKy.css */
+:root {
+    --primary-color: #0055a4;
+    --primary-lighter: #1a6bc2;
+    --primary-darker: #003b73;
+    --white: #ffffff;
+    --light-gray: #f5f7fa;
+    --mid-gray: #e0e5ec;
+    --dark-gray: #8895a7;
+    --darker-gray: #4a5568;
+    --text-color: #2d3748;
+    --danger-color: #e53e3e;
+    --success-color: #38a169;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.3s ease;
+  }
+  
+  /* Container Styles */
+  .hddk-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+  }
+  
+  /* Header Styles */
+  .hddk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--mid-gray);
+  }
+  
+  .hddk-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+    position: relative;
+  }
+  
+  .hddk-title::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+  }
+  
+  .hddk-history-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background-color: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-history-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  
+  .hddk-icon {
+    display: inline-flex;
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Alert Styles */
+  .hddk-alert {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .hddk-success {
+    background-color: rgba(56, 161, 105, 0.1);
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+  }
+  
+  .hddk-error {
+    background-color: rgba(229, 62, 62, 0.1);
+    border-left: 4px solid var(--danger-color);
+    color: var(--danger-color);
+  }
+  
+  .hddk-alert-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+  }
+  
+  /* Loader Styles */
+  .hddk-loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  
+  .hddk-loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--mid-gray);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Activity List Styles */
+  .hddk-activities-list {
+    width: 100%;
+    overflow-x: auto; /* Cho phép cuộn ngang */
+    padding-bottom: 10px;
+  }
+  
+  .hddk-activity-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid var(--mid-gray);
+    animation: fadeIn 0.5s ease-out;
+    margin: 15px;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .hddk-activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+  }
+  
+  .hddk-activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: var(--primary-color);
+    color: var(--white);
+  }
+  
+  .hddk-activity-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .hddk-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .hddk-status-active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .hddk-status-ended {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffcc00;
+  }
+  
+  .hddk-activity-details {
+    padding: 20px;
+  }
+  
+  .hddk-detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .hddk-detail-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .hddk-detail-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    color: var(--primary-color);
+  }
+  
+  .hddk-points {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .hddk-activity-actions {
+    padding: 16px 20px;
+    background-color: var(--light-gray);
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .hddk-cancel-btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-cancel-btn svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+  }
+  
+  .hddk-cancel-btn:hover {
+    background-color: var(--danger-color);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+  
+  /* Pagination Styles */
+  .hddk-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+  }
+  
+  .hddk-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--white);
+    border: 1px solid var(--mid-gray);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .hddk-page-btn:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+  }
+  
+  .hddk-page-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .hddk-page-info {
+    margin: 0 16px;
+    font-weight: 500;
+  }
+  
+  /* Empty State Styles */
+  .hddk-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0;
+    text-align: center;
+    color: var(--darker-gray);
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .hddk-empty-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  
+  /* Modal Styles */
+  .hddk-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .hddk-modal {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: zoomIn 0.3s ease-out;
+  }
+  
+  .hddk-history-modal {
+    max-width: 800px;
+  }
+  
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .hddk-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--mid-gray);
+  }
+  
+  .hddk-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--primary-color);
+  }
+  
+  .hddk-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--dark-gray);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+  }
+  
+  .hddk-close-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .hddk-close-btn:hover {
+    background-color: var(--mid-gray);
+    color: var(--text-color);
+  }
+  
+  .hddk-modal-body {
+    padding: 20px;
+  }
+  
+  .hddk-modal-text {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  .hddk-reason-list {
+    margin-bottom: 20px;
+  }
+  
+  .hddk-reason-item {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .hddk-checkbox {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+  
+  .hddk-checkbox-label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .hddk-checkbox-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: var(--white);
+    transition: var(--transition);
+  }
+  
+  .hddk-checkbox:checked + .hddk-checkbox-label::before {
+    background-color: var(--primary-color);
+  }
+  
+  .hddk-checkbox:checked + .hddk-checkbox-label::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .hddk-textarea-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .hddk-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid var(--mid-gray);
+    border-radius: var(--border-radius);
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    transition: var(--transition);
+  }
+  
+  .hddk-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.2);
+  }
+  
+  .hddk-char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 12px;
+    color: var(--dark-gray);
+  }
+  
+  .hddk-modal-error {
+    margin-bottom: 0;
+  }
+  
+  .hddk-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 20px;
+    border-top: 1px solid var(--mid-gray);
+    gap: 12px;
+  }
+  
+  .hddk-confirm-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-confirm-btn:hover {
+    background-color: var(--primary-darker);
+    transform: translateY(-2px);
+  }
+  
+  .hddk-cancel-action-btn {
+    padding: 10px 20px;
+    background-color: var(--white);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-cancel-action-btn:hover {
+    background-color: rgba(0, 85, 164, 0.1);
+  }
+  
+  .hddk-close-btn-text {
+    padding: 10px 20px;
+    background-color: var(--white);
+    color: var(--darker-gray);
+    border: 1px solid var(--mid-gray);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .hddk-close-btn-text:hover {
+    background-color: var(--light-gray);
+  }
+  
+  /* Table Styles */
+  .hddk-table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  
+  .hddk-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .hddk-table th,
+  .hddk-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--mid-gray);
+  }
+  
+  .hddk-table th {
+    background-color: var(--light-gray);
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .hddk-table-row {
+    transition: var(--transition);
+  }
+  
+  .hddk-table-row:hover {
+    background-color: rgba(0, 85, 164, 0.05);
+  }
+  
+  .hddk-status-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .hddk-status-cancelled {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger-color);
+  }
+  
+  .hddk-status-pending {
+    background-color: rgba(236, 201, 75, 0.1);
+    color: #b7791f;
+  }
+  
+  .hddk-empty-history {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0;
+    text-align: center;
+    color: var(--darker-gray);
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .hddk-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  
+    .hddk-history-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  
+    .hddk-activity-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  
+    .hddk-status {
+      align-self: flex-start;
+    }
+  
+    .hddk-modal {
+      width: 95%;
+    }
+
+    .hddk-activities-list {
+        width: 100%;
+        overflow-x: auto; /* Cho phép cuộn ngang */
+        padding-bottom: 10px;
+      }
+      
+      .hddk-activities-row {
+        display: flex;
+        flex-direction: row;
+        gap: 20px; /* Khoảng cách giữa các card */
+        min-width: fit-content; /* Đảm bảo nội dung không bị co lại quá mức */
+      }
+      
+      .hddk-activity-card {
+        flex: 0 0 300px; /* Chiều rộng cố định cho mỗi card */
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+      }
+      
+      .hddk-activity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      
+      .hddk-activity-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        white-space: nowrap; /* Ngăn tên hoạt động xuống dòng */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Thêm dấu ... nếu tên quá dài */
+      }
+      
+      .hddk-status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      
+      .hddk-status-active {
+        background-color: #e7f3fe;
+        color: #1e90ff;
+      }
+      
+      .hddk-status-ended {
+        background-color: #f4f4f4;
+        color: #666;
+      }
+      
+      .hddk-activity-details {
+        flex-grow: 1;
+        margin-bottom: 10px;
+      }
+      
+      .hddk-detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+      
+      .hddk-detail-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+      
+      .hddk-detail-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+      
+      .hddk-activity-actions {
+        margin-top: auto;
+        text-align: center;
+      }
+      
+      .hddk-cancel-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 12px;
+        background-color: #ff4d4f;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      
+      .hddk-cancel-btn:hover {
+        background-color: #d9363e;
+      }
+      
+      .hddk-cancel-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+  }

@@ -2531,6 +2531,37 @@
         }
       }
     },
+    "/api/ThemNhieuSinhVien/Them_nhieu_sinh_vien": {
+      "post": {
+        "tags": [
+          "ThemNhieuSinhVien"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ThongBao/lay_thong_bao": {
       "get": {
         "tags": [
@@ -3671,6 +3702,121 @@
           "LyDoHuy": {
             "maxLength": 500,
             "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImportData": {
+        "type": "object",
+        "properties": {
+          "DanhSachSinhVien": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportSinhVien"
+            },
+            "nullable": true
+          },
+          "DanhSachTaiKhoan": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaiKhoan"
+            },
+            "nullable": true
+          },
+          "DanhSachDiemRenLuyen": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportDiemRenLuyen"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImportDiemRenLuyen": {
+        "type": "object",
+        "properties": {
+          "MaDiemRenLuyen": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSv": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TongDiem": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "XepLoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayChot": {
+            "type": "string",
+            "nullable": true
+          },
+          "TrangThai": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImportSinhVien": {
+        "type": "object",
+        "properties": {
+          "MaSV": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaLop": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "DiaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgaySinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "GioiTinh": {
+            "type": "string",
+            "nullable": true
+          },
+          "AnhDaiDien": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaVaiTro": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TrangThai": {
             "type": "string",
             "nullable": true
           }

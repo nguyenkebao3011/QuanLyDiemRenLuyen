@@ -10,12 +10,16 @@ wwwroot\avatars\DHTH603148_638815660192944905.png
 wwwroot\avatars\DHTH603148_638815665974672468.jpg
 wwwroot\avatars\DHTH603148_638818215400796796.jpeg
 wwwroot\avatars\DHTH603148_638822420539074725.jpeg
+wwwroot\avatars\DHTH603148_638823801007481136.jpeg
+wwwroot\avatars\DHTH603148_638824214487476743.jpg
 wwwroot\avatars\GV01_638817794895862953.jpeg
 wwwroot\avatars\GV01_638817801503140603.jpeg
 wwwroot\avatars\GV01_638820778512920483.jpeg
+wwwroot\avatars\GV01_638823795629296066.jpeg
 wwwroot\avatars\GV03_638817898886213498.jpeg
 wwwroot\avatars\GV03_638817926905878863.png
 wwwroot\avatars\hung.nguyen@huit.edu.vn_638817399485623523.jpg
 wwwroot\avatars\hung.nguyen@huit.edu.vn_638817762322026392.jpeg
 wwwroot\test.html
 wwwroot\uploads\0bf59c87-7020-47ea-81b0-400647eda8e2.jpg
+wwwroot\uploads\e10af36d-6ec4-4e44-b194-c54a98508e73.png

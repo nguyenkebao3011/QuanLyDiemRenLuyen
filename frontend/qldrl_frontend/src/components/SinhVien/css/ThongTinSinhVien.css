@@ -1,541 +1,545 @@
-.thongtin-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-  }
-  
-  .thongtin-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-  }
-  
-  .avatar-container {
-    flex-shrink: 0; /* Không để ảnh bị co lại */
-  }
-  
-  .student-avatar {
-    border-radius: 20px;
-    border: 1px solid #b6bacd;
-    width: 150px;
-    height: auto;
-  }
-  
-  .student-info-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #3c5de0;
-    flex: 1; /* Chiếm phần còn lại của không gian */
-    margin: 37px;
-  }
-  
-  .student-info-table td {
-    padding: 8px 15px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .student-info-table tr:last-child td {
-    border-bottom: none;
-  }
+/* ThongTinSinhVien.css */
+/* Thiết kế hiện đại và đỉnh cao với hiệu ứng bling bling */
 
-  .form-actions button,
-  .thongtin-container button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-   .form-actions button[type="submit"],
-  .thongtin-container button {
-    background-color: #007bff;
-    color: white;
-  } 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-  /* hoạt động đã đăng ký */
-  .activities-container {
-  margin-top: 20px;
-  padding: 30px;
-  background: #f9f9f9;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  color: #2752d3;
-  animation: fadeIn 1s ease-in-out;
+:root {
+  --primary-color: #6a11cb;
+  --secondary-color: #2575fc;
+  --accent-color: #ff8a00;
+  --text-color: #333;
+  --light-text: #fff;
+  --dark-text: #1a1a1a;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --border-radius: 12px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --hover-shadow: 0 15px 35px rgba(106, 17, 203, 0.2);
+  --gradient-main: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --gradient-accent: linear-gradient(135deg, #ff8a00 0%, #da1b60 100%);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --avatar-size: 150px;
+  --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.activities-title {
-  font-size: 28px;
-  text-align: center;
-  margin-bottom: 25px;
-
-  position: relative;
-}
-
-.activities-title::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 3px;
-  background: #ffcc00;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { width: 50px; }
-  50% { width: 70px; }
-  100% { width: 50px; }
-}
-
-.activities-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-
-.activity-card {
-  background: rgba(207, 204, 28, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 20px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.activity-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.activity-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.activity-name {
-  font-size: 20px;
-  color: #07559f;
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.activity-status {
-  font-size: 14px;
-  padding: 5px 12px;
-  background: #2c7934;
-  color: #fff;
-  border-radius: 10px;
-  text-transform: uppercase;
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.activity-details p {
-  margin: 8px 0;
-  font-size: 16px;
-  color: #6260af;
-}
-.cancel-btn2 {
-  background: var(--primary-color);
-  color: #fff;
-  padding: 13px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-.activity-details strong {
-  color: #3c5de0;
+/* Main container with animated background */
+.thongtin-container {
+  position: relative;
+  max-width: 1150px;
+  margin: 30px auto;
+  padding: 40px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out;
+  transition: var(--transition);
 }
 
-.points {
-  color: #2ecc71;
-  font-weight: bold;
-  font-size: 18px;
-  background: rgba(46, 204, 113, 0.2);
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.no-activities {
-  text-align: center;
-  font-size: 18px;
-  color: #e74c3c;
-  animation: bounce 1.5s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.error-message {
-  text-align: center;
-  font-size: 18px;
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
-  padding: 15px;
-  border-radius: 10px;
-  animation: shake 0.5s;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-.modal-overlay {
-  position: fixed;
+/* Shiny background effect */
+.thongtin-container::before {
+  content: "";
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  height: 5px;
+  background: var(--gradient-main);
+  z-index: 1;
+  animation: shimmerGradient 3s infinite linear;
+  background-size: 200% 200%;
 }
 
-.modal-content {
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  max-width: 500px;
+/* Moving particles background */
+.thongtin-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(106, 17, 203, 0.05) 5%, transparent 8%),
+    radial-gradient(circle at 75% 44%, rgba(37, 117, 252, 0.05) 3%, transparent 6%),
+    radial-gradient(circle at 18% 70%, rgba(106, 17, 203, 0.05) 4%, transparent 7%),
+    radial-gradient(circle at 95% 90%, rgba(37, 117, 252, 0.05) 5%, transparent 8%),
+    radial-gradient(circle at 20% 10%, rgba(255, 138, 0, 0.05) 4%, transparent 7%),
+    radial-gradient(circle at 90% 25%, rgba(218, 27, 96, 0.03) 6%, transparent 9%);
+  z-index: -1;
+  opacity: 0.5;
+  animation: moveBackground 60s infinite alternate ease-in-out;
 }
 
-.modal-content h3 {
-  margin-top: 0;
-  font-size: 1.5rem;
-  color: #1f2937;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.checkbox-group input[type="checkbox"] {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-}
-
-.checkbox-group label {
-  font-size: 1rem;
-  color: #1f2937;
-}
-
-.cancel-reason-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  resize: vertical;
-  min-height: 80px;
-  font-size: 1rem;
-  margin-top: 8px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.confirm-btn {
-  background: #22c55e;
-  color: #fff;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.confirm-btn:hover {
-  background: #16a34a;
-}
-.pagination2 {
-  grid-column: 1 / -1; /* Đảm bảo pagination chiếm toàn bộ chiều rộng của grid */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 24px;
-}
-
-
+/* Title with gradient text and glow */
 .thongtin-test {
   position: relative;
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 16px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  text-align: center;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: pulse 2s infinite;
+  letter-spacing: 1px;
 }
 
 .thongtin-test::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
-  bottom: -8px; /* cách chữ 8px */
-  transform: translateX(-50%);
-  width: 50px;
+  bottom: 0;
+  width: 100px;
   height: 4px;
-  background: #ffcc00;
-  animation: pulse 2s infinite;
+  background: var(--gradient-accent);
+  transform: translateX(-50%);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(218, 27, 96, 0.5);
 }
-.activity-list-btn {
-  background-color: #1DA1F2;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-  margin: 15px;
+
+/* Content container */
+.thongtin-content {
   display: flex;
-  justify-items: flex-end;
-}
-/* hủy đăng ký danh sách */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 10px;
-  margin-bottom: 16px;
+  position: relative;
+  gap: 30px;
 }
 
-.modal-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1DA1F2;
+/* Avatar container with rotating glossy effect */
+.avatar-container {
+  position: relative;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  margin-bottom: 10px;
+  box-shadow: 0 10px 25px rgba(106, 17, 203, 0.3);
+  z-index: 2;
+  transition: var(--transition);
+  animation: appearWithGlow 1s ease-out;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #6b7280;
+.avatar-container::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: var(--gradient-main);
+  border-radius: 50%;
+  z-index: -1;
+  animation: rotateGradient 4s linear infinite;
 }
 
-.history-table {
+.avatar-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 5px;
+  background: conic-gradient(
+    transparent, 
+    rgba(255, 255, 255, 0), 
+    rgba(255, 255, 255, 0.8), 
+    rgba(255, 255, 255, 0)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateShine 4s linear infinite;
+}
+
+/* Avatar image styling */
+.student-avatar {
   width: 100%;
-  border-collapse: collapse;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  transition: var(--transition);
+  animation: pulse 3s infinite;
 }
 
-.history-table th,
-.history-table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.history-table th {
-  background-color: #f3f4f6;
-  font-weight: bold;
-  color: #374151;
-}
-
-.history-table td {
-  color: #4b5563;
-}
-
-/* Thông tin giảng viên */
-
-.container-danh-sach {
-  background-color: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.header-danh-sach {
+/* Default avatar when image is not available */
+.default-avatar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-}
-
-.tieu-de {
-  font-size: 24px;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--gradient-main);
+  color: var(--light-text);
+  font-size: 4rem;
   font-weight: bold;
-  color: #2c3e50;
-  margin: 0;
+  border: 5px solid #fff;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+  animation: scaleAndRotate 10s infinite alternate;
 }
 
-.tim-kiem-container {
+/* Table container with frosted glass effect */
+.student-info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 15px;
+  margin-top: 15px;
+  position: relative;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 
+    0 10px 20px rgba(0, 0, 0, 0.05),
+    0 6px 6px rgba(0, 0, 0, 0.1),
+    inset 0 -10px 20px rgba(255, 255, 255, 0.2);
+  transition: var(--transition);
+  animation: fadeSlideUp 1s ease-out 0.3s both;
+}
+
+.student-info-table::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  z-index: -1;
+  border-radius: var(--border-radius);
+}
+
+/* Table row styling with hover effects */
+.row {
+  transition: var(--transition);
   position: relative;
 }
 
-.input-tim-kiem {
-  padding: 8px 32px 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 250px;
-  font-size: 14px;
-  outline: none;
+.row:hover {
+  transform: translateX(5px);
 }
 
-.input-tim-kiem:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.icon-tim-kiem {
+.row::after {
+  content: "";
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #777;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-main);
+  transition: width 0.4s ease;
 }
 
-.loading-container, .error-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
+.row:hover::after {
   width: 100%;
 }
 
-.loading-text {
-  color: #3498db;
-  font-size: 16px;
+/* Table cells styling */
+.student-info-table td {
+  padding: 12px 15px;
+  font-size: 1rem;
+  position: relative;
 }
 
-.error-container {
-  background-color: #ffeded;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  padding: 10px;
-}
-
-.error-text {
-  color: #721c24;
-  margin: 0;
-}
-
-.bang-sinh-vien {
-  background-color: #fff;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.hang-tieu-de {
-  display: flex;
-  background-color: #3498db;
-  color: white;
-  font-weight: bold;
-  padding: 12px 16px;
-}
-.tieu-de-lop {
-  font-size: 20px;
-  font-weight: bold;
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-.hang-sinh-vien {
-  border-bottom: 1px solid #eee;
-}
-
-.hang-sinh-vien:last-child {
-  border-bottom: none;
-}
-
-.body-sinh-vien {
-  display: flex;
-  padding: 12px 16px;
-  align-items: center;
-}
-
-.cot-ma-sv {
-  flex: 1;
-  min-width: 100px;
-}
-
-.cot-ho-ten {
-  flex: 2;
-  min-width: 150px;
-}
-
-.cot-lop {
-  flex: 2;
-  min-width: 150px;
-}
-
-.cot-hanh-dong {
-  flex: 1;
-  min-width: 80px;
-  text-align: center;
-}
-
-.nut-chi-tiet {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.nut-chi-tiet:hover {
-  background-color: #2980b9;
-}
-
-.chi-tiet-sinh-vien {
-  background-color: #f8f9fa;
-  padding: 16px;
-  border-top: 1px solid #eee;
-}
-
-.hang-chi-tiet {
-  margin-bottom: 8px;
-  display: flex;
-}
-
-.hang-chi-tiet:last-child {
-  margin-bottom: 0;
-}
-
-.nhan {
-  font-weight: bold;
+.student-info-table td:first-child {
   width: 150px;
-  color: #555;
 }
 
-.gia-tri {
-  flex: 1;
+.student-info-table td:nth-child(3) {
+  width: 150px;
 }
 
-.khong-co-du-lieu {
-  padding: 20px;
-  text-align: center;
-  color: #777;
+.student-info-table strong {
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.row:hover strong {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .thongtin-container {
+    padding: 30px 20px;
+    margin: 20px 10px;
+  }
+
+  .student-info-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .thongtin-test {
+    font-size: 1.8rem;
+  }
+
+  .avatar-container {
+    width: calc(var(--avatar-size) * 0.8);
+    height: calc(var(--avatar-size) * 0.8);
+  }
+}
+
+/* For even smaller screens */
+@media (max-width: 480px) {
+  .thongtin-test {
+    font-size: 1.5rem;
+  }
+
+  .avatar-container {
+    width: calc(var(--avatar-size) * 0.7);
+    height: calc(var(--avatar-size) * 0.7);
+  }
+
+  .student-info-table td {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appearWithGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    box-shadow: 0 0 0 rgba(106, 17, 203, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(106, 17, 203, 0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 10px 25px rgba(106, 17, 203, 0.3);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    text-shadow: 0 0 5px rgba(106, 17, 203, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(106, 17, 203, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(106, 17, 203, 0.3);
+  }
+}
+
+@keyframes shimmerGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rotateGradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateShine {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes scaleAndRotate {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(5deg);
+  }
+  50% {
+    transform: scale(1) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.05) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Glowing hover effect for avatar */
+.avatar-container:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4),
+              0 0 30px rgba(37, 117, 252, 0.3);
+}
+
+.avatar-container:hover::before {
+  animation-duration: 2s;
+}
+
+.avatar-container:hover::after {
+  animation-duration: 1s;
+}
+
+/* Glass panel effect for the entire container on hover */
+.thongtin-container:hover {
+  box-shadow: 
+    0 15px 35px rgba(106, 17, 203, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.07);
+  transform: translateY(-5px);
+}
+
+/* Interactive table on hover */
+.student-info-table:hover {
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.08),
+    0 10px 10px rgba(0, 0, 0, 0.05),
+    inset 0 -10px 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Sparkling stars effect */
+.thongtin-container .sparkle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  z-index: 2;
+  animation: sparkle 4s linear infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Add sparkles with JavaScript */
+.thongtin-container::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(2px 2px at 40px 70px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 90px 40px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 130px 160px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 160px 90px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 210px 30px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 240px 120px, #ffffffff, #0000),
+    radial-gradient(2px 2px at 280px 60px, #ffffffff, #0000);
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  animation: sparkleBackground 10s linear infinite;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+@keyframes sparkleBackground {
+  0% {
+    background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+  }
+  100% {
+    background-position: 50px 50px, -30px 20px, 20px -30px, -20px -50px, 30px -30px, -50px 30px, 10px 10px;
+  }
+}
+
+/* Neon glow effect for container on hover */
+.thongtin-container:hover::after {
+  opacity: 0.8;
+}
+
+/* Dynamic highlighting effect for cells */
+@keyframes highlightRow {
+  0% {
+    background-color: rgba(106, 17, 203, 0);
+  }
+  50% {
+    background-color: rgba(106, 17, 203, 0.07);
+  }
+  100% {
+    background-color: rgba(106, 17, 203, 0);
+  }
+}
+
+.row td {
+  position: relative;
+  overflow: hidden;
+}
+
+.row td::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.row:hover td::before {
+  left: 100%;
+  transition: 0.5s;
 }
