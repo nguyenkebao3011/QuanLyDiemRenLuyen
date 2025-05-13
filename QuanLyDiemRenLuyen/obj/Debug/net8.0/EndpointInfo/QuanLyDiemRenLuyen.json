@@ -2910,6 +2910,67 @@
         }
       }
     },
+    "/api/ThongBaoHoatDong/sinhvien": {
+      "get": {
+        "tags": [
+          "ThongBaoHoatDong"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTOSV"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTOSV"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTOSV"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBaoHoatDong/doc/{maThongBao}": {
+      "put": {
+        "tags": [
+          "ThongBaoHoatDong"
+        ],
+        "parameters": [
+          {
+            "name": "maThongBao",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ThongKe/thongke-theo-giang-vien": {
       "get": {
         "tags": [
@@ -4733,6 +4794,37 @@
           },
           "DaDoc": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThongBaoDTOSV": {
+        "type": "object",
+        "properties": {
+          "MaThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TieuDe": {
+            "type": "string",
+            "nullable": true
+          },
+          "NoiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayTao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "DaDoc": {
+            "type": "boolean"
+          },
+          "NgayDoc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false

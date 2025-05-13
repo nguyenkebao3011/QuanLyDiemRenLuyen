@@ -132,7 +132,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Sinh viên không tồn tại" });
                 }
 
-                // Lấy danh sách đăng ký hoạt động của sinh viên
+                // Lấy danh sách đăng ký hoạt động của sinh viên (chỉ lấy nếu chưa kết thúc)
                 var danhSachDangKy = await _context.DangKyHoatDongs
                     .Where(d => d.MaSv == maSV)
                     .Join(_context.HoatDongs,
@@ -150,11 +150,12 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                             TrangThaiHoatDong = hoatDong.TrangThai,
                             NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null
                         })
+                    .Where(h => h.TrangThaiHoatDong != "Đã kết thúc") //  Chỉ lấy hoạt động chưa kết thúc
                     .ToListAsync();
 
                 if (!danhSachDangKy.Any())
                 {
-                    return Ok(new { message = "Sinh viên chưa đăng ký hoạt động nào", data = new object[] { } });
+                    return Ok(new { message = "Sinh viên chưa đăng ký hoạt động nào (hoặc tất cả đã kết thúc)", data = new object[] { } });
                 }
 
                 return Ok(new { message = "Lấy danh sách đăng ký thành công", data = danhSachDangKy });
