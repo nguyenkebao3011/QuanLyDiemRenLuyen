@@ -392,11 +392,11 @@ body {
 }
 
 .tab-button:hover {
-  color: var(--foreground);
+  /* color: var(--foreground); */
 }
 
 .tab-button.active {
-  color: var(--info);
+  /* color: var(--info); */
   border-bottom-color: var(--info);
 }
 

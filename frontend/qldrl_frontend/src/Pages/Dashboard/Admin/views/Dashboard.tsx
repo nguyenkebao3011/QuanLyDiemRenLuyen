@@ -29,6 +29,8 @@ import ThongKeBaoCao from "./ThongKeBaoCao";
 import HoiDongChamDiem from "./HoiDongChamDiem";
 import TongQuanHeThong from "../../../../components/Admin/HoatDong/TongQuanHeThong";
 import TaoHoatDong from "../../../../components/Admin/HoatDong/TaoHoatDong";
+import { ApiService } from "../../../../untils/services/service-api";
+import { QuanLyKhoa } from "../../../../components/Admin/types";
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
@@ -38,6 +40,7 @@ const Dashboard: React.FC = () => {
 
   const username = localStorage.getItem("username") || "Admin";
 
+  const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
   useEffect(() => {
     const handleUrlChange = () => {
       const params = new URLSearchParams(window.location.search);
@@ -62,7 +65,17 @@ const Dashboard: React.FC = () => {
       window.removeEventListener("popstate", handleUrlChange);
     };
   }, []);
-
+  const fetchQLKhoa = async () => {
+    try {
+      const data = await ApiService.thongTinQuanLyKhoa();
+      setQuanLyKhoa(data);
+    } catch (err) {
+      console.error("Lỗi khi lấy thông tin quản lý khoa:", err);
+    }
+  };
+  useEffect(() => {
+    fetchQLKhoa();
+  }, []);
   const renderContent = () => {
     if (activeMenu === "activities" && viewParam === "create") {
       return <TaoHoatDong />;
@@ -141,9 +154,11 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="user-info">
-          <div className="avatar">{username.charAt(0).toUpperCase()}</div>
+          <div className="avatar">
+            {quanLyKhoa?.HoTen.charAt(0).toUpperCase()}
+          </div>
           <div className="user-details">
-            <h3>{username}</h3>
+            <h3>{quanLyKhoa?.HoTen}</h3>
             <p>Quản trị viên</p>
           </div>
         </div>
@@ -270,9 +285,9 @@ const Dashboard: React.FC = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <div className="avatar-small">
-                  {username.charAt(0).toUpperCase()}
+                  {quanLyKhoa?.HoTen.charAt(0).toUpperCase()}
                 </div>
-                <span className="username-display">{username}</span>
+                <span className="username-display">{quanLyKhoa?.HoTen}</span>
                 <ChevronDown size={16} />
               </button>
 
