@@ -27,6 +27,16 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
+    "Method": "XemDanhSachDangKyHoatDongDaKetThuc",
+    "RelativePath": "api/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DangKyHoatDongsController",
     "Method": "HuyDangKyHoatDong",
     "RelativePath": "api/DangKyHoatDongs/huy-dangky",
     "HttpMethod": "DELETE",
@@ -633,95 +643,6 @@
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HoatDongController",
     "Method": "DeleteHoatDong",
     "RelativePath": "api/HoatDong/xoa_hoat_dong/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
-    "Method": "PostHoatDong",
-    "RelativePath": "api/HoatDongs",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "hoatDong",
-        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
-    "Method": "GetHoatDong",
-    "RelativePath": "api/HoatDongs/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
-    "Method": "PutHoatDong",
-    "RelativePath": "api/HoatDongs/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "hoatDong",
-        "Type": "QuanLyDiemRenLuyen.Models.HoatDong",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
-    "Method": "DeleteHoatDong",
-    "RelativePath": "api/HoatDongs/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -2054,7 +1975,7 @@
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.ThongBaoHoatDong",
     "Method": "GetThongBaoBySinhVien",
-    "RelativePath": "api/ThongBaoHoatDong/sinhvien",
+    "RelativePath": "api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

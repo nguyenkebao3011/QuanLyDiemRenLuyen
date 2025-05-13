@@ -29,7 +29,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         }
 
         //  API lấy danh sách thông báo của sinh viên từ JWT
-        [HttpGet("sinhvien")]
+        [HttpGet("ThongBao-Thay-Doi-va-nhac-nho")]
         public async Task<ActionResult<IEnumerable<ThongBaoDTOSV>>> GetThongBaoBySinhVien()
         {
             var maSv = GetMaSinhVienFromToken();
@@ -38,7 +38,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             var thongBaos = await _context.ChiTietThongBaos
                 .Where(ct => ct.MaSv == maSv)
-                .Join(_context.ThongBaos,
+                .Join(_context.ThongBaos
+                    .Where(tb => tb.LoaiThongBao == "Thay đổi lịch trình" || tb.LoaiThongBao == "Nhắc nhở hoạt động"), // Lấy cả hai loại
                     ct => ct.MaThongBao,
                     tb => tb.MaThongBao,
                     (ct, tb) => new ThongBaoDTOSV
@@ -48,7 +49,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         NoiDung = tb.NoiDung,
                         NgayTao = tb.NgayTao,
                         DaDoc = ct.DaDoc ?? false,
-                        NgayDoc = ct.NgayDoc
+                        NgayDoc = ct.NgayDoc,
+                        LoaiThongBao = tb.LoaiThongBao // Thêm trường để phân biệt loại thông báo
                     })
                 .OrderByDescending(tb => tb.NgayTao)
                 .ToListAsync();

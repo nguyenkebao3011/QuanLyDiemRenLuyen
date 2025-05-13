@@ -28,7 +28,8 @@ public class ThongBaoScheduledService : BackgroundService
             try
             {
                 var now = DateTime.Now;
-                var nextRunTime = now.Date.AddDays(1).AddHours(6); // 6g sáng ngày mai
+                //var nextRunTime = now.Date.AddDays(1).AddHours(6); // 6g sáng ngày mai
+                var nextRunTime = now.Date.AddSeconds(5);
                 var delay = nextRunTime - now;
 
                 using var scope = _serviceProvider.CreateScope();
@@ -43,14 +44,14 @@ public class ThongBaoScheduledService : BackgroundService
                     await GuiThongBaoTruoc3NgayAsync(stoppingToken);
                 }
 
-                _logger.LogInformation($"[Service] Đợi đến {nextRunTime:HH:mm dd/MM/yyyy} để gửi thông báo tự động...");
+                _logger.LogInformation($"[Service] Đoi đen {nextRunTime:HH:mm dd/MM/yyyy} đe gui thong bao tu đong...");
                 await Task.Delay(delay, stoppingToken);
 
                 await GuiThongBaoTruoc3NgayAsync(stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi trong vòng lặp gửi thông báo.");
+                _logger.LogError(ex, "Lỗi trong vong lap gui thong bao.");
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken); // Retry nhẹ
             }
         }
@@ -113,7 +114,7 @@ public class ThongBaoScheduledService : BackgroundService
                     NoiDung = $"Bạn đã đăng ký hoạt động này, hoạt động bắt đầu vào ngày {hd.NgayBatDau?.ToString("dd/MM/yyyy") ?? "chưa xác định"}. [MaHoatDong:{hd.MaHoatDong}]",
                     NgayTao = DateTime.Now,
                     MaQl = maQl,
-                    LoaiThongBao = "TuDong",
+                    LoaiThongBao = "Nhắc nhở hoạt động",
                     TrangThai = "DaGui"
                 };
                 _context.ThongBaos.Add(thongBao);

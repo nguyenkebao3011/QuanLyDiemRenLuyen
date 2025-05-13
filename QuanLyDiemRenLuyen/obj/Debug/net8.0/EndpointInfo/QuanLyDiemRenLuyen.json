@@ -91,6 +91,18 @@
         }
       }
     },
+    "/api/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc": {
+      "get": {
+        "tags": [
+          "DangKyHoatDongs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemDanh/DanhSachHoatDong": {
       "get": {
         "tags": [
@@ -1089,155 +1101,6 @@
                   "items": {
                     "$ref": "#/components/schemas/HoatDong"
                   }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/HoatDongs/{id}": {
-      "get": {
-        "tags": [
-          "HoatDongs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "HoatDongs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "HoatDongs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/HoatDongs": {
-      "post": {
-        "tags": [
-          "HoatDongs"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/HoatDong"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HoatDong"
                 }
               }
             }
@@ -2910,7 +2773,7 @@
         }
       }
     },
-    "/api/ThongBaoHoatDong/sinhvien": {
+    "/api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho": {
       "get": {
         "tags": [
           "ThongBaoHoatDong"
@@ -4824,6 +4687,10 @@
           "NgayDoc": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "LoaiThongBao": {
+            "type": "string",
             "nullable": true
           }
         },

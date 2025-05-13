@@ -8,5 +8,8 @@
         public DateTime? NgayTao { get; set; }
         public bool DaDoc { get; set; }
         public DateTime? NgayDoc { get; set; }
+
+
+        public string LoaiThongBao { get; set; }
     }
 }

@@ -21,6 +21,7 @@ import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinSinhVien from "../../../components/SinhVien/views/ThongTinSinhVien";
 import HoatDongDaDangKy from "../../../components/SinhVien/views/HoatDongDaDangKy";
+import NotificationDropdown from "../../../components/SinhVien/views/NotificationDropdown";
 
 type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
 
@@ -329,8 +330,8 @@ const StudentDashboard: React.FC = () => {
             <div className="search-box">
               <input type="text" placeholder="Tìm kiếm..." />
             </div>
-            <div className="notification-icon">
-              <Bell size={20} />
+            <div>
+              <NotificationDropdown />
             </div>
             
           </div>

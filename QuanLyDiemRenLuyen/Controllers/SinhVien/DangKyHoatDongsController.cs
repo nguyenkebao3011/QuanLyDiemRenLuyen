@@ -290,5 +290,58 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok(new { count = lichSu.Count, data = lichSu });
         }
+        [HttpGet("danh-sach-dang-ky-da-ket-thuc")]
+        public async Task<IActionResult> XemDanhSachDangKyHoatDongDaKetThuc()
+        {
+            try
+            {
+                // Lấy MaSV từ token
+                var maSV = User.Identity.Name;
+                if (string.IsNullOrEmpty(maSV))
+                {
+                    return Unauthorized(new { message = "Không tìm thấy mã sinh viên trong token" });
+                }
+
+                // Kiểm tra xem sinh viên có tồn tại không
+                var sinhVien = await _context.SinhViens.AnyAsync(s => s.MaSV == maSV);
+                if (!sinhVien)
+                {
+                    return BadRequest(new { message = "Sinh viên không tồn tại" });
+                }
+
+                // Lấy danh sách đăng ký hoạt động của sinh viên (chỉ lấy các hoạt động đã kết thúc)
+                var danhSachDangKy = await _context.DangKyHoatDongs
+                    .Where(d => d.MaSv == maSV)
+                    .Join(_context.HoatDongs,
+                        dangKy => dangKy.MaHoatDong,
+                        hoatDong => hoatDong.MaHoatDong,
+                        (dangKy, hoatDong) => new
+                        {
+                            dangKy.MaHoatDong,
+                            hoatDong.TenHoatDong,
+                            NgayBatDau = hoatDong.NgayBatDau.HasValue ? hoatDong.NgayBatDau.Value.ToString("yyyy-MM-dd") : null,
+                            NgayKetThuc = hoatDong.NgayKetThuc.HasValue ? hoatDong.NgayKetThuc.Value.ToString("yyyy-MM-dd") : null,
+                            hoatDong.MoTa,
+                            diaDiem = hoatDong.DiaDiem,
+                            diemCong = hoatDong.DiemCong,
+                            soLuong = hoatDong.SoLuongToiDa,
+                            TrangThaiHoatDong = hoatDong.TrangThai,
+                            NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null
+                        })
+                    .Where(h => h.TrangThaiHoatDong == "Đã kết thúc") // Chỉ lấy hoạt động đã kết thúc
+                    .ToListAsync();
+
+                if (!danhSachDangKy.Any())
+                {
+                    return Ok(new { message = "Sinh viên chưa tham gia hoạt động nào đã kết thúc", data = new object[] { } });
+                }
+
+                return Ok(new { message = "Lấy danh sách đăng ký hoạt động đã kết thúc thành công", data = danhSachDangKy });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách đăng ký hoạt động đã kết thúc", error = ex.Message });
+            }
+        }
     }
 }

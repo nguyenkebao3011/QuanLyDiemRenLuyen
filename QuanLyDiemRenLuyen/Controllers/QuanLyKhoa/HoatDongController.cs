@@ -89,6 +89,11 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 return NotFound($"Không tìm thấy hoạt động với ID {id}.");
             }
 
+            // Lưu giá trị cũ để so sánh
+            var oldNgayBatDau = hoatDong.NgayBatDau;
+            var oldNgayKetThuc = hoatDong.NgayKetThuc;
+            var oldDiaDiem = hoatDong.DiaDiem;
+
             // Cho phép cập nhật trường TrạngThái bất cứ lúc nào 
             hoatDong.TrangThai = hoatDongUpdate.TrangThai;
 
@@ -111,8 +116,49 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 hoatDong.MaQl = hoatDongUpdate.MaQl;
             }
 
+            // Kiểm tra thay đổi thời gian hoặc địa điểm
+            bool hasChanges = oldNgayBatDau != hoatDong.NgayBatDau ||
+                              oldNgayKetThuc != hoatDong.NgayKetThuc ||
+                              oldDiaDiem != hoatDong.DiaDiem;
+
             try
             {
+                if (hasChanges)
+                {
+                    // Tạo thông báo
+                    var thongBao = new ThongBao
+                    {
+                        TieuDe = $"Cập nhật lịch trình: {hoatDong.TenHoatDong}",
+                        NoiDung = $"Hoạt động {hoatDong.TenHoatDong} đã được cập nhật." +
+                                  $"Thời gian: {hoatDong.NgayBatDau:dd/MM/yyyy} - {hoatDong.NgayKetThuc:dd/MM/yyyy}" +
+                                  $"Địa điểm: {hoatDong.DiaDiem}" +
+                                  $"Vì một số lý do, lịch trình hoạt động đã thay đổi. Rất mong các bạn sinh viên tham gia theo đúng kế hoạch. Trân Trọng.",
+                        NgayTao = DateTime.Now,
+                        MaQl = hoatDong.MaQl, // Lấy từ HoatDong
+                        LoaiThongBao = "Thay đổi lịch trình",
+                        TrangThai = "Đã đăng"
+                    };
+                    _context.ThongBaos.Add(thongBao);
+                    await _context.SaveChangesAsync(); // Lưu để lấy MaThongBao
+
+                    // Lấy danh sách sinh viên đăng ký thành công
+                    var sinhViens = await _context.DangKyHoatDongs
+                        .Where(dk => dk.MaHoatDong == id && dk.TrangThai == "Đăng ký thành công")
+                        .Select(dk => dk.MaSv)
+                        .ToListAsync();
+
+                    // Tạo chi tiết thông báo cho từng sinh viên
+                    var chiTietThongBaos = sinhViens.Select(maSv => new ChiTietThongBao
+                    {
+                        MaThongBao = thongBao.MaThongBao,
+                        MaSv = maSv,
+                        DaDoc = false,
+                        NgayDoc = null
+                    }).ToList();
+
+                    _context.ChiTietThongBaos.AddRange(chiTietThongBaos);
+                }
+
                 _context.HoatDongs.Update(hoatDong);
                 await _context.SaveChangesAsync();
                 return Ok(hoatDong);
