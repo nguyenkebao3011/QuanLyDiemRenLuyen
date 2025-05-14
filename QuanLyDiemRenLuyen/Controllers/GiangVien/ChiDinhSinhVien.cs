@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.Models;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace QuanLyDiemRenLuyen.Controllers.GiangVien
 {
@@ -10,8 +11,8 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
     [ApiController]
     public class AssignStudentsRequest
     {
-        public string MaHoatDong { get; set; }
-        public string[] MaSVs { get; set; }
+        public string MaHoatDong { get; set; } // Có thể để nullable hoặc bỏ nếu không dùng
+        public List<string> MaSVs { get; set; }
     }
     public class ChiDinhSinhVien : ControllerBase
     {
@@ -25,6 +26,11 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
         [HttpPost("chi-dinh/{maHoatDong}/cho-sinh-vien")]
         public async Task<IActionResult> AssignStudents(string maHoatDong, [FromBody] AssignStudentsRequest request)
         {
+            if (request == null || request.MaSVs == null || !request.MaSVs.Any())
+            {
+                return BadRequest("Danh sách mã sinh viên không hợp lệ.");
+            }
+
             // Lấy email giảng viên từ token
             var giangVienEmail = User.FindFirst(ClaimTypes.Name)?.Value;
             if (string.IsNullOrEmpty(giangVienEmail))
@@ -46,7 +52,9 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                 return BadRequest($"Sinh viên {string.Join(", ", invalidStudents)} không thuộc lớp do giảng viên quản lý");
 
             // Lấy thông tin hoạt động
-            int maHoatDongInt = int.Parse(maHoatDong);
+            if (!int.TryParse(maHoatDong, out int maHoatDongInt))
+                return BadRequest("Mã hoạt động không hợp lệ.");
+
             var hoatDong = await _context.HoatDongs
                 .FirstOrDefaultAsync(hd => hd.MaHoatDong == maHoatDongInt);
             if (hoatDong == null)
@@ -55,15 +63,30 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
             // Kiểm tra trạng thái hoạt động
             if (hoatDong.TrangThai == "Đã kết thúc" || hoatDong.TrangThai == "Đã hủy")
                 return BadRequest("Hoạt động đã kết thúc hoặc bị hủy, không thể chỉ định sinh viên");
-            //  Kiểm tra sinh viên đã đăng ký hoạt động này chưa
+
+            // Kiểm tra sinh viên đã đăng ký hoạt động này chưa
             var sinhVienDaDangKy = await _context.DangKyHoatDongs
                 .Where(dk => dk.MaHoatDong == maHoatDongInt && request.MaSVs.Contains(dk.MaSv))
                 .Select(dk => dk.MaSv)
                 .ToListAsync();
-
             if (sinhVienDaDangKy.Any())
             {
-                return BadRequest($"Các sinh viên sau đã đăng ký hoạt động này rồi: {string.Join(", ", sinhVienDaDangKy)}");
+                return BadRequest($"Các sinh viên sau đã được chỉ định cho hoạt động này rồi: {string.Join(", ", sinhVienDaDangKy)}");
+            }
+            // Kiểm tra giảng viên đã chỉ định sinh viên cho hoạt động này chưa
+            var maSinhVienDaChiDinh = await _context.ChiTietThongBaos
+                 .Where(ct => request.MaSVs.Contains(ct.MaSv) && ct.MaGV == giangVien.MaGv)
+                 .Join(_context.ThongBaos,
+                     ct => ct.MaThongBao,
+                     tb => tb.MaThongBao,
+                     (ct, tb) => new { ct.MaSv, tb.NoiDung })
+                 .Where(x => x.NoiDung.Contains($"[MaHoatDong:{maHoatDongInt}]"))
+                 .Select(x => x.MaSv)
+                 .ToListAsync();
+
+            if (maSinhVienDaChiDinh.Any())
+            {
+                return BadRequest($"Bạn đã chỉ định sinh viên vừa chọn cho hoạt động này rồi. Hãy thử lại");
             }
             // Tạo thông báo
             var thongBao = new ThongBao
@@ -85,7 +108,8 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
                 {
                     MaThongBao = thongBao.MaThongBao,
                     MaSv = maSV,
-                    DaDoc = false
+                    DaDoc = false,
+                    MaGV = giangVien.MaGv
                 };
                 _context.ChiTietThongBaos.Add(chiTiet);
             }

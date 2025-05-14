@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../css/ChiDinhSinhVien.css";
 
 type HoatDong = {
   MaHoatDong: number;
@@ -68,6 +69,7 @@ const HoatDongList: React.FC = () => {
   const [assignError, setAssignError] = useState<string | null>(null);
   const [assignSuccess, setAssignSuccess] = useState<string | null>(null);
   const [assignLoading, setAssignLoading] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
   // Hàm lấy token từ localStorage
   const getToken = () => localStorage.getItem("token");
@@ -82,7 +84,6 @@ const HoatDongList: React.FC = () => {
         maLop: cls.MaLop,
         tenLop: cls.TenLop,
       }));
-      console.log("Danh sách lớp đã ánh xạ:", mappedClasses);
       setClasses(mappedClasses);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách lớp:", error);
@@ -110,7 +111,6 @@ const HoatDongList: React.FC = () => {
         tenLop: student.TenLop,
         anhDaiDien: student.AnhDaiDien,
       }));
-      console.log("Danh sách sinh viên đã ánh xạ:", mappedStudents);
       setStudents(mappedStudents);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách sinh viên:", error);
@@ -121,7 +121,6 @@ const HoatDongList: React.FC = () => {
   // Hàm mở modal chỉ định sinh viên
   const handleAssignClick = (hoatDong: HoatDong) => {
     const token = getToken();
-    console.log("Token:", token);
     if (!token) {
       setAssignError("Bạn cần đăng nhập để chỉ định sinh viên.");
       setShowAssignModal(true);
@@ -154,35 +153,70 @@ const HoatDongList: React.FC = () => {
     setAssignSuccess(null);
   };
 
+  // Hàm xử lý chọn tất cả sinh viên
+  const handleSelectAll = () => {
+    if (!selectedClass) return;
+
+    const studentsInClass = students.filter((student) => student.maLop === selectedClass);
+    const allSelected = studentsInClass.every((student) =>
+      selectedStudents.includes(student.maSV)
+    );
+
+    if (allSelected) {
+      setSelectedStudents([]);
+    } else {
+      const newSelectedStudents = studentsInClass.map((student) => student.maSV);
+      setSelectedStudents(newSelectedStudents);
+    }
+    setAssignError(null);
+    setAssignSuccess(null);
+  };
+
   // Hàm gửi yêu cầu chỉ định
   const confirmAssign = async () => {
     if (!assignHoatDong || selectedStudents.length === 0) {
       setAssignError("Vui lòng chọn ít nhất một sinh viên.");
+      console.log("Lỗi: Chưa chọn sinh viên hoặc hoạt động không hợp lệ.");
       return;
     }
 
     const token = getToken();
     if (!token) {
       setAssignError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+      console.log("Lỗi: Token không tồn tại.");
       return;
     }
 
     try {
       setAssignLoading(true);
+      const payload = {
+        MaHoatDong: String(assignHoatDong.MaHoatDong),
+        MaSVs: selectedStudents,
+      };
+      console.log("Gửi payload:", payload);
+
       const response = await axios.post(
         `http://localhost:5163/chi-dinh/${assignHoatDong.MaHoatDong}/cho-sinh-vien`,
-        { maHoatDong: assignHoatDong.MaHoatDong, maSVs: selectedStudents },
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log("API thành công:", response.data);
+
       setAssignSuccess("Chỉ định sinh viên thành công!");
+      setShowSuccessNotification(true);
+      console.log("Đã đặt showSuccessNotification = true");
+
       setTimeout(() => {
+        console.log("Ẩn thông báo và đóng modal...");
+        setShowSuccessNotification(false);
         setShowAssignModal(false);
         setAssignHoatDong(null);
         setAssignSuccess(null);
         setSelectedStudents([]);
         setSelectedClass("");
-      }, 1500);
+      }, 5000);
     } catch (error: any) {
+      console.error("Lỗi API:", error.response?.data || error.message);
       setAssignError(error.response?.data || "Lỗi khi chỉ định sinh viên.");
     } finally {
       setAssignLoading(false);
@@ -197,6 +231,7 @@ const HoatDongList: React.FC = () => {
     setAssignSuccess(null);
     setSelectedStudents([]);
     setSelectedClass("");
+    setShowSuccessNotification(false);
   };
 
   // Chức năng lọc hoạt động
@@ -270,13 +305,6 @@ const HoatDongList: React.FC = () => {
       console.error("Lỗi khi lấy dữ liệu:", err);
       setError(`API error (${err.response?.status || "unknown"}): ${err.message}`);
 
-      console.log("Chi tiết lỗi:", {
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        responseData: err.response?.data,
-        url: apiUrl,
-      });
-
       const alternativeEndpoints = [
         "http://localhost:5163/api/HoatDongs",
         "http://localhost:5163/api/HoatDong/lay-danh-sach-hoat-dong",
@@ -288,7 +316,6 @@ const HoatDongList: React.FC = () => {
         if (endpoint === apiUrl) continue;
 
         try {
-          console.log(`Thử với endpoint: ${endpoint}`);
           const altResponse = await axios.get(endpoint, {
             headers: {
               "Content-Type": "application/json",
@@ -305,7 +332,6 @@ const HoatDongList: React.FC = () => {
             setError(null);
             setApiUrl(endpoint);
             dataFetched = true;
-            console.log(`Endpoint hoạt động: ${endpoint}`);
             break;
           }
         } catch (altErr) {
@@ -328,7 +354,6 @@ const HoatDongList: React.FC = () => {
             TrangThai: "Sắp diễn ra",
             ThoiGianDienRa: "1000",
           },
-        
         ]);
       }
     } finally {
@@ -474,10 +499,10 @@ const HoatDongList: React.FC = () => {
 
       {/* Modal xem chi tiết */}
       {showDetailModal && selectedDetailHoatDong && (
-        <div className="modal-overlay" style={styles.modalOverlay}>
-          <div className="modal-content" style={styles.modalContent}>
-            <h3 className="modal-title" style={styles.modalTitle}>Chi tiết hoạt động</h3>
-            <div className="modal-body" style={styles.modalBody}>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">Chi tiết hoạt động</h3>
+            <div className="modal-body">
               <p>
                 <strong>Tên hoạt động:</strong> {selectedDetailHoatDong.TenHoatDong}
               </p>
@@ -502,8 +527,8 @@ const HoatDongList: React.FC = () => {
                 <strong>Quy định về đồng phục: </strong> Đối với các hoạt động trong trường: Các bạn vui lòng thực hiện đúng đồng phục (áo sơ mi, áo thể chất, áo khoa,...). Đối với các hoạt động ngoài trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà trường để thuận tiện cho công tác quản lý điểm danh sinh viên. Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù hợp với hoạt động.
               </p>
             </div>
-            <div className="modal-footer" style={styles.modalFooter}>
-              <button onClick={closeDetailModal} className="btn-cancel" style={styles.btnCancel}>
+            <div className="modal-footer">
+              <button onClick={closeDetailModal} className="btn-cancel">
                 Đóng
               </button>
             </div>
@@ -513,131 +538,184 @@ const HoatDongList: React.FC = () => {
 
       {/* Modal chỉ định sinh viên */}
       {showAssignModal && (
-        <div className="modal-overlay" style={styles.modalOverlay}>
-          <div className="modal-content modal-assign-content" style={{ ...styles.modalContent, width: '90%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto' }}>
-            <h3 className="modal-title" style={styles.modalTitle}>Chỉ định sinh viên</h3>
+        <div className="asn-modal-overlay">
+          <div className="asn-modal-container">
+            <div className="asn-modal-header">
+              <h3 className="asn-modal-title">Chỉ định sinh viên</h3>
+              <button className="asn-close-button" onClick={cancelAssign}>×</button>
+            </div>
+
             {assignHoatDong ? (
               <>
-                <div className="modal-body" style={styles.modalBody}>
-                  <p><strong>Hoạt động:</strong> {assignHoatDong.TenHoatDong}</p>
-                  <p><strong>Mã hoạt động:</strong> {assignHoatDong.MaHoatDong}</p>
+                <div className="asn-modal-body">
+                  <div className="asn-activity-info">
+                    <div className="asn-info-item">
+                      <span className="asn-info-label">Hoạt động:</span>
+                      <span className="asn-info-value">{assignHoatDong.TenHoatDong}</span>
+                    </div>
+                    <div className="asn-info-item">
+                      <span className="asn-info-label">Mã hoạt động:</span>
+                      <span className="asn-info-value">{assignHoatDong.MaHoatDong}</span>
+                    </div>
+                  </div>
 
                   {/* Chọn lớp */}
-                  <div className="form-group" style={styles.formGroup}>
-                    <label htmlFor="class-select" style={styles.label}>Chọn lớp:</label>
-                    <select
-                      id="class-select"
-                      value={selectedClass}
-                      onChange={handleClassChange}
-                      disabled={assignLoading}
-                      style={styles.select}
-                    >
-                      <option value="">-- Chọn lớp --</option>
-                      {classes.map((cls) => (
-                        <option key={cls.maLop} value={cls.maLop}>
-                          {cls.tenLop} ({cls.maLop})
-                        </option>
-                      ))}
-                    </select>
+                  <div className="asn-form-group">
+                    <label htmlFor="class-select" className="asn-form-label">
+                      Chọn lớp:
+                    </label>
+                    <div className="asn-select-wrapper">
+                      <select
+                        id="class-select"
+                        value={selectedClass}
+                        onChange={handleClassChange}
+                        disabled={assignLoading}
+                        className="asn-select"
+                      >
+                        <option value="">-- Chọn lớp --</option>
+                        {classes.map((cls) => (
+                          <option key={cls.maLop} value={cls.maLop}>
+                            {cls.tenLop} ({cls.maLop})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   {assignError && (
-                    <div style={styles.errorMessage}>
+                    <div className="asn-error-message">
                       <span>{assignError}</span>
                     </div>
                   )}
+
                   {classes.length === 0 && !assignError && (
-                    <div style={styles.errorMessage}>
+                    <div className="asn-notice-message">
                       <span>Không có lớp nào để hiển thị.</span>
                     </div>
                   )}
 
                   {/* Danh sách sinh viên */}
-                  <div className="students-table" style={styles.studentsTable}>
-                    <h4 style={styles.h4}>
-                      Danh sách sinh viên {selectedClass ? `lớp ${classes.find(c => c.maLop === selectedClass)?.tenLop}` : ''}
-                    </h4>
-                    <table style={styles.table}>
-                      <thead>
-                        <tr>
-                          <th style={styles.th}>Chọn</th>
-                          <th style={styles.th}>Mã SV</th>
-                          <th style={styles.th}>Họ tên</th>
-                          <th style={styles.th}>Email</th>
-                          <th style={styles.th}>Số điện thoại</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedClass ? (
-                          students.filter((student) => student.maLop === selectedClass).length === 0 ? (
-                            <tr>
-                              <td colSpan={5} style={styles.td}>Không có sinh viên trong lớp này.</td>
-                            </tr>
-                          ) : (
-                            students
-                              .filter((student) => student.maLop === selectedClass)
-                              .map((student) => (
-                                <tr key={student.maSV}>
-                                  <td style={styles.td}>
-                                    <input
-                                      type="checkbox"
-                                      checked={selectedStudents.includes(student.maSV)}
-                                      onChange={() => handleStudentSelect(student.maSV)}
-                                      disabled={assignLoading}
-                                      style={styles.checkbox}
-                                    />
-                                  </td>
-                                  <td style={styles.td}>{student.maSV}</td>
-                                  <td style={styles.td}>{student.hoTen}</td>
-                                  <td style={styles.td}>{student.email}</td>
-                                  <td style={styles.td}>{student.soDienThoai}</td>
-                                </tr>
-                              ))
-                          )
-                        ) : (
+                  <div className="asn-students-section">
+                    <div className="asn-section-header">
+                      <h4 className="asn-section-title">
+                        Danh sách sinh viên {selectedClass ? `lớp ${classes.find(c => c.maLop === selectedClass)?.tenLop}` : ''}
+                      </h4>
+
+                      {selectedClass && students.filter((student) => student.maLop === selectedClass).length > 0 && (
+                        <div className="asn-actions">
+                          <button
+                            className="asn-select-all-btn"
+                            onClick={handleSelectAll}
+                            disabled={assignLoading}
+                          >
+                            {students.filter((student) => student.maLop === selectedClass).every((student) =>
+                              selectedStudents.includes(student.maSV)
+                            ) ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="asn-table-container">
+                      <table className="asn-table">
+                        <thead>
                           <tr>
-                            <td colSpan={5} style={styles.td}>Vui lòng chọn lớp để xem sinh viên.</td>
+                            <th className="asn-th asn-th-checkbox">Chọn</th>
+                            <th className="asn-th">Mã SV</th>
+                            <th className="asn-th">Họ tên</th>
+                            <th className="asn-th">Email</th>
+                            <th className="asn-th">Số điện thoại</th>
                           </tr>
-                        )}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {selectedClass ? (
+                            students.filter((student) => student.maLop === selectedClass).length === 0 ? (
+                              <tr>
+                                <td colSpan={5} className="asn-td-no-data">Không có sinh viên trong lớp này.</td>
+                              </tr>
+                            ) : (
+                              students
+                                .filter((student) => student.maLop === selectedClass)
+                                .map((student) => (
+                                  <tr key={student.maSV} className={selectedStudents.includes(student.maSV) ? "asn-tr-selected" : ""}>
+                                    <td className="asn-td asn-td-checkbox">
+                                      <label className="asn-checkbox-container">
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedStudents.includes(student.maSV)}
+                                          onChange={() => handleStudentSelect(student.maSV)}
+                                          disabled={assignLoading}
+                                          className="asn-checkbox"
+                                        />
+                                        <span className="asn-checkmark"></span>
+                                      </label>
+                                    </td>
+                                    <td className="asn-td">{student.maSV}</td>
+                                    <td className="asn-td">{student.hoTen}</td>
+                                    <td className="asn-td">{student.email}</td>
+                                    <td className="asn-td">{student.soDienThoai}</td>
+                                  </tr>
+                                ))
+                            )
+                          ) : (
+                            <tr>
+                              <td colSpan={5} className="asn-td-message">Vui lòng chọn lớp để xem sinh viên.</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
-                  {/* Thông báo thành công hoặc lỗi */}
+                  {/* Hiển thị thông báo thành công trong modal */}
                   {assignSuccess && (
-                    <div style={styles.successMessage}>
+                    <div className="asn-success-message">
                       <span>{assignSuccess}</span>
                     </div>
                   )}
                 </div>
+
+                <div className="asn-modal-footer">
+                  <div className="asn-selected-count">
+                    Đã chọn: <span className="asn-count-number">{selectedStudents.length}</span> sinh viên
+                  </div>
+                  <div className="asn-footer-buttons">
+                    <button
+                      className="asn-cancel-btn"
+                      onClick={cancelAssign}
+                      disabled={assignLoading}
+                    >
+                      Hủy
+                    </button>
+                    <button
+                      className="asn-assign-btn"
+                      onClick={confirmAssign}
+                      disabled={assignLoading || !selectedClass || selectedStudents.length === 0}
+                    >
+                      {assignLoading ? (
+                        <span className="asn-loading-spinner"></span>
+                      ) : (
+                        "Chỉ định"
+                      )}
+                    </button>
+                  </div>
+                </div>
               </>
             ) : (
-              <p className="modal-body" style={styles.modalBody}>Vui lòng đăng nhập để tiếp tục.</p>
-            )}
-
-            {/* Nút điều khiển */}
-            {!assignSuccess && (
-              <div className="modal-footer" style={styles.modalFooter}>
-                <button
-                  onClick={cancelAssign}
-                  className="btn-cancel"
-                  disabled={assignLoading}
-                  style={styles.btnCancel}
-                >
-                  Hủy
-                </button>
-                {assignHoatDong && (
-                  <button
-                    onClick={confirmAssign}
-                    className="btn-confirm"
-                    disabled={assignLoading || !selectedClass}
-                    style={styles.btnConfirm}
-                  >
-                    {assignLoading ? 'Đang xử lý...' : 'Chỉ định'}
-                  </button>
-                )}
+              <div className="asn-loading-container">
+                <div className="asn-loading-spinner"></div>
+                <p>Đang tải thông tin...</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Thông báo thành công toàn màn hình */}
+      {showSuccessNotification && (
+        <div className="asn-success-notification">
+          <div className="asn-success-content">
+            <span>{assignSuccess || "Chỉ định sinh viên thành công!"}</span>
           </div>
         </div>
       )}
@@ -741,119 +819,6 @@ const HoatDongList: React.FC = () => {
       )}
     </div>
   );
-};
-
-const styles = {
-  modalOverlay: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  modalContent: {
-    background: '#fff',
-    padding: '20px',
-    borderRadius: '8px',
-    width: '90%',
-    maxWidth: '500px',
-    position: 'relative' as const,
-  },
-  modalTitle: {
-    marginBottom: '15px',
-    color: '#333',
-  },
-  modalBody: {
-    marginBottom: '20px',
-  },
-  modalFooter: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '10px',
-  },
-  btnCancel: {
-    padding: '8px 16px',
-    backgroundColor: '#dc3545',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  btnConfirm: {
-    padding: '8px 16px',
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  formGroup: {
-    marginBottom: '15px',
-  },
-  label: {
-    display: 'block',
-    fontWeight: 'bold' as const,
-    marginBottom: '5px',
-    color: '#555',
-  },
-  select: {
-    width: '100%',
-    padding: '8px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '14px',
-  },
-  studentsTable: {
-    marginTop: '15px',
-  },
-  h4: {
-    marginBottom: '10px',
-    color: '#333',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse' as const,
-    backgroundColor: '#fff',
-    border: '1px solid #ddd',
-  },
-  th: {
-    padding: '8px',
-    textAlign: 'left' as const,
-    borderBottom: '1px solid #ddd',
-    backgroundColor: '#f4f4f4',
-    fontWeight: 'bold' as const,
-    color: '#333',
-  },
-  td: {
-    padding: '8px',
-    textAlign: 'left' as const,
-    borderBottom: '1px solid #ddd',
-  },
-  checkbox: {
-    width: '16px',
-    height: '16px',
-  },
-  successMessage: {
-    backgroundColor: '#d4edda',
-    color: '#155724',
-    padding: '10px',
-    borderRadius: '4px',
-    marginTop: '10px',
-    textAlign: 'center' as const,
-  },
-  errorMessage: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    padding: '10px',
-    borderRadius: '4px',
-    marginTop: '10px',
-    textAlign: 'center' as const,
-  },
 };
 
 export default HoatDongList;

@@ -1,105 +1,526 @@
-.assign-students-container {
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
+/* Modal Chỉ Định Sinh Viên - Styles */
+
+/* Base modal styles */
+.asn-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  backdrop-filter: blur(3px);
+  animation: asn-fade-in 0.3s ease-out;
+}
+
+.asn-modal-container {
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: asn-slide-in 0.3s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-h2 {
-  text-align: center;
+/* Modal header */
+.asn-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.asn-modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.asn-close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.asn-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Modal body */
+.asn-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Activity info section */
+.asn-activity-info {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-left: 4px solid #1a73e8;
+}
+
+.asn-info-item {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.asn-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.asn-info-label {
+  font-weight: 600;
+  color: #555;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.asn-info-value {
   color: #333;
+  flex: 1;
+}
+
+/* Form elements */
+.asn-form-group {
   margin-bottom: 20px;
 }
 
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
+.asn-form-label {
   display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #424242;
+}
+
+.asn-select-wrapper {
+  position: relative;
+}
+
+.asn-select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #555;
+  pointer-events: none;
+}
+
+.asn-select {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  background-color: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.asn-select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
+.asn-select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Error & notice messages */
+.asn-error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border-left: 4px solid #d32f2f;
+}
+
+.asn-notice-message {
+  background-color: #e8f4fd;
+  color: #0277bd;
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border-left: 4px solid #0277bd;
+}
+
+/* Students section */
+.asn-students-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.asn-section-header {
+  background-color: #f5f7fa;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.asn-section-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.asn-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.asn-select-all-btn {
+  background-color: transparent;
+  border: 1px solid #1a73e8;
+  color: #1a73e8;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.asn-select-all-btn:hover {
+  background-color: rgba(26, 115, 232, 0.1);
+}
+
+.asn-select-all-btn:disabled {
+  border-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Table container and table styles */
+.asn-table-container {
+  overflow-x: auto;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.asn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.asn-th {
+  background-color: #f5f7fa;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #424242;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.asn-th-checkbox {
+  width: 50px;
+  text-align: center;
+}
+
+.asn-td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.asn-td-checkbox {
+  text-align: center;
+}
+
+.asn-tr-selected {
+  background-color: rgba(26, 115, 232, 0.05);
+}
+
+.asn-tr-selected:hover {
+  background-color: rgba(26, 115, 232, 0.1);
+}
+
+.asn-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.asn-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.asn-td-no-data, .asn-td-message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Custom checkbox style */
+.asn-checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  user-select: none;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.asn-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.asn-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.asn-checkbox-container:hover .asn-checkmark {
+  border-color: #1a73e8;
+}
+
+.asn-checkbox:checked ~ .asn-checkmark {
+  background-color: #1a73e8;
+  border-color: #1a73e8;
+}
+
+.asn-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.asn-checkbox:checked ~ .asn-checkmark:after {
+  display: block;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.asn-checkbox:disabled ~ .asn-checkmark {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Modal footer */
+.asn-modal-footer {
+  padding: 15px 20px;
+  background-color: #f5f7fa;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.asn-selected-count {
+  font-size: 0.95rem;
   color: #555;
 }
 
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
+.asn-count-number {
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.asn-footer-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.asn-cancel-btn {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #555;
+  padding: 8px 16px;
   border-radius: 4px;
-  font-size: 16px;
-}
-
-.students-table {
-  margin-bottom: 20px;
-}
-
-.students-table h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-}
-
-th, td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-  color: #333;
-}
-
-td input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-}
-
-.assign-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.assign-button:hover {
-  background-color: #218838;
+.asn-cancel-btn:hover {
+  background-color: #e0e0e0;
 }
 
-.assign-button:disabled {
-  background-color: #6c757d;
+.asn-assign-btn {
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+}
+
+.asn-assign-btn:hover {
+  background-color: #0d47a1;
+}
+
+.asn-assign-btn:disabled {
+  background-color: #bdbdbd;
   cursor: not-allowed;
 }
 
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  text-align: center;
+/* Loading spinner */
+.asn-loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: asn-spin 1s linear infinite;
 }
 
-.success-message {
+.asn-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.asn-loading-container .asn-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+  margin-bottom: 15px;
+  border-top-color: #1a73e8;
+  border-color: rgba(26, 115, 232, 0.2);
+  border-top-color: #1a73e8;
+}
+
+.asn-loading-container p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes asn-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes asn-slide-in {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px); 
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0); 
+  }
+}
+
+@keyframes asn-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .asn-modal-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .asn-footer-buttons {
+    width: 100%;
+  }
+  
+  .asn-cancel-btn, .asn-assign-btn {
+    flex: 1;
+  }
+  
+  .asn-info-item {
+    flex-direction: column;
+  }
+  
+  .asn-info-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .asn-success-message {
   background-color: #d4edda;
   color: #155724;
   padding: 10px;
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin: 10px 0;
   text-align: center;
+  font-weight: bold;
+}
+
+.asn-success-notification {
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  padding: 15px 30px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  z-index: 2000 !important;
+  font-weight: bold !important;
+  display: block !important;
+}
 }
