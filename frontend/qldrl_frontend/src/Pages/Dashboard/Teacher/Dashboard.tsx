@@ -15,9 +15,11 @@ import { Facebook, Mail, Phone, MapPin, Globe } from "react-feather";
 import XemHoatDong from "../../../components/GiangVien/views/XemHoatDong";
 import DanhSachSinhVien from "../../../components/GiangVien/views/DanhSachSinhVien";
 import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
-import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
+
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
 import  ThongKe  from "../../../components/GiangVien/views/ThongKe";
+import  NotificationDropdown  from "../../../components/SinhVien/views/NotificationDropdown";
+
 
 // Định nghĩa kiểu Lecturer
 interface Lecturer {
@@ -344,8 +346,8 @@ const TeacherDashboard: React.FC = () => {
             <div className="search-box">
               <input type="text" placeholder="Tìm kiếm..." />
             </div>
-            <div className="notification-icon">
-              <Bell size={20} />
+            <div >
+              <NotificationDropdown />
             </div>
           </div>
           <div className="avatar-menu-container" ref={avatarRef}>

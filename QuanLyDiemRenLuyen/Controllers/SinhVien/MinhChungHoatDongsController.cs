@@ -25,7 +25,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             _context = context;
             _environment = environment;
         }
-        [HttpPost("submit")]
+        [HttpPost("gui-minh-chung")]
         public async Task<IActionResult> SubmitMinhChung([FromForm] PhanHoiDTO dto)
         {
             if (!ModelState.IsValid)

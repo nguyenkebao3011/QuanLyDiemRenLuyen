@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
 
 type HoatDong = {
@@ -15,6 +14,26 @@ type HoatDong = {
   DiemCong: number;
   TrangThai: string;
   ThoiGianDienRa: string;
+};
+
+type Class = {
+  maLop: string;
+  tenLop: string;
+};
+
+type Student = {
+  maSV: string;
+  hoTen: string;
+  maLop: string;
+  email: string;
+  soDienThoai: string;
+  diaChi: string;
+  ngaySinh: string;
+  gioiTinh: string;
+  maVaiTro: number;
+  trangThai: string;
+  tenLop: string;
+  anhDaiDien: string | null;
 };
 
 const HoatDongList: React.FC = () => {
@@ -35,16 +54,150 @@ const HoatDongList: React.FC = () => {
   const [trangThai, setTrangThai] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
 
-
-
   // State cho modal xem chi tiết
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDetailHoatDong, setSelectedDetailHoatDong] = useState<HoatDong | null>(null);
 
+  // State cho modal chỉ định sinh viên
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [assignHoatDong, setAssignHoatDong] = useState<HoatDong | null>(null);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [assignError, setAssignError] = useState<string | null>(null);
+  const [assignSuccess, setAssignSuccess] = useState<string | null>(null);
+  const [assignLoading, setAssignLoading] = useState(false);
+
   // Hàm lấy token từ localStorage
   const getToken = () => localStorage.getItem("token");
 
- 
+  // Hàm lấy danh sách lớp
+  const fetchClasses = async () => {
+    try {
+      const response = await axios.get('http://localhost:5163/api/Lops/lay_danh_sach_lop_theo_giang_vien', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const mappedClasses = response.data.map((cls: any) => ({
+        maLop: cls.MaLop,
+        tenLop: cls.TenLop,
+      }));
+      console.log("Danh sách lớp đã ánh xạ:", mappedClasses);
+      setClasses(mappedClasses);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách lớp:", error);
+      setAssignError('Lỗi khi lấy danh sách lớp.');
+    }
+  };
+
+  // Hàm lấy danh sách sinh viên
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get('http://localhost:5163/api/SinhVien/lay-sinhvien-theo-vai-tro', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const mappedStudents = response.data.map((student: any) => ({
+        maSV: student.MaSV,
+        hoTen: student.HoTen,
+        maLop: student.MaLop,
+        email: student.Email,
+        soDienThoai: student.SoDienThoai,
+        diaChi: student.DiaChi,
+        ngaySinh: student.NgaySinh,
+        gioiTinh: student.GioiTinh,
+        maVaiTro: student.MaVaiTro,
+        trangThai: student.TrangThai,
+        tenLop: student.TenLop,
+        anhDaiDien: student.AnhDaiDien,
+      }));
+      console.log("Danh sách sinh viên đã ánh xạ:", mappedStudents);
+      setStudents(mappedStudents);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách sinh viên:", error);
+      setAssignError('Lỗi khi lấy danh sách sinh viên.');
+    }
+  };
+
+  // Hàm mở modal chỉ định sinh viên
+  const handleAssignClick = (hoatDong: HoatDong) => {
+    const token = getToken();
+    console.log("Token:", token);
+    if (!token) {
+      setAssignError("Bạn cần đăng nhập để chỉ định sinh viên.");
+      setShowAssignModal(true);
+      return;
+    }
+    setAssignHoatDong(hoatDong);
+    setShowAssignModal(true);
+    setAssignError(null);
+    setAssignSuccess(null);
+    setSelectedClass("");
+    setSelectedStudents([]);
+    fetchClasses();
+    fetchStudents();
+  };
+
+  // Hàm xử lý chọn lớp
+  const handleClassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedClass(event.target.value);
+    setSelectedStudents([]);
+    setAssignError(null);
+    setAssignSuccess(null);
+  };
+
+  // Hàm xử lý chọn sinh viên
+  const handleStudentSelect = (maSV: string) => {
+    setSelectedStudents((prev) =>
+      prev.includes(maSV) ? prev.filter((id) => id !== maSV) : [...prev, maSV]
+    );
+    setAssignError(null);
+    setAssignSuccess(null);
+  };
+
+  // Hàm gửi yêu cầu chỉ định
+  const confirmAssign = async () => {
+    if (!assignHoatDong || selectedStudents.length === 0) {
+      setAssignError("Vui lòng chọn ít nhất một sinh viên.");
+      return;
+    }
+
+    const token = getToken();
+    if (!token) {
+      setAssignError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+      return;
+    }
+
+    try {
+      setAssignLoading(true);
+      const response = await axios.post(
+        `http://localhost:5163/chi-dinh/${assignHoatDong.MaHoatDong}/cho-sinh-vien`,
+        { maHoatDong: assignHoatDong.MaHoatDong, maSVs: selectedStudents },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setAssignSuccess("Chỉ định sinh viên thành công!");
+      setTimeout(() => {
+        setShowAssignModal(false);
+        setAssignHoatDong(null);
+        setAssignSuccess(null);
+        setSelectedStudents([]);
+        setSelectedClass("");
+      }, 1500);
+    } catch (error: any) {
+      setAssignError(error.response?.data || "Lỗi khi chỉ định sinh viên.");
+    } finally {
+      setAssignLoading(false);
+    }
+  };
+
+  // Hàm đóng modal chỉ định
+  const cancelAssign = () => {
+    setShowAssignModal(false);
+    setAssignHoatDong(null);
+    setAssignError(null);
+    setAssignSuccess(null);
+    setSelectedStudents([]);
+    setSelectedClass("");
+  };
 
   // Chức năng lọc hoạt động
   const applyFilters = async () => {
@@ -175,19 +328,7 @@ const HoatDongList: React.FC = () => {
             TrangThai: "Sắp diễn ra",
             ThoiGianDienRa: "1000",
           },
-          {
-            MaHoatDong: 2,
-            TenHoatDong: "Hoạt động mẫu 2",
-            MoTa: "Hoạt động thử nghiệm khi API gặp lỗi",
-            NgayBatDau: new Date().toISOString(),
-            NgayKetThuc: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-            DiaDiem: "Hội trường",
-            SoLuongToiDa: 50,
-            SoLuongDaDangKy: 20,
-            DiemCong: 3,
-            TrangThai: "Đang diễn ra",
-            ThoiGianDienRa: "1000",
-          },
+        
         ]);
       }
     } finally {
@@ -200,7 +341,7 @@ const HoatDongList: React.FC = () => {
   }, [apiUrl]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentHoatDongs = hoatDongList.slice(startIndex, startIndex + itemsPerPage);
+  const currentHoatDungs = hoatDongList.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(hoatDongList.length / itemsPerPage) || 1;
 
   const formatDate = (dateString: string) => {
@@ -208,22 +349,19 @@ const HoatDongList: React.FC = () => {
     return date.toLocaleDateString("vi-VN");
   };
 
-  // Hàm định dạng thời gian diễn ra từ NgayBatDau và NgayKetThuc
   const formatThoiGianDienRa = (ngayBatDau: string, ngayKetThuc: string) => {
     const start = new Date(ngayBatDau);
     const end = new Date(ngayKetThuc);
     if (start.toDateString() !== end.toDateString()) return "Chưa xác định";
-    const formatTime = (date: Date) => date.toTimeString().slice(0, 5); // Lấy HH:mm
+    const formatTime = (date: Date) => date.toTimeString().slice(0, 5);
     return `${formatTime(start)}-${formatTime(end)}`;
   };
 
-  // Hàm mở modal xem chi tiết
   const handleViewDetail = (hoatDong: HoatDong) => {
     setSelectedDetailHoatDong(hoatDong);
     setShowDetailModal(true);
   };
 
-  // Hàm đóng modal xem chi tiết
   const closeDetailModal = () => {
     setShowDetailModal(false);
     setSelectedDetailHoatDong(null);
@@ -233,7 +371,6 @@ const HoatDongList: React.FC = () => {
     <div className="hoatdong-container">
       <h2 className="hoatdong-title">Danh sách hoạt động</h2>
 
-      {/* Toggle button cho bộ lọc */}
       <div className="filter-toggle">
         <button
           className="btn-toggle-filter"
@@ -243,7 +380,6 @@ const HoatDongList: React.FC = () => {
         </button>
       </div>
 
-      {/* Bộ lọc hoạt động */}
       {filterVisible && (
         <div className="filter-container">
           <h3 className="filter-title">Lọc hoạt động</h3>
@@ -267,11 +403,11 @@ const HoatDongList: React.FC = () => {
                   onChange={(e) => setTrangThai(e.target.value)}
                   className="filter-select"
                 >
-                  <option value="">Tất cả</option>
-                  <option value="Sắp diễn ra">CHƯA BẮT ĐẦU</option>
-                  <option value="Đang diễn ra">Đang diễn ra</option>
-                  <option value="Đã kết thúc">Đã kết thúc</option>
-                  <option value="Hủy bỏ">Hủy bỏ</option>
+                  <option key="tat-ca" value="">Tất cả</option>
+                  <option key="sap-dien-ra" value="Sắp diễn ra">CHƯA BẮT ĐẦU</option>
+                  <option key="dang-dien-ra" value="Đang diễn ra">Đang diễn ra</option>
+                  <option key="da-ket-thuc" value="Đã kết thúc">Đã kết thúc</option>
+                  <option key="huy-bo" value="Hủy bỏ">Hủy bỏ</option>
                 </select>
               </div>
             </div>
@@ -336,13 +472,12 @@ const HoatDongList: React.FC = () => {
         </div>
       )}
 
-      
       {/* Modal xem chi tiết */}
       {showDetailModal && selectedDetailHoatDong && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 className="modal-title">Chi tiết hoạt động</h3>
-            <div className="modal-body">
+        <div className="modal-overlay" style={styles.modalOverlay}>
+          <div className="modal-content" style={styles.modalContent}>
+            <h3 className="modal-title" style={styles.modalTitle}>Chi tiết hoạt động</h3>
+            <div className="modal-body" style={styles.modalBody}>
               <p>
                 <strong>Tên hoạt động:</strong> {selectedDetailHoatDong.TenHoatDong}
               </p>
@@ -367,8 +502,8 @@ const HoatDongList: React.FC = () => {
                 <strong>Quy định về đồng phục: </strong> Đối với các hoạt động trong trường: Các bạn vui lòng thực hiện đúng đồng phục (áo sơ mi, áo thể chất, áo khoa,...). Đối với các hoạt động ngoài trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà trường để thuận tiện cho công tác quản lý điểm danh sinh viên. Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù hợp với hoạt động.
               </p>
             </div>
-            <div className="modal-footer">
-              <button onClick={closeDetailModal} className="btn-cancel">
+            <div className="modal-footer" style={styles.modalFooter}>
+              <button onClick={closeDetailModal} className="btn-cancel" style={styles.btnCancel}>
                 Đóng
               </button>
             </div>
@@ -376,8 +511,139 @@ const HoatDongList: React.FC = () => {
         </div>
       )}
 
+      {/* Modal chỉ định sinh viên */}
+      {showAssignModal && (
+        <div className="modal-overlay" style={styles.modalOverlay}>
+          <div className="modal-content modal-assign-content" style={{ ...styles.modalContent, width: '90%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <h3 className="modal-title" style={styles.modalTitle}>Chỉ định sinh viên</h3>
+            {assignHoatDong ? (
+              <>
+                <div className="modal-body" style={styles.modalBody}>
+                  <p><strong>Hoạt động:</strong> {assignHoatDong.TenHoatDong}</p>
+                  <p><strong>Mã hoạt động:</strong> {assignHoatDong.MaHoatDong}</p>
+
+                  {/* Chọn lớp */}
+                  <div className="form-group" style={styles.formGroup}>
+                    <label htmlFor="class-select" style={styles.label}>Chọn lớp:</label>
+                    <select
+                      id="class-select"
+                      value={selectedClass}
+                      onChange={handleClassChange}
+                      disabled={assignLoading}
+                      style={styles.select}
+                    >
+                      <option value="">-- Chọn lớp --</option>
+                      {classes.map((cls) => (
+                        <option key={cls.maLop} value={cls.maLop}>
+                          {cls.tenLop} ({cls.maLop})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {assignError && (
+                    <div style={styles.errorMessage}>
+                      <span>{assignError}</span>
+                    </div>
+                  )}
+                  {classes.length === 0 && !assignError && (
+                    <div style={styles.errorMessage}>
+                      <span>Không có lớp nào để hiển thị.</span>
+                    </div>
+                  )}
+
+                  {/* Danh sách sinh viên */}
+                  <div className="students-table" style={styles.studentsTable}>
+                    <h4 style={styles.h4}>
+                      Danh sách sinh viên {selectedClass ? `lớp ${classes.find(c => c.maLop === selectedClass)?.tenLop}` : ''}
+                    </h4>
+                    <table style={styles.table}>
+                      <thead>
+                        <tr>
+                          <th style={styles.th}>Chọn</th>
+                          <th style={styles.th}>Mã SV</th>
+                          <th style={styles.th}>Họ tên</th>
+                          <th style={styles.th}>Email</th>
+                          <th style={styles.th}>Số điện thoại</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedClass ? (
+                          students.filter((student) => student.maLop === selectedClass).length === 0 ? (
+                            <tr>
+                              <td colSpan={5} style={styles.td}>Không có sinh viên trong lớp này.</td>
+                            </tr>
+                          ) : (
+                            students
+                              .filter((student) => student.maLop === selectedClass)
+                              .map((student) => (
+                                <tr key={student.maSV}>
+                                  <td style={styles.td}>
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedStudents.includes(student.maSV)}
+                                      onChange={() => handleStudentSelect(student.maSV)}
+                                      disabled={assignLoading}
+                                      style={styles.checkbox}
+                                    />
+                                  </td>
+                                  <td style={styles.td}>{student.maSV}</td>
+                                  <td style={styles.td}>{student.hoTen}</td>
+                                  <td style={styles.td}>{student.email}</td>
+                                  <td style={styles.td}>{student.soDienThoai}</td>
+                                </tr>
+                              ))
+                          )
+                        ) : (
+                          <tr>
+                            <td colSpan={5} style={styles.td}>Vui lòng chọn lớp để xem sinh viên.</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Thông báo thành công hoặc lỗi */}
+                  {assignSuccess && (
+                    <div style={styles.successMessage}>
+                      <span>{assignSuccess}</span>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="modal-body" style={styles.modalBody}>Vui lòng đăng nhập để tiếp tục.</p>
+            )}
+
+            {/* Nút điều khiển */}
+            {!assignSuccess && (
+              <div className="modal-footer" style={styles.modalFooter}>
+                <button
+                  onClick={cancelAssign}
+                  className="btn-cancel"
+                  disabled={assignLoading}
+                  style={styles.btnCancel}
+                >
+                  Hủy
+                </button>
+                {assignHoatDong && (
+                  <button
+                    onClick={confirmAssign}
+                    className="btn-confirm"
+                    disabled={assignLoading || !selectedClass}
+                    style={styles.btnConfirm}
+                  >
+                    {assignLoading ? 'Đang xử lý...' : 'Chỉ định'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {loading ? (
-        <div className="">
+        <div>
           <p>Đang tải dữ liệu...</p>
         </div>
       ) : error ? (
@@ -388,11 +654,9 @@ const HoatDongList: React.FC = () => {
             <button onClick={() => window.location.reload()} className="btn-reload">
               Làm mới trang
             </button>
-           
-          
           </div>
         </div>
-      ) : currentHoatDongs.length === 0 ? (
+      ) : currentHoatDungs.length === 0 ? (
         <div className="no-data-container">
           <p className="no-data">Không có hoạt động nào phù hợp với bộ lọc hiện tại.</p>
           {filterVisible && (
@@ -404,15 +668,12 @@ const HoatDongList: React.FC = () => {
       ) : (
         <>
           <div className="hoatdong-list">
-            {currentHoatDongs.map((hd) => (
+            {currentHoatDungs.map((hd) => (
               <div className="hoatdong-card" key={hd.MaHoatDong}>
                 <div className="hoatdong-header">
                   <h3>{hd.TenHoatDong}</h3>
                   <span
-                    className={`status-badge ${hd.TrangThai.toLowerCase().replace(
-                      /\s+/g,
-                      "-"
-                    )}`}
+                    className={`status-badge ${hd.TrangThai.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     {hd.TrangThai}
                   </span>
@@ -442,7 +703,13 @@ const HoatDongList: React.FC = () => {
                   </div>
                 </div>
                 <div className="hoatdong-footer">
-                
+                  <button
+                    className="btn-dangky"
+                    onClick={() => handleAssignClick(hd)}
+                    disabled={hd.TrangThai === "Đã kết thúc" || hd.TrangThai === "Hủy bỏ"}
+                  >
+                    Chỉ định sinh viên
+                  </button>
                   <button className="btn-chitiet" onClick={() => handleViewDetail(hd)}>
                     Xem chi tiết
                   </button>
@@ -474,6 +741,119 @@ const HoatDongList: React.FC = () => {
       )}
     </div>
   );
+};
+
+const styles = {
+  modalOverlay: {
+    position: 'fixed' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modalContent: {
+    background: '#fff',
+    padding: '20px',
+    borderRadius: '8px',
+    width: '90%',
+    maxWidth: '500px',
+    position: 'relative' as const,
+  },
+  modalTitle: {
+    marginBottom: '15px',
+    color: '#333',
+  },
+  modalBody: {
+    marginBottom: '20px',
+  },
+  modalFooter: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '10px',
+  },
+  btnCancel: {
+    padding: '8px 16px',
+    backgroundColor: '#dc3545',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  btnConfirm: {
+    padding: '8px 16px',
+    backgroundColor: '#28a745',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  formGroup: {
+    marginBottom: '15px',
+  },
+  label: {
+    display: 'block',
+    fontWeight: 'bold' as const,
+    marginBottom: '5px',
+    color: '#555',
+  },
+  select: {
+    width: '100%',
+    padding: '8px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    fontSize: '14px',
+  },
+  studentsTable: {
+    marginTop: '15px',
+  },
+  h4: {
+    marginBottom: '10px',
+    color: '#333',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+    backgroundColor: '#fff',
+    border: '1px solid #ddd',
+  },
+  th: {
+    padding: '8px',
+    textAlign: 'left' as const,
+    borderBottom: '1px solid #ddd',
+    backgroundColor: '#f4f4f4',
+    fontWeight: 'bold' as const,
+    color: '#333',
+  },
+  td: {
+    padding: '8px',
+    textAlign: 'left' as const,
+    borderBottom: '1px solid #ddd',
+  },
+  checkbox: {
+    width: '16px',
+    height: '16px',
+  },
+  successMessage: {
+    backgroundColor: '#d4edda',
+    color: '#155724',
+    padding: '10px',
+    borderRadius: '4px',
+    marginTop: '10px',
+    textAlign: 'center' as const,
+  },
+  errorMessage: {
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+    padding: '10px',
+    borderRadius: '4px',
+    marginTop: '10px',
+    textAlign: 'center' as const,
+  },
 };
 
 export default HoatDongList;

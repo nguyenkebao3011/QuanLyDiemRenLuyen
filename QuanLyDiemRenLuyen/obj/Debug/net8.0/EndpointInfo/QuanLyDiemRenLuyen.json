@@ -5,6 +5,47 @@
     "version": "v1"
   },
   "paths": {
+    "/chi-dinh/{maHoatDong}/cho-sinh-vien": {
+      "post": {
+        "tags": [
+          "ChiDinhSinhVien"
+        ],
+        "parameters": [
+          {
+            "name": "maHoatDong",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignStudentsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignStudentsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignStudentsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DangKyHoatDongs/dang-ky": {
       "post": {
         "tags": [
@@ -1548,7 +1589,7 @@
         }
       }
     },
-    "/api/MinhChungHoatDongs/submit": {
+    "/api/MinhChungHoatDongs/gui-minh-chung": {
       "post": {
         "tags": [
           "MinhChungHoatDongs"
@@ -2811,6 +2852,48 @@
         }
       }
     },
+    "/api/ThongBaoHoatDong/{maChiTietThongBao}/respond": {
+      "post": {
+        "tags": [
+          "ThongBaoHoatDong"
+        ],
+        "parameters": [
+          {
+            "name": "maChiTietThongBao",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespondRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespondRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespondRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ThongBaoHoatDong/doc/{maThongBao}": {
       "put": {
         "tags": [
@@ -3024,6 +3107,23 @@
   },
   "components": {
     "schemas": {
+      "AssignStudentsRequest": {
+        "type": "object",
+        "properties": {
+          "MaHoatDong": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaSVs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CapNhatDiemRenLuyenRequest": {
         "type": "object",
         "properties": {
@@ -3080,6 +3180,10 @@
           "NgayDoc": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "MaGV": {
+            "type": "string",
             "nullable": true
           },
           "MaSvNavigation": {
@@ -4164,6 +4268,24 @@
             "nullable": true
           },
           "NewPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RespondRequest": {
+        "type": "object",
+        "properties": {
+          "MaChiTietThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaSV": {
+            "type": "string",
+            "nullable": true
+          },
+          "Response": {
             "type": "string",
             "nullable": true
           }

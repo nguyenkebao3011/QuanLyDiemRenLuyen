@@ -15,6 +15,7 @@ public partial class ChiTietThongBao
 
     public DateTime? NgayDoc { get; set; }
 
+    public string? MaGV { get; set; }
     public virtual SinhVien? MaSvNavigation { get; set; }
 
     public virtual ThongBao? MaThongBaoNavigation { get; set; }

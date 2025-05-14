@@ -979,7 +979,7 @@
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.MinhChungHoatDongsController",
     "Method": "SubmitMinhChung",
-    "RelativePath": "api/MinhChungHoatDongs/submit",
+    "RelativePath": "api/MinhChungHoatDongs/gui-minh-chung",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1958,6 +1958,27 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.ThongBaoHoatDong",
+    "Method": "RespondToAssignment",
+    "RelativePath": "api/ThongBaoHoatDong/{maChiTietThongBao}/respond",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maChiTietThongBao",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.SinhVien.RespondRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.ThongBaoHoatDong",
     "Method": "MarkAsRead",
     "RelativePath": "api/ThongBaoHoatDong/doc/{maThongBao}",
     "HttpMethod": "PUT",
@@ -2120,5 +2141,26 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.ChiDinhSinhVien",
+    "Method": "AssignStudents",
+    "RelativePath": "chi-dinh/{maHoatDong}/cho-sinh-vien",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHoatDong",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.GiangVien.AssignStudentsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
