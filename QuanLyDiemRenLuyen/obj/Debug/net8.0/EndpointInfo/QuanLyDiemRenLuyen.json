@@ -4811,6 +4811,10 @@
             "format": "date-time",
             "nullable": true
           },
+          "MaChiTietThongBao": {
+            "type": "integer",
+            "format": "int32"
+          },
           "LoaiThongBao": {
             "type": "string",
             "nullable": true

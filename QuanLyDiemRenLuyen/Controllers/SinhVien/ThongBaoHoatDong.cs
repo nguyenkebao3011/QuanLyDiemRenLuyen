@@ -48,6 +48,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     (ct, tb) => new ThongBaoDTOSV
                     {
                         MaThongBao = tb.MaThongBao,
+                        MaChiTietThongBao = ct.MaChiTietThongBao, // Thêm vào DTO
                         TieuDe = tb.TieuDe,
                         NoiDung = tb.NoiDung,
                         NgayTao = tb.NgayTao,

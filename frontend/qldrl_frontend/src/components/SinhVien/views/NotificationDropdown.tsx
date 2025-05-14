@@ -17,48 +17,36 @@ interface ToastProps {
   thongBao: ThongBaoDTOSV;
   onClose: () => void;
   onRead: () => void;
+  onRespond?: (response: 'XacNhan' | 'TuChoi') => void; // Thêm prop để xử lý phản hồi
 }
 
 // Hàm xử lý định dạng nội dung thông báo đẹp hơn
 const formatNoiDung = (noiDung: string): string => {
-  // Chỉ xóa mã hoạt động nếu nó ở cuối nội dung
   let formattedContent = noiDung.replace(/\[MaHoatDong:\d+\]$/, '').trim();
-  
-  // Highlight ngày giờ trong nội dung
   formattedContent = formattedContent.replace(
-    /(\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4})/g, 
+    /(\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4})/g,
     '<span class="highlight-date">$1</span>'
   );
-  
-  // Highlight giờ trong nội dung
   formattedContent = formattedContent.replace(
-    /(\d{1,2}:\d{2}(:\d{2})?)/g, 
+    /(\d{1,2}:\d{2}(:\d{2})?)/g,
     '<span class="highlight-time">$1</span>'
   );
-  
-formattedContent = formattedContent.replace(
-  /\b(Địa điểm|ở)\s+([A-ZÀ-Ỵ][^\.,\n]+)/g,
-  '$1 <span class="highlight-location">$2</span>'
-);
-  
-  // Làm nổi bật các từ quan trọng
+  formattedContent = formattedContent.replace(
+    /\b(Địa điểm|ở)\s+([A-ZÀ-Ỵ][^\.,\n]+)/g,
+    '$1 <span class="highlight-location">$2</span>'
+  );
   const importantWords = ['bắt đầu', 'kết thúc', 'quan trọng', 'lưu ý', 'hạn chót'];
   importantWords.forEach(word => {
     const regex = new RegExp(`\\b${word}\\b`, 'gi');
-formattedContent = formattedContent.replace(regex, `<span class="highlight-important">${word}</span>`)
+    formattedContent = formattedContent.replace(regex, `<span class="highlight-important">${word}</span>`);
   });
-  
   return formattedContent;
 };
 
-// Hàm trích xuất thời gian từ nội dung thông báo (nếu có)
+// Hàm trích xuất thời gian từ nội dung thông báo
 const extractEventTime = (noiDung: string): string | null => {
-  // Tìm ngày tháng định dạng dd/mm/yyyy hoặc dd-mm-yyyy hoặc dd.mm.yyyy
   const dateMatch = noiDung.match(/(\d{1,2}[\/\.\-]\d{1,2}[\/\.\-]\d{2,4})/);
-  
-  // Tìm giờ định dạng hh:mm hoặc hh:mm:ss
   const timeMatch = noiDung.match(/(\d{1,2}:\d{2}(:\d{2})?)/);
-  
   if (dateMatch && timeMatch) {
     return `${dateMatch[0]} ${timeMatch[0]}`;
   } else if (dateMatch) {
@@ -66,16 +54,14 @@ const extractEventTime = (noiDung: string): string | null => {
   } else if (timeMatch) {
     return timeMatch[0];
   }
-  
   return null;
 };
 
-const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead }) => {
+const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
     }, 8000);
-
     return () => clearTimeout(timer);
   }, [onClose]);
 
@@ -84,14 +70,14 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead }) => {
     onClose();
   };
 
-  // Xử lý emoji dựa trên loại thông báo và tiêu đề
   const getEmoji = () => {
     const title = thongBao.TieuDe.toLowerCase();
-    
     if (thongBao.LoaiThongBao === 'Thay đổi lịch trình') {
       return '📅';
     } else if (thongBao.LoaiThongBao === 'Nhắc nhở') {
       return '⏰';
+    } else if (thongBao.LoaiThongBao === 'Chỉ định sinh viên') {
+      return '🎯';
     } else if (title.includes('Giới thiệu') || title.includes('thể thao')) {
       return '🏆';
     } else if (title.includes('hội thao') || title.includes('thi đấu')) {
@@ -100,43 +86,61 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead }) => {
       return '🎓';
     } else if (title.includes('tổ chức') || title.includes('chào mừng')) {
       return '🎉';
-    } else {
-      return '🔔';
     }
+    return '🔔';
   };
 
-  // Nội dung đã được xử lý
   const formattedContent = formatNoiDung(thongBao.NoiDung);
-  
-  // Trích xuất thời gian từ nội dung (nếu có)
   const eventTime = extractEventTime(thongBao.NoiDung);
 
   return (
-    <div 
-      className="toast-notification" 
-      onClick={handleClick}
+    <div
+      className="toast-notification"
+      onClick={thongBao.LoaiThongBao !== 'Chỉ định sinh viên' ? handleClick : undefined}
       data-type={thongBao.LoaiThongBao}
     >
-      <div className="toast-icon">
-        {getEmoji()}
-      </div>
+      <div className="toast-icon">{getEmoji()}</div>
       <div className="toast-content">
         <h4 className="toast-title title-prominent">{thongBao.TieuDe}</h4>
-        <p 
-          className="toast-message" 
-          dangerouslySetInnerHTML={{ __html: formattedContent }}
-        ></p>
+        <p className="toast-message" dangerouslySetInnerHTML={{ __html: formattedContent }}></p>
         {eventTime && (
           <p className="toast-event-time">
             <span className="event-time-icon">📆</span> {eventTime}
           </p>
         )}
         <p className="toast-time">{new Date(thongBao.NgayTao).toLocaleString('vi-VN')}</p>
+        {thongBao.LoaiThongBao === 'Chỉ định sinh viên' && !thongBao.DaDoc && (
+          <div className="toast-actions">
+            <button
+              className="toast-action-button confirm2"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond?.('XacNhan');
+                onClose();
+              }}
+            >
+              Xác Nhận
+            </button>
+            <button
+              className="toast-action-button reject2"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond?.('TuChoi');
+                onClose();
+              }}
+            >
+              Từ Chối
+            </button>
+          </div>
+        )}
       </div>
-      <button className="toast-close" onClick={(e) => {
-        e.stopPropagation();
-        onClose();
-      }}>
+      <button
+        className="toast-close"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+      >
         <X size={16} />
       </button>
     </div>
@@ -153,6 +157,26 @@ const ThongBaoDropdown: React.FC = () => {
 
   const token = localStorage.getItem('token') || '';
 
+  const handleRespond = async (maThongBao: number, response: 'XacNhan' | 'TuChoi') => {
+    try {
+      const maSV = localStorage.getItem('maSV') || ''; // Giả sử mã sinh viên được lưu trong localStorage
+      await axios.post(
+        `http://localhost:5163/api/ThongBaoHoatDong/${maThongBao}/respond`,
+        { MaChiTietThongBao: maThongBao, MaSV: maSV, Response: response },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Cập nhật trạng thái thông báo
+      setDanhSachThongBao((prev) =>
+        prev.map((tb) =>
+          tb.MaThongBao === maThongBao ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() } : tb
+        )
+      );
+      setSoThongBaoChuaDoc((prev) => prev - 1);
+    } catch (error) {
+      console.error('Lỗi khi gửi phản hồi:', error);
+    }
+  };
+
   useEffect(() => {
     const layDanhSachThongBao = async () => {
       try {
@@ -162,18 +186,12 @@ const ThongBaoDropdown: React.FC = () => {
         const duLieu: ThongBaoDTOSV[] = response.data;
         console.log('Danh sách thông báo:', duLieu);
 
-        // Kiểm tra trùng lặp MaThongBao
         const maThongBaoDuyNhat = new Set(duLieu.map((tb) => tb.MaThongBao));
         let thongBaoHopLe: ThongBaoDTOSV[] = [];
-        
         if (maThongBaoDuyNhat.size !== duLieu.length) {
           console.warn('Phát hiện MaThongBao bị trùng:', duLieu);
-          // Loại bỏ các mục trùng lặp, giữ lại mục đầu tiên
-          thongBaoHopLe = Array.from(
-            new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values()
-          );
+          thongBaoHopLe = Array.from(new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values());
         } else {
-          // Kiểm tra MaThongBao undefined hoặc null
           const coMaThongBaoKhongHopLe = duLieu.some((tb) => tb.MaThongBao == null);
           if (coMaThongBaoKhongHopLe) {
             console.warn('Phát hiện MaThongBao không hợp lệ (undefined/null):', duLieu);
@@ -182,20 +200,13 @@ const ThongBaoDropdown: React.FC = () => {
             thongBaoHopLe = duLieu;
           }
         }
-        
+
         setDanhSachThongBao(thongBaoHopLe);
         setSoThongBaoChuaDoc(thongBaoHopLe.filter((tb) => !tb.DaDoc).length);
-        
-        // Hiển thị toast cho thông báo chưa đọc
-        const thongBaoChuaDoc = thongBaoHopLe.filter(
-          (tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao)
-        );
-        
+
+        const thongBaoChuaDoc = thongBaoHopLe.filter((tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao));
         if (thongBaoChuaDoc.length > 0) {
-          // Giới hạn số lượng toast hiển thị cùng lúc
           const toastsToShow = thongBaoChuaDoc.slice(0, 3);
-          
-          // Cập nhật danh sách toast và đánh dấu đã hiển thị
           setDanhSachToast(toastsToShow);
           setDaHienThiToast((prevSet) => {
             const newSet = new Set(prevSet);
@@ -209,10 +220,7 @@ const ThongBaoDropdown: React.FC = () => {
     };
 
     layDanhSachThongBao();
-    
-    // Thiết lập interval để cập nhật thông báo mỗi 30 giây
     const interval = setInterval(layDanhSachThongBao, 30000);
-    
     return () => clearInterval(interval);
   }, [token, daHienThiToast]);
 
@@ -222,7 +230,6 @@ const ThongBaoDropdown: React.FC = () => {
         setHienThi(false);
       }
     };
-
     document.addEventListener('mousedown', xuLyNhapChuotNgoai);
     return () => document.removeEventListener('mousedown', xuLyNhapChuotNgoai);
   }, []);
@@ -232,7 +239,6 @@ const ThongBaoDropdown: React.FC = () => {
       console.error('MaThongBao không hợp lệ hoặc undefined');
       return;
     }
-
     try {
       await axios.put(
         `http://localhost:5163/api/ThongBaoHoatDong/doc/${maThongBao}`,
@@ -255,9 +261,7 @@ const ThongBaoDropdown: React.FC = () => {
   };
 
   const dongToast = (maThongBao: number) => {
-    setDanhSachToast((prevToasts) => 
-      prevToasts.filter((toast) => toast.MaThongBao !== maThongBao)
-    );
+    setDanhSachToast((prevToasts) => prevToasts.filter((toast) => toast.MaThongBao !== maThongBao));
   };
 
   return (
@@ -278,14 +282,12 @@ const ThongBaoDropdown: React.FC = () => {
             ) : (
               <ul className="notification-list2">
                 {danhSachThongBao.map((tb, index) => {
-                  // Xử lý nội dung
                   const processedContent = formatNoiDung(tb.NoiDung);
-                  
                   return (
                     <li
                       key={tb.MaThongBao ?? `thongbao-${index}`}
                       className={`notification-item ${tb.DaDoc ? 'read' : ''}`}
-                      onClick={() => !tb.DaDoc && tb.MaThongBao && danhDauDaDoc(tb.MaThongBao)}
+                      onClick={() => !tb.DaDoc && tb.MaThongBao && tb.LoaiThongBao !== 'Chỉ định sinh viên' && danhDauDaDoc(tb.MaThongBao)}
                     >
                       <div className="notification-content">
                         <div className="notification-icon-type">
@@ -293,10 +295,8 @@ const ThongBaoDropdown: React.FC = () => {
                             <span className="schedule">📅</span>
                           ) : tb.LoaiThongBao === 'Nhắc nhở' ? (
                             <span className="reminder">⏰</span>
-                          ) : tb.TieuDe.toLowerCase().includes('hội thao') ? (
-                            <span className="event">🏆</span>
-                          ) : tb.TieuDe.toLowerCase().includes('sự kiện') ? (
-                            <span className="event">🎉</span>
+                          ) : tb.LoaiThongBao === 'Chỉ định sinh viên' ? (
+                            <span className="assignment">🎯</span>
                           ) : (
                             <span className="general">🔔</span>
                           )}
@@ -305,6 +305,28 @@ const ThongBaoDropdown: React.FC = () => {
                           <h4 className={`title-prominent ${tb.DaDoc ? 'read' : ''}`}>{tb.TieuDe}</h4>
                           <div dangerouslySetInnerHTML={{ __html: processedContent }}></div>
                           <p className="date">{new Date(tb.NgayTao).toLocaleString('vi-VN')}</p>
+                          {tb.LoaiThongBao === 'Chỉ định sinh viên' && !tb.DaDoc && (
+                            <div className="notification-actions">
+                              <button
+                                className="action-button confirm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  tb.MaThongBao && handleRespond(tb.MaThongBao, 'XacNhan');
+                                }}
+                              >
+                                Xác Nhận
+                              </button>
+                              <button
+                                className="action-button reject"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  tb.MaThongBao && handleRespond(tb.MaThongBao, 'TuChoi');
+                                }}
+                              >
+                                Từ Chối
+                              </button>
+                            </div>
+                          )}
                         </div>
                         {!tb.DaDoc && <span className="notification-unread-dot"></span>}
                       </div>
@@ -317,15 +339,15 @@ const ThongBaoDropdown: React.FC = () => {
         )}
       </div>
 
-      {/* Toast Container */}
       {danhSachToast.length > 0 && (
         <div className="toast-container">
           {danhSachToast.map((tb) => (
-            <Toast 
-              key={tb.MaThongBao} 
+            <Toast
+              key={tb.MaThongBao}
               thongBao={tb}
               onClose={() => dongToast(tb.MaThongBao)}
               onRead={() => danhDauDaDoc(tb.MaThongBao)}
+              onRespond={(response) => handleRespond(tb.MaThongBao, response)}
             />
           ))}
         </div>

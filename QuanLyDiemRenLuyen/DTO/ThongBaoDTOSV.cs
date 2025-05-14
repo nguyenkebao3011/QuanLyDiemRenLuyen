@@ -9,7 +9,7 @@
         public bool DaDoc { get; set; }
         public DateTime? NgayDoc { get; set; }
 
-
+        public int MaChiTietThongBao { get; set; } // Thêm thuộc tính này
         public string LoaiThongBao { get; set; }
     }
 }
