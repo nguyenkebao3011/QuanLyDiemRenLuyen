@@ -40,32 +40,38 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             if (filter.DiemMax.HasValue)
                 query = query.Where(h => h.DiemCong <= filter.DiemMax.Value);
-            // Lọc theo trạng thái
-            //if (!string.IsNullOrWhiteSpace(filter.TrangThai))
-            //{
-            //    if (filter.TrangThai == "Đang diễn ra")
-            //        query = query.Where(h => h.NgayBatDau <= currentDate && h.NgayKetThuc >= currentDate);
-            //    else if (filter.TrangThai == "Chưa bắt đầu")
-            //        query = query.Where(h => h.NgayKetThuc >= currentDate);
-            //}
 
-            // Lọc theo trạng thái từ CSDL (chỉ Đang diễn ra hoặc Chưa bắt đầu)
+
+            var cacTrangThaiHopLe = new[]
+                 {
+                    "chưa bắt đầu",
+                    "đang diễn ra",
+                    "đang mở đăng ký",
+                    "đã kết thúc"
+                };
+
             if (!string.IsNullOrWhiteSpace(filter.TrangThai))
             {
-                if (filter.TrangThai == "Đang diễn ra" || filter.TrangThai == "Chưa bắt dầu")
+                string trangThaiFilter = filter.TrangThai.Trim().ToLower();
+
+                if (cacTrangThaiHopLe.Contains(trangThaiFilter))
                 {
-                    query = query.Where(h => h.TrangThai.Equals(filter.TrangThai, StringComparison.OrdinalIgnoreCase));
+                    // Lọc client-side vì EF Core không hỗ trợ .ToLower() + .Trim()
+                    query = query
+                        .AsEnumerable()
+                        .Where(h => h.TrangThai != null &&
+                                    h.TrangThai.Trim().ToLower() == trangThaiFilter)
+                        .AsQueryable();
                 }
                 else
                 {
-                    // Nếu trạng thái không hợp lệ (ví dụ: DaKetThuc), trả về danh sách rỗng hoặc lỗi
+                    // Nếu trạng thái không hợp lệ → trả về danh sách rỗng
                     return Ok(new List<HoatDong>());
                 }
             }
 
             var result = query.ToList();
             return Ok(result);
-
 
         }
         // GET: api/HoatDongs

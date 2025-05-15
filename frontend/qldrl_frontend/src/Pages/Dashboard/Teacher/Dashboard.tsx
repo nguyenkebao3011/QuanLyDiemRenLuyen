@@ -18,7 +18,7 @@ import XemThongBao from "../../../components/SinhVien/views/XemThongBao";
 
 import ThongTinGiangVien from "../../../components/GiangVien/views/ThongTinGiangVien";
 import  ThongKe  from "../../../components/GiangVien/views/ThongKe";
-import  NotificationDropdown  from "../../../components/SinhVien/views/NotificationDropdown";
+import  ThongBaoGiangVien  from "../../../components/GiangVien/views/ThongBaoGiangVien";
 
 
 // Định nghĩa kiểu Lecturer
@@ -347,7 +347,7 @@ const TeacherDashboard: React.FC = () => {
               <input type="text" placeholder="Tìm kiếm..." />
             </div>
             <div >
-              <NotificationDropdown />
+              <ThongBaoGiangVien />
             </div>
           </div>
           <div className="avatar-menu-container" ref={avatarRef}>

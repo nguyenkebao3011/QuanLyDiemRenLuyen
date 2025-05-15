@@ -375,10 +375,12 @@ const HoatDongList: React.FC = () => {
                   className="filter-select"
                 >
                   <option value="">Tất cả</option>
-                  <option value="Sắp diễn ra">CHƯA BẮT ĐẦU</option>
+                  <option value="Chưa bắt đầu">Chưa bắt đầu</option>
                   <option value="Đang diễn ra">Đang diễn ra</option>
+                  <option value="Đang mở đăng ký">Đang mở đăng ký</option>
+
                   <option value="Đã kết thúc">Đã kết thúc</option>
-                  <option value="Hủy bỏ">Hủy bỏ</option>
+                  
                 </select>
               </div>
             </div>

@@ -92,7 +92,7 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
             var thongBao = new ThongBao
             {
                 TieuDe = $"Bạn được chỉ định tham gia hoạt động: {hoatDong.TenHoatDong}",
-                NoiDung = $"Hoạt động '{hoatDong.TenHoatDong}' diễn ra vào {hoatDong.NgayBatDau:dd/MM/yyyy HH:mm} tại {hoatDong.DiaDiem}. "
+                NoiDung = $"Hoạt động '{hoatDong.TenHoatDong}' diễn ra vào {hoatDong.NgayBatDau: 'ngày' :dd/MM/yyyy 'vào lúc': HH:mm 'giờ'} tại {hoatDong.DiaDiem}. "
                         + $"Số điểm cộng: {hoatDong.DiemCong}. Vui lòng xác nhận hoặc từ chối. [MaHoatDong:{hoatDong.MaHoatDong}]",
                 NgayTao = DateTime.Now,
                 LoaiThongBao = "Chỉ định sinh viên",

@@ -130,8 +130,8 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     {
                         TieuDe = $"Cập nhật lịch trình: {hoatDong.TenHoatDong}",
                         NoiDung = $"Hoạt động {hoatDong.TenHoatDong} đã được cập nhật." +
-                                  $"Thời gian: {hoatDong.NgayBatDau:dd/MM/yyyy} - {hoatDong.NgayKetThuc:dd/MM/yyyy}" +
-                                  $"Địa điểm: {hoatDong.DiaDiem}" +
+                                   $"Hoạt động sẽ bắt đầu vào lúc {hoatDong.NgayBatDau?.ToString("HH:mm 'giờ' 'ngày' dd'/'MM'/'yyyy") ?? "chưa xác định"} - Kết thúc vào ngày {hoatDong.NgayKetThuc?.ToString("dd'/'MM'/'yyyy") ?? "chưa xác định"}. " +
+                                  $"Địa điểm: {hoatDong.DiaDiem} '.'" +
                                   $"Vì một số lý do, lịch trình hoạt động đã thay đổi. Rất mong các bạn sinh viên tham gia theo đúng kế hoạch. Trân Trọng.",
                         NgayTao = DateTime.Now,
                         MaQl = hoatDong.MaQl, // Lấy từ HoatDong

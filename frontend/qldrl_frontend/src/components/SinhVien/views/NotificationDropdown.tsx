@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, X } from 'lucide-react';
 import axios from 'axios';
+import { Modal, Select, Input } from 'antd';
 import '../css/NotificationDropdown.css';
+
+const { Option } = Select;
 
 interface ThongBaoDTOSV {
   MaThongBao: number;
+  MaChiTietThongBao: number;
   TieuDe: string;
   NoiDung: string;
   NgayTao: string;
@@ -17,10 +21,9 @@ interface ToastProps {
   thongBao: ThongBaoDTOSV;
   onClose: () => void;
   onRead: () => void;
-  onRespond?: (response: 'XacNhan' | 'TuChoi') => void; // Thêm prop để xử lý phản hồi
+  onRespond?: (maChiTietThongBao: number, response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => void;
 }
 
-// Hàm xử lý định dạng nội dung thông báo đẹp hơn
 const formatNoiDung = (noiDung: string): string => {
   let formattedContent = noiDung.replace(/\[MaHoatDong:\d+\]$/, '').trim();
   formattedContent = formattedContent.replace(
@@ -43,7 +46,6 @@ const formatNoiDung = (noiDung: string): string => {
   return formattedContent;
 };
 
-// Hàm trích xuất thời gian từ nội dung thông báo
 const extractEventTime = (noiDung: string): string | null => {
   const dateMatch = noiDung.match(/(\d{1,2}[\/\.\-]\d{1,2}[\/\.\-]\d{2,4})/);
   const timeMatch = noiDung.match(/(\d{1,2}:\d{2}(:\d{2})?)/);
@@ -58,12 +60,17 @@ const extractEventTime = (noiDung: string): string | null => {
 };
 
 const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [lyDoTuChoi, setLyDoTuChoi] = useState<string>('');
+  const [customLyDo, setCustomLyDo] = useState<string>(''); // Lý do tùy chỉnh khi chọn "Khác"
+  const [showResponseToast, setShowResponseToast] = useState<string | null>(null);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
+      if (!isModalVisible && !showResponseToast) onClose();
     }, 8000);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [onClose, isModalVisible, showResponseToast]);
 
   const handleClick = () => {
     onRead();
@@ -88,6 +95,41 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
       return '🎉';
     }
     return '🔔';
+  };
+
+  const handleTuChoi = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalOk = () => {
+    let finalLyDo = lyDoTuChoi;
+    if (lyDoTuChoi === 'Khác' && !customLyDo) {
+      alert('Vui lòng nhập lý do khi chọn "Khác".');
+      return;
+    }
+    if (lyDoTuChoi === 'Khác') finalLyDo = customLyDo;
+    if (!finalLyDo && lyDoTuChoi !== 'Khác') {
+      alert('Vui lòng chọn lý do từ chối.');
+      return;
+    }
+    onRespond?.(thongBao.MaChiTietThongBao, 'TuChoi', finalLyDo);
+    setShowResponseToast('Bạn đã từ chối tham gia hoạt động này');
+    setIsModalVisible(false);
+    setLyDoTuChoi('');
+    setCustomLyDo('');
+    setTimeout(() => setShowResponseToast(null), 3000); // Ẩn toast sau 3 giây
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setLyDoTuChoi('');
+    setCustomLyDo('');
+  };
+
+  const handleRespondWithToast = (response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => {
+    onRespond?.(thongBao.MaChiTietThongBao, response, lyDoTuChoi);
+    setShowResponseToast(response === 'XacNhan' ? 'Bạn đã đăng ký tham gia hoạt động này' : 'Bạn đã từ chối tham gia hoạt động này');
+    setTimeout(() => setShowResponseToast(null), 3000); // Ẩn toast sau 3 giây
   };
 
   const formattedContent = formatNoiDung(thongBao.NoiDung);
@@ -115,8 +157,7 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
               className="toast-action-button confirm2"
               onClick={(e) => {
                 e.stopPropagation();
-                onRespond?.('XacNhan');
-                onClose();
+                handleRespondWithToast('XacNhan');
               }}
             >
               Xác Nhận
@@ -125,8 +166,7 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
               className="toast-action-button reject2"
               onClick={(e) => {
                 e.stopPropagation();
-                onRespond?.('TuChoi');
-                onClose();
+                handleTuChoi();
               }}
             >
               Từ Chối
@@ -138,11 +178,49 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
         className="toast-close"
         onClick={(e) => {
           e.stopPropagation();
-          onClose();
+          if (!isModalVisible && !showResponseToast) onClose();
         }}
+        disabled={isModalVisible || !!showResponseToast} // Không cho đóng khi modal/toast hiển thị
       >
         <X size={16} />
       </button>
+
+      <Modal
+        title="Lý do từ chối"
+        open={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okText="Xác nhận"
+        cancelText="Hủy"
+        closable={false} // Không cho phép đóng modal bằng nút X
+        maskClosable={false} // Không cho phép đóng modal bằng cách click ngoài
+      >
+        <Select
+          style={{ width: '100%', marginBottom: '10px' }}
+          placeholder="Chọn lý do từ chối"
+          onChange={(value: string) => setLyDoTuChoi(value)}
+          value={lyDoTuChoi}
+        >
+          <Option value="Lịch cá nhân bận rộn">Lịch cá nhân bận rộn</Option>
+          <Option value="Lý do sức khỏe">Lý do sức khỏe</Option>
+          <Option value="Không quan tâm">Không quan tâm</Option>
+          <Option value="Khác">Khác</Option>
+        </Select>
+        {lyDoTuChoi === 'Khác' && (
+          <Input
+            placeholder="Nhập lý do của bạn"
+            value={customLyDo}
+            onChange={(e) => setCustomLyDo(e.target.value)}
+            style={{ width: '100%' }}
+          />
+        )}
+      </Modal>
+
+      {showResponseToast && (
+        <div className="response-toast">
+          {showResponseToast}
+        </div>
+      )}
     </div>
   );
 };
@@ -157,23 +235,29 @@ const ThongBaoDropdown: React.FC = () => {
 
   const token = localStorage.getItem('token') || '';
 
-  const handleRespond = async (maThongBao: number, response: 'XacNhan' | 'TuChoi') => {
+  const handleRespond = async (maChiTietThongBao: number, response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => {
     try {
-      const maSV = localStorage.getItem('maSV') || ''; // Giả sử mã sinh viên được lưu trong localStorage
+      const payload = {
+        MaChiTietThongBao: maChiTietThongBao,
+        Response: response,
+        ...(response === 'TuChoi' && { LyDoTuChoi: lyDoTuChoi }),
+      };
       await axios.post(
-        `http://localhost:5163/api/ThongBaoHoatDong/${maThongBao}/respond`,
-        { MaChiTietThongBao: maThongBao, MaSV: maSV, Response: response },
+        `http://localhost:5163/api/ThongBaoHoatDong/${maChiTietThongBao}/respond`,
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Cập nhật trạng thái thông báo
       setDanhSachThongBao((prev) =>
         prev.map((tb) =>
-          tb.MaThongBao === maThongBao ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() } : tb
+          tb.MaChiTietThongBao === maChiTietThongBao
+            ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() }
+            : tb
         )
       );
       setSoThongBaoChuaDoc((prev) => prev - 1);
     } catch (error) {
       console.error('Lỗi khi gửi phản hồi:', error);
+      alert('Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại.');
     }
   };
 
@@ -311,7 +395,7 @@ const ThongBaoDropdown: React.FC = () => {
                                 className="action-button confirm"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  tb.MaThongBao && handleRespond(tb.MaThongBao, 'XacNhan');
+                                  tb.MaChiTietThongBao && handleRespond(tb.MaChiTietThongBao, 'XacNhan');
                                 }}
                               >
                                 Xác Nhận
@@ -320,7 +404,7 @@ const ThongBaoDropdown: React.FC = () => {
                                 className="action-button reject"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  tb.MaThongBao && handleRespond(tb.MaThongBao, 'TuChoi');
+                                  tb.MaChiTietThongBao && handleRespond(tb.MaChiTietThongBao, 'TuChoi');
                                 }}
                               >
                                 Từ Chối
@@ -347,7 +431,7 @@ const ThongBaoDropdown: React.FC = () => {
               thongBao={tb}
               onClose={() => dongToast(tb.MaThongBao)}
               onRead={() => danhDauDaDoc(tb.MaThongBao)}
-              onRespond={(response) => handleRespond(tb.MaThongBao, response)}
+              onRespond={handleRespond}
             />
           ))}
         </div>

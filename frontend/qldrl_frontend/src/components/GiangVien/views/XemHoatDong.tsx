@@ -428,11 +428,12 @@ const HoatDongList: React.FC = () => {
                   onChange={(e) => setTrangThai(e.target.value)}
                   className="filter-select"
                 >
-                  <option key="tat-ca" value="">Tất cả</option>
-                  <option key="sap-dien-ra" value="Sắp diễn ra">CHƯA BẮT ĐẦU</option>
-                  <option key="dang-dien-ra" value="Đang diễn ra">Đang diễn ra</option>
-                  <option key="da-ket-thuc" value="Đã kết thúc">Đã kết thúc</option>
-                  <option key="huy-bo" value="Hủy bỏ">Hủy bỏ</option>
+                    <option value="">Tất cả</option>
+                  <option value="Chưa bắt đầu">Chưa bắt đầu</option>
+                  <option value="Đang diễn ra">Đang diễn ra</option>
+                  <option value="Đang mở đăng ký">Đang mở đăng ký</option>
+
+                  <option value="Đã kết thúc">Đã kết thúc</option>
                 </select>
               </div>
             </div>
@@ -553,10 +554,10 @@ const HoatDongList: React.FC = () => {
                       <span className="asn-info-label">Hoạt động:</span>
                       <span className="asn-info-value">{assignHoatDong.TenHoatDong}</span>
                     </div>
-                    <div className="asn-info-item">
+                    {/* <div className="asn-info-item">
                       <span className="asn-info-label">Mã hoạt động:</span>
                       <span className="asn-info-value">{assignHoatDong.MaHoatDong}</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Chọn lớp */}

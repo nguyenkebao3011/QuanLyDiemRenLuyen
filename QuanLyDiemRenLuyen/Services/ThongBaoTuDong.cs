@@ -111,7 +111,7 @@ public class ThongBaoScheduledService : BackgroundService
                 var thongBao = new ThongBao
                 {
                     TieuDe = $"Hoạt động \"{hd.TenHoatDong}\" sắp diễn ra",
-                    NoiDung = $"Bạn đã đăng ký hoạt động này, hoạt động bắt đầu vào ngày {hd.NgayBatDau?.ToString("dd/MM/yyyy") ?? "chưa xác định"}. [MaHoatDong:{hd.MaHoatDong}]",
+                    NoiDung = $"Bạn đã đăng ký hoạt động này, hoạt động bắt đầu vào lúc {hd.NgayBatDau?.ToString("HH:mm 'giờ' 'ngày' dd/MM/yyyy") ?? "chưa xác định"}. [MaHoatDong:{hd.MaHoatDong}]",
                     NgayTao = DateTime.Now,
                     MaQl = maQl,
                     LoaiThongBao = "Nhắc nhở hoạt động",

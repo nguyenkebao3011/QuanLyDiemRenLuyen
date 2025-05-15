@@ -344,7 +344,7 @@ const ThongKeComponent: React.FC = () => {
                     <td>{thongKeData.LoaiGioi.SoLuong}</td>
                     <td>{thongKeData.LoaiGioi.PhanTram.toFixed(2)}%</td>
                     <td>
-                      <span className="status-badge status-excellent">Xuất sắc</span>
+                      <span className="status-badge2 status-excellent">Xuất sắc</span>
                     </td>
                   </tr>
                   <tr className="row-kha">
@@ -352,7 +352,7 @@ const ThongKeComponent: React.FC = () => {
                     <td>{thongKeData.LoaiKha.SoLuong}</td>
                     <td>{thongKeData.LoaiKha.PhanTram.toFixed(2)}%</td>
                     <td>
-                      <span className="status-badge status-good">Tốt</span>
+                      <span className="status-badge2 status-good">Tốt</span>
                     </td>
                   </tr>
                   <tr className="row-trungbinh">
@@ -360,7 +360,7 @@ const ThongKeComponent: React.FC = () => {
                     <td>{thongKeData.LoaiTrungBinh.SoLuong}</td>
                     <td>{thongKeData.LoaiTrungBinh.PhanTram.toFixed(2)}%</td>
                     <td>
-                      <span className="status-badge status-average">Đạt</span>
+                      <span className="status-badge2 status-average">Đạt</span>
                     </td>
                   </tr>
                   <tr className="row-yeu">

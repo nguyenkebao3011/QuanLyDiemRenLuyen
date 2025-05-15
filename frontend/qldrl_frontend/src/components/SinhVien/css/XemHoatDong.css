@@ -99,9 +99,10 @@
   color: white;
 }
 
-.status-badge.sắp-diễn-ra {
-  background-color: var(--warning-color);
-  color: #333;
+.status-badge.đang-mở-đăng-ký {
+  background-color: rgb(10, 176, 226);
+   color: white;
+;
 }
 
 .status-badge.hoãn {

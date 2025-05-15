@@ -1995,6 +1995,26 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.ThongBaoHoatDong",
+    "Method": "GetThongBaoByGiangVien",
+    "RelativePath": "api/ThongBaoHoatDong/ThongBao-GiangVien",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.DTO.SinhVien.ThongBaoDTOSV, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.ThongBaoHoatDong",
     "Method": "GetThongBaoBySinhVien",
     "RelativePath": "api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho",
     "HttpMethod": "GET",

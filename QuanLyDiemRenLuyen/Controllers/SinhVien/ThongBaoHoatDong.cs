@@ -23,13 +23,11 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             _context = context;
         }
 
-        // Hàm tiện ích lấy mã sinh viên từ token
         private string GetMaSinhVienFromToken()
         {
             return User.FindFirstValue("MaSv") ?? User.Identity?.Name;
         }
 
-        // API lấy danh sách thông báo của sinh viên từ JWT
         [HttpGet("ThongBao-Thay-Doi-va-nhac-nho")]
         public async Task<ActionResult<IEnumerable<ThongBaoDTOSV>>> GetThongBaoBySinhVien()
         {
@@ -48,7 +46,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     (ct, tb) => new ThongBaoDTOSV
                     {
                         MaThongBao = tb.MaThongBao,
-                        MaChiTietThongBao = ct.MaChiTietThongBao, // Thêm vào DTO
+                        MaChiTietThongBao = ct.MaChiTietThongBao,
                         TieuDe = tb.TieuDe,
                         NoiDung = tb.NoiDung,
                         NgayTao = tb.NgayTao,
@@ -65,76 +63,78 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         [HttpPost("{maChiTietThongBao}/respond")]
         public async Task<IActionResult> RespondToAssignment(int maChiTietThongBao, [FromBody] RespondRequest request)
         {
-            // Kiểm tra thông báo
+            // Lấy MaSv từ token
+            var maSv = GetMaSinhVienFromToken();
+            if (string.IsNullOrEmpty(maSv))
+                return Unauthorized("Không tìm thấy mã sinh viên trong token.");
+
+            // Kiểm tra thông báo với MaSv từ token
             var chiTiet = await _context.ChiTietThongBaos
-                .FirstOrDefaultAsync(ct => ct.MaChiTietThongBao == maChiTietThongBao && ct.MaSv == request.MaSV);
+                .FirstOrDefaultAsync(ct => ct.MaChiTietThongBao == maChiTietThongBao && ct.MaSv == maSv);
             if (chiTiet == null)
                 return NotFound("Thông báo không tồn tại hoặc không thuộc về sinh viên này");
 
-            // Lấy thông báo gốc
             var thongBao = await _context.ThongBaos
                 .FirstOrDefaultAsync(tb => tb.MaThongBao == chiTiet.MaThongBao);
             if (thongBao == null)
                 return NotFound("Thông báo gốc không tồn tại");
 
-            // Lấy MaHoatDong từ NoiDung
             var maHoatDongMatch = Regex.Match(thongBao.NoiDung, @"\[MaHoatDong:(\w+)\]");
             if (!maHoatDongMatch.Success)
                 return BadRequest("Không tìm thấy MaHoatDong trong thông báo");
             var maHoatDong = maHoatDongMatch.Groups[1].Value;
 
-            // Kiểm tra xem đã phản hồi chưa (dựa trên DangKyHoatDong hoặc DaDoc)
-            int maHoatDongInt = int.Parse(maHoatDong);
+            int maHoatDongInt;
+            if (!int.TryParse(maHoatDong, out maHoatDongInt))
+                return BadRequest("MaHoatDong không hợp lệ");
 
             var daDangKy = await _context.DangKyHoatDongs
-                .AnyAsync(dk => dk.MaSv == request.MaSV && dk.MaHoatDong == maHoatDongInt);
+                .AnyAsync(dk => dk.MaSv == maSv && dk.MaHoatDong == maHoatDongInt);
             if (daDangKy || chiTiet.DaDoc == true)
                 return BadRequest("Thông báo này đã được phản hồi hoặc đã đọc");
 
-            // Cập nhật trạng thái đọc
             chiTiet.DaDoc = true;
             chiTiet.NgayDoc = DateTime.Now;
             await _context.SaveChangesAsync();
 
-            // Xử lý phản hồi
+            var hoatDong = await _context.HoatDongs
+                .FirstOrDefaultAsync(hd => hd.MaHoatDong == maHoatDongInt);
+            if (hoatDong == null)
+                return NotFound("Không tìm thấy hoạt động tương ứng với MaHoatDong");
+
             if (request.Response == "XacNhan")
             {
-                // Lưu vào bảng DangKyHoatDong
                 var dangKy = new DangKyHoatDong
                 {
-                    MaSv = request.MaSV,
+                    MaSv = maSv,
                     MaHoatDong = maHoatDongInt,
                     NgayDangKy = DateTime.Now,
                     TrangThai = "Đăng ký thành công (GVHD)"
                 };
-                var hoatDong = await _context.HoatDongs
-            .FirstOrDefaultAsync(hd => hd.MaHoatDong == maHoatDongInt);
 
-                if (hoatDong != null)
-                {
-                    hoatDong.SoLuongDaDangKy += 1;
-                }
-                  if (hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa)
-                return BadRequest("Hoạt động đã đủ số lượng đăng ký");
+                if (hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa)
+                    return BadRequest("Hoạt động đã đủ số lượng đăng ký");
+
+                hoatDong.SoLuongDaDangKy += 1;
                 _context.DangKyHoatDongs.Add(dangKy);
                 await _context.SaveChangesAsync();
             }
             else if (request.Response == "TuChoi")
             {
-                // Tạo thông báo từ chối gửi đến giảng viên
+                if (string.IsNullOrEmpty(request.LyDoTuChoi))
+                    return BadRequest("Vui lòng cung cấp lý do từ chối.");
+
                 var thongBaoTuChoi = new ThongBao
                 {
-                    TieuDe = $"Sinh viên từ chối tham gia hoạt động [MaHoatDong: {maHoatDong}]",
-                    NoiDung = $"Sinh viên {request.MaSV} đã từ chối tham gia hoạt động [MaHoatDong: {maHoatDong}].",
+                    TieuDe = $"Sinh viên từ chối tham gia hoạt động '{hoatDong.TenHoatDong}'",
+                    NoiDung = $"Sinh viên {maSv} đã từ chối tham gia hoạt động '{hoatDong.TenHoatDong}', vì lý do '{request.LyDoTuChoi}'. Hãy chỉ định sinh viên khác.",
                     NgayTao = DateTime.Now,
-                   
                     LoaiThongBao = "Từ chối hoạt động",
                     TrangThai = "DaGui"
                 };
                 _context.ThongBaos.Add(thongBaoTuChoi);
                 await _context.SaveChangesAsync();
 
-                // Thêm vào ChiTietThongBao cho giảng viên
                 var chiTietThongBaoGV = new ChiTietThongBao
                 {
                     MaThongBao = thongBaoTuChoi.MaThongBao,
@@ -152,7 +152,6 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             return Ok("Phản hồi thành công.");
         }
 
-        // API đánh dấu thông báo đã đọc – dùng token
         [HttpPut("doc/{maThongBao}")]
         public async Task<IActionResult> MarkAsRead(int maThongBao)
         {
@@ -172,12 +171,50 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return NoContent();
         }
-    }
+        [HttpGet("ThongBao-GiangVien")]
+        public async Task<ActionResult<IEnumerable<ThongBaoDTOSV>>> GetThongBaoByGiangVien()
+        {
+            var email = User.Identity?.Name;
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized("Không tìm thấy email trong token.");
 
-    public class RespondRequest
+            // Ánh xạ email sang MaGV
+            var giangVien = await _context.GiaoViens
+                .Where(gv => gv.Email == email)
+                .Select(gv => gv.MaGv)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(giangVien))
+                return Unauthorized("Không tìm thấy mã giảng viên tương ứng với email.");
+
+            var thongBaos = await _context.ChiTietThongBaos
+                .Where(ct => ct.MaGV == giangVien)
+                .Join(_context.ThongBaos
+                    .Where(tb => tb.LoaiThongBao == "Từ chối hoạt động"),
+                    ct => ct.MaThongBao,
+                    tb => tb.MaThongBao,
+                    (ct, tb) => new ThongBaoDTOSV
+                    {
+                        MaThongBao = tb.MaThongBao,
+                        MaChiTietThongBao = ct.MaChiTietThongBao,
+                        TieuDe = tb.TieuDe,
+                        NoiDung = tb.NoiDung,
+                        NgayTao = tb.NgayTao,
+                        DaDoc = ct.DaDoc ?? false,
+                        NgayDoc = ct.NgayDoc,
+                        LoaiThongBao = tb.LoaiThongBao
+                    })
+                .OrderByDescending(tb => tb.NgayTao)
+                .ToListAsync();
+
+            return Ok(thongBaos);
+        }
+        }
+
+        public class RespondRequest
     {
         public int MaChiTietThongBao { get; set; }
-        public string MaSV { get; set; }
-        public string Response { get; set; } // "XacNhan" hoặc "TuChoi"
+        public string Response { get; set; }
+        public string? LyDoTuChoi { get; set; } // Có thể null nếu Response là "XacNhan"
     }
 }
