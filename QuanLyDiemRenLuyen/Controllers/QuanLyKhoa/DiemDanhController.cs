@@ -129,118 +129,114 @@ namespace QuanLyDiemRenLuyen.Controllers
         {
             try
             {
-                // Ghi nhật ký để theo dõi quá trình thực hiện
-                Console.WriteLine("Bắt đầu điểm danh sinh viên");
-
-                // Kiểm tra jsonElement có các thuộc tính cần thiết không
                 if (!jsonElement.TryGetProperty("MaDangKy", out var maDangKyElement) ||
                     !jsonElement.TryGetProperty("MaQl", out var maQlElement))
                 {
                     return BadRequest("Thiếu thông tin mã đăng ký hoặc mã quản lý");
                 }
 
-                // Hiển thị log để xem dữ liệu nhận được
-                Console.WriteLine($"Dữ liệu nhận được: MaDangKy={maDangKyElement}, MaQl={maQlElement}");
-
-                // Chuyển đổi giá trị từ JsonElement sang kiểu dữ liệu cần thiết
                 int maDangKy;
                 string maQl;
                 string ghiChu = null;
 
-                // Chuyển đổi maDangKy (phải là số nguyên)
                 if (!maDangKyElement.TryGetInt32(out maDangKy))
                 {
                     return BadRequest("Mã đăng ký không hợp lệ, phải là số nguyên");
                 }
 
-                // Chuyển đổi maQl
                 maQl = maQlElement.GetString();
                 if (string.IsNullOrEmpty(maQl))
                 {
                     return BadRequest("Mã quản lý không được để trống");
                 }
 
-                // Chuyển đổi ghiChu (nếu có)
                 if (jsonElement.TryGetProperty("GhiChu", out var ghiChuElement) &&
                     ghiChuElement.ValueKind != JsonValueKind.Null)
                 {
                     ghiChu = ghiChuElement.GetString();
                 }
 
-                Console.WriteLine($"Sau khi chuyển đổi: maDangKy={maDangKy}, maQl={maQl}, ghiChu={ghiChu}");
+                // Lấy thông tin đăng ký, sinh viên, hoạt động
+                var dangKy = await _context.DangKyHoatDongs
+                    .Include(dk => dk.MaSvNavigation)
+                    .Include(dk => dk.MaHoatDongNavigation)
+                    .FirstOrDefaultAsync(dk => dk.MaDangKy == maDangKy);
 
-                // Kiểm tra đăng ký tồn tại
-                var dangKy = await _context.DangKyHoatDongs.FindAsync(maDangKy);
-                if (dangKy == null)
+                if (dangKy == null || dangKy.MaHoatDongNavigation == null || dangKy.MaSvNavigation == null)
                 {
-                    Console.WriteLine($"Không tìm thấy đăng ký hoạt động với mã {maDangKy}");
-                    return NotFound($"Không tìm thấy đăng ký hoạt động với mã {maDangKy}");
+                    return NotFound("Không tìm thấy đăng ký hoặc thông tin sinh viên/hoạt động.");
                 }
-                Console.WriteLine($"Đã tìm thấy đăng ký: MaDangKy={dangKy.MaDangKy}, MaSV={dangKy.MaSv}");
 
-                // Kiểm tra quản lý khoa tồn tại
-                var quanLyKhoa = await _context.QuanLyKhoas.FindAsync(maQl);
-                if (quanLyKhoa == null)
-                {
-                    Console.WriteLine($"Không tìm thấy quản lý khoa với mã {maQl}");
-                    return BadRequest($"Không tìm thấy quản lý khoa với mã {maQl}");
-                }
-                Console.WriteLine($"Đã tìm thấy quản lý khoa: MaQl={quanLyKhoa.MaQl}");
+                var maSv = dangKy.MaSv;
+                var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+                var diemCong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
 
-                // Kiểm tra xem đã điểm danh chưa
+                // Xử lý điểm danh (update hoặc insert)
                 var diemDanhCu = await _context.DiemDanhHoatDongs
                     .FirstOrDefaultAsync(dd => dd.MaDangKy == maDangKy);
 
                 if (diemDanhCu != null)
                 {
-                    Console.WriteLine($"Đã tìm thấy điểm danh cũ: MaDiemDanh={diemDanhCu.MaDiemDanh}, MaDangKy={diemDanhCu.MaDangKy}");
-
-                    // Cập nhật điểm danh cũ
-                    diemDanhCu.ThoiGianDiemDanh = DateTime.Now; // Sử dụng DateTime.Now thay vì UTC
+                    diemDanhCu.ThoiGianDiemDanh = DateTime.Now;
                     diemDanhCu.MaQl = maQl;
                     diemDanhCu.GhiChu = ghiChu;
-
                     _context.Entry(diemDanhCu).State = EntityState.Modified;
-                    Console.WriteLine("Đã cập nhật điểm danh cũ");
                 }
                 else
                 {
-                    Console.WriteLine("Chưa có điểm danh, tạo mới");
-
-                    // Tạo điểm danh mới
                     var diemDanh = new DiemDanhHoatDong
                     {
                         MaDangKy = maDangKy,
-                        ThoiGianDiemDanh = DateTime.Now, // Sử dụng DateTime.Now thay vì UTC
+                        ThoiGianDiemDanh = DateTime.Now,
                         MaQl = maQl,
                         GhiChu = ghiChu
                     };
-
                     _context.DiemDanhHoatDongs.Add(diemDanh);
-                    Console.WriteLine($"Đã tạo điểm danh mới: MaDangKy={diemDanh.MaDangKy}, MaQl={diemDanh.MaQl}");
                 }
 
-                // Lưu thay đổi
-                Console.WriteLine("Bắt đầu lưu thay đổi vào DB");
+                // === KIỂM SOÁT CỘNG TRÙNG ĐIỂM RÈN LUYỆN VÀ RÀNG BUỘC ĐIỂM TỐI ĐA ===
+                var diemRenLuyen = await _context.DiemRenLuyens
+                    .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
+
+                // Nếu đã chốt, không cộng nữa
+                if (diemRenLuyen != null &&
+                    !string.IsNullOrEmpty(diemRenLuyen.TrangThai) &&
+                    diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt")
+                {
+                    await _context.SaveChangesAsync(); // vẫn lưu điểm danh
+                    return BadRequest(new { success = false, message = "Điểm rèn luyện đã chốt, không thể cộng thêm điểm!" });
+                }
+
+                // Kiểm tra đã điểm danh (và cộng điểm) cho hoạt động này trong học kỳ này chưa
+                bool daCongDiem = diemDanhCu != null;
+                if (diemRenLuyen == null)
+                {
+                    diemRenLuyen = new DiemRenLuyen
+                    {
+                        MaSv = maSv,
+                        MaHocKy = maHocKy,
+                        TongDiem = Math.Min(diemCong, 100)
+                    };
+                    _context.DiemRenLuyens.Add(diemRenLuyen);
+                }
+                else if (!daCongDiem)
+                {
+                    var diemMoi = (diemRenLuyen.TongDiem ?? 0) + diemCong;
+                    diemRenLuyen.TongDiem = diemMoi > 100 ? 100 : diemMoi;
+                    _context.Entry(diemRenLuyen).State = EntityState.Modified;
+                }
+                else
+                {
+                    // Đã điểm danh trước đó, không trả thông báo cộng điểm
+                    await _context.SaveChangesAsync();
+                    return NoContent();
+                }
+
                 await _context.SaveChangesAsync();
-                Console.WriteLine("Đã lưu thay đổi vào DB");
-
-                return Ok(new { success = true, message = "Điểm danh thành công" });
-            }
-            catch (DbUpdateException dbEx)
-            {
-                Console.WriteLine($"Lỗi DbUpdateException: {dbEx.Message}");
-                if (dbEx.InnerException != null)
-                    Console.WriteLine($"Inner Exception: {dbEx.InnerException.Message}");
-
-                return BadRequest(new { success = false, message = $"Lỗi cập nhật DB: {dbEx.Message}", details = dbEx.InnerException?.Message });
+                return Ok(new { success = true, message = "Điểm danh và cộng điểm rèn luyện thành công" });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi Exception: {ex.Message}");
-                if (ex.InnerException != null)
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-
                 return BadRequest(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }
@@ -251,31 +247,19 @@ namespace QuanLyDiemRenLuyen.Controllers
         {
             try
             {
-                // Ghi log để theo dõi
-                Console.WriteLine("Bắt đầu xử lý điểm danh nhóm");
-
-                // Kiểm tra jsonElement có các thuộc tính cần thiết không
                 if (!jsonElement.TryGetProperty("DanhSachMaDangKy", out var danhSachElement) ||
                     !jsonElement.TryGetProperty("MaQl", out var maQlElement))
                 {
                     return BadRequest("Thiếu thông tin danh sách mã đăng ký hoặc mã quản lý");
                 }
 
-                // Kiểm tra mã quản lý
                 string maQl = maQlElement.GetString();
                 if (string.IsNullOrEmpty(maQl))
                 {
                     return BadRequest("Mã quản lý không được để trống");
                 }
 
-                Console.WriteLine($"MaQl: {maQl}");
-
-                // Kiểm tra danh sách mã đăng ký
-                if (danhSachElement.ValueKind != JsonValueKind.Array)
-                {
-                    return BadRequest("Danh sách mã đăng ký phải là một mảng");
-                }
-
+                // Lấy danh sách mã đăng ký
                 List<int> danhSachMaDangKy = new List<int>();
                 foreach (JsonElement item in danhSachElement.EnumerateArray())
                 {
@@ -288,13 +272,10 @@ namespace QuanLyDiemRenLuyen.Controllers
                         return BadRequest("Danh sách mã đăng ký chứa giá trị không hợp lệ");
                     }
                 }
-
                 if (danhSachMaDangKy.Count == 0)
                 {
                     return BadRequest("Danh sách mã đăng ký không được để trống");
                 }
-
-                Console.WriteLine($"Số lượng mã đăng ký: {danhSachMaDangKy.Count}");
 
                 // Lấy ghi chú (nếu có)
                 string ghiChu = null;
@@ -308,43 +289,46 @@ namespace QuanLyDiemRenLuyen.Controllers
                 var quanLyKhoa = await _context.QuanLyKhoas.FindAsync(maQl);
                 if (quanLyKhoa == null)
                 {
-                    Console.WriteLine($"Không tìm thấy quản lý khoa với mã {maQl}");
                     return BadRequest($"Không tìm thấy quản lý khoa với mã {maQl}");
                 }
-                Console.WriteLine($"Đã tìm thấy quản lý khoa: {quanLyKhoa.MaQl}");
 
-                // Sử dụng transaction để đảm bảo tính nhất quán
+                int demDiemDanh = 0;
+                int demCongDiem = 0;
+                List<string> danhSachKhongDuocCongDiem = new List<string>();
+                List<string> danhSachDaDiemDanhTruoc = new List<string>();
+
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 try
                 {
-                    int successCount = 0;
                     foreach (var maDangKy in danhSachMaDangKy)
                     {
-                        // Kiểm tra đăng ký tồn tại
-                        var dangKy = await _context.DangKyHoatDongs.FindAsync(maDangKy);
-                        if (dangKy == null)
+                        var dangKy = await _context.DangKyHoatDongs
+                            .Include(dk => dk.MaSvNavigation)
+                            .Include(dk => dk.MaHoatDongNavigation)
+                            .FirstOrDefaultAsync(dk => dk.MaDangKy == maDangKy);
+
+                        if (dangKy == null || dangKy.MaHoatDongNavigation == null || dangKy.MaSvNavigation == null)
                         {
-                            Console.WriteLine($"Không tìm thấy đăng ký với mã {maDangKy}, bỏ qua");
                             continue;
                         }
 
-                        // Kiểm tra đã điểm danh chưa
+                        var maSv = dangKy.MaSv;
+                        var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+                        var diemCong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
+
+                        // Xử lý điểm danh (update hoặc insert)
                         var diemDanhCu = await _context.DiemDanhHoatDongs
                             .FirstOrDefaultAsync(dd => dd.MaDangKy == maDangKy);
 
                         if (diemDanhCu != null)
                         {
-                            // Cập nhật điểm danh cũ
                             diemDanhCu.ThoiGianDiemDanh = DateTime.Now;
                             diemDanhCu.MaQl = maQl;
                             diemDanhCu.GhiChu = ghiChu;
-
                             _context.Entry(diemDanhCu).State = EntityState.Modified;
-                            Console.WriteLine($"Cập nhật điểm danh cho mã đăng ký {maDangKy}");
                         }
                         else
                         {
-                            // Tạo điểm danh mới
                             var diemDanh = new DiemDanhHoatDong
                             {
                                 MaDangKy = maDangKy,
@@ -352,51 +336,76 @@ namespace QuanLyDiemRenLuyen.Controllers
                                 MaQl = maQl,
                                 GhiChu = ghiChu
                             };
-
                             _context.DiemDanhHoatDongs.Add(diemDanh);
-                            Console.WriteLine($"Tạo mới điểm danh cho mã đăng ký {maDangKy}");
                         }
-                        successCount++;
+                        demDiemDanh++;
+
+                        var diemRenLuyen = await _context.DiemRenLuyens
+                            .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
+
+                        // Nếu đã chốt thì không cộng, thêm vào danh sách thông báo
+                        if (diemRenLuyen != null &&
+                            !string.IsNullOrEmpty(diemRenLuyen.TrangThai) &&
+                            diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt")
+                        {
+                            danhSachKhongDuocCongDiem.Add($"{maSv} ({dangKy.MaSvNavigation.HoTen})");
+                            continue;
+                        }
+
+                        // Kiểm tra đã cộng điểm cho hoạt động này chưa (dựa vào điểm danh)
+                        bool daCongDiem = false;
+                        if (diemRenLuyen != null)
+                        {
+                            daCongDiem = diemDanhCu != null;
+                        }
+
+                        if (diemRenLuyen == null)
+                        {
+                            diemRenLuyen = new DiemRenLuyen
+                            {
+                                MaSv = maSv,
+                                MaHocKy = maHocKy,
+                                TongDiem = Math.Min(diemCong, 100)
+                            };
+                            _context.DiemRenLuyens.Add(diemRenLuyen);
+                            demCongDiem++;
+                        }
+                        else if (!daCongDiem)
+                        {
+                            var diemMoi = (diemRenLuyen.TongDiem ?? 0) + diemCong;
+                            diemRenLuyen.TongDiem = diemMoi > 100 ? 100 : diemMoi;
+                            _context.Entry(diemRenLuyen).State = EntityState.Modified;
+                            demCongDiem++;
+                        }
+                        else
+                        {
+                            // Đã điểm danh trước đó, không cộng điểm, không đưa vào thông báo
+                            danhSachDaDiemDanhTruoc.Add($"{maSv} ({dangKy.MaSvNavigation.HoTen})");
+                            continue;
+                        }
                     }
 
-                    // Lưu thay đổi
-                    Console.WriteLine("Đang lưu thay đổi vào cơ sở dữ liệu...");
                     await _context.SaveChangesAsync();
-
                     await transaction.CommitAsync();
-                    Console.WriteLine($"Hoàn thành điểm danh nhóm: {successCount}/{danhSachMaDangKy.Count} thành công");
 
-                    return Ok(new
+                    string message = $"Đã điểm danh {demDiemDanh} lượt, cộng điểm rèn luyện cho {demCongDiem} sinh viên.";
+                    if (danhSachKhongDuocCongDiem.Any())
                     {
-                        success = true,
-                        message = $"Điểm danh thành công {successCount}/{danhSachMaDangKy.Count} sinh viên"
-                    });
+                        message += $" Các sinh viên không được cộng điểm do đã chốt điểm rèn luyện: {string.Join(", ", danhSachKhongDuocCongDiem)}";
+                    }
+
+                    // Không thông báo ai đã điểm danh trước đó
+                    return Ok(new { success = true, message });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    Console.WriteLine($"Lỗi khi điểm danh nhóm: {ex.Message}");
-                    if (ex.InnerException != null)
-                        Console.WriteLine($"InnerException: {ex.InnerException.Message}");
-
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = $"Lỗi khi điểm danh nhóm: {ex.Message}"
-                    });
+                    return BadRequest(new { success = false, message = $"Lỗi khi điểm danh nhóm: {ex.Message}" });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi ngoại lệ: {ex.Message}");
-                if (ex.InnerException != null)
-                    Console.WriteLine($"InnerException: {ex.InnerException.Message}");
-
-                return BadRequest(new
-                {
-                    success = false,
-                    message = $"Lỗi: {ex.Message}"
-                });
+                return BadRequest(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }
 
