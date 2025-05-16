@@ -152,6 +152,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.DiemDanhQR_code",
+    "Method": "GenerateQRCode",
+    "RelativePath": "api/DiemDanhQR_code/generate-qr",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.DiemDanhQR_code\u002BGenerateQRRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemRenLuyenController",
     "Method": "CapNhatDiemRenLuyen",
     "RelativePath": "api/DiemRenLuyen/cap_nhat_diem_ren_luyen/{id}",

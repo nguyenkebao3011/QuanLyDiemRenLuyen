@@ -275,6 +275,37 @@
         }
       }
     },
+    "/api/DiemDanhQR_code/generate-qr": {
+      "post": {
+        "tags": [
+          "DiemDanhQR_code"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateQRRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateQRRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateQRRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemRenLuyen/lay_danh_sach": {
       "get": {
         "tags": [
@@ -3439,6 +3470,24 @@
           "TenDangNhap": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GenerateQRRequest": {
+        "type": "object",
+        "properties": {
+          "MaHoatDong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "MaQL": {
+            "type": "string",
+            "nullable": true
+          },
+          "ExpirationTime": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

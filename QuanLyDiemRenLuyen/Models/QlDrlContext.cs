@@ -15,7 +15,7 @@ public partial class QlDrlContext : DbContext
         : base(options)
     {
     }
-
+    public virtual DbSet<QRCodeSession> QRCodeSession { get; set; }
     public virtual DbSet<ChiTietThongBao> ChiTietThongBaos { get; set; }
 
     public virtual DbSet<DangKyHoatDong> DangKyHoatDongs { get; set; }
@@ -51,8 +51,8 @@ public partial class QlDrlContext : DbContext
     public virtual DbSet<OTPRecords> OTPRecords { get; set; } 
     public virtual DbSet<LichSuHuyDangKy> LichSuHuyDangKys { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       // => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
-       => optionsBuilder.UseSqlServer("Server=DESKTOP-N9TFSHP\\SQL2022;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
+       //=> optionsBuilder.UseSqlServer("Server=DESKTOP-N9TFSHP\\SQL2022;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ChiTietThongBao>(entity =>
@@ -301,7 +301,7 @@ public partial class QlDrlContext : DbContext
                 .HasForeignKey(d => d.MaQl)
                 .HasConstraintName("FK_PhanHoi_QuanLy");
         });
-
+       
         modelBuilder.Entity<QuanLyKhoa>(entity =>
         {
             entity.HasKey(e => e.MaQl).HasName("PK__QuanLyKh__2725F852EDF3A01A");
