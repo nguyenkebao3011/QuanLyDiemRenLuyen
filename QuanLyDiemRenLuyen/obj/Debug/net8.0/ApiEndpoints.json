@@ -168,6 +168,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "DiemDanhQRCodeController",
+    "Method": "CheckIn",
+    "RelativePath": "api/DiemDanhQRCode/check-in",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "DiemDanhQRCodeController\u002BCheckInRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemRenLuyenController",
     "Method": "CapNhatDiemRenLuyen",
     "RelativePath": "api/DiemRenLuyen/cap_nhat_diem_ren_luyen/{id}",
@@ -1089,6 +1105,47 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.PhanHoiDiemRenLuyenController",
+    "Method": "TaoPhanHoiVeHoatDong",
+    "RelativePath": "api/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MaSv",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MaHocKy",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "MaDangKy",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "NoiDungPhanHoi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MoTaMinhChung",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileMinhChung",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.PhanHoiDiemRenLuyenController",

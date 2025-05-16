@@ -306,6 +306,37 @@
         }
       }
     },
+    "/api/DiemDanhQRCode/check-in": {
+      "post": {
+        "tags": [
+          "DiemDanhQRCode"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemRenLuyen/lay_danh_sach": {
       "get": {
         "tags": [
@@ -1879,6 +1910,70 @@
         }
       }
     },
+    "/api/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong": {
+      "post": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "MaSv": {
+                    "type": "string"
+                  },
+                  "MaHocKy": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "MaDangKy": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "NoiDungPhanHoi": {
+                    "type": "string"
+                  },
+                  "MoTaMinhChung": {
+                    "type": "string"
+                  },
+                  "FileMinhChung": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "MaSv": {
+                  "style": "form"
+                },
+                "MaHocKy": {
+                  "style": "form"
+                },
+                "MaDangKy": {
+                  "style": "form"
+                },
+                "NoiDungPhanHoi": {
+                  "style": "form"
+                },
+                "MoTaMinhChung": {
+                  "style": "form"
+                },
+                "FileMinhChung": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLyGiangVien/them_giang_vien": {
       "post": {
         "tags": [
@@ -3220,6 +3315,24 @@
             "nullable": true
           },
           "MatKhauMoi": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckInRequest": {
+        "type": "object",
+        "properties": {
+          "MaDangKy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Token": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaSV": {
             "type": "string",
             "nullable": true
           }
