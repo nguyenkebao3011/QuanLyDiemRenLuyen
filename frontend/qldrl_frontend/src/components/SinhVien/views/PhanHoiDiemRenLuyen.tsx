@@ -1,21 +1,30 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import "../css/PhanHoiMinhChung.css";
-import { ApiService } from "../../../untils/services/service-api";
-import type { HoatDong, HocKy } from "../../Admin/types";
 
-interface DangKyHoatDongDTO {
+interface HoatDongDTO {
   MaDangKy: number;
   MaSv: string;
   MaHoatDong: number;
+  TenHoatDong: string;
   NgayDangKy: string;
   TrangThai: string;
-  TenHoatDong?: string;
   DiaDiem?: string;
   NgayBatDau?: string;
   DiemCong?: number;
   MoTa?: string;
   MaHocKy?: number;
+}
+
+interface HocKyDTO {
+  MaHocKy: number;
+  TenHocKy: string;
+  NamHoc: string;
+}
+
+interface ApiResponse {
+  message?: string;
+  data?: any[];
 }
 
 interface SubmitResponse {
@@ -30,7 +39,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token")
   );
-  const [hoatDong, setHoatDong] = useState<DangKyHoatDongDTO[]>([]);
+  const [hoatDong, setHoatDong] = useState<HoatDongDTO[]>([]);
   const [maDangKy, setMaDangKy] = useState<number | null>(null);
   const [noiDungPhanHoi, setNoiDungPhanHoi] = useState("");
   const [moTaMinhChung, setMoTaMinhChung] = useState("");
@@ -41,10 +50,12 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [fileName, setFileName] = useState("");
   const [maHocKy, setMaHocKy] = useState<number | null>(null);
-  const [hocKyList, setHocKyList] = useState<HocKy[]>([]);
-  const [hoatDongDetails, setHoatDongDetails] = useState<Map<number, HoatDong>>(
-    new Map()
+  const [hocKyList, setHocKyList] = useState<HocKyDTO[]>([]);
+  const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDongDTO | null>(
+    null
   );
+
+  const API_URL = "http://localhost:5163/api";
 
   useEffect(() => {
     if (!token) {
@@ -57,48 +68,51 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       setIsLoading(true);
       try {
         // Lấy danh sách học kỳ
-        const hocKyData = await ApiService.layDanhSachHocKy();
-        setHocKyList(hocKyData);
+        const hocKyResponse = await fetch(`${API_URL}/HocKy/lay_hoc_ky`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (hocKyResponse.ok) {
+          const hocKyData = await hocKyResponse.json();
+          setHocKyList(hocKyData);
+        }
 
         // Lấy danh sách hoạt động đã đăng ký
-        const res = await fetch(
-          "http://localhost:5163/api/DangKyHoatDongs/danh-sach-dang-ky",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const hoatDongResponse = await fetch(
+          `${API_URL}/DangKyHoatDongs/danh-sach-dang-ky`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        if (res.status === 401) {
+        if (hoatDongResponse.status === 401) {
           setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
           localStorage.removeItem("token");
           setToken(null);
           return;
         }
-
-        if (!res.ok) {
-          throw new Error(`Lỗi HTTP: ${res.status} ${res.statusText}`);
+        if (!hoatDongResponse.ok) {
+          throw new Error(
+            `Lỗi HTTP: ${hoatDongResponse.status} ${hoatDongResponse.statusText}`
+          );
         }
 
-        const data = await res.json();
+        const data: ApiResponse = await hoatDongResponse.json();
 
         if (data.data && Array.isArray(data.data)) {
-          setHoatDong(data.data);
-
-          // Lấy thông tin chi tiết cho mỗi hoạt động để có MaHocKy
-          const hoatDongMap = new Map<number, HoatDong>();
-          const allHoatDong = await ApiService.layDanhSachHoatDong();
-
-          for (const hd of allHoatDong) {
-            hoatDongMap.set(hd.MaHoatDong, hd);
-          }
-
-          setHoatDongDetails(hoatDongMap);
-
-          if (data.data.length === 0) {
+          const formattedData = data.data.map((item: any) => ({
+            MaDangKy: item.MaDangKy || item.MaHoatDong,
+            MaSv: item.MaSV || "",
+            MaHoatDong: item.MaHoatDong,
+            TenHoatDong: item.TenHoatDong || "",
+            NgayDangKy: item.NgayDangKy || "",
+            TrangThai:
+              item.TrangThai || item.TrangThaiHoatDong || "Chưa xác định",
+            DiaDiem: item.DiaDiem || item.diaDiem || "",
+            NgayBatDau: item.NgayBatDau || "",
+            DiemCong: item.DiemCong || item.diemCong || 0,
+            MoTa: item.MoTa || "",
+            MaHocKy: item.MaHocKy || null,
+          }));
+          setHoatDong(formattedData);
+          if (formattedData.length === 0)
             setMessage("Bạn chưa đăng ký hoạt động nào.");
-          }
         } else {
           setHoatDong([]);
           setMessage("Dữ liệu từ server không đúng định dạng.");
@@ -109,15 +123,12 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchData();
-  }, [token]);
+  }, [token, API_URL]);
 
   useEffect(() => {
     if (showNotification) {
-      const timer = setTimeout(() => {
-        setShowNotification(false);
-      }, 5000);
+      const timer = setTimeout(() => setShowNotification(false), 5000);
       return () => clearTimeout(timer);
     }
   }, [showNotification]);
@@ -127,57 +138,18 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       ? Number.parseInt(e.target.value)
       : null;
     setMaDangKy(selectedValue);
-
+    console.log("selectedValue:", selectedValue);
     if (selectedValue) {
-      // Tìm hoạt động được chọn
-      const selectedActivity = hoatDong.find(
-        (hd) => hd.MaDangKy === selectedValue
+      const selected = hoatDong.find(
+        (hd) => hd.MaDangKy === selectedValue || hd.MaHoatDong === selectedValue
       );
-
-      if (selectedActivity && selectedActivity.MaHoatDong) {
-        // Lấy thông tin chi tiết hoạt động để có MaHocKy
-        const hoatDongDetail = hoatDongDetails.get(selectedActivity.MaHoatDong);
-
-        if (hoatDongDetail && hoatDongDetail.MaHocKy) {
-          setMaHocKy(hoatDongDetail.MaHocKy);
-        } else {
-          // Nếu không tìm thấy thông tin học kỳ, gọi API để lấy thông tin chi tiết
-          fetchHoatDongDetail(selectedActivity.MaHoatDong);
-        }
-      }
+      setSelectedHoatDong(selected || null);
+      console.log("selected:", selected);
+      if (selected && selected.MaHocKy) setMaHocKy(selected.MaHocKy);
+      else setMaHocKy(null);
     } else {
-      // Reset học kỳ nếu không chọn hoạt động
+      setSelectedHoatDong(null);
       setMaHocKy(null);
-    }
-  };
-
-  const fetchHoatDongDetail = async (maHoatDong: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:5163/api/HoatDong/chi-tiet/${maHoatDong}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const hoatDongDetail = await response.json();
-
-        if (hoatDongDetail && hoatDongDetail.MaHocKy) {
-          setMaHocKy(hoatDongDetail.MaHocKy);
-
-          // Cập nhật cache
-          setHoatDongDetails((prev) => {
-            const newMap = new Map(prev);
-            newMap.set(maHoatDong, hoatDongDetail);
-            return newMap;
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin chi tiết hoạt động:", error);
     }
   };
 
@@ -209,12 +181,10 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:5163/api/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong",
+        `${API_URL}/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
           body: formData,
         }
       );
@@ -232,8 +202,12 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       const data: SubmitResponse = await res.json();
 
       if (res.ok) {
-        showNotificationMessage(data.message, true);
+        showNotificationMessage(
+          data.message || "Gửi phản hồi thành công!",
+          true
+        );
         setMaDangKy(null);
+        setSelectedHoatDong(null);
         setNoiDungPhanHoi("");
         setMoTaMinhChung("");
         setFileMinhChung(null);
@@ -256,7 +230,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const getUserIdFromToken = (token: string): string => {
     try {
       const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const base64 = base64Url.replace(/_/g, "+").replace(/\//g, "-");
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split("")
@@ -266,8 +240,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       const payload = JSON.parse(jsonPayload);
       return payload.MaSv || payload.sub || "unknown";
     } catch (e) {
-      console.error("Lỗi khi giải mã token:", e);
-      return "DHTH603148"; // Giá trị mặc định để test
+      return "DHTH603148";
     }
   };
 
@@ -283,7 +256,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
     setFileName(selectedFile ? selectedFile.name : "");
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toLocaleDateString("vi-VN", {
@@ -294,7 +267,8 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       minute: "2-digit",
     });
   };
-
+  console.log("maHocKy:", maHocKy);
+  console.log("hocKyList:", hocKyList);
   return (
     <div className="gph-container">
       <div
@@ -334,25 +308,31 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                     id="activity-select"
                     value={maDangKy || ""}
                     onChange={handleActivityChange}
-                    disabled={!token || hoatDong.length === 0 || isLoading}
+                    disabled={isLoading}
                     className="gph-form-control"
                     required
                   >
                     <option value="">-- Chọn hoạt động --</option>
-                    {Array.isArray(hoatDong) &&
-                      hoatDong.map((hd) => (
-                        <option key={hd.MaDangKy} value={hd.MaDangKy}>
-                          {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
-                        </option>
-                      ))}
+                    {hoatDong.map((hd) => (
+                      <option
+                        key={hd.MaDangKy || hd.MaHoatDong}
+                        value={hd.MaDangKy || hd.MaHoatDong}
+                      >
+                        {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
-
               <div className="gph-form-group">
                 <label>Học Kỳ</label>
                 <div className="gph-selected-semester">
-                  {maHocKy ? (
+                  {isLoading && maDangKy ? (
+                    <div className="gph-semester-loading">
+                      <div className="gph-small-loader"></div>
+                      <span>Đang lấy thông tin học kỳ...</span>
+                    </div>
+                  ) : maHocKy ? (
                     <div className="gph-semester-info">
                       {getHocKyName(maHocKy)}
                     </div>
@@ -373,7 +353,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                   onChange={(e) => setNoiDungPhanHoi(e.target.value)}
                   placeholder="Nhập nội dung phản hồi về hoạt động..."
                   required
-                  disabled={!token || isLoading}
+                  disabled={isLoading}
                   className="gph-form-control"
                   rows={5}
                 ></textarea>
@@ -386,7 +366,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                   value={moTaMinhChung}
                   onChange={(e) => setMoTaMinhChung(e.target.value)}
                   placeholder="Mô tả về minh chứng bạn đính kèm..."
-                  disabled={!token || isLoading}
+                  disabled={isLoading}
                   className="gph-form-control"
                   rows={3}
                 ></textarea>
@@ -404,7 +384,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                     accept=".jpg,.jpeg,.png,.pdf,.docx"
                     onChange={handleFileChange}
                     required
-                    disabled={!token || isLoading}
+                    disabled={isLoading}
                     className="gph-hidden-file-input"
                   />
                   <div className="gph-custom-file-input">
@@ -431,7 +411,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                 <button
                   type="submit"
                   className="gph-submit-button"
-                  disabled={!token || isLoading}
+                  disabled={isLoading}
                 >
                   {isLoading ? "Đang xử lý..." : "Gửi Phản Hồi"}
                 </button>
@@ -454,70 +434,70 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
               </div>
             ) : (
               <div className="gph-activity-list">
-                {Array.isArray(hoatDong) && hoatDong.length > 0 ? (
-                  hoatDong.map((hd) => {
-                    const hoatDongDetail = hoatDongDetails.get(hd.MaHoatDong);
-                    return (
-                      <div key={hd.MaDangKy} className="gph-activity-item">
-                        <div className="gph-activity-header">
-                          <h3 className="gph-activity-title">
-                            {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
-                            {hoatDongDetail?.MaHocKy && (
-                              <span className="gph-semester-badge">
-                                {getHocKyName(hoatDongDetail.MaHocKy)}
-                              </span>
-                            )}
-                          </h3>
-                          <span
-                            className={`gph-activity-status gph-status-${hd.TrangThai?.toLowerCase().replace(
-                              /\s+/g,
-                              "-"
-                            )}`}
-                          >
-                            {hd.TrangThai || "Chưa xác định"}
+                {hoatDong.length > 0 ? (
+                  hoatDong.map((hd) => (
+                    <div
+                      key={hd.MaDangKy || hd.MaHoatDong}
+                      className="gph-activity-item"
+                    >
+                      <div className="gph-activity-header">
+                        <h3 className="gph-activity-title">
+                          {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
+                          {hd.MaHocKy && (
+                            <span className="gph-semester-badge">
+                              {getHocKyName(hd.MaHocKy)}
+                            </span>
+                          )}
+                        </h3>
+                        <span
+                          className={`gph-activity-status gph-status-${hd.TrangThai?.toLowerCase().replace(
+                            /\s+/g,
+                            "-"
+                          )}`}
+                        >
+                          {hd.TrangThai || "Chưa xác định"}
+                        </span>
+                      </div>
+
+                      <div className="gph-activity-details">
+                        <div className="gph-detail-row">
+                          <span className="gph-detail-label">
+                            Ngày bắt đầu:
+                          </span>
+                          <span className="gph-detail-value">
+                            {formatDate(hd.NgayBatDau)}
                           </span>
                         </div>
-
-                        <div className="gph-activity-details">
-                          <div className="gph-detail-row">
-                            <span className="gph-detail-label">
-                              Ngày bắt đầu:
-                            </span>
-                            <span className="gph-detail-value">
-                              {formatDate(hd.NgayBatDau || "")}
-                            </span>
-                          </div>
-                          <div className="gph-detail-row">
-                            <span className="gph-detail-label">Địa điểm:</span>
-                            <span className="gph-detail-value">
-                              {hd.DiaDiem || "Chưa cập nhật"}
-                            </span>
-                          </div>
-                          <div className="gph-detail-row">
-                            <span className="gph-detail-label">Điểm cộng:</span>
-                            <span className="gph-detail-value gph-highlight">
-                              {hd.DiemCong || 0} điểm
-                            </span>
-                          </div>
-                          <div className="gph-detail-row">
-                            <span className="gph-detail-label">
-                              Ngày đăng ký:
-                            </span>
-                            <span className="gph-detail-value">
-                              {formatDate(hd.NgayDangKy)}
-                            </span>
-                          </div>
+                        <div className="gph-detail-row">
+                          <span className="gph-detail-label">Địa điểm:</span>
+                          <span className="gph-detail-value">
+                            {hd.DiaDiem || "Chưa cập nhật"}
+                          </span>
                         </div>
-
-                        {hd.MoTa && (
-                          <div className="gph-activity-description">
-                            <h4>Mô tả:</h4>
-                            <p>{hd.MoTa}</p>
-                          </div>
-                        )}
+                        <div className="gph-detail-row">
+                          <span className="gph-detail-label">Điểm cộng:</span>
+                          <span className="gph-detail-value gph-highlight">
+                            {hd.DiemCong || 0} điểm
+                          </span>
+                        </div>
+                        <div className="gph-detail-row">
+                          <span className="gph-detail-label">
+                            Ngày đăng ký:
+                          </span>
+                          <span className="gph-detail-value">
+                            {formatDate(hd.NgayDangKy)}
+                          </span>
+                        </div>
                       </div>
-                    );
-                  })
+
+                      {hd.MoTa && (
+                        <div className="gph-activity-description">
+                          <h4>Mô tả:</h4>
+                          <p>{hd.MoTa}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))
                 ) : (
                   <div className="gph-empty-state">
                     <i className="gph-icon-empty"></i>
