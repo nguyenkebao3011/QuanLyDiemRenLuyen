@@ -826,8 +826,6 @@ D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
-D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
@@ -1156,3 +1154,5 @@ D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiem
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.pdb
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\QuanLyDiemRenLuyen.genruntimeconfig.cache
 D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\obj\Debug\net8.0\ref\QuanLyDiemRenLuyen.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\QrCodeGenerator.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
