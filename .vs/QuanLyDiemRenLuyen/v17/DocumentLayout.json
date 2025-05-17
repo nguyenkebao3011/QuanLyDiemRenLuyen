@@ -76,7 +76,7 @@
               "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\PhanHoiDiemRenLuyenController.cs",
               "ToolTip": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\PhanHoiDiemRenLuyenController.cs",
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\PhanHoiDiemRenLuyenController.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAuwGYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAwwF4AAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-17T12:02:53.912Z",
               "EditorCaption": ""
@@ -91,8 +91,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\PhanHoiDiemRenLuyenController.cs",
               "ViewState": "AgIAAM4AAAAAAAAAAAAqwNcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T12:02:52.491Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-17T12:02:52.491Z"
             },
             {
               "$type": "Document",
@@ -116,8 +115,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Models\\QRCodeSession.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T09:35:27.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T09:35:27.903Z"
             },
             {
               "$type": "Document",
@@ -129,8 +127,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Models\\QlDrlContext.cs",
               "ViewState": "AgIAADAAAAAAAAAAAAAywDYAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T09:34:18.273Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T09:34:18.273Z"
             },
             {
               "$type": "Document",
@@ -190,8 +187,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\DiemDanhQR_code.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAmwDMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T09:30:26.441Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T09:30:26.441Z"
             },
             {
               "$type": "Document",
