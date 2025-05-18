@@ -24,6 +24,7 @@ wwwroot\avatars\hung.nguyen@huit.edu.vn_638817762322026392.jpeg
 wwwroot\HinhAnhMinhChung\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg
 wwwroot\HinhAnhMinhChung\8e1ee918-fce5-4cd5-b0c5-a9a2029cf202.jpg
 wwwroot\HinhAnhMinhChung\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg
+wwwroot\HinhAnhMinhChung\d1394777-2601-4a94-bbf5-c5bad706e97f.jpg
 wwwroot\test.html
 wwwroot\uploads\0bf59c87-7020-47ea-81b0-400647eda8e2.jpg
 wwwroot\uploads\6ba7c09a-5b67-4737-9833-7ee76aeace34.jpg

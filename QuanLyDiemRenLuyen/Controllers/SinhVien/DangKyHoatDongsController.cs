@@ -140,6 +140,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         hoatDong => hoatDong.MaHoatDong,
                         (dangKy, hoatDong) => new
                         {
+                            dangKy.MaDangKy,
                             hoatDong.MaHocKy,
                             MaSv = maSV,
                             dangKy.MaHoatDong,

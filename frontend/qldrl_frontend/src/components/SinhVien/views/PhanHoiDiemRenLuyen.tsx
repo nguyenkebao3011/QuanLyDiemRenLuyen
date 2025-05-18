@@ -1,5 +1,4 @@
-import type React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/PhanHoiMinhChung.css";
 
 interface HoatDongDTO {
@@ -39,6 +38,8 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token")
   );
+  // Lấy mã sinh viên đúng theo key backend trả ra
+  const maSv = localStorage.getItem("username") || "";
   const [hoatDong, setHoatDong] = useState<HoatDongDTO[]>([]);
   const [maDangKy, setMaDangKy] = useState<number | null>(null);
   const [noiDungPhanHoi, setNoiDungPhanHoi] = useState("");
@@ -49,7 +50,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [maHocKy, setMaHocKy] = useState<number | null>(null);
+  const [maHocKy, setMaHocKy] = useState<number | undefined>(undefined);
   const [hocKyList, setHocKyList] = useState<HocKyDTO[]>([]);
   const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDongDTO | null>(
     null
@@ -94,21 +95,23 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
         }
 
         const data: ApiResponse = await hoatDongResponse.json();
-
         if (data.data && Array.isArray(data.data)) {
           const formattedData = data.data.map((item: any) => ({
-            MaDangKy: item.MaDangKy || item.MaHoatDong,
-            MaSv: item.MaSV || "",
+            MaDangKy: Number(item.MaDangKy), // MaDangKy phải là số
+            MaSv: item.MaSv ?? "",
             MaHoatDong: item.MaHoatDong,
-            TenHoatDong: item.TenHoatDong || "",
-            NgayDangKy: item.NgayDangKy || "",
+            TenHoatDong: item.TenHoatDong ?? "",
+            NgayDangKy: item.NgayDangKy ?? "",
             TrangThai:
-              item.TrangThai || item.TrangThaiHoatDong || "Chưa xác định",
-            DiaDiem: item.DiaDiem || item.diaDiem || "",
-            NgayBatDau: item.NgayBatDau || "",
-            DiemCong: item.DiemCong || item.diemCong || 0,
-            MoTa: item.MoTa || "",
-            MaHocKy: item.MaHocKy || null,
+              item.TrangThai ?? item.TrangThaiHoatDong ?? "Chưa xác định",
+            DiaDiem: item.DiaDiem ?? item.diaDiem ?? "",
+            NgayBatDau: item.NgayBatDau ?? "",
+            DiemCong: item.DiemCong ?? item.diemCong ?? 0,
+            MoTa: item.MoTa ?? "",
+            MaHocKy:
+              item.MaHocKy !== undefined && item.MaHocKy !== null
+                ? Number(item.MaHocKy)
+                : undefined,
           }));
           setHoatDong(formattedData);
           if (formattedData.length === 0)
@@ -138,24 +141,21 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       ? Number.parseInt(e.target.value)
       : null;
     setMaDangKy(selectedValue);
-    console.log("selectedValue:", selectedValue);
     if (selectedValue) {
-      const selected = hoatDong.find(
-        (hd) => hd.MaDangKy === selectedValue || hd.MaHoatDong === selectedValue
-      );
+      const selected = hoatDong.find((hd) => hd.MaDangKy === selectedValue);
       setSelectedHoatDong(selected || null);
-      console.log("selected:", selected);
-      if (selected && selected.MaHocKy) setMaHocKy(selected.MaHocKy);
-      else setMaHocKy(null);
+      if (selected && selected.MaHocKy !== undefined)
+        setMaHocKy(Number(selected.MaHocKy));
+      else setMaHocKy(undefined);
     } else {
       setSelectedHoatDong(null);
-      setMaHocKy(null);
+      setMaHocKy(undefined);
     }
   };
 
   const getHocKyName = (maHocKy?: number): string => {
-    if (!maHocKy) return "";
-    const hocKy = hocKyList.find((hk) => hk.MaHocKy === maHocKy);
+    if (maHocKy === undefined) return "";
+    const hocKy = hocKyList.find((hk) => hk.MaHocKy === Number(maHocKy));
     return hocKy ? `${hocKy.TenHocKy} - ${hocKy.NamHoc}` : "";
   };
 
@@ -165,29 +165,42 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       showNotificationMessage("Vui lòng đăng nhập để gửi phản hồi.", false);
       return;
     }
-    if (!maDangKy || !noiDungPhanHoi || !fileMinhChung || !maHocKy) {
+    if (
+      !maDangKy ||
+      !noiDungPhanHoi ||
+      !fileMinhChung ||
+      maHocKy === undefined
+    ) {
       showNotificationMessage("Vui lòng điền đầy đủ thông tin.", false);
       return;
     }
-
+    // === LOG DEBUG THÔNG TIN GỬI ĐI ===
+    console.log("=== THÔNG TIN GỬI BACKEND ===");
+    console.log("MaSv:", maSv);
+    console.log("MaHocKy:", maHocKy);
+    console.log("MaDangKy:", maDangKy);
+    console.log("NoiDungPhanHoi:", noiDungPhanHoi);
+    console.log("MoTaMinhChung:", moTaMinhChung);
+    console.log("FileMinhChung:", fileMinhChung);
+    console.log("=============================");
     setIsLoading(true);
     const formData = new FormData();
-    formData.append("MaSv", getUserIdFromToken(token));
+    formData.append("MaSv", maSv);
     formData.append("MaHocKy", maHocKy.toString());
     formData.append("MaDangKy", maDangKy.toString());
     formData.append("NoiDungPhanHoi", noiDungPhanHoi);
     formData.append("MoTaMinhChung", moTaMinhChung || "");
-    formData.append("FileMinhChung", fileMinhChung);
-
+    if (fileMinhChung) {
+      formData.append("FileMinhChung", fileMinhChung);
+    }
+    const submitUrl = `${API_URL}/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong`;
+    console.log("[SUBMIT FETCH URL]", submitUrl);
     try {
-      const res = await fetch(
-        `${API_URL}/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        }
-      );
+      const res = await fetch(submitUrl, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
       if (res.status === 401) {
         showNotificationMessage(
@@ -212,7 +225,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
         setMoTaMinhChung("");
         setFileMinhChung(null);
         setFileName("");
-        setMaHocKy(null);
+        setMaHocKy(undefined);
         (document.getElementById("fileInput") as HTMLInputElement).value = "";
       } else {
         showNotificationMessage(
@@ -224,23 +237,6 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       showNotificationMessage("Lỗi: " + (err as Error).message, false);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const getUserIdFromToken = (token: string): string => {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/_/g, "+").replace(/\//g, "-");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
-      );
-      const payload = JSON.parse(jsonPayload);
-      return payload.MaSv || payload.sub || "unknown";
-    } catch (e) {
-      return "DHTH603148";
     }
   };
 
@@ -267,8 +263,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       minute: "2-digit",
     });
   };
-  console.log("maHocKy:", maHocKy);
-  console.log("hocKyList:", hocKyList);
+
   return (
     <div className="gph-container">
       <div
@@ -314,10 +309,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                   >
                     <option value="">-- Chọn hoạt động --</option>
                     {hoatDong.map((hd) => (
-                      <option
-                        key={hd.MaDangKy || hd.MaHoatDong}
-                        value={hd.MaDangKy || hd.MaHoatDong}
-                      >
+                      <option key={hd.MaDangKy} value={hd.MaDangKy}>
                         {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
                       </option>
                     ))}
@@ -332,7 +324,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                       <div className="gph-small-loader"></div>
                       <span>Đang lấy thông tin học kỳ...</span>
                     </div>
-                  ) : maHocKy ? (
+                  ) : maHocKy !== undefined && getHocKyName(maHocKy) ? (
                     <div className="gph-semester-info">
                       {getHocKyName(maHocKy)}
                     </div>
@@ -341,7 +333,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                       Học kỳ sẽ được chọn tự động khi bạn chọn hoạt động
                     </div>
                   )}
-                  <input type="hidden" name="MaHocKy" value={maHocKy || ""} />
+                  <input type="hidden" name="MaHocKy" value={maHocKy ?? ""} />
                 </div>
               </div>
 
@@ -436,14 +428,11 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
               <div className="gph-activity-list">
                 {hoatDong.length > 0 ? (
                   hoatDong.map((hd) => (
-                    <div
-                      key={hd.MaDangKy || hd.MaHoatDong}
-                      className="gph-activity-item"
-                    >
+                    <div key={hd.MaDangKy} className="gph-activity-item">
                       <div className="gph-activity-header">
                         <h3 className="gph-activity-title">
                           {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
-                          {hd.MaHocKy && (
+                          {hd.MaHocKy !== undefined && (
                             <span className="gph-semester-badge">
                               {getHocKyName(hd.MaHocKy)}
                             </span>
