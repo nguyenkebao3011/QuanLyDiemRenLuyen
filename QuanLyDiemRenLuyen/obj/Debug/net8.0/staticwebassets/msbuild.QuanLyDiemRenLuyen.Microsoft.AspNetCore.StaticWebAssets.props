@@ -414,6 +414,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\avatars\hung.nguyen@huit.edu.vn_638817762322026392.jpeg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\06d267c7-5cd5-4be2-93f3-ad207a7fa9fb.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>QuanLyDiemRenLuyen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/QuanLyDiemRenLuyen</BasePath>
+      <RelativePath>HinhAnhMinhChung/06d267c7-5cd5-4be2-93f3-ad207a7fa9fb.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>gysu6ywxk1</Fingerprint>
+      <Integrity>GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\06d267c7-5cd5-4be2-93f3-ad207a7fa9fb.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>QuanLyDiemRenLuyen</SourceId>
@@ -431,6 +449,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\51fadb89-9dba-4787-aac6-bf3c58828d72.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>QuanLyDiemRenLuyen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/QuanLyDiemRenLuyen</BasePath>
+      <RelativePath>HinhAnhMinhChung/51fadb89-9dba-4787-aac6-bf3c58828d72.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>gysu6ywxk1</Fingerprint>
+      <Integrity>GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\51fadb89-9dba-4787-aac6-bf3c58828d72.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\8e1ee918-fce5-4cd5-b0c5-a9a2029cf202.jpg'))">
       <SourceType>Package</SourceType>
@@ -450,6 +486,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\8e1ee918-fce5-4cd5-b0c5-a9a2029cf202.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\956f064c-cb02-4f81-aa94-8837b6d9801a.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>QuanLyDiemRenLuyen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/QuanLyDiemRenLuyen</BasePath>
+      <RelativePath>HinhAnhMinhChung/956f064c-cb02-4f81-aa94-8837b6d9801a.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>gysu6ywxk1</Fingerprint>
+      <Integrity>GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\956f064c-cb02-4f81-aa94-8837b6d9801a.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>QuanLyDiemRenLuyen</SourceId>
@@ -467,6 +521,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>QuanLyDiemRenLuyen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/QuanLyDiemRenLuyen</BasePath>
+      <RelativePath>HinhAnhMinhChung/a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>gysu6ywxk1</Fingerprint>
+      <Integrity>GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\d1394777-2601-4a94-bbf5-c5bad706e97f.jpg'))">
       <SourceType>Package</SourceType>
