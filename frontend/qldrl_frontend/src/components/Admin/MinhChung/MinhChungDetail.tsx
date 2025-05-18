@@ -15,6 +15,8 @@ interface MinhChungDetailProps {
   onBack: () => void;
 }
 
+const BACKEND_URL = "http://localhost:5163";
+
 const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
   minhChung,
   onBack,
@@ -31,10 +33,16 @@ const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
     });
   };
 
-  const getFileIcon = () => {
-    const fileUrl = minhChung.DuongDanFile || "";
-    const extension = fileUrl.split(".").pop()?.toLowerCase() || "";
+  const getAbsoluteFileUrl = (duongDanFile?: string | null) => {
+    if (!duongDanFile) return "";
+    if (/^https?:\/\//.test(duongDanFile)) return duongDanFile;
+    if (!duongDanFile.startsWith("/")) duongDanFile = "/" + duongDanFile;
+    return BACKEND_URL + duongDanFile;
+  };
 
+  const getFileIcon = () => {
+    const fileUrl = getAbsoluteFileUrl(minhChung.DuongDanFile);
+    const extension = fileUrl.split(".").pop()?.toLowerCase() || "";
     if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
       return <FileImage className="file-icon image" />;
     } else if (extension === "pdf") {
@@ -42,6 +50,11 @@ const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
     } else {
       return <File className="file-icon" />;
     }
+  };
+
+  const isImageFile = (fileUrl?: string | null) => {
+    if (!fileUrl) return false;
+    return /\.(jpg|jpeg|png|gif|bmp)$/i.test(fileUrl);
   };
 
   return (
@@ -58,9 +71,18 @@ const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
         <div className="file-preview">
           {getFileIcon()}
           <h3>{minhChung.MoTa || `Minh chứng #${minhChung.MaMinhChung}`}</h3>
+          {isImageFile(minhChung.DuongDanFile) && (
+            <div className="image-preview">
+              <img
+                src={getAbsoluteFileUrl(minhChung.DuongDanFile)}
+                alt="Minh chứng"
+                style={{ maxWidth: "250px", borderRadius: 8 }}
+              />
+            </div>
+          )}
           {minhChung.DuongDanFile && (
             <a
-              href={minhChung.DuongDanFile}
+              href={getAbsoluteFileUrl(minhChung.DuongDanFile)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-download"
@@ -111,7 +133,6 @@ const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
               </div>
             </div>
           </div>
-
           {minhChung.MoTa && (
             <div className="info-section">
               <h3>Mô tả</h3>
@@ -121,27 +142,14 @@ const MinhChungDetail: React.FC<MinhChungDetailProps> = ({
             </div>
           )}
 
-          {minhChung.DuongDanFile &&
-            minhChung.DuongDanFile.toLowerCase().match(
-              /\.(jpg|jpeg|png|gif|bmp)$/
-            ) && (
-              <div className="info-section">
-                <h3>Xem trước</h3>
-                <div className="image-preview">
-                  <img
-                    src={minhChung.DuongDanFile || "/placeholder.svg"}
-                    alt="Minh chứng"
-                  />
-                </div>
-              </div>
-            )}
+          {/* ĐÃ BỎ PHẦN XEM TRƯỚC Ở DƯỚI */}
         </div>
       </div>
 
       <div className="detail-actions">
         {minhChung.DuongDanFile && (
           <a
-            href={minhChung.DuongDanFile}
+            href={getAbsoluteFileUrl(minhChung.DuongDanFile)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-download"
