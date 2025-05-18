@@ -98,21 +98,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DiemRenLuyensController.cs",
-              "DocumentMoniker": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
-              "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
-              "ToolTip": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
-              "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:37:32.503Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -123,8 +110,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\DTO\\SinhVien\\DangKyHoatDongDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:37:28.969Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T08:37:28.969Z"
             },
             {
               "$type": "Document",
@@ -136,8 +122,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\DTO\\SinhVien\\TaoPhanHoiVeHoatDongDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:37:27.209Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T08:37:27.209Z"
             },
             {
               "$type": "Document",
@@ -149,8 +134,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\QuanLyKhoaController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:14:53.087Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T08:14:53.087Z"
             },
             {
               "$type": "Document",
@@ -167,6 +151,18 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DiemRenLuyensController.cs",
+              "DocumentMoniker": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
+              "RelativeDocumentMoniker": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
+              "ToolTip": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
+              "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\DiemRenLuyensController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T08:37:32.503Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
               "Title": "HoiDongChamDiemController.cs",
               "DocumentMoniker": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\HoiDongChamDiemController.cs",
@@ -175,8 +171,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\HoiDongChamDiemController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:14:53.822Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T08:14:53.822Z"
             },
             {
               "$type": "Document",
@@ -188,8 +183,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\DiemDanhQR_code.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAmwDMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T09:30:26.441Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T09:30:26.441Z"
             },
             {
               "$type": "Document",
@@ -201,8 +195,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\SinhVien\\PhanHoiDiemRenLuyenController.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAAwFgAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T12:02:53.912Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-17T12:02:53.912Z"
             },
             {
               "$type": "Document",
@@ -214,8 +207,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Models\\QlDrlContext.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAA5wDgAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T09:34:18.273Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T09:34:18.273Z"
             },
             {
               "$type": "Document",
@@ -227,8 +219,7 @@
               "RelativeToolTip": "QuanLyDiemRenLuyen\\Controllers\\QuanLyKhoa\\QuanLyGiangVienController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T08:14:52.345Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T08:14:52.345Z"
             },
             {
               "$type": "Document",

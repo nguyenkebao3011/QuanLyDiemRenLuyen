@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Bell, X } from 'lucide-react';
-import axios from 'axios';
-import { Modal, Select, Input } from 'antd';
-import '../css/NotificationDropdown.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Bell, X } from "lucide-react";
+import axios from "axios";
+import { Modal, Select, Input } from "antd";
+import "../css/NotificationDropdown.css";
 
 const { Option } = Select;
 
@@ -21,11 +21,15 @@ interface ToastProps {
   thongBao: ThongBaoDTOSV;
   onClose: () => void;
   onRead: () => void;
-  onRespond?: (maChiTietThongBao: number, response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => void;
+  onRespond?: (
+    maChiTietThongBao: number,
+    response: "XacNhan" | "TuChoi",
+    lyDoTuChoi?: string
+  ) => void;
 }
 
 const formatNoiDung = (noiDung: string): string => {
-  let formattedContent = noiDung.replace(/\[MaHoatDong:\d+\]$/, '').trim();
+  let formattedContent = noiDung.replace(/\[MaHoatDong:\d+\]$/, "").trim();
   formattedContent = formattedContent.replace(
     /(\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4})/g,
     '<span class="highlight-date">$1</span>'
@@ -38,10 +42,19 @@ const formatNoiDung = (noiDung: string): string => {
     /\b(Địa điểm|ở)\s+([A-ZÀ-Ỵ][^\.,\n]+)/g,
     '$1 <span class="highlight-location">$2</span>'
   );
-  const importantWords = ['bắt đầu', 'kết thúc', 'quan trọng', 'lưu ý', 'hạn chót'];
-  importantWords.forEach(word => {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-    formattedContent = formattedContent.replace(regex, `<span class="highlight-important">${word}</span>`);
+  const importantWords = [
+    "bắt đầu",
+    "kết thúc",
+    "quan trọng",
+    "lưu ý",
+    "hạn chót",
+  ];
+  importantWords.forEach((word) => {
+    const regex = new RegExp(`\\b${word}\\b`, "gi");
+    formattedContent = formattedContent.replace(
+      regex,
+      `<span class="highlight-important">${word}</span>`
+    );
   });
   return formattedContent;
 };
@@ -59,11 +72,18 @@ const extractEventTime = (noiDung: string): string | null => {
   return null;
 };
 
-const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) => {
+const Toast: React.FC<ToastProps> = ({
+  thongBao,
+  onClose,
+  onRead,
+  onRespond,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [lyDoTuChoi, setLyDoTuChoi] = useState<string>('');
-  const [customLyDo, setCustomLyDo] = useState<string>(''); // Lý do tùy chỉnh khi chọn "Khác"
-  const [showResponseToast, setShowResponseToast] = useState<string | null>(null);
+  const [lyDoTuChoi, setLyDoTuChoi] = useState<string>("");
+  const [customLyDo, setCustomLyDo] = useState<string>(""); // Lý do tùy chỉnh khi chọn "Khác"
+  const [showResponseToast, setShowResponseToast] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -79,22 +99,22 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
 
   const getEmoji = () => {
     const title = thongBao.TieuDe.toLowerCase();
-    if (thongBao.LoaiThongBao === 'Thay đổi lịch trình') {
-      return '📅';
-    } else if (thongBao.LoaiThongBao === 'Nhắc nhở') {
-      return '⏰';
-    } else if (thongBao.LoaiThongBao === 'Chỉ định sinh viên') {
-      return '🎯';
-    } else if (title.includes('Giới thiệu') || title.includes('thể thao')) {
-      return '🏆';
-    } else if (title.includes('hội thao') || title.includes('thi đấu')) {
-      return '🎯';
-    } else if (title.includes('hỗ trợ') || title.includes('hướng dẫn')) {
-      return '🎓';
-    } else if (title.includes('tổ chức') || title.includes('chào mừng')) {
-      return '🎉';
+    if (thongBao.LoaiThongBao === "Thay đổi lịch trình") {
+      return "📅";
+    } else if (thongBao.LoaiThongBao === "Nhắc nhở") {
+      return "⏰";
+    } else if (thongBao.LoaiThongBao === "Chỉ định sinh viên") {
+      return "🎯";
+    } else if (title.includes("Giới thiệu") || title.includes("thể thao")) {
+      return "🏆";
+    } else if (title.includes("hội thao") || title.includes("thi đấu")) {
+      return "🎯";
+    } else if (title.includes("hỗ trợ") || title.includes("hướng dẫn")) {
+      return "🎓";
+    } else if (title.includes("tổ chức") || title.includes("chào mừng")) {
+      return "🎉";
     }
-    return '🔔';
+    return "🔔";
   };
 
   const handleTuChoi = () => {
@@ -103,32 +123,39 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
 
   const handleModalOk = () => {
     let finalLyDo = lyDoTuChoi;
-    if (lyDoTuChoi === 'Khác' && !customLyDo) {
+    if (lyDoTuChoi === "Khác" && !customLyDo) {
       alert('Vui lòng nhập lý do khi chọn "Khác".');
       return;
     }
-    if (lyDoTuChoi === 'Khác') finalLyDo = customLyDo;
-    if (!finalLyDo && lyDoTuChoi !== 'Khác') {
-      alert('Vui lòng chọn lý do từ chối.');
+    if (lyDoTuChoi === "Khác") finalLyDo = customLyDo;
+    if (!finalLyDo && lyDoTuChoi !== "Khác") {
+      alert("Vui lòng chọn lý do từ chối.");
       return;
     }
-    onRespond?.(thongBao.MaChiTietThongBao, 'TuChoi', finalLyDo);
-    setShowResponseToast('Bạn đã từ chối tham gia hoạt động này');
+    onRespond?.(thongBao.MaChiTietThongBao, "TuChoi", finalLyDo);
+    setShowResponseToast("Bạn đã từ chối tham gia hoạt động này");
     setIsModalVisible(false);
-    setLyDoTuChoi('');
-    setCustomLyDo('');
+    setLyDoTuChoi("");
+    setCustomLyDo("");
     setTimeout(() => setShowResponseToast(null), 3000); // Ẩn toast sau 3 giây
   };
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
-    setLyDoTuChoi('');
-    setCustomLyDo('');
+    setLyDoTuChoi("");
+    setCustomLyDo("");
   };
 
-  const handleRespondWithToast = (response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => {
+  const handleRespondWithToast = (
+    response: "XacNhan" | "TuChoi",
+    lyDoTuChoi?: string
+  ) => {
     onRespond?.(thongBao.MaChiTietThongBao, response, lyDoTuChoi);
-    setShowResponseToast(response === 'XacNhan' ? 'Bạn đã đăng ký tham gia hoạt động này' : 'Bạn đã từ chối tham gia hoạt động này');
+    setShowResponseToast(
+      response === "XacNhan"
+        ? "Bạn đã đăng ký tham gia hoạt động này"
+        : "Bạn đã từ chối tham gia hoạt động này"
+    );
     setTimeout(() => setShowResponseToast(null), 3000); // Ẩn toast sau 3 giây
   };
 
@@ -138,26 +165,33 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
   return (
     <div
       className="toast-notification"
-      onClick={thongBao.LoaiThongBao !== 'Chỉ định sinh viên' ? handleClick : undefined}
+      onClick={
+        thongBao.LoaiThongBao !== "Chỉ định sinh viên" ? handleClick : undefined
+      }
       data-type={thongBao.LoaiThongBao}
     >
       <div className="toast-icon">{getEmoji()}</div>
       <div className="toast-content">
         <h4 className="toast-title title-prominent">{thongBao.TieuDe}</h4>
-        <p className="toast-message" dangerouslySetInnerHTML={{ __html: formattedContent }}></p>
+        <p
+          className="toast-message"
+          dangerouslySetInnerHTML={{ __html: formattedContent }}
+        ></p>
         {eventTime && (
           <p className="toast-event-time">
             <span className="event-time-icon">📆</span> {eventTime}
           </p>
         )}
-        <p className="toast-time">{new Date(thongBao.NgayTao).toLocaleString('vi-VN')}</p>
-        {thongBao.LoaiThongBao === 'Chỉ định sinh viên' && !thongBao.DaDoc && (
+        <p className="toast-time">
+          {new Date(thongBao.NgayTao).toLocaleString("vi-VN")}
+        </p>
+        {thongBao.LoaiThongBao === "Chỉ định sinh viên" && !thongBao.DaDoc && (
           <div className="toast-actions">
             <button
               className="toast-action-button confirm2"
               onClick={(e) => {
                 e.stopPropagation();
-                handleRespondWithToast('XacNhan');
+                handleRespondWithToast("XacNhan");
               }}
             >
               Xác Nhận
@@ -196,7 +230,7 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
         maskClosable={false} // Không cho phép đóng modal bằng cách click ngoài
       >
         <Select
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={{ width: "100%", marginBottom: "10px" }}
           placeholder="Chọn lý do từ chối"
           onChange={(value: string) => setLyDoTuChoi(value)}
           value={lyDoTuChoi}
@@ -206,20 +240,18 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
           <Option value="Không quan tâm">Không quan tâm</Option>
           <Option value="Khác">Khác</Option>
         </Select>
-        {lyDoTuChoi === 'Khác' && (
+        {lyDoTuChoi === "Khác" && (
           <Input
             placeholder="Nhập lý do của bạn"
             value={customLyDo}
             onChange={(e) => setCustomLyDo(e.target.value)}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           />
         )}
       </Modal>
 
       {showResponseToast && (
-        <div className="response-toast">
-          {showResponseToast}
-        </div>
+        <div className="response-toast">{showResponseToast}</div>
       )}
     </div>
   );
@@ -233,14 +265,18 @@ const ThongBaoDropdown: React.FC = () => {
   const [daHienThiToast, setDaHienThiToast] = useState<Set<number>>(new Set());
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const token = localStorage.getItem('token') || '';
+  const token = localStorage.getItem("token") || "";
 
-  const handleRespond = async (maChiTietThongBao: number, response: 'XacNhan' | 'TuChoi', lyDoTuChoi?: string) => {
+  const handleRespond = async (
+    maChiTietThongBao: number,
+    response: "XacNhan" | "TuChoi",
+    lyDoTuChoi?: string
+  ) => {
     try {
       const payload = {
         MaChiTietThongBao: maChiTietThongBao,
         Response: response,
-        ...(response === 'TuChoi' && { LyDoTuChoi: lyDoTuChoi }),
+        ...(response === "TuChoi" && { LyDoTuChoi: lyDoTuChoi }),
       };
       await axios.post(
         `http://localhost:5163/api/ThongBaoHoatDong/${maChiTietThongBao}/respond`,
@@ -256,29 +292,39 @@ const ThongBaoDropdown: React.FC = () => {
       );
       setSoThongBaoChuaDoc((prev) => prev - 1);
     } catch (error) {
-      console.error('Lỗi khi gửi phản hồi:', error);
-      alert('Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại.');
+      console.error("Lỗi khi gửi phản hồi:", error);
+      alert("Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại.");
     }
   };
 
   useEffect(() => {
     const layDanhSachThongBao = async () => {
       try {
-        const response = await axios.get('http://localhost:5163/api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          "http://localhost:5163/api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const duLieu: ThongBaoDTOSV[] = response.data;
-        console.log('Danh sách thông báo:', duLieu);
+        console.log("Danh sách thông báo:", duLieu);
 
         const maThongBaoDuyNhat = new Set(duLieu.map((tb) => tb.MaThongBao));
         let thongBaoHopLe: ThongBaoDTOSV[] = [];
         if (maThongBaoDuyNhat.size !== duLieu.length) {
-          console.warn('Phát hiện MaThongBao bị trùng:', duLieu);
-          thongBaoHopLe = Array.from(new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values());
+          console.warn("Phát hiện MaThongBao bị trùng:", duLieu);
+          thongBaoHopLe = Array.from(
+            new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values()
+          );
         } else {
-          const coMaThongBaoKhongHopLe = duLieu.some((tb) => tb.MaThongBao == null);
+          const coMaThongBaoKhongHopLe = duLieu.some(
+            (tb) => tb.MaThongBao == null
+          );
           if (coMaThongBaoKhongHopLe) {
-            console.warn('Phát hiện MaThongBao không hợp lệ (undefined/null):', duLieu);
+            console.warn(
+              "Phát hiện MaThongBao không hợp lệ (undefined/null):",
+              duLieu
+            );
             thongBaoHopLe = duLieu.filter((tb) => tb.MaThongBao != null);
           } else {
             thongBaoHopLe = duLieu;
@@ -288,7 +334,9 @@ const ThongBaoDropdown: React.FC = () => {
         setDanhSachThongBao(thongBaoHopLe);
         setSoThongBaoChuaDoc(thongBaoHopLe.filter((tb) => !tb.DaDoc).length);
 
-        const thongBaoChuaDoc = thongBaoHopLe.filter((tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao));
+        const thongBaoChuaDoc = thongBaoHopLe.filter(
+          (tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao)
+        );
         if (thongBaoChuaDoc.length > 0) {
           const toastsToShow = thongBaoChuaDoc.slice(0, 3);
           setDanhSachToast(toastsToShow);
@@ -299,7 +347,7 @@ const ThongBaoDropdown: React.FC = () => {
           });
         }
       } catch (error) {
-        console.error('Lỗi khi lấy danh sách thông báo:', error);
+        console.error("Lỗi khi lấy danh sách thông báo:", error);
       }
     };
 
@@ -310,17 +358,20 @@ const ThongBaoDropdown: React.FC = () => {
 
   useEffect(() => {
     const xuLyNhapChuotNgoai = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setHienThi(false);
       }
     };
-    document.addEventListener('mousedown', xuLyNhapChuotNgoai);
-    return () => document.removeEventListener('mousedown', xuLyNhapChuotNgoai);
+    document.addEventListener("mousedown", xuLyNhapChuotNgoai);
+    return () => document.removeEventListener("mousedown", xuLyNhapChuotNgoai);
   }, []);
 
   const danhDauDaDoc = async (maThongBao: number) => {
     if (!maThongBao) {
-      console.error('MaThongBao không hợp lệ hoặc undefined');
+      console.error("MaThongBao không hợp lệ hoặc undefined");
       return;
     }
     try {
@@ -331,21 +382,29 @@ const ThongBaoDropdown: React.FC = () => {
       );
       setDanhSachThongBao((truocDo) =>
         truocDo.map((tb) =>
-          tb.MaThongBao === maThongBao ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() } : tb
+          tb.MaThongBao === maThongBao
+            ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() }
+            : tb
         )
       );
       setSoThongBaoChuaDoc((truocDo) => truocDo - 1);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Lỗi khi đánh dấu đã đọc:', error.message, error.response?.data);
+        console.error(
+          "Lỗi khi đánh dấu đã đọc:",
+          error.message,
+          error.response?.data
+        );
       } else {
-        console.error('Lỗi không xác định:', error);
+        console.error("Lỗi không xác định:", error);
       }
     }
   };
 
   const dongToast = (maThongBao: number) => {
-    setDanhSachToast((prevToasts) => prevToasts.filter((toast) => toast.MaThongBao !== maThongBao));
+    setDanhSachToast((prevToasts) =>
+      prevToasts.filter((toast) => toast.MaThongBao !== maThongBao)
+    );
   };
 
   return (
@@ -353,7 +412,9 @@ const ThongBaoDropdown: React.FC = () => {
       <div className="notification-icon-container" ref={dropdownRef}>
         <div className="notification-icon" onClick={() => setHienThi(!hienThi)}>
           <Bell size={20} />
-          {soThongBaoChuaDoc > 0 && <span className="notification-badge2">{soThongBaoChuaDoc}</span>}
+          {soThongBaoChuaDoc > 0 && (
+            <span className="notification-badge2">{soThongBaoChuaDoc}</span>
+          )}
         </div>
 
         {hienThi && (
@@ -370,49 +431,77 @@ const ThongBaoDropdown: React.FC = () => {
                   return (
                     <li
                       key={tb.MaThongBao ?? `thongbao-${index}`}
-                      className={`notification-item ${tb.DaDoc ? 'read' : ''}`}
-                      onClick={() => !tb.DaDoc && tb.MaThongBao && tb.LoaiThongBao !== 'Chỉ định sinh viên' && danhDauDaDoc(tb.MaThongBao)}
+                      className={`notification-item ${tb.DaDoc ? "read" : ""}`}
+                      onClick={() =>
+                        !tb.DaDoc &&
+                        tb.MaThongBao &&
+                        tb.LoaiThongBao !== "Chỉ định sinh viên" &&
+                        danhDauDaDoc(tb.MaThongBao)
+                      }
                     >
                       <div className="notification-content">
                         <div className="notification-icon-type">
-                          {tb.LoaiThongBao === 'Thay đổi lịch trình' ? (
+                          {tb.LoaiThongBao === "Thay đổi lịch trình" ? (
                             <span className="schedule">📅</span>
-                          ) : tb.LoaiThongBao === 'Nhắc nhở' ? (
+                          ) : tb.LoaiThongBao === "Nhắc nhở" ? (
                             <span className="reminder">⏰</span>
-                          ) : tb.LoaiThongBao === 'Chỉ định sinh viên' ? (
+                          ) : tb.LoaiThongBao === "Chỉ định sinh viên" ? (
                             <span className="assignment">🎯</span>
                           ) : (
                             <span className="general">🔔</span>
                           )}
                         </div>
                         <div className="notification-details">
-                          <h4 className={`title-prominent ${tb.DaDoc ? 'read' : ''}`}>{tb.TieuDe}</h4>
-                          <div dangerouslySetInnerHTML={{ __html: processedContent }}></div>
-                          <p className="date">{new Date(tb.NgayTao).toLocaleString('vi-VN')}</p>
-                          {tb.LoaiThongBao === 'Chỉ định sinh viên' && !tb.DaDoc && (
-                            <div className="notification-actions">
-                              <button
-                                className="action-button confirm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  tb.MaChiTietThongBao && handleRespond(tb.MaChiTietThongBao, 'XacNhan');
-                                }}
-                              >
-                                Xác Nhận
-                              </button>
-                              <button
-                                className="action-button reject"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  tb.MaChiTietThongBao && handleRespond(tb.MaChiTietThongBao, 'TuChoi');
-                                }}
-                              >
-                                Từ Chối
-                              </button>
-                            </div>
-                          )}
+                          <h4
+                            className={`title-prominent ${
+                              tb.DaDoc ? "read" : ""
+                            }`}
+                          >
+                            {tb.TieuDe}
+                          </h4>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: processedContent,
+                            }}
+                          ></div>
+                          <p className="date">
+                            {new Date(tb.NgayTao).toLocaleString("vi-VN")}
+                          </p>
+                          {tb.LoaiThongBao === "Chỉ định sinh viên" &&
+                            !tb.DaDoc && (
+                              <div className="notification-actions">
+                                <button
+                                  className="action-button confirm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    tb.MaChiTietThongBao &&
+                                      handleRespond(
+                                        tb.MaChiTietThongBao,
+                                        "XacNhan"
+                                      );
+                                  }}
+                                >
+                                  Xác Nhận
+                                </button>
+                                <button
+                                  className="action-button reject"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    tb.MaChiTietThongBao &&
+                                      handleRespond(
+                                        tb.MaChiTietThongBao,
+                                        "TuChoi"
+                                      );
+                                  }}
+                                >
+                                  Từ Chối
+                                </button>
+                              </div>
+                            )}
                         </div>
-                        {!tb.DaDoc && <span className="notification-unread-dot"></span>}
+                        {!tb.DaDoc && (
+                          <span className="notification-unread-dot"></span>
+                        )}
                       </div>
                     </li>
                   );

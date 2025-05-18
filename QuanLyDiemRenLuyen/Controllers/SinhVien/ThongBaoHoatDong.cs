@@ -109,7 +109,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     MaSv = maSv,
                     MaHoatDong = maHoatDongInt,
                     NgayDangKy = DateTime.Now,
-                    TrangThai = "Đăng ký thành công (GVHD)"
+                    TrangThai = "Đăng ký thành công"
                 };
 
                 if (hoatDong.SoLuongDaDangKy >= hoatDong.SoLuongToiDa)
