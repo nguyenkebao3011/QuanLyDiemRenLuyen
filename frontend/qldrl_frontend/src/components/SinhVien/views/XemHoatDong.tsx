@@ -33,6 +33,7 @@ const HoatDongList: React.FC = () => {
   const [diemMin, setDiemMin] = useState("");
   const [diemMax, setDiemMax] = useState("");
   const [trangThai, setTrangThai] = useState("");
+  const [isLatest, setIsLatest] = useState(false); // Thêm state cho bộ lọc mới nhất
   const [filterVisible, setFilterVisible] = useState(false);
 
   // State cho modal đăng ký
@@ -140,6 +141,7 @@ const HoatDongList: React.FC = () => {
       if (diemMin) url += `DiemMin=${encodeURIComponent(diemMin)}&`;
       if (diemMax) url += `DiemMax=${encodeURIComponent(diemMax)}&`;
       if (trangThai) url += `TrangThai=${encodeURIComponent(trangThai)}&`;
+      if (isLatest) url += `IsLatest=${isLatest}&`; // Thêm tham số IsLatest
 
       url = url.endsWith("&") ? url.slice(0, -1) : url;
 
@@ -172,6 +174,7 @@ const HoatDongList: React.FC = () => {
     setDiemMin("");
     setDiemMax("");
     setTrangThai("");
+    setIsLatest(false); // Xóa trạng thái IsLatest
     fetchHoatDong();
   };
 
@@ -378,9 +381,7 @@ const HoatDongList: React.FC = () => {
                   <option value="Chưa bắt đầu">Chưa bắt đầu</option>
                   <option value="Đang diễn ra">Đang diễn ra</option>
                   <option value="Đang mở đăng ký">Đang mở đăng ký</option>
-
                   <option value="Đã kết thúc">Đã kết thúc</option>
-                  
                 </select>
               </div>
             </div>
@@ -430,6 +431,20 @@ const HoatDongList: React.FC = () => {
                   min="0"
                   className="filter-input"
                 />
+              </div>
+            </div>
+
+            <div className="filter-row">
+              <div className="filter-group">
+                <label>
+                  <input
+                    className="checkbox-filter"
+                    type="checkbox"
+                    checked={isLatest}
+                    onChange={(e) => setIsLatest(e.target.checked)}
+                  />
+                  Hoạt động mới nhất
+                </label>
               </div>
             </div>
 
@@ -575,14 +590,15 @@ const HoatDongList: React.FC = () => {
                 <strong>Tên hoạt động:</strong> {selectedDetailHoatDong.TenHoatDong}
               </p>
               <p>
-                <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}. Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ, chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham gia sẽ bị trừ điểm như quy định hiện hành. Mong các bạn thực hiện nghiêm túc!
+              <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}. Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ, chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham gia sẽ bị trừ điểm: <strong style={{ color: 'red' }}>5 điểm/hoạt động</strong>. Mong các bạn thực hiện nghiêm túc!
+
               </p>
-              <p>
+         <p>
                 <strong>Số lượng sinh viên có thể đăng ký:</strong>{" "}
                 {Math.max(0, selectedDetailHoatDong.SoLuongToiDa - selectedDetailHoatDong.SoLuongDaDangKy)}
               </p>
               <p>
-                <strong>Số điểm cộng:</strong> {selectedDetailHoatDong.DiemCong}
+                <strong>Số điểm cộng:</strong>  <strong style={{color: 'red'}}>{selectedDetailHoatDong.DiemCong}</strong>
               </p>
               <p>
                 <strong>Thời gian:</strong> {formatDate(selectedDetailHoatDong.NgayBatDau)} →{" "}
@@ -593,7 +609,7 @@ const HoatDongList: React.FC = () => {
                 <strong>Địa điểm:</strong> {selectedDetailHoatDong.DiaDiem}
               </p>
               <p>
-                <strong>Quy định về đồng phục: </strong> Đối với các hoạt động trong trường: Các bạn vui lòng thực hiện đúng đồng phục (áo sơ mi, áo thể chất, áo khoa,...). Đối với các hoạt động ngoài trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà trường để thuận tiện cho công tác quản lý điểm danh sinh viên. Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù hợp với hoạt động.
+                <strong>Quy định về đồng phục: </strong> Đối với các hoạt động trong trường: <strong style={{color : 'red'}}>Các bạn vui lòng thực hiện đúng đồng phục (áo sơ mi, áo thể chất, áo khoa,...)</strong> . Đối với các hoạt động ngoài trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà trường để thuận tiện cho công tác quản lý điểm danh sinh viên. Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù hợp với hoạt động.
               </p>
             </div>
             <div className="modal-footer">

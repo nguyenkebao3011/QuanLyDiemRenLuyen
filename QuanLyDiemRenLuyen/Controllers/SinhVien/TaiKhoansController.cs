@@ -234,18 +234,30 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 await _context.SaveChangesAsync();
             }
 
+            // Kiểm tra tài khoản (có thể là sinh viên hoặc giảng viên)
             var taiKhoan = await _context.TaiKhoans
                 .Include(tk => tk.SinhVien)
+                .Include(tk => tk.GiaoVien) // Giả sử có liên kết với GiangVien
                 .FirstOrDefaultAsync(tk => tk.TenDangNhap == request.TenDangNhap);
-            if (taiKhoan == null || taiKhoan.SinhVien == null)
+
+            if (taiKhoan == null)
             {
-                return BadRequest(new { message = "Mã số sinh viên không tồn tại." });
+                return BadRequest(new { message = "Tên đăng nhập không tồn tại." });
             }
 
-            var email = taiKhoan.SinhVien.Email;
+            string email = null;
+            if (taiKhoan.SinhVien != null)
+            {
+                email = taiKhoan.SinhVien.Email;
+            }
+            else if (taiKhoan.GiaoVien != null)
+            {
+                email = taiKhoan.GiaoVien.Email; // Giả sử GiangVien có trường Email
+            }
+
             if (string.IsNullOrEmpty(email))
             {
-                return BadRequest(new { message = "Sinh viên này chưa có email." });
+                return BadRequest(new { message = "Tài khoản này chưa có email được liên kết." });
             }
 
             var otp = new Random().Next(100000, 999999).ToString();

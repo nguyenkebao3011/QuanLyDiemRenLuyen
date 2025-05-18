@@ -119,12 +119,12 @@ const ResetPassword: React.FC = () => {
         {step === 1 && (
           <form onSubmit={handleForgotPassword}>
             <div className="form-group mb-4">
-              <label htmlFor="tenDangNhap">Mã số sinh viên</label>
+              <label htmlFor="tenDangNhap">Nhập tài khoản của bạn</label>
               <input
                 type="text"
                 id="tenDangNhap"
                 className="form-control"
-                placeholder="Nhập mã số sinh viên"
+                placeholder="Nhập tài khoản của bạn "
                 value={tenDangNhap}
                 onChange={(e) => setTenDangNhap(e.target.value)}
                 disabled={isLoading}

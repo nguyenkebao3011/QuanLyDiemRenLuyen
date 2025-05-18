@@ -290,7 +290,7 @@ const CapNhatThongTin: React.FC = () => {
                 className="student-avatar"
               />
             ) : (
-              <div className="default-avatar">
+              <div className="default-avatar2">
                 {(studentData?.HoTen?.charAt(0) || "T").toUpperCase()}
               </div>
             )}

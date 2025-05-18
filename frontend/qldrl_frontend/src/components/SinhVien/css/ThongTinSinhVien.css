@@ -146,23 +146,7 @@ body {
   animation: rotateGradient 4s linear infinite;
 }
 
-.avatar-container::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  padding: 5px;
-  background: conic-gradient(
-    transparent, 
-    rgba(255, 255, 255, 0), 
-    rgba(255, 255, 255, 0.8), 
-    rgba(255, 255, 255, 0)
-  );
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: rotateShine 4s linear infinite;
-}
+
 
 /* Avatar image styling */
 .student-avatar {
@@ -172,7 +156,7 @@ body {
   border-radius: 50%;
   border: 5px solid #fff;
   transition: var(--transition);
-  animation: pulse 3s infinite;
+  /* animation: pulse 3s infinite; */
 }
 
 /* Default avatar when image is not available */
@@ -189,7 +173,7 @@ body {
   font-weight: bold;
   border: 5px solid #fff;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-  animation: scaleAndRotate 10s infinite alternate;
+  /* animation: scaleAndRotate 10s infinite alternate; */
 }
 
 /* Table container with frosted glass effect */
