@@ -1164,6 +1164,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "IsLatest",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {

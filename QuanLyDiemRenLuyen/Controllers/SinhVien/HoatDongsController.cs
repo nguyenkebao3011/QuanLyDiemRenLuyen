@@ -24,7 +24,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         public IActionResult GetHoatDong([FromQuery] HoatDongFilterDTO filter)
         {
             var query = _context.HoatDongs.AsQueryable();
-            var currentDate = DateTime.Now; 
+            var currentDate = DateTime.Now;
 
             if (!string.IsNullOrWhiteSpace(filter.Ten))
                 query = query.Where(h => h.TenHoatDong.Contains(filter.Ten));
@@ -41,14 +41,13 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             if (filter.DiemMax.HasValue)
                 query = query.Where(h => h.DiemCong <= filter.DiemMax.Value);
 
-
             var cacTrangThaiHopLe = new[]
-                 {
-                    "chưa bắt đầu",
-                    "đang diễn ra",
-                    "đang mở đăng ký",
-                    "đã kết thúc"
-                };
+            {
+        "chưa bắt đầu",
+        "đang diễn ra",
+        "đang mở đăng ký",
+        "đã kết thúc"
+    };
 
             if (!string.IsNullOrWhiteSpace(filter.TrangThai))
             {
@@ -68,6 +67,12 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     // Nếu trạng thái không hợp lệ → trả về danh sách rỗng
                     return Ok(new List<HoatDong>());
                 }
+            }
+
+            // Thêm bộ lọc cho hoạt động mới nhất
+            if (filter.IsLatest)
+            {
+                query = query.OrderByDescending(h => h.NgayBatDau);
             }
 
             var result = query.ToList();

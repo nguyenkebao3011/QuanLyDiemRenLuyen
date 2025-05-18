@@ -8,6 +8,8 @@
         public int? DiemMin { get; set; }
         public int? DiemMax { get; set; }
 
-        public string? TrangThai { get; set; }  
+        public string? TrangThai { get; set; }
+
+        public bool IsLatest { get; set; } // Thêm thuộc tính này
     }
 }

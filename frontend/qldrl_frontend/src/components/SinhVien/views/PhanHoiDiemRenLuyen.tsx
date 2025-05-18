@@ -1,39 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import '../css/PhanHoiMinhChung.css';
+import React, { useState, useEffect } from "react";
+import "../css/PhanHoiMinhChung.css";
 
-interface HoatDong {
+interface HoatDongDTO {
+  MaDangKy: number;
+  MaSv: string;
   MaHoatDong: number;
   TenHoatDong: string;
-  NgayBatDau: string;
-  MoTa: string;
-  diaDiem: string;
-  diemCong: number;
-  soLuong: number;
-  TrangThaiHoatDong: string;
   NgayDangKy: string;
+  TrangThai: string;
+  DiaDiem?: string;
+  NgayBatDau?: string;
+  DiemCong?: number;
+  MoTa?: string;
+  MaHocKy?: number;
+}
+
+interface HocKyDTO {
+  MaHocKy: number;
+  TenHocKy: string;
+  NamHoc: string;
 }
 
 interface ApiResponse {
   message?: string;
-  data?: HoatDong[];
+  data?: any[];
 }
 
 interface SubmitResponse {
-  Message: string;
-  MaMinhChung: number;
+  success: boolean;
+  message: string;
+  MaPhanHoi?: number;
+  MaMinhChung?: number;
+  DuongDanFile?: string;
 }
 
-const GuiPhanHoi: React.FC = () => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [hoatDong, setHoatDong] = useState<HoatDong[]>([]);
-  const [maDangKy, setMaDangKy] = useState("");
-  const [moTa, setMoTa] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+const GuiPhanHoiDiemRenLuyen: React.FC = () => {
+  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const maSv = localStorage.getItem("username") || "";
+  const [hoatDong, setHoatDong] = useState<HoatDongDTO[]>([]);
+  const [maDangKy, setMaDangKy] = useState<number | null>(null);
+  const [noiDungPhanHoi, setNoiDungPhanHoi] = useState("");
+  const [moTaMinhChung, setMoTaMinhChung] = useState("");
+  const [fileMinhChung, setFileMinhChung] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [maHocKy, setMaHocKy] = useState<number | undefined>(undefined);
+  const [hocKyList, setHocKyList] = useState<HocKyDTO[]>([]);
+  const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDongDTO | null>(null);
+
+  const API_URL = "http://localhost:5163/api";
 
   useEffect(() => {
     if (!token) {
@@ -42,55 +60,103 @@ const GuiPhanHoi: React.FC = () => {
       return;
     }
 
-    const fetchHoatDong = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch("http://localhost:5163/api/DangKyHoatDongs/danh-sach-dang-ky", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const hocKyResponse = await fetch(`${API_URL}/HocKy/lay_hoc_ky`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Status:", res.status);
-        if (res.status === 401) {
+        if (hocKyResponse.ok) {
+          const hocKyData = await hocKyResponse.json();
+          setHocKyList(hocKyData);
+        }
+
+        const hoatDongResponse = await fetch(
+          `${API_URL}/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (hoatDongResponse.status === 401) {
           setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
           setToken(null);
           return;
         }
-        if (!res.ok) {
-          throw new Error(`Lỗi HTTP: ${res.status} ${res.statusText}`);
+        if (!hoatDongResponse.ok) {
+          throw new Error(
+            `Lỗi HTTP: ${hoatDongResponse.status} ${hoatDongResponse.statusText}`
+          );
         }
-        const data: ApiResponse = await res.json();
-        console.log("Dữ liệu API:", data);
+
+        const data: ApiResponse = await hoatDongResponse.json();
+        console.log("Dữ liệu thô từ API:", data);
         if (data.data && Array.isArray(data.data)) {
-          setHoatDong(data.data);
-          if (data.data.length === 0) {
-            setMessage("Bạn chưa đăng ký hoạt động nào.");
-          } else if (data.message) {
-            setMessage(data.message);
-          }
+          const formattedData = data.data.map((item: any): HoatDongDTO => {
+            const maDangKy = item.MaDangKy ? Number(item.MaDangKy) : 0; // Sử dụng MaDangKy từ API
+            if (isNaN(maDangKy)) {
+              console.warn(
+                `Dữ liệu MaDangKy không hợp lệ, gán mặc định là 0: ${JSON.stringify(item)}`
+              );
+            }
+            return {
+              MaDangKy: isNaN(maDangKy) ? 0 : maDangKy,
+              MaSv: item.MaSV ?? maSv, // Lấy từ API hoặc localStorage
+              MaHoatDong: item.MaHoatDong ?? 0,
+              TenHoatDong: item.TenHoatDong ?? `Hoạt động không tên`,
+              NgayDangKy: item.NgayDangKy ?? "",
+              TrangThai: item.TrangThai ?? item.TrangThaiHoatDong ?? "Chưa xác định",
+              DiaDiem: item.diaDiem ?? undefined,
+              NgayBatDau: item.NgayBatDau ?? "",
+              DiemCong: item.diemCong ?? 0,
+              MoTa: item.MoTa ?? "",
+              MaHocKy: item.MaHocKy ?? undefined, // Lấy MaHocKy từ API
+            };
+          });
+          console.log("Dữ liệu sau khi xử lý:", formattedData);
+          setHoatDong(formattedData);
+          if (formattedData.length === 0) setMessage("Bạn chưa đăng ký hoạt động nào.");
         } else {
           setHoatDong([]);
           setMessage("Dữ liệu từ server không đúng định dạng.");
         }
       } catch (err) {
-        setMessage("Lỗi khi lấy danh sách hoạt động: " + (err as Error).message);
+        setMessage("Lỗi khi lấy dữ liệu: " + (err as Error).message);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchHoatDong();
-  }, [token]);
+    fetchData();
+  }, [token, API_URL, maSv]);
 
   useEffect(() => {
     if (showNotification) {
-      const timer = setTimeout(() => {
-        setShowNotification(false);
-      }, 5000);
+      const timer = setTimeout(() => setShowNotification(false), 5000);
       return () => clearTimeout(timer);
     }
   }, [showNotification]);
+
+  const handleActivityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    const selectedValue = value ? Number.parseInt(value) : null;
+    setMaDangKy(selectedValue);
+    if (selectedValue !== null && !isNaN(selectedValue)) {
+      const selected = hoatDong.find((hd) => hd.MaDangKy === selectedValue);
+      setSelectedHoatDong(selected || null);
+      if (selected && selected.MaHocKy !== undefined) {
+        setMaHocKy(Number(selected.MaHocKy)); // Tự động chọn học kỳ
+      } else {
+        setMaHocKy(undefined);
+      }
+    } else {
+      setSelectedHoatDong(null);
+      setMaHocKy(undefined);
+    }
+  };
+
+  const getHocKyName = (maHocKy?: number): string => {
+    if (maHocKy === undefined) return "";
+    const hocKy = hocKyList.find((hk) => hk.MaHocKy === Number(maHocKy));
+    return hocKy ? `${hocKy.TenHocKy} - ${hocKy.NamHoc}` : "";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,42 +164,64 @@ const GuiPhanHoi: React.FC = () => {
       showNotificationMessage("Vui lòng đăng nhập để gửi phản hồi.", false);
       return;
     }
-    if (!maDangKy || !moTa || !file) {
+    if (!maDangKy || !noiDungPhanHoi || !fileMinhChung || maHocKy === undefined) {
       showNotificationMessage("Vui lòng điền đầy đủ thông tin.", false);
       return;
     }
-
+    console.log("=== THÔNG TIN GỬI BACKEND ===");
+    console.log("MaSv:", maSv);
+    console.log("MaHocKy:", maHocKy);
+    console.log("MaDangKy:", maDangKy);
+    console.log("NoiDungPhanHoi:", noiDungPhanHoi);
+    console.log("MoTaMinhChung:", moTaMinhChung);
+    console.log("FileMinhChung:", fileMinhChung);
+    console.log("=============================");
     setIsLoading(true);
     const formData = new FormData();
-    formData.append("MaDangKy", maDangKy);
-    formData.append("MoTa", moTa);
-    formData.append("FileAnh", file);
-
+    formData.append("MaSv", maSv);
+    formData.append("MaHocKy", maHocKy.toString());
+    formData.append("MaDangKy", maDangKy.toString());
+    formData.append("NoiDungPhanHoi", noiDungPhanHoi);
+    formData.append("MoTaMinhChung", moTaMinhChung || "");
+    if (fileMinhChung) {
+      formData.append("FileMinhChung", fileMinhChung);
+    }
+    const submitUrl = `${API_URL}/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong`;
+    console.log("[SUBMIT FETCH URL]", submitUrl);
     try {
-      const res = await fetch("http://localhost:5163/api/MinhChungHoatDongs/submit", {
+      const res = await fetch(submitUrl, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
       });
-      console.log("Submit Status:", res.status);
+
       if (res.status === 401) {
-        showNotificationMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.", false);
-        localStorage.removeItem('token');
+        showNotificationMessage(
+          "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
+          false
+        );
+        localStorage.removeItem("token");
         setToken(null);
         return;
       }
+
       const data: SubmitResponse = await res.json();
+
       if (res.ok) {
-        showNotificationMessage(data.Message, true);
-        setMaDangKy("");
-        setMoTa("");
-        setFile(null);
+        showNotificationMessage(data.message || "Gửi phản hồi thành công!", true);
+        setMaDangKy(null);
+        setSelectedHoatDong(null);
+        setNoiDungPhanHoi("");
+        setMoTaMinhChung("");
+        setFileMinhChung(null);
         setFileName("");
+        setMaHocKy(undefined);
         (document.getElementById("fileInput") as HTMLInputElement).value = "";
       } else {
-        showNotificationMessage("Lỗi: " + (data.Message || "Không thể gửi phản hồi."), false);
+        showNotificationMessage(
+          "Lỗi: " + (data.message || "Không thể gửi phản hồi."),
+          false
+        );
       }
     } catch (err) {
       showNotificationMessage("Lỗi: " + (err as Error).message, false);
@@ -150,32 +238,42 @@ const GuiPhanHoi: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
-    setFile(selectedFile);
+    setFileMinhChung(selectedFile);
     setFileName(selectedFile ? selectedFile.name : "");
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
     <div className="gph-container">
-      <div className={`gph-notification ${showNotification ? 'gph-show' : ''} ${isSuccess ? 'gph-success' : 'gph-error'}`}>
+      <div
+        className={`gph-notification ${showNotification ? "gph-show" : ""} ${
+          isSuccess ? "gph-success" : "gph-error"
+        }`}
+      >
         <span className="gph-notification-message">{message}</span>
-        <button className="gph-close-notification" onClick={() => setShowNotification(false)}>×</button>
+        <button
+          className="gph-close-notification"
+          onClick={() => setShowNotification(false)}
+        >
+          ×
+        </button>
       </div>
 
       <div className="gph-page-header">
-        <h1>Gửi Phản Hồi Hoạt Động</h1>
+        <h1>Gửi Phản Hồi Điểm Rèn Luyện</h1>
         <p className="gph-header-description">
-          Gửi phản hồi về hoạt động bạn đã tham gia và upload ảnh minh chứng
+          Gửi phản hồi về hoạt động bạn đã tham gia và upload minh chứng
         </p>
       </div>
 
@@ -186,71 +284,120 @@ const GuiPhanHoi: React.FC = () => {
               <i className="gph-icon-feedback"></i>
               Thông tin phản hồi
             </h2>
-            
+
             <form onSubmit={handleSubmit}>
               <div className="gph-form-group">
                 <label htmlFor="activity-select">Chọn Hoạt Động</label>
                 <div className="gph-select-wrapper">
                   <select
                     id="activity-select"
-                    value={maDangKy}
-                    onChange={(e) => setMaDangKy(e.target.value)}
-                    disabled={!token || hoatDong.length === 0 || isLoading}
+                    value={maDangKy !== null ? String(maDangKy) : ""}
+                    onChange={handleActivityChange}
+                    disabled={isLoading || hoatDong.length === 0}
                     className="gph-form-control"
+                    required
                   >
                     <option value="">-- Chọn hoạt động --</option>
-                    {Array.isArray(hoatDong) && hoatDong.map(hd => (
-                      <option key={hd.MaHoatDong} value={hd.MaHoatDong.toString()}>
-                        {hd.TenHoatDong}
-                      </option>
-                    ))}
+                    {hoatDong.length > 0 ? (
+                      hoatDong.map((hd) => (
+                        <option key={hd.MaDangKy} value={hd.MaDangKy}>
+                          {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Không có hoạt động nào</option>
+                    )}
                   </select>
                 </div>
               </div>
-              
               <div className="gph-form-group">
-                <label htmlFor="description">Mô Tả</label>
+                <label>Học Kỳ</label>
+                <div className="gph-selected-semester">
+                  {isLoading && maDangKy ? (
+                    <div className="gph-semester-loading">
+                      <div className="gph-small-loader"></div>
+                      <span>Đang lấy thông tin học kỳ...</span>
+                    </div>
+                  ) : maHocKy !== undefined && getHocKyName(maHocKy) ? (
+                    <div className="gph-semester-info">
+                      {getHocKyName(maHocKy)}
+                    </div>
+                  ) : (
+                    <div className="gph-semester-placeholder">
+                      Học kỳ sẽ được chọn tự động khi bạn chọn hoạt động
+                    </div>
+                  )}
+                  <input type="hidden" name="MaHocKy" value={maHocKy ?? ""} />
+                </div>
+              </div>
+
+              <div className="gph-form-group">
+                <label htmlFor="noiDungPhanHoi">Nội Dung Phản Hồi</label>
                 <textarea
-                  id="description"
-                  value={moTa}
-                  onChange={(e) => setMoTa(e.target.value)}
-                  placeholder="Nhập mô tả chi tiết về hoạt động bạn đã tham gia..."
+                  id="noiDungPhanHoi"
+                  value={noiDungPhanHoi}
+                  onChange={(e) => setNoiDungPhanHoi(e.target.value)}
+                  placeholder="Nhập nội dung phản hồi về hoạt động..."
                   required
-                  disabled={!token || hoatDong.length === 0 || isLoading}
+                  disabled={isLoading}
                   className="gph-form-control"
                   rows={5}
                 ></textarea>
               </div>
-              
+
               <div className="gph-form-group">
-                <label htmlFor="fileInput">Upload Ảnh Minh Chứng</label>
+                <label htmlFor="moTaMinhChung">Mô Tả Minh Chứng</label>
+                <textarea
+                  id="moTaMinhChung"
+                  value={moTaMinhChung}
+                  onChange={(e) => setMoTaMinhChung(e.target.value)}
+                  placeholder="Mô tả về minh chứng bạn đính kèm..."
+                  disabled={isLoading}
+                  className="gph-form-control"
+                  rows={3}
+                ></textarea>
+              </div>
+
+              <div className="gph-form-group">
+                <label htmlFor="fileInput">
+                  Upload Minh Chứng{" "}
+                  <span className="gph-required">(Bắt buộc)</span>
+                </label>
                 <div className="gph-file-input-wrapper">
                   <input
                     id="fileInput"
                     type="file"
-                    accept=".jpg,.jpeg,.png"
+                    accept=".jpg,.jpeg,.png,.pdf,.docx"
                     onChange={handleFileChange}
                     required
-                    disabled={!token || hoatDong.length === 0 || isLoading}
+                    disabled={isLoading}
                     className="gph-hidden-file-input"
                   />
                   <div className="gph-custom-file-input">
-                    <span className="gph-file-name">{fileName || "Chưa có file nào được chọn"}</span>
-                    <button type="button" className="gph-browse-button" onClick={() => document.getElementById('fileInput')?.click()}>
+                    <span className="gph-file-name">
+                      {fileName || "Chưa có file nào được chọn"}
+                    </span>
+                    <button
+                      type="button"
+                      className="gph-browse-button"
+                      onClick={() => document.getElementById("fileInput")?.click()}
+                    >
                       Chọn file
                     </button>
                   </div>
-                  <p className="gph-file-hint">Chấp nhận các định dạng: JPG, JPEG, PNG</p>
+                  <p className="gph-file-hint">
+                    Chấp nhận các định dạng: JPG, JPEG, PNG, PDF, DOCX
+                  </p>
                 </div>
               </div>
-              
+
               <div className="gph-form-actions">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="gph-submit-button"
-                  disabled={!token || hoatDong.length === 0 || isLoading}
+                  disabled={isLoading}
                 >
-                  {isLoading ? 'Đang xử lý...' : 'Gửi Phản Hồi'}
+                  {isLoading ? "Đang xử lý..." : "Gửi Phản Hồi"}
                 </button>
               </div>
             </form>
@@ -261,9 +408,9 @@ const GuiPhanHoi: React.FC = () => {
           <div className="gph-activity-card">
             <h2 className="gph-section-title">
               <i className="gph-icon-list"></i>
-              Danh Sách Hoạt Động Đã Đăng Ký
+              Danh Sách Hoạt Động Đã Tham Gia
             </h2>
-            
+
             {isLoading ? (
               <div className="gph-loading-indicator">
                 <div className="gph-loader"></div>
@@ -271,50 +418,70 @@ const GuiPhanHoi: React.FC = () => {
               </div>
             ) : (
               <div className="gph-activity-list">
-                {Array.isArray(hoatDong) && hoatDong.length > 0 ? (
-                  hoatDong.map(hd => (
-                    <div key={hd.MaHoatDong} className="gph-activity-item">
+                {hoatDong.length > 0 ? (
+                  hoatDong.map((hd) => (
+                    <div key={hd.MaDangKy} className="gph-activity-item">
                       <div className="gph-activity-header">
-                        <h3 className="gph-activity-title">{hd.TenHoatDong}</h3>
-                        <span className={`gph-activity-status gph-status-${hd.TrangThaiHoatDong.toLowerCase().replace(/\s+/g, '-')}`}>
-                          {hd.TrangThaiHoatDong}
+                        <h3 className="gph-activity-title">
+                          {hd.TenHoatDong || `Hoạt động #${hd.MaHoatDong}`}
+                          {hd.MaHocKy !== undefined && (
+                            <span className="gph-semester-badge">
+                              {getHocKyName(hd.MaHocKy)}
+                            </span>
+                          )}
+                        </h3>
+                        <span
+                          className={`gph-activity-status gph-status-${hd.TrangThai?.toLowerCase().replace(
+                            /\s+/g,
+                            "-"
+                          )}`}
+                        >
+                          {hd.TrangThai || "Chưa xác định"}
                         </span>
                       </div>
-                      
+
                       <div className="gph-activity-details">
-                        {/* <div className="gph-detail-row">
-                          <span className="gph-detail-label">Mã hoạt động:</span>
-                          <span className="gph-detail-value">{hd.MaHoatDong}</span>
-                        </div> */}
                         <div className="gph-detail-row">
                           <span className="gph-detail-label">Ngày bắt đầu:</span>
-                          <span className="gph-detail-value">{hd.NgayBatDau}</span>
+                          <span className="gph-detail-value">
+                            {formatDate(hd.NgayBatDau)}
+                          </span>
                         </div>
                         <div className="gph-detail-row">
                           <span className="gph-detail-label">Địa điểm:</span>
-                          <span className="gph-detail-value">{hd.diaDiem}</span>
+                          <span className="gph-detail-value">
+                            {hd.DiaDiem || "Chưa cập nhật"}
+                          </span>
                         </div>
                         <div className="gph-detail-row">
                           <span className="gph-detail-label">Điểm cộng:</span>
-                          <span className="gph-detail-value gph-highlight">{hd.diemCong} điểm</span>
+                          <span className="gph-detail-value gph-highlight">
+                            {hd.DiemCong || 0} điểm
+                          </span>
                         </div>
                         <div className="gph-detail-row">
-                          <span className="gph-detail-label">Số lượng:</span>
-                          <span className="gph-detail-value">{hd.soLuong}</span>
+                          <span className="gph-detail-label">Ngày đăng ký:</span>
+                          <span className="gph-detail-value">
+                            {formatDate(hd.NgayDangKy)}
+                          </span>
                         </div>
                       </div>
-                      
-                      <div className="gph-activity-description">
-                        <h4>Mô tả:</h4>
-                        <p>{hd.MoTa}</p>
-                      </div>
+
+                      {hd.MoTa && (
+                        <div className="gph-activity-description">
+                          <h4>Mô tả:</h4>
+                          <p>{hd.MoTa}</p>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
                   <div className="gph-empty-state">
                     <i className="gph-icon-empty"></i>
-                    <p>Bạn chưa đăng ký hoạt động nào.</p>
-                    <p className="gph-empty-hint">Vui lòng đăng ký hoạt động trước khi gửi phản hồi.</p>
+                    <p>Chưa có hoạt động nào kết thúc</p>
+                    <p className="gph-empty-hint">
+                      Vui lòng đợi hoạt động kết thúc trước khi gửi phản hồi.
+                    </p>
                   </div>
                 )}
               </div>
@@ -326,4 +493,4 @@ const GuiPhanHoi: React.FC = () => {
   );
 };
 
-export default GuiPhanHoi;
+export default GuiPhanHoiDiemRenLuyen;

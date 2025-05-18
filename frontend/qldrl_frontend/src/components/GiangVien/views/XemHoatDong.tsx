@@ -508,7 +508,7 @@ const HoatDongList: React.FC = () => {
                 <strong>Tên hoạt động:</strong> {selectedDetailHoatDong.TenHoatDong}
               </p>
               <p>
-                <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}. Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ, chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham gia sẽ bị trừ điểm như quy định hiện hành. Mong các bạn thực hiện nghiêm túc!
+                <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}. Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ, chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham gia sẽ bị trừ điểm <>5 điểm / hoạt động</>. Mong các bạn thực hiện nghiêm túc!
               </p>
               <p>
                 <strong>Số lượng sinh viên có thể đăng ký:</strong>{" "}

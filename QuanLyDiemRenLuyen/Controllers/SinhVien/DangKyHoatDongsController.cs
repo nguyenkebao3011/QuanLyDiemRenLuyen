@@ -140,6 +140,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         hoatDong => hoatDong.MaHoatDong,
                         (dangKy, hoatDong) => new
                         {
+                            dangKy.MaDangKy,
+                            hoatDong.MaHocKy,
+                            MaSv = maSV,
                             dangKy.MaHoatDong,
                             hoatDong.TenHoatDong,
                             NgayBatDau = hoatDong.NgayBatDau.HasValue ? hoatDong.NgayBatDau.Value.ToString("yyyy-MM-dd") : null,

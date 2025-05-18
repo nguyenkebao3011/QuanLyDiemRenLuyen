@@ -39,38 +39,42 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             if (dangKy == null)
                 return NotFound("Không tìm thấy hoạt động sinh viên đã đăng ký!");
 
-            // 4. Xử lý lưu minh chứng nếu có file
-            int? maMinhChung = null;
-            if (dto.FileMinhChung != null && dto.FileMinhChung.Length > 0)
+            // 4. BẮT BUỘC phải có minh chứng
+            if (dto.FileMinhChung == null || dto.FileMinhChung.Length == 0)
             {
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx" };
-                var fileExtension = Path.GetExtension(dto.FileMinhChung.FileName).ToLowerInvariant();
-                if (!allowedExtensions.Contains(fileExtension))
-                    return BadRequest("Chỉ hỗ trợ file .jpg, .jpeg, .png, .pdf, .docx.");
-
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-
-                var fileName = Guid.NewGuid() + fileExtension;
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await dto.FileMinhChung.CopyToAsync(stream);
-                }
-
-                var minhChung = new MinhChungHoatDong
-                {
-                    MaDangKy = dto.MaDangKy,
-                    DuongDanFile = $"/uploads/{fileName}",
-                    MoTa = dto.MoTaMinhChung,
-                    NgayTao = DateTime.Now,
-                    TrangThai = "Đang xử lý"
-                };
-                _context.MinhChungHoatDongs.Add(minhChung);
-                await _context.SaveChangesAsync();
-                maMinhChung = minhChung.MaMinhChung;
+                return BadRequest("Bắt buộc phải upload file minh chứng!");
             }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx" };
+            var fileExtension = Path.GetExtension(dto.FileMinhChung.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(fileExtension))
+                return BadRequest("Chỉ hỗ trợ file .jpg, .jpeg, .png, .pdf, .docx.");
+
+            // Đường dẫn vật lý tới wwwroot/HinhAnhMinhChung
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "HinhAnhMinhChung");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = Guid.NewGuid() + fileExtension;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.FileMinhChung.CopyToAsync(stream);
+            }
+
+            var duongDanFile = $"/HinhAnhMinhChung/{fileName}";
+
+            var minhChung = new MinhChungHoatDong
+            {
+                MaDangKy = dto.MaDangKy,
+                DuongDanFile = duongDanFile,
+                MoTa = dto.MoTaMinhChung,
+                NgayTao = DateTime.Now,
+                TrangThai = "Đang xử lý"
+            };
+            _context.MinhChungHoatDongs.Add(minhChung);
+            await _context.SaveChangesAsync();
+            var maMinhChung = minhChung.MaMinhChung;
 
             // 5. Tạo phiếu phản hồi
             var phieuPhanHoi = new PhanHoiDiemRenLuyen
@@ -89,10 +93,10 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 success = true,
                 message = "Gửi phiếu phản hồi về hoạt động thành công!",
                 MaPhanHoi = phieuPhanHoi.MaPhanHoi,
-                MaMinhChung = maMinhChung
+                MaMinhChung = maMinhChung,
+                DuongDanFile = duongDanFile
             });
         }
     }
-
-    
 }
+

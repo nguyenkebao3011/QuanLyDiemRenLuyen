@@ -77,8 +77,22 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
+      height: 135px;
+}
+.filter-group input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+  accent-color: #007bff; /* Màu xanh giống các nút khác */
+  vertical-align: middle;
 }
 
+.filter-group label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
 .hoatdong-header h3 {
   margin: 0;
   font-size: 1.2rem;

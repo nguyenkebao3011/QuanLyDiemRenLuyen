@@ -28,8 +28,8 @@ public class ThongBaoScheduledService : BackgroundService
             try
             {
                 var now = DateTime.Now;
-                //var nextRunTime = now.Date.AddDays(1).AddHours(6); // 6g sáng ngày mai
-                var nextRunTime = now.Date.AddSeconds(5);
+                var nextRunTime = now.Date.AddDays(1).AddHours(6); // 6g sáng ngày mai
+                //var nextRunTime = now.Date.AddSeconds(5);
                 var delay = nextRunTime - now;
 
                 using var scope = _serviceProvider.CreateScope();

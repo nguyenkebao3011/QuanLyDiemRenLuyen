@@ -744,6 +744,11 @@
         "Name": "TrangThai",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "IsLatest",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
