@@ -304,6 +304,16 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             }
 
             var passwordHasher = new PasswordHasher<string>();
+
+            // Kiểm tra mật khẩu mới có giống mật khẩu cũ không
+            var verificationResult = passwordHasher.VerifyHashedPassword(null, taiKhoan.MatKhau, request.NewPassword);
+            if (verificationResult == PasswordVerificationResult.Success)
+            {
+                // Mật khẩu mới giống mật khẩu cũ
+                return BadRequest(new { message = "Mật khẩu mới không được giống mật khẩu cũ." });
+            }
+
+            // Nếu khác, thực hiện đổi mật khẩu
             taiKhoan.MatKhau = passwordHasher.HashPassword(null, request.NewPassword);
             _context.OTPRecords.Remove(otpRecord);
             await _context.SaveChangesAsync();
