@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,12 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         {
             _context = context;
         }
-        
+
         [HttpPost("them_sinh_vien")]
-        public async Task<ActionResult<SinhVienDTO>> CreateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile anhDaiDien = null)
+        public async Task<ActionResult<SinhVienDTO>> CreateSinhVien(
+         [FromForm] SinhVienDTO sinhVienDTO,
+         [FromForm] bool CapTaiKhoan = false,
+         IFormFile anhDaiDien = null)
         {
             try
             {
@@ -43,13 +47,15 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 }
 
                 // Kiểm tra định dạng email
-                if (!string.IsNullOrEmpty(sinhVienDTO.Email) && !Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
+                if (!string.IsNullOrEmpty(sinhVienDTO.Email)
+                    && !Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
                 {
                     return BadRequest(new { message = "Email không hợp lệ" });
                 }
 
                 // Kiểm tra định dạng số điện thoại
-                if (!string.IsNullOrEmpty(sinhVienDTO.SoDienThoai) && !Regex.IsMatch(sinhVienDTO.SoDienThoai, @"^\d{10}$"))
+                if (!string.IsNullOrEmpty(sinhVienDTO.SoDienThoai)
+                    && !Regex.IsMatch(sinhVienDTO.SoDienThoai, @"^\d{10}$"))
                 {
                     return BadRequest(new { message = "Số điện thoại phải có đúng 10 chữ số" });
                 }
@@ -87,102 +93,78 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     anhDaiDienPath = $"/avatars/{fileName}";
                 }
 
-                // Tìm mã tài khoản lớn nhất để tạo mã mới
-                var lastTaiKhoan = await _context.TaiKhoans
-                    .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
-                    .OrderByDescending(tk => tk.MaTaiKhoan)
-                    .FirstOrDefaultAsync();
+                string maTaiKhoan = null;
 
-                string maTaiKhoan;
-                if (lastTaiKhoan != null)
+                if (CapTaiKhoan)
                 {
-                    // Lấy số cuối cùng và tăng lên 1
-                    string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4); // Bỏ "TKSV" lấy phần số
-                    int number;
-                    if (int.TryParse(lastNumber, out number))
+                    // Tạo mã tài khoản mới
+                    var lastTaiKhoan = await _context.TaiKhoans
+                        .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
+                        .OrderByDescending(tk => tk.MaTaiKhoan)
+                        .FirstOrDefaultAsync();
+
+                    if (lastTaiKhoan != null)
                     {
-                        maTaiKhoan = $"TKSV{number + 1}";
+                        string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4);
+                        int number;
+                        if (int.TryParse(lastNumber, out number))
+                            maTaiKhoan = $"TKSV{number + 1}";
+                        else
+                            maTaiKhoan = "TKSV1";
                     }
                     else
                     {
-                        // Nếu không parse được, tạo mã mới từ số 1
                         maTaiKhoan = "TKSV1";
                     }
-                }
-                else
-                {
-                    // Nếu chưa có tài khoản nào, bắt đầu từ TKSV1
-                    maTaiKhoan = "TKSV1";
+
+                    string defaultPassword = sinhVienDTO.MaSV;
+
+                    // Sử dụng PasswordHasher của Microsoft Identity để tạo hash đúng chuẩn
+                    var passwordHasher = new PasswordHasher<string>();
+                    string hash = passwordHasher.HashPassword(null, defaultPassword);
+
+                    var taiKhoan = new TaiKhoan
+                    {
+                        MaTaiKhoan = maTaiKhoan,
+                        TenDangNhap = sinhVienDTO.MaSV,
+                        MatKhau = hash,
+                        VaiTro = "SinhVien"
+                    };
+
+                    _context.TaiKhoans.Add(taiKhoan);
+                    await _context.SaveChangesAsync();
                 }
 
-                // Tạo tài khoản cho sinh viên
-                var taiKhoan = new TaiKhoan
+                DateTime ngaySinh_sv = DateTime.TryParse(sinhVienDTO.NgaySinh, out DateTime ns) ? ns : DateTime.Now;
+
+                var sinhVien = new Models.SinhVien
                 {
-                    MaTaiKhoan = maTaiKhoan,
-                    TenDangNhap = sinhVienDTO.MaSV,
-                    MatKhau = BCrypt.Net.BCrypt.HashPassword(sinhVienDTO.MaSV), // Mật khẩu mặc định là MaSV
-                    VaiTro = "SinhVien"
+                    MaSV = sinhVienDTO.MaSV,
+                    MaTaiKhoan = maTaiKhoan, // null nếu không cấp tài khoản
+                    HoTen = sinhVienDTO.HoTen,
+                    MaLop = sinhVienDTO.MaLop,
+                    Email = sinhVienDTO.Email,
+                    SoDienThoai = sinhVienDTO.SoDienThoai,
+                    DiaChi = sinhVienDTO.DiaChi,
+                    NgaySinh = ngaySinh_sv,
+                    GioiTinh = sinhVienDTO.GioiTinh,
+                    AnhDaiDien = anhDaiDienPath,
+                    MaVaiTro = sinhVienDTO.MaVaiTro,
+                    TrangThai = sinhVienDTO.TrangThai ?? "HoatDong"
                 };
 
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                _context.SinhViens.Add(sinhVien);
+                await _context.SaveChangesAsync();
+
+                sinhVienDTO.AnhDaiDien = anhDaiDienPath;
+
+                return Ok(new
                 {
-                    try
-                    {
-                        // Thêm tài khoản vào database
-                        _context.TaiKhoans.Add(taiKhoan);
-                        await _context.SaveChangesAsync();
-
-                        // Chuyển đổi từ DTO sang model
-                        DateTime ngaySinh;
-                        if (!DateTime.TryParse(sinhVienDTO.NgaySinh, out ngaySinh))
-                        {
-                            ngaySinh = DateTime.Now;
-                        }
-
-                        var sinhVien = new Models.SinhVien
-                        {
-                            MaSV = sinhVienDTO.MaSV,
-                            MaTaiKhoan = maTaiKhoan,
-                            HoTen = sinhVienDTO.HoTen,
-                            MaLop = sinhVienDTO.MaLop,
-                            Email = sinhVienDTO.Email,
-                            SoDienThoai = sinhVienDTO.SoDienThoai,
-                            DiaChi = sinhVienDTO.DiaChi,
-                            NgaySinh = ngaySinh,
-                            GioiTinh = sinhVienDTO.GioiTinh,
-                            AnhDaiDien = anhDaiDienPath,
-                            MaVaiTro = sinhVienDTO.MaVaiTro,
-                            TrangThai = sinhVienDTO.TrangThai ?? "HoatDong"
-                        };
-
-                        // Thêm sinh viên vào database
-                        _context.SinhViens.Add(sinhVien);
-                        await _context.SaveChangesAsync();
-
-                        await transaction.CommitAsync();
-
-                        // Cập nhật lại DTO để trả về
-                        sinhVienDTO.AnhDaiDien = anhDaiDienPath;
-
-                        return CreatedAtAction("GetSinhVien", new { id = sinhVien.MaSV }, sinhVienDTO);
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-
-                        // Xóa file ảnh đã tải lên nếu có lỗi
-                        if (!string.IsNullOrEmpty(anhDaiDienPath))
-                        {
-                            var filePath = Path.Combine("wwwroot", anhDaiDienPath.TrimStart('/'));
-                            if (System.IO.File.Exists(filePath))
-                            {
-                                System.IO.File.Delete(filePath);
-                            }
-                        }
-
-                        throw;
-                    }
-                }
+                    message = "Thêm sinh viên thành công",
+                    capTaiKhoan = CapTaiKhoan,
+                    maTaiKhoan = maTaiKhoan,
+                    sinhVien = sinhVienDTO
+                });
             }
             catch (Exception ex)
             {

@@ -1,9 +1,10 @@
+"use client";
+
 import type React from "react";
 import { useState } from "react";
 import { X } from "lucide-react";
 import FormField from "../../QuanLyDanhMuc/common/FormField";
 import type { SinhVien, Lop } from "../../types";
-import { ApiService } from "../../../../untils/services/service-api";
 import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
 
 interface ThemSinhVienProps {
@@ -32,6 +33,8 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
     TrangThai: "HoatDong",
   });
 
+  const [capTaiKhoan, setCapTaiKhoan] = useState<boolean>(false);
+  const [anhDaiDien, setAnhDaiDien] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notification, setNotification] = useState<{
@@ -56,6 +59,12 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
     }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setAnhDaiDien(e.target.files[0]);
+    }
+  };
+
   const closeNotification = () => {
     setNotification((prev) => ({ ...prev, show: false }));
   };
@@ -66,20 +75,49 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
     setError(null);
 
     try {
-      await ApiService.themSinhVien(formData);
+      const formDataToSend = new FormData();
+
+      // Thêm các trường thông tin sinh viên
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formDataToSend.append(key, value.toString());
+        }
+      });
+
+      // Thêm trường CapTaiKhoan
+      formDataToSend.append("CapTaiKhoan", capTaiKhoan.toString());
+
+      // Thêm ảnh đại diện nếu có
+      if (anhDaiDien) {
+        formDataToSend.append("anhDaiDien", anhDaiDien);
+      }
+
+      // Gọi API tạo sinh viên
+      const response = await fetch(
+        "http://localhost:5163/api/QuanLySinhVien/them_sinh_vien",
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Có lỗi xảy ra khi thêm sinh viên");
+      }
+
       setIsSubmitting(false);
       onSuccess();
       onClose();
       setNotification({
         show: true,
-        message: "Thêm sinh viên thành công!",
+        message: data.message || "Thêm sinh viên thành công!",
         type: "success",
       });
     } catch (error: any) {
       console.error("Lỗi khi thêm sinh viên:", error);
-      setError(
-        error.response?.data?.message || "Có lỗi xảy ra khi thêm sinh viên"
-      );
+      setError(error.message || "Có lỗi xảy ra khi thêm sinh viên");
       setIsSubmitting(false);
     }
   };
@@ -202,15 +240,42 @@ const ThemSinhVien: React.FC<ThemSinhVienProps> = ({
                 { value: "Khoa", label: "Khóa" },
               ]}
             />
-            <FormField
-              label="Vai trò"
-              id="MaVaiTro"
-              name="MaVaiTro"
-              value={formData.MaVaiTro?.toString() || "1"}
-              onChange={handleInputChange}
-              type="select"
-              options={[{ value: 1, label: "Sinh viên" }]}
-            />
+            <div className="form-group">
+              <label htmlFor="anhDaiDien">Ảnh đại diện</label>
+              <input
+                type="file"
+                id="anhDaiDien"
+                name="anhDaiDien"
+                accept=".jpg,.jpeg,.png"
+                onChange={handleFileChange}
+                className="form-control"
+              />
+              <small className="form-text text-muted">
+                Chỉ chấp nhận định dạng .jpg, .jpeg, .png
+              </small>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  id="capTaiKhoan"
+                  name="capTaiKhoan"
+                  checked={capTaiKhoan}
+                  onChange={(e) => setCapTaiKhoan(e.target.checked)}
+                  className="checkbox-input"
+                />
+                <label htmlFor="capTaiKhoan" className="checkbox-label">
+                  Cấp tài khoản cho sinh viên
+                </label>
+              </div>
+              <p className="checkbox-hint">
+                Nếu chọn, hệ thống sẽ tự động tạo tài khoản với mật khẩu mặc
+                định mã sinh viên
+              </p>
+            </div>
           </div>
 
           <div className="form-actions">

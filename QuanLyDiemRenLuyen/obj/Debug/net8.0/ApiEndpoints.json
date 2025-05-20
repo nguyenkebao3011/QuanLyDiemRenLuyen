@@ -1518,6 +1518,11 @@
         "IsRequired": false
       },
       {
+        "Name": "CapTaiKhoan",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
         "Name": "anhDaiDien",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false

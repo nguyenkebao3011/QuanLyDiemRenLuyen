@@ -8,6 +8,7 @@ import {
   Trash2,
   RefreshCw,
   Download,
+  Upload,
   AlertCircle,
   ChevronLeft,
   ChevronRight,
@@ -20,6 +21,7 @@ import XacNhanXoaSinhVien from "./XacNhanXoaSinhVien";
 import Notification from "../../../../Pages/Dashboard/Admin/views/Notification";
 import "../../../../Pages/Dashboard/Admin/css/notification.css";
 import { ApiService } from "../../../../untils/services/service-api";
+import ImportSinhVien from "./ImportSinhVien";
 
 const pageSize = 10;
 
@@ -55,6 +57,8 @@ const QuanLySinhVien: React.FC = () => {
     message: "",
     type: "success",
   });
+
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const fetchLop = async () => {
     try {
@@ -248,6 +252,10 @@ const QuanLySinhVien: React.FC = () => {
     return lop ? lop.TenLop : sinhVien.MaLop || "";
   };
 
+  const handleImportClick = () => {
+    setShowImportModal(true);
+  };
+
   return (
     <div className="sinh-vien-management">
       <div className="management-header">
@@ -260,6 +268,10 @@ const QuanLySinhVien: React.FC = () => {
           <button className="export-btn" onClick={handleExportExcel}>
             <Download size={16} />
             <span>Xuất Excel</span>
+          </button>
+          <button className="import-btn" onClick={handleImportClick}>
+            <Upload size={16} />
+            <span>Import Excel</span>
           </button>
           <button className="add-btn" onClick={handleAddClick}>
             <Plus size={16} />
@@ -451,6 +463,21 @@ const QuanLySinhVien: React.FC = () => {
           message={notification.message}
           type={notification.type}
           onClose={closeNotification}
+        />
+      )}
+
+      {showImportModal && (
+        <ImportSinhVien
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          onSuccess={() => {
+            fetchSinhVien();
+            setNotification({
+              show: true,
+              message: "Import sinh viên thành công!",
+              type: "success",
+            });
+          }}
         />
       )}
     </div>
