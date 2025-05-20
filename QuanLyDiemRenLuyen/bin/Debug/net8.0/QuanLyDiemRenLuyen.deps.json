@@ -9,6 +9,8 @@
       "QuanLyDiemRenLuyen/1.0.0": {
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
+          "EPPlus": "5.8.14",
+          "EPPlus.Interfaces": "8.0.0",
           "MailKit": "4.11.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.0",
           "Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter": "8.0.11",
@@ -72,6 +74,30 @@
           "lib/net6.0/BouncyCastle.Cryptography.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.5.1.28965"
+          }
+        }
+      },
+      "EPPlus/5.8.14": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Json": "5.0.0",
+          "Microsoft.IO.RecyclableMemoryStream": "1.4.1",
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.Drawing.Common": "7.0.0",
+          "System.Security.Cryptography.Pkcs": "8.0.1",
+          "System.Text.Encoding.CodePages": "6.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/EPPlus.dll": {
+            "assemblyVersion": "5.8.14.0",
+            "fileVersion": "5.8.14.0"
+          }
+        }
+      },
+      "EPPlus.Interfaces/8.0.0": {
+        "runtime": {
+          "lib/net8.0/EPPlus.Interfaces.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.0"
           }
         }
       },
@@ -1381,9 +1407,32 @@
           }
         }
       },
+      "Microsoft.Extensions.Configuration/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.FileExtensions/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.FileProviders.Abstractions": "5.0.0",
+          "Microsoft.Extensions.FileProviders.Physical": "5.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Json/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "5.0.0",
+          "Microsoft.Extensions.FileProviders.Abstractions": "5.0.0"
         }
       },
       "Microsoft.Extensions.DependencyInjection/8.0.1": {
@@ -1413,6 +1462,19 @@
           }
         }
       },
+      "Microsoft.Extensions.FileProviders.Abstractions/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.FileProviders.Physical/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Abstractions": "5.0.0",
+          "Microsoft.Extensions.FileSystemGlobbing": "5.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.FileSystemGlobbing/5.0.0": {},
       "Microsoft.Extensions.Logging/8.0.1": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "8.0.1",
@@ -1536,6 +1598,14 @@
           "lib/net8.0/Microsoft.IdentityModel.Tokens.dll": {
             "assemblyVersion": "7.0.3.0",
             "fileVersion": "7.0.3.41017"
+          }
+        }
+      },
+      "Microsoft.IO.RecyclableMemoryStream/1.4.1": {
+        "runtime": {
+          "lib/netcoreapp2.1/Microsoft.IO.RecyclableMemoryStream.dll": {
+            "assemblyVersion": "1.4.1.0",
+            "fileVersion": "1.4.1.0"
           }
         }
       },
@@ -1874,6 +1944,7 @@
         }
       },
       "System.Collections.Immutable/7.0.0": {},
+      "System.ComponentModel.Annotations/5.0.0": {},
       "System.Composition/7.0.0": {
         "dependencies": {
           "System.Composition.AttributedModel": "7.0.0",
@@ -2155,6 +2226,20 @@
       "sha512": "sha512-zy8TMeTP+1FH2NrLaNZtdRbBdq7u5MI+NFZQOBSM69u5RFkciinwzV2eveY6Kjf5MzgsYvvl6kTStsj3JrXqkg==",
       "path": "bouncycastle.cryptography/2.5.1",
       "hashPath": "bouncycastle.cryptography.2.5.1.nupkg.sha512"
+    },
+    "EPPlus/5.8.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IYxctbiacXs2n4pdB9tzxYhmeqvaxUY6zeEkviEXW5G9zLl93tYFbV1Z4PZM8WXoVftAR1TiQxMNh2t1LTURGg==",
+      "path": "epplus/5.8.14",
+      "hashPath": "epplus.5.8.14.nupkg.sha512"
+    },
+    "EPPlus.Interfaces/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EFr/vUbDYK55sxjfUfLUiv7oiz1f6ZLRYMKILHyfnWS019cYX5zJaQ1U3OojRuED8tgEeXX9QeG7Kj/b0XE7hQ==",
+      "path": "epplus.interfaces/8.0.0",
+      "hashPath": "epplus.interfaces.8.0.0.nupkg.sha512"
     },
     "Humanizer/2.14.1": {
       "type": "package",
@@ -2793,12 +2878,33 @@
       "path": "microsoft.extensions.caching.memory/8.0.1",
       "hashPath": "microsoft.extensions.caching.memory.8.0.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.Configuration/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LN322qEKHjuVEhhXueTUe7RNePooZmS8aGid5aK2woX3NPjSnONFyKUc6+JknOS6ce6h2tCLfKPTBXE3mN/6Ag==",
+      "path": "microsoft.extensions.configuration/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.5.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-3lE/iLSutpgX1CC0NOW70FJoGARRHbyKmG7dc0klnUZ9Dd9hS6N/POPWhKhMLCEuNN5nXEY5agmlFtH562vqhQ==",
       "path": "microsoft.extensions.configuration.abstractions/8.0.0",
       "hashPath": "microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.FileExtensions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rRdspYKA18ViPOISwAihhCMbusHsARCOtDMwa23f+BGEdIjpKPlhs3LLjmKlxfhpGXBjIsS0JpXcChjRUN+PAw==",
+      "path": "microsoft.extensions.configuration.fileextensions/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.fileextensions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Json/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Pak8ymSUfdzPfBTLHxeOwcR32YDbuVfhnH2hkfOLnJNQd19ItlBdpMjIDY9C5O/nS2Sn9bzDMai0ZrvF7KyY/Q==",
+      "path": "microsoft.extensions.configuration.json/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.json.5.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/8.0.1": {
       "type": "package",
@@ -2820,6 +2926,27 @@
       "sha512": "sha512-mUBDZZRgZrSyFOsJ2qJJ9fXfqd/kXJwf3AiDoqLD9m6TjY5OO/vLNOb9fb4juC0487eq4hcGN/M2Rh/CKS7QYw==",
       "path": "microsoft.extensions.dependencymodel/8.0.2",
       "hashPath": "microsoft.extensions.dependencymodel.8.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Abstractions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iuZIiZ3mteEb+nsUqpGXKx2cGF+cv6gWPd5jqQI4hzqdiJ6I94ddLjKhQOuRW1lueHwocIw30xbSHGhQj0zjdQ==",
+      "path": "microsoft.extensions.fileproviders.abstractions/5.0.0",
+      "hashPath": "microsoft.extensions.fileproviders.abstractions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Physical/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1rkd8UO2qf21biwO7X0hL9uHP7vtfmdv/NLvKgCRHkdz1XnW8zVQJXyEYiN68WYpExgtVWn55QF0qBzgfh1mGg==",
+      "path": "microsoft.extensions.fileproviders.physical/5.0.0",
+      "hashPath": "microsoft.extensions.fileproviders.physical.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileSystemGlobbing/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ArliS8lGk8sWRtrWpqI8yUVYJpRruPjCDT+EIjrgkA/AAPRctlAkRISVZ334chAKktTLzD1+PK8F5IZpGedSqA==",
+      "path": "microsoft.extensions.filesystemglobbing/5.0.0",
+      "hashPath": "microsoft.extensions.filesystemglobbing.5.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging/8.0.1": {
       "type": "package",
@@ -2904,6 +3031,13 @@
       "sha512": "sha512-wB+LlbDjhnJ98DULjmFepqf9eEMh/sDs6S6hFh68iNRHmwollwhxk+nbSSfpA5+j+FbRyNskoaY4JsY1iCOKCg==",
       "path": "microsoft.identitymodel.tokens/7.0.3",
       "hashPath": "microsoft.identitymodel.tokens.7.0.3.nupkg.sha512"
+    },
+    "Microsoft.IO.RecyclableMemoryStream/1.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6A0fyZkxoUUj1dpXzLAWwI89YmKZ+ZSp1DCg+gN6llcXJwfYo1IIQZoCkuo6T7vUxw/w1CSk/Pl04NQ4fno+DQ==",
+      "path": "microsoft.io.recyclablememorystream/1.4.1",
+      "hashPath": "microsoft.io.recyclablememorystream.1.4.1.nupkg.sha512"
     },
     "Microsoft.JSInterop/8.0.11": {
       "type": "package",
@@ -3128,6 +3262,13 @@
       "sha512": "sha512-dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
       "path": "system.collections.immutable/7.0.0",
       "hashPath": "system.collections.immutable.7.0.0.nupkg.sha512"
+    },
+    "System.ComponentModel.Annotations/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg==",
+      "path": "system.componentmodel.annotations/5.0.0",
+      "hashPath": "system.componentmodel.annotations.5.0.0.nupkg.sha512"
     },
     "System.Composition/7.0.0": {
       "type": "package",

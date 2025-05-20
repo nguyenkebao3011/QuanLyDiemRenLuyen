@@ -2,13 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OfficeOpenXml;
 using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+// Thêm các dịch vụ vào container
+builder.Services.AddControllers();
 // Cấu hình logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

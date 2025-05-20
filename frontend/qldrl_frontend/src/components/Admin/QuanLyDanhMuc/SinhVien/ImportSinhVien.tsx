@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState } from "react";
 import { X, Upload, FileText } from "lucide-react";
@@ -19,51 +17,96 @@ const ImportSinhVien: React.FC<ImportSinhVienProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [capTaiKhoan, setCapTaiKhoan] = useState(false);
+  const [importResults, setImportResults] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   if (!isOpen) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setShowResults(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!file) {
+      setError("Vui lòng chọn file Excel");
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
+    setImportResults([]);
+    setShowResults(false);
 
     try {
-      // Tạo FormData để gửi file và các tham số
+      // Kiểm tra định dạng file
+      const fileName = file.name.toLowerCase();
+      if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
+        throw new Error("File phải có định dạng .xlsx hoặc .xls");
+      }
+
+      // Kiểm tra kích thước file (dưới 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Kích thước file không được vượt quá 5MB");
+      }
+
       const formData = new FormData();
-      if (file) {
-        formData.append("excelFile", file);
-      }
-      formData.append("capTaiKhoan", capTaiKhoan.toString());
+      formData.append("file", file);
+      const url = `http://localhost:5163/api/QuanLySinhVien/import_sinh_vien?capTaiKhoan=${capTaiKhoan}`;
 
-      // Gọi API import sinh viên từ Excel
-      const response = await fetch(
-        "http://localhost:5163/api/QuanLySinhVien/import_sinh_vien",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      console.log("Bắt đầu gửi request"); // Debug log
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
 
+      console.log("Nhận response, status:", response.status); // Debug log
+
+      // Xử lý lỗi HTTP
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Có lỗi xảy ra khi import sinh viên"
-        );
+        const contentType = response.headers.get("content-type");
+
+        if (contentType && contentType.includes("application/json")) {
+          // Nếu response là JSON, đọc lỗi từ JSON
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || "Lỗi từ server: " + response.status
+          );
+        } else {
+          // Nếu không phải JSON, đọc dưới dạng text
+          const errorText = await response.text();
+          throw new Error(
+            `Lỗi từ server (${response.status}): ${errorText.substring(
+              0,
+              100
+            )}...`
+          );
+        }
       }
 
+      // Xử lý response thành công
       const data = await response.json();
-      setIsSubmitting(false);
-      onSuccess();
-      onClose();
+      console.log("Dữ liệu trả về:", data); // Debug log
+
+      if (data.chiTiet && Array.isArray(data.chiTiet)) {
+        setImportResults(data.chiTiet);
+      }
+
+      setShowResults(true);
+
+      if (!data.chiTiet || data.chiTiet.length === 0) {
+        setTimeout(() => {
+          onSuccess();
+          onClose();
+        }, 2000);
+      }
     } catch (error: any) {
       console.error("Lỗi khi import sinh viên:", error);
       setError(error.message || "Có lỗi xảy ra khi import sinh viên");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -135,6 +178,28 @@ const ImportSinhVien: React.FC<ImportSinhVienProps> = ({
             </div>
           </div>
 
+          {showResults && importResults.length > 0 && (
+            <div className="import-results">
+              <h4>Kết quả import:</h4>
+              <div className="results-container">
+                <ul>
+                  {importResults.map((result, index) => (
+                    <li
+                      key={index}
+                      className={
+                        result.includes("Lỗi")
+                          ? "error-result"
+                          : "success-result"
+                      }
+                    >
+                      {result}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
           <div className="form-row">
             <div className="form-group">
               <div className="checkbox-container">
@@ -151,7 +216,7 @@ const ImportSinhVien: React.FC<ImportSinhVienProps> = ({
               </div>
               <p className="checkbox-hint">
                 Nếu chọn, hệ thống sẽ tự động tạo tài khoản với mật khẩu mặc
-                định là ngày sinh (ddMMyyyy)
+                định là mã sinh viên
               </p>
             </div>
           </div>
