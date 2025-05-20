@@ -432,6 +432,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\06d267c7-5cd5-4be2-93f3-ad207a7fa9fb.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\14baf267-977d-43a3-b126-2e3fec540a4e.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>QuanLyDiemRenLuyen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/QuanLyDiemRenLuyen</BasePath>
+      <RelativePath>HinhAnhMinhChung/14baf267-977d-43a3-b126-2e3fec540a4e.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>bs2r9onp9d</Fingerprint>
+      <Integrity>JQCbvH/2OF6bl+zkedUNCHlzf6CxQXYocxmG4JClE1c=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\14baf267-977d-43a3-b126-2e3fec540a4e.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HinhAnhMinhChung\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>QuanLyDiemRenLuyen</SourceId>
@@ -570,8 +588,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>fkhg94ffnd</Fingerprint>
-      <Integrity>76Wvu/X+JsoiC86B/ixxrmYODJ8PUW/lp2ZSIYUouMk=</Integrity>
+      <Fingerprint>2hs01g8u5y</Fingerprint>
+      <Integrity>2o56K57VWoa7/Hbb0MYPjguLl6MzH7jOyVlzFzP49NY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\test.html'))</OriginalItemSpec>

@@ -51,9 +51,9 @@ public partial class QlDrlContext : DbContext
     public virtual DbSet<OTPRecords> OTPRecords { get; set; } 
     public virtual DbSet<LichSuHuyDangKy> LichSuHuyDangKys { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //=> optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
     //=> optionsBuilder.UseSqlServer("Server=DESKTOP-N9TFSHP\\SQL2022;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
-     => optionsBuilder.UseSqlServer("Server=DESKTOP-I1S5SR8;Database=QL_DRL;Trusted_Connection=True;TrustServerCertificate=True;");
+     //=> optionsBuilder.UseSqlServer("Server=DESKTOP-I1S5SR8;Database=QL_DRL;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

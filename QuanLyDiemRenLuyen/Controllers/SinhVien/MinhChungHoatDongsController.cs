@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-
 using QuanLyDiemRenLuyen.Models;
 using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.DTO.SinhVien;

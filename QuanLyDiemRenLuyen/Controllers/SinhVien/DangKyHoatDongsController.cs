@@ -254,7 +254,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     {
                         MaSv = maSV,
                         MaHoatDong = request.MaHoatDong,
-                        
+
                         ThoiGianHuy = ngayHienTai,
                         LyDo = string.IsNullOrEmpty(request.LyDoHuy) ? "Hủy bởi sinh viên" : request.LyDoHuy.Trim(),
                         TrangThai = "Thành công"
@@ -320,6 +320,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         hoatDong => hoatDong.MaHoatDong,
                         (dangKy, hoatDong) => new
                         {
+                            dangKy.MaDangKy,
                             dangKy.MaHoatDong,
                             hoatDong.TenHoatDong,
                             NgayBatDau = hoatDong.NgayBatDau.HasValue ? hoatDong.NgayBatDau.Value.ToString("yyyy-MM-dd") : null,
@@ -329,7 +330,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                             diemCong = hoatDong.DiemCong,
                             soLuong = hoatDong.SoLuongToiDa,
                             TrangThaiHoatDong = hoatDong.TrangThai,
-                            NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null
+                            NgayDangKy = dangKy.NgayDangKy.HasValue ? dangKy.NgayDangKy.Value.ToString("yyyy-MM-dd HH:mm:ss") : null,
+                            MaHocKy = hoatDong.MaHocKy // Thêm trường MaHocKy
                         })
                     .Where(h => h.TrangThaiHoatDong == "Đã kết thúc") // Chỉ lấy hoạt động đã kết thúc
                     .ToListAsync();

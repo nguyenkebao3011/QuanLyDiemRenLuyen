@@ -67,7 +67,11 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             var maSv = GetMaSinhVienFromToken();
             if (string.IsNullOrEmpty(maSv))
                 return Unauthorized("Không tìm thấy mã sinh viên trong token.");
-
+            // Lấy tên sinh viên
+            var sinhVien = await _context.SinhViens
+                .FirstOrDefaultAsync(sv => sv.MaSV == maSv);
+            if (sinhVien == null)
+                return NotFound("Không tìm thấy thông tin sinh viên");
             // Kiểm tra thông báo với MaSv từ token
             var chiTiet = await _context.ChiTietThongBaos
                 .FirstOrDefaultAsync(ct => ct.MaChiTietThongBao == maChiTietThongBao && ct.MaSv == maSv);
@@ -107,6 +111,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 var dangKy = new DangKyHoatDong
                 {
                     MaSv = maSv,
+                    
                     MaHoatDong = maHoatDongInt,
                     NgayDangKy = DateTime.Now,
                     TrangThai = "Đăng ký thành công"
@@ -127,7 +132,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 var thongBaoTuChoi = new ThongBao
                 {
                     TieuDe = $"Sinh viên từ chối tham gia hoạt động '{hoatDong.TenHoatDong}'",
-                    NoiDung = $"Sinh viên {maSv} đã từ chối tham gia hoạt động '{hoatDong.TenHoatDong}', vì lý do '{request.LyDoTuChoi}'. Hãy chỉ định sinh viên khác.",
+                    NoiDung = $"Sinh viên {sinhVien.HoTen} đã từ chối tham gia hoạt động '{hoatDong.TenHoatDong}', vì lý do '{request.LyDoTuChoi}'. Hãy chỉ định sinh viên khác.",
                     NgayTao = DateTime.Now,
                     LoaiThongBao = "Từ chối hoạt động",
                     TrangThai = "DaGui"
@@ -151,16 +156,31 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok("Phản hồi thành công.");
         }
+        private async Task<string> GetMaGiangVienFromToken()
+        {
+            var email = User.Identity?.Name;
+            if (string.IsNullOrEmpty(email))
+                return null;
 
+            var maGV = await _context.GiaoViens
+                .Where(gv => gv.Email == email)
+                .Select(gv => gv.MaGv)
+                .FirstOrDefaultAsync();
+
+            return maGV;
+        }
         [HttpPut("doc/{maThongBao}")]
         public async Task<IActionResult> MarkAsRead(int maThongBao)
         {
             var maSv = GetMaSinhVienFromToken();
-            if (string.IsNullOrEmpty(maSv))
-                return Unauthorized("Không tìm thấy mã sinh viên trong token.");
+            var maGV = await GetMaGiangVienFromToken();
+
+            if (string.IsNullOrEmpty(maSv) && string.IsNullOrEmpty(maGV))
+                return Unauthorized("Không tìm thấy mã sinh viên hoặc mã giảng viên trong token.");
 
             var chiTietThongBao = await _context.ChiTietThongBaos
-                .FirstOrDefaultAsync(ct => ct.MaThongBao == maThongBao && ct.MaSv == maSv);
+                .FirstOrDefaultAsync(ct => ct.MaThongBao == maThongBao &&
+                                         (ct.MaSv == maSv || ct.MaGV == maGV));
 
             if (chiTietThongBao == null)
                 return NotFound("Không tìm thấy thông báo.");

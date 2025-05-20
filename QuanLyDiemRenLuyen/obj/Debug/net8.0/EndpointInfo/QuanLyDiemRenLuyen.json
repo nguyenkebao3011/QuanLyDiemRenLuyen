@@ -3585,6 +3585,9 @@
         "additionalProperties": false
       },
       "EmailServicesDTO": {
+        "required": [
+          "TenDangNhap"
+        ],
         "type": "object",
         "properties": {
           "TenDangNhap": {
