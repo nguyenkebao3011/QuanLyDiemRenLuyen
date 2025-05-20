@@ -726,3 +726,73 @@ select.gph-form-control {
   margin-left: 8px;
   font-weight: 500;
 }
+.gph-view-status-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.gph-view-status-button:hover {
+  background-color: #0056b3;
+}
+
+.gph-view-status-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.gph-phanhoi-section {
+  margin-top: 20px;
+}
+
+.gph-phanhoi-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.gph-phanhoi-table {
+  overflow-x: auto;
+}
+
+.gph-phanhoi-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gph-phanhoi-table th,
+.gph-phanhoi-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.gph-phanhoi-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.gph-phanhoi-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.gph-close-phanhoi-button {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.gph-close-phanhoi-button:hover {
+  background-color: #5a6268;
+}

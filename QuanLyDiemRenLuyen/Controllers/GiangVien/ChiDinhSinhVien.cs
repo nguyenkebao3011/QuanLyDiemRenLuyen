@@ -11,7 +11,8 @@ namespace QuanLyDiemRenLuyen.Controllers.GiangVien
     [ApiController]
     public class AssignStudentsRequest
     {
-        public string MaHoatDong { get; set; } // Có thể để nullable hoặc bỏ nếu không dùng
+        public string ? MaHoatDong { get; set; } // Có thể để nullable hoặc bỏ nếu không dùng l;amaanf sau thêm ? vào cho những cái nào muốn null hoặc không
+
         public List<string> MaSVs { get; set; }
     }
     public class ChiDinhSinhVien : ControllerBase

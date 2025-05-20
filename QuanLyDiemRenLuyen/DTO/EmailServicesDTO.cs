@@ -43,6 +43,6 @@ namespace QuanLyDiemRenLuyen.DTO
     }
     public class EmailServicesDTO
     {
-        public string TenDangNhap { get; set; }
+        public required string TenDangNhap { get; set; }
     }
 }
