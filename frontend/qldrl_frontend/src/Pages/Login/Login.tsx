@@ -50,6 +50,14 @@ const Login: React.FC = () => {
     "thongbao" | "daihoc" | "saudaihoc" | "nganhan"
   >("thongbao");
 
+  // Auto-hide alert sau 3s
+  useEffect(() => {
+    if (errorMessage) {
+      const timeout = setTimeout(() => setErrorMessage(""), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [errorMessage]);
+
   useEffect(() => {
     // Kiểm tra nếu đã đăng nhập
     if (isLoggedIn()) {
@@ -121,7 +129,14 @@ const Login: React.FC = () => {
     } catch (error: any) {
       if (error.response) {
         console.error("Error response:", error.response.data);
-        setErrorMessage(error.response.data);
+        const data = error.response.data;
+        if (typeof data === "object" && data !== null && "message" in data) {
+          setErrorMessage(data.message);
+        } else if (typeof data === "string") {
+          setErrorMessage(data);
+        } else {
+          setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
+        }
       } else {
         console.error("Unknown error:", error);
         setErrorMessage("Đã xảy ra lỗi khi đăng nhập.");
@@ -286,6 +301,12 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-page-container">
+      {/* Alert nổi góc phải */}
+      {errorMessage && (
+        <div className="alert alert-danger login-alert-fixed">
+          {errorMessage}
+        </div>
+      )}
       <div className="login-header">
         <img
           className="logo"
@@ -374,9 +395,7 @@ const Login: React.FC = () => {
           </div>
 
           <div className="login-form">
-            {errorMessage && (
-              <div className="alert alert-danger">{errorMessage}</div>
-            )}
+            {/* Đã chuyển alert ra ngoài, chỗ này không cần nữa */}
 
             <form onSubmit={handleLogin}>
               <div className="form-group">

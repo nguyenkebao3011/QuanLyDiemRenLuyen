@@ -2164,6 +2164,55 @@
         }
       }
     },
+    "/api/QuanLySinhVien/import_sinh_vien": {
+      "post": {
+        "tags": [
+          "QuanLySinhVien"
+        ],
+        "parameters": [
+          {
+            "name": "capTaiKhoan",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "AnhDaiDien": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/QuanLySinhVien/download_template": {
+      "get": {
+        "tags": [
+          "QuanLySinhVien"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLySinhVien/cap_nhap_sinh_vien/{id}": {
       "put": {
         "tags": [

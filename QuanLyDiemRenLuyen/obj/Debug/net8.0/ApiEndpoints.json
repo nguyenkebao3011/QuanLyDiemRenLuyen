@@ -1461,6 +1461,37 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLySinhVienController",
+    "Method": "DownloadTemplate",
+    "RelativePath": "api/QuanLySinhVien/download_template",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLySinhVienController",
+    "Method": "ImportSinhVien",
+    "RelativePath": "api/QuanLySinhVien/import_sinh_vien",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "capTaiKhoan",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLySinhVienController",
     "Method": "CreateSinhVien",
     "RelativePath": "api/QuanLySinhVien/them_sinh_vien",
     "HttpMethod": "POST",
@@ -1525,6 +1556,11 @@
       {
         "Name": "AnhDaiDien",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CapTaiKhoan",
+        "Type": "System.Boolean",
         "IsRequired": false
       },
       {

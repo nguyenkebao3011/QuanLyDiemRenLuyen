@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.DTO.SinhVien;
 using QuanLyDiemRenLuyen.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using OfficeOpenXml;
 
 namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
 {
@@ -24,9 +18,12 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         {
             _context = context;
         }
-        
+
         [HttpPost("them_sinh_vien")]
-        public async Task<ActionResult<SinhVienDTO>> CreateSinhVien([FromForm] SinhVienDTO sinhVienDTO, IFormFile anhDaiDien = null)
+        public async Task<ActionResult<SinhVienDTO>> CreateSinhVien(
+         [FromForm] SinhVienDTO sinhVienDTO,
+         [FromForm] bool CapTaiKhoan = false,
+         IFormFile? anhDaiDien = null)
         {
             try
             {
@@ -43,13 +40,15 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 }
 
                 // Kiểm tra định dạng email
-                if (!string.IsNullOrEmpty(sinhVienDTO.Email) && !Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
+                if (!string.IsNullOrEmpty(sinhVienDTO.Email)
+                    && !Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
                 {
                     return BadRequest(new { message = "Email không hợp lệ" });
                 }
 
                 // Kiểm tra định dạng số điện thoại
-                if (!string.IsNullOrEmpty(sinhVienDTO.SoDienThoai) && !Regex.IsMatch(sinhVienDTO.SoDienThoai, @"^\d{10}$"))
+                if (!string.IsNullOrEmpty(sinhVienDTO.SoDienThoai)
+                    && !Regex.IsMatch(sinhVienDTO.SoDienThoai, @"^\d{10}$"))
                 {
                     return BadRequest(new { message = "Số điện thoại phải có đúng 10 chữ số" });
                 }
@@ -65,7 +64,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 }
 
                 // Xử lý ảnh đại diện
-                string anhDaiDienPath = null;
+                string? anhDaiDienPath = null;
                 if (anhDaiDien != null && anhDaiDien.Length > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -78,7 +77,12 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     var fileName = $"{sinhVienDTO.MaSV}_{DateTime.Now.Ticks}{extension}";
                     var filePath = Path.Combine("wwwroot/avatars", fileName);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    var directoryPath = Path.GetDirectoryName(filePath);
+                    if (!string.IsNullOrEmpty(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await anhDaiDien.CopyToAsync(stream);
@@ -87,112 +91,359 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     anhDaiDienPath = $"/avatars/{fileName}";
                 }
 
-                // Tìm mã tài khoản lớn nhất để tạo mã mới
-                var lastTaiKhoan = await _context.TaiKhoans
-                    .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
-                    .OrderByDescending(tk => tk.MaTaiKhoan)
-                    .FirstOrDefaultAsync();
+                string? maTaiKhoan = null;
 
-                string maTaiKhoan;
-                if (lastTaiKhoan != null)
+                if (CapTaiKhoan)
                 {
-                    // Lấy số cuối cùng và tăng lên 1
-                    string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4); // Bỏ "TKSV" lấy phần số
-                    int number;
-                    if (int.TryParse(lastNumber, out number))
+                    // Tạo mã tài khoản mới
+                    var lastTaiKhoan = await _context.TaiKhoans
+                        .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
+                        .OrderByDescending(tk => tk.MaTaiKhoan)
+                        .FirstOrDefaultAsync();
+
+                    if (lastTaiKhoan != null)
                     {
-                        maTaiKhoan = $"TKSV{number + 1}";
+                        string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4);
+                        int number;
+                        if (int.TryParse(lastNumber, out number))
+                            maTaiKhoan = $"TKSV{number + 1}";
+                        else
+                            maTaiKhoan = "TKSV1";
                     }
                     else
                     {
-                        // Nếu không parse được, tạo mã mới từ số 1
                         maTaiKhoan = "TKSV1";
                     }
-                }
-                else
-                {
-                    // Nếu chưa có tài khoản nào, bắt đầu từ TKSV1
-                    maTaiKhoan = "TKSV1";
+
+                    string defaultPassword = sinhVienDTO.MaSV;
+
+                    // Sử dụng PasswordHasher của Microsoft Identity để tạo hash đúng chuẩn
+                    var passwordHasher = new PasswordHasher<string>();
+                    string hash = passwordHasher.HashPassword(null, defaultPassword);
+
+                    var taiKhoan = new TaiKhoan
+                    {
+                        MaTaiKhoan = maTaiKhoan,
+                        TenDangNhap = sinhVienDTO.MaSV,
+                        MatKhau = hash,
+                        VaiTro = "SinhVien"
+                    };
+
+                    _context.TaiKhoans.Add(taiKhoan);
+                    await _context.SaveChangesAsync();
                 }
 
-                // Tạo tài khoản cho sinh viên
-                var taiKhoan = new TaiKhoan
+                DateTime ngaySinh_sv = DateTime.TryParse(sinhVienDTO.NgaySinh, out DateTime ns) ? ns : DateTime.Now;
+
+                var sinhVien = new Models.SinhVien
                 {
-                    MaTaiKhoan = maTaiKhoan,
-                    TenDangNhap = sinhVienDTO.MaSV,
-                    MatKhau = BCrypt.Net.BCrypt.HashPassword(sinhVienDTO.MaSV), // Mật khẩu mặc định là MaSV
-                    VaiTro = "SinhVien"
+                    MaSV = sinhVienDTO.MaSV,
+                    MaTaiKhoan = maTaiKhoan, // null nếu không cấp tài khoản
+                    HoTen = sinhVienDTO.HoTen,
+                    MaLop = sinhVienDTO.MaLop,
+                    Email = sinhVienDTO.Email,
+                    SoDienThoai = sinhVienDTO.SoDienThoai,
+                    DiaChi = sinhVienDTO.DiaChi,
+                    NgaySinh = ngaySinh_sv,
+                    GioiTinh = sinhVienDTO.GioiTinh,
+                    AnhDaiDien = anhDaiDienPath,
+                    MaVaiTro = sinhVienDTO.MaVaiTro,
+                    TrangThai = sinhVienDTO.TrangThai ?? "HoatDong"
                 };
 
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                _context.SinhViens.Add(sinhVien);
+                await _context.SaveChangesAsync();
+
+                sinhVienDTO.AnhDaiDien = anhDaiDienPath;
+
+                return Ok(new
                 {
+                    message = "Thêm sinh viên thành công",
+                    capTaiKhoan = CapTaiKhoan,
+                    maTaiKhoan = maTaiKhoan,
+                    sinhVien = sinhVienDTO
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Đã xảy ra lỗi khi tạo sinh viên", error = ex.Message });
+            }
+        }
+
+        [HttpPost("import_sinh_vien")]
+        public async Task<IActionResult> ImportSinhVien(IFormFile? file, [FromQuery] bool capTaiKhoan = false)
+        {
+            // Kiểm tra file có tồn tại không
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "Vui lòng chọn file Excel." });
+
+            // Kiểm tra định dạng file
+            string extension = Path.GetExtension(file.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+                return BadRequest(new { message = "File phải có định dạng .xlsx hoặc .xls" });
+
+            // Giới hạn kích thước file (tùy chỉnh theo nhu cầu)
+            if (file.Length > 10 * 1024 * 1024) // 10MB
+                return BadRequest(new { message = "Kích thước file vượt quá giới hạn cho phép (10MB)" });
+
+            var result = new List<string>();
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Position = 0;
+
                     try
                     {
-                        // Thêm tài khoản vào database
-                        _context.TaiKhoans.Add(taiKhoan);
-                        await _context.SaveChangesAsync();
-
-                        // Chuyển đổi từ DTO sang model
-                        DateTime ngaySinh;
-                        if (!DateTime.TryParse(sinhVienDTO.NgaySinh, out ngaySinh))
+                        // Sử dụng ExcelPackage để đọc file Excel
+                        using (var package = new ExcelPackage(stream))
                         {
-                            ngaySinh = DateTime.Now;
+                            var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                            if (worksheet == null)
+                                return BadRequest(new { message = "File không hợp lệ hoặc không có sheet." });
+
+                            int rowCount = worksheet.Dimension?.Rows ?? 0;
+                            if (rowCount <= 1) // Chỉ có header, không có dữ liệu
+                                return BadRequest(new { message = "File Excel không chứa dữ liệu sinh viên." });
+
+                            // Kiểm tra xem worksheet có đúng định dạng không
+                            string header1 = worksheet.Cells[1, 1].Text?.Trim();
+                            string header2 = worksheet.Cells[1, 2].Text?.Trim();
+
+                            if (header1 != "MaSV" || header2 != "HoTen")
+                                return BadRequest(new { message = "File Excel không đúng định dạng. Hãy sử dụng mẫu được cung cấp." });
+
+                            // Danh sách mã lớp hợp lệ từ cơ sở dữ liệu (cache lại để tránh truy vấn nhiều lần)
+                            var validMaLopList = await _context.Lops.Select(l => l.MaLop).ToListAsync();
+                            int successCount = 0;
+                            int failCount = 0;
+
+                            for (int row = 2; row <= rowCount; row++)
+                            {
+                                try
+                                {
+                                    var maSV = worksheet.Cells[row, 1].Text?.Trim();
+                                    var hoTen = worksheet.Cells[row, 2].Text?.Trim();
+                                    var maLop = worksheet.Cells[row, 3].Text?.Trim();
+                                    var email = worksheet.Cells[row, 4].Text?.Trim();
+                                    var soDienThoai = worksheet.Cells[row, 5].Text?.Trim();
+                                    var diaChi = worksheet.Cells[row, 6].Text?.Trim();
+                                    var ngaySinh = worksheet.Cells[row, 7].Text?.Trim();
+                                    var gioiTinh = worksheet.Cells[row, 8].Text?.Trim();
+                                    var maVaiTro = worksheet.Cells[row, 9].Text?.Trim();
+                                    var trangThai = worksheet.Cells[row, 10].Text?.Trim();
+
+                                    // Kiểm tra dữ liệu bắt buộc
+                                    if (string.IsNullOrEmpty(maSV))
+                                    {
+                                        result.Add($"Dòng {row}: Bỏ qua do thiếu mã sinh viên.");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    if (string.IsNullOrEmpty(hoTen))
+                                    {
+                                        result.Add($"Dòng {row}: Sinh viên {maSV} - Thiếu họ tên.");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    // Kiểm tra mã sinh viên đã tồn tại chưa
+                                    if (await _context.SinhViens.AnyAsync(sv => sv.MaSV == maSV))
+                                    {
+                                        result.Add($"Dòng {row}: Mã sinh viên {maSV} đã tồn tại.");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    // Kiểm tra và xử lý mã lớp
+                                    if (!string.IsNullOrEmpty(maLop) && !validMaLopList.Contains(maLop))
+                                    {
+                                        result.Add($"Dòng {row}: Mã lớp {maLop} của sinh viên {maSV} không tồn tại.");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    // Kiểm tra định dạng email
+                                    if (!string.IsNullOrEmpty(email) && !Regex.IsMatch(email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
+                                    {
+                                        result.Add($"Dòng {row}: Email {email} của sinh viên {maSV} không hợp lệ.");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    // Kiểm tra định dạng số điện thoại
+                                    if (!string.IsNullOrEmpty(soDienThoai) && !Regex.IsMatch(soDienThoai, @"^\d{10}$"))
+                                    {
+                                        result.Add($"Dòng {row}: Số điện thoại {soDienThoai} của sinh viên {maSV} không hợp lệ (cần đúng 10 chữ số).");
+                                        failCount++;
+                                        continue;
+                                    }
+
+                                    // Kiểm tra và xử lý ngày sinh
+                                    DateTime ngaySinhValue;
+                                    if (!DateTime.TryParse(ngaySinh, out ngaySinhValue))
+                                    {
+                                        ngaySinhValue = DateTime.Now;
+                                        result.Add($"Dòng {row}: Ngày sinh của sinh viên {maSV} không hợp lệ, sử dụng ngày hiện tại.");
+                                    }
+
+                                    // Xử lý cấp tài khoản nếu được yêu cầu
+                                    string? maTaiKhoan = null;
+                                    if (capTaiKhoan)
+                                    {
+                                        // Tạo mã tài khoản mới
+                                        var lastTaiKhoan = await _context.TaiKhoans
+                                            .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
+                                            .OrderByDescending(tk => tk.MaTaiKhoan)
+                                            .FirstOrDefaultAsync();
+
+                                        if (lastTaiKhoan != null)
+                                        {
+                                            string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4);
+                                            int number;
+                                            if (int.TryParse(lastNumber, out number))
+                                                maTaiKhoan = $"TKSV{number + 1}";
+                                            else
+                                                maTaiKhoan = "TKSV1";
+                                        }
+                                        else
+                                        {
+                                            maTaiKhoan = "TKSV1";
+                                        }
+
+                                        string defaultPassword = maSV;
+                                        var passwordHasher = new PasswordHasher<string>();
+                                        string hash = passwordHasher.HashPassword(null, defaultPassword);
+
+                                        var taiKhoan = new TaiKhoan
+                                        {
+                                            MaTaiKhoan = maTaiKhoan,
+                                            TenDangNhap = maSV,
+                                            MatKhau = hash,
+                                            VaiTro = "SinhVien"
+                                        };
+
+                                        _context.TaiKhoans.Add(taiKhoan);
+                                    }
+
+                                    // Tạo đối tượng sinh viên mới
+                                    var sinhVien = new Models.SinhVien
+                                    {
+                                        MaSV = maSV,
+                                        MaTaiKhoan = maTaiKhoan, // null nếu không cấp tài khoản
+                                        HoTen = hoTen,
+                                        MaLop = maLop,
+                                        Email = email,
+                                        SoDienThoai = soDienThoai,
+                                        DiaChi = diaChi,
+                                        NgaySinh = ngaySinhValue,
+                                        GioiTinh = gioiTinh,
+                                        MaVaiTro = int.TryParse(maVaiTro, out var mvt) ? mvt : 1,
+                                        TrangThai = string.IsNullOrEmpty(trangThai) ? "HoatDong" : trangThai
+                                    };
+
+                                    _context.SinhViens.Add(sinhVien);
+                                    result.Add($"Dòng {row}: Đã thêm sinh viên {maSV} - {hoTen} thành công.");
+                                    successCount++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.Add($"Dòng {row}: Lỗi - {ex.Message}");
+                                    failCount++;
+                                }
+                            }
+
+                            // Lưu các thay đổi vào database
+                            await _context.SaveChangesAsync();
+
+                            // Tóm tắt kết quả import
+                            result.Insert(0, $"Tổng cộng: {successCount} sinh viên được import thành công, {failCount} sinh viên gặp lỗi.");
                         }
-
-                        var sinhVien = new Models.SinhVien
+                    }
+                    catch (InvalidDataException ex)
+                    {
+                        // Lỗi khi file Excel không đúng định dạng
+                        return StatusCode(500, new
                         {
-                            MaSV = sinhVienDTO.MaSV,
-                            MaTaiKhoan = maTaiKhoan,
-                            HoTen = sinhVienDTO.HoTen,
-                            MaLop = sinhVienDTO.MaLop,
-                            Email = sinhVienDTO.Email,
-                            SoDienThoai = sinhVienDTO.SoDienThoai,
-                            DiaChi = sinhVienDTO.DiaChi,
-                            NgaySinh = ngaySinh,
-                            GioiTinh = sinhVienDTO.GioiTinh,
-                            AnhDaiDien = anhDaiDienPath,
-                            MaVaiTro = sinhVienDTO.MaVaiTro,
-                            TrangThai = sinhVienDTO.TrangThai ?? "HoatDong"
-                        };
-
-                        // Thêm sinh viên vào database
-                        _context.SinhViens.Add(sinhVien);
-                        await _context.SaveChangesAsync();
-
-                        await transaction.CommitAsync();
-
-                        // Cập nhật lại DTO để trả về
-                        sinhVienDTO.AnhDaiDien = anhDaiDienPath;
-
-                        return CreatedAtAction("GetSinhVien", new { id = sinhVien.MaSV }, sinhVienDTO);
+                            message = "File Excel không đúng định dạng",
+                            error = ex.Message
+                        });
                     }
                     catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
-
-                        // Xóa file ảnh đã tải lên nếu có lỗi
-                        if (!string.IsNullOrEmpty(anhDaiDienPath))
+                        // Các lỗi khác khi đọc file Excel
+                        return StatusCode(500, new
                         {
-                            var filePath = Path.Combine("wwwroot", anhDaiDienPath.TrimStart('/'));
-                            if (System.IO.File.Exists(filePath))
-                            {
-                                System.IO.File.Delete(filePath);
-                            }
-                        }
-
-                        throw;
+                            message = "Lỗi khi đọc file Excel",
+                            error = ex.Message
+                        });
                     }
+                }
+
+                return Ok(new { message = "Import hoàn tất", chiTiet = result });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý các lỗi khác
+                return StatusCode(500, new
+                {
+                    message = "Đã xảy ra lỗi khi import sinh viên",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("download_template")]
+        public IActionResult DownloadTemplate()
+        {
+            try
+            {
+                // Khởi tạo ExcelPackage
+                using (var package = new ExcelPackage())
+                {
+                    var ws = package.Workbook.Worksheets.Add("Template");
+                    ws.Cells[1, 1].Value = "MaSV";
+                    ws.Cells[1, 2].Value = "HoTen";
+                    ws.Cells[1, 3].Value = "MaLop";
+                    ws.Cells[1, 4].Value = "Email";
+                    ws.Cells[1, 5].Value = "SoDienThoai";
+                    ws.Cells[1, 6].Value = "DiaChi";
+                    ws.Cells[1, 7].Value = "NgaySinh";
+                    ws.Cells[1, 8].Value = "GioiTinh";
+                    ws.Cells[1, 9].Value = "MaVaiTro";
+                    ws.Cells[1, 10].Value = "TrangThai";
+
+                    ws.Cells[2, 1].Value = "DHTH100000";
+                    ws.Cells[2, 2].Value = "Nguyễn Văn A";
+                    ws.Cells[2, 3].Value = "L01";
+                    ws.Cells[2, 4].Value = "nguyenvana@huit.edu.vn";
+                    ws.Cells[2, 5].Value = "0912345678";
+                    ws.Cells[2, 6].Value = "123 Đường ABC";
+                    ws.Cells[2, 7].Value = "2000-01-01";
+                    ws.Cells[2, 8].Value = "Nam";
+                    ws.Cells[2, 9].Value = "1";
+                    ws.Cells[2, 10].Value = "HoatDong";
+
+                    var bytes = package.GetAsByteArray();
+                    return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "template_import_sinh_vien.xlsx");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Đã xảy ra lỗi khi tạo sinh viên", error = ex.Message, stackTrace = ex.StackTrace });
+                return StatusCode(500, new
+                {
+                    message = "Đã xảy ra lỗi khi tạo template",
+                    error = ex.Message
+                });
             }
         }
 
         // PUT: api/QuanLySinhVien/
         [HttpPut("cap_nhap_sinh_vien/{id}")]
-        public async Task<IActionResult> UpdateSinhVien(string id, [FromForm] SinhVienDTO sinhVienDTO, IFormFile anhDaiDien = null)
+        public async Task<IActionResult> UpdateSinhVien(string id, [FromForm] SinhVienDTO sinhVienDTO, IFormFile? anhDaiDien = null)
         {
             try
             {
@@ -243,7 +494,12 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     var fileName = $"{id}_{DateTime.Now.Ticks}{extension}";
                     var filePath = Path.Combine("wwwroot/avatars", fileName);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    var directoryPath = Path.GetDirectoryName(filePath);
+                    if (!string.IsNullOrEmpty(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await anhDaiDien.CopyToAsync(stream);
@@ -303,6 +559,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 return StatusCode(500, new { message = "Đã xảy ra lỗi khi cập nhật thông tin sinh viên", error = ex.Message, stackTrace = ex.StackTrace });
             }
         }
+
         [HttpDelete("xoa_sinh_vien/{id}")]
         public async Task<IActionResult> DeleteSinhVien(string id)
         {
@@ -329,19 +586,22 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                         _context.DiemRenLuyens.RemoveRange(sinhVien.DiemRenLuyens);
 
                     // Lưu thông tin tài khoản để xóa sau
-                    string maTaiKhoan = sinhVien.MaTaiKhoan;
-                    string ?anhDaiDien = sinhVien.AnhDaiDien;
+                    string? maTaiKhoan = sinhVien.MaTaiKhoan;
+                    string? anhDaiDien = sinhVien.AnhDaiDien;
 
                     // Xóa sinh viên
                     _context.SinhViens.Remove(sinhVien);
                     await _context.SaveChangesAsync();
 
                     // Xóa tài khoản nếu có
-                    var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
-                    if (taiKhoan != null)
+                    if (!string.IsNullOrEmpty(maTaiKhoan))
                     {
-                        _context.TaiKhoans.Remove(taiKhoan);
-                        await _context.SaveChangesAsync();
+                        var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
+                        if (taiKhoan != null)
+                        {
+                            _context.TaiKhoans.Remove(taiKhoan);
+                            await _context.SaveChangesAsync();
+                        }
                     }
 
                     await transaction.CommitAsync();
@@ -365,8 +625,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 }
             }
         }
-      
-
         private bool SinhVienExists(string id)
         {
             return _context.SinhViens.Any(e => e.MaSV == id);
