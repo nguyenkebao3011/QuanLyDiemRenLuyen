@@ -1,346 +1,224 @@
-/* Thiết lập chung */
-.thong-bao-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Roboto', 'Segoe UI', sans-serif;
-    background-color: #f5f7fa;
-    border-radius: 10px;
-    min-height: 500px;
-  }
-  
-  .thong-bao-header {
-    margin-bottom: 24px;
-  }
-  
-  .thong-bao-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  .title-icon {
-    margin-right: 10px;
-    color: #1976d2;
-    width: 24px;
-    height: 24px;
-  }
-  
-  /* Layout danh sách và chi tiết */
-  .thong-bao-content2 {
-    display: flex;
-    gap: 24px;
-    min-height: 600px;
-  }
-  
-  .thong-bao-list2 {
-    flex: 1;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  .thong-bao-detail2 {
-    flex: 2;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 24px;
-  }
-  
-  /* Styling cho danh sách thông báo */
-  .notification-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 600px;
-    overflow-y: auto;
-  }
-  
-  .notification-item {
-    padding: 16px;
-    border-bottom: 1px solid #eaeaea;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-  }
-  
-  .notification-item:hover {
-    background-color: #f5f9ff;
-  }
-  
-  .notification-item.selected {
-    background-color: #e3f2fd;
-    border-left: 4px solid #1976d2;
-  }
-  
-  .notification-item.unread {
-    background-color: #f0f7ff;
-  }
-  
-  .notification-item-content {
-    flex: 1;
-  }
-  
-  .unread-indicator {
-    width: 10px;
-    height: 10px;
-    background-color: #1976d2;
-    border-radius: 50%;
-    margin-left: 10px;
-    margin-top: 6px;
-  }
-  
-  .notification-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    margin: 0 0 8px 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .notification-meta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: #666;
-  }
-  
-  .notification-date, .notification-views, .notification-author {
-    display: flex;
-    align-items: center;
-  }
-  
-  .meta-icon {
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-  }
-  
-  .notification-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  /* Badge styling */
-  .notification-badge {
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  
-  .badge-activity {
-    background-color: #e3f2fd;
-    color: #1976d2;
-  }
-  
-  .badge-academic {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-  }
-  
-  .badge-exam {
-    background-color: #fff3e0;
-    color: #e65100;
-  }
-  
-  .badge-fee {
-    background-color: #f3e5f5;
-    color: #7b1fa2;
-  }
-  
-  .badge-general {
-    background-color: #f5f5f5;
-    color: #607d8b;
-  }
-  
-  /* Styling cho phần chi tiết thông báo */
-  .detail-header {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eaeaea;
-  }
-  
-  .detail-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 16px 0;
-    line-height: 1.4;
-  }
-  
-  .detail-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  
-  .detail-meta-item {
-    display: flex;
-    align-items: center;
-    color: #666;
-    font-size: 14px;
-  }
-  
-  .detail-icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 6px;
-    color: #666;
-  }
-  
-  .detail-badge {
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 500;
-  }
-  
-  .detail-content {
-    line-height: 1.6;
-    color: #333;
-  }
-  
-  /* Chi tiết nội dung HTML */
-  .detail-content h1,
-  .detail-content h2,
-  .detail-content h3,
-  .detail-content h4,
-  .detail-content h5,
-  .detail-content h6 {
-    color: #333;
-    margin-top: 24px;
-    margin-bottom: 16px;
-  }
-  
-  .detail-content p {
-    margin-bottom: 16px;
-  }
-  
-  .detail-content ul,
-  .detail-content ol {
-    padding-left: 24px;
-    margin-bottom: 16px;
-  }
-  
-  .detail-content li {
-    margin-bottom: 8px;
-  }
-  
-  .detail-content a {
-    color: #1976d2;
-    text-decoration: none;
-  }
-  
-  .detail-content a:hover {
-    text-decoration: underline;
-  }
-  
-  .detail-content strong,
-  .detail-content b {
-    font-weight: 600;
-  }
-  
-  /* Empty state */
-  .empty-notification {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px;
-    color: #888;
-  }
-  
-  .empty-icon {
-    width: 48px;
-    height: 48px;
-    color: #bbb;
-    margin-bottom: 16px;
-  }
-  
-  /* Loading và error states */
-  .thong-bao-loading,
-  .thong-bao-error {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-  }
-  
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #1976d2;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 16px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .retry-button {
-    padding: 8px 16px;
-    background-color: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 16px;
-    font-size: 14px;
-  }
-  
-  .retry-button:hover {
-    background-color: #1565c0;
-  }
-  
-  /* Responsive styling */
-  @media screen and (max-width: 992px) {
-    .thong-bao-content {
-      flex-direction: column;
-    }
-    
-    .thong-bao-list {
-      max-width: 100%;
-    }
-    
-    .notification-list {
-      max-height: 400px;
-    }
-  }
-  
-  @media screen and (max-width: 576px) {
-    .thong-bao-container {
-      padding: 16px;
-    }
-    
-    .notification-meta, .notification-footer {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-    }
-    
-    .detail-meta {
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
+/* Stunning Notification Styles */
+.tb-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(145deg, #f0f4f8, #ffffff);
+  color: #111827;
+  max-width: 1300px;
+  margin: 2rem auto;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.tb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.tb-header h2 {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+}
+
+.tb-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5px;
+  color: #d3dee7;
+}
+
+.tb-mark-read-btn {
+  background: #07559f;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.tb-mark-read-btn:hover {
+  background: #3730a3;
+  transform: translateY(-1px);
+}
+
+.tb-main {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Notification List */
+.tb-list {
+  flex: 1;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 80vh;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.tb-item {
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  position: relative;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.tb-item:hover {
+  background: #eef2ff;
+  transform: scale(1.01);
+}
+
+.tb-selected {
+  border-color: #6366f1;
+  background-color: #e0e7ff;
+}
+
+.tb-read {
+  opacity: 0.6;
+}
+
+.tb-unread-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+}
+
+.tb-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: #1f2937;
+}
+
+.tb-meta, .tb-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+}
+
+.tb-meta {
+  justify-content: space-between;
+}
+
+.tb-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.tb-badge-activity { background: #10b981; }
+.tb-badge-academic { background: #3b82f6; }
+.tb-badge-exam { background: #f97316; }
+.tb-badge-fee { background: #ef4444; }
+.tb-badge-general { background: #6b7280; }
+
+/* Detail Panel */
+.tb-detail {
+  flex: 2;
+  background: white;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+}
+
+.tb-detail h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+.tb-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.tb-detail-body {
+  line-height: 1.7;
+  color: #374151;
+  font-size: 1rem;
+}
+
+/* Loader, Error, Empty State */
+.tb-loader, .tb-error, .tb-empty {
+  text-align: center;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  margin: 3rem auto;
+}
+
+.tb-spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.tb-error button {
+  margin-top: 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tb-error button:hover {
+  background: #b91c1c;
+}
+
+.tb-empty p {
+  margin-top: 0.75rem;
+  color: #6b7280;
+  font-size: 1rem;
+}

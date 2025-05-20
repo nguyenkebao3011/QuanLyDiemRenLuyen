@@ -21,6 +21,15 @@ interface HocKyDTO {
   NamHoc: string;
 }
 
+interface MinhChungDTO {
+  MaMinhChung: number;
+  MaDangKy: number;
+  DuongDanFile: string;
+  MoTa: string;
+  NgayTao: string;
+  TrangThaiMinhChung: string;
+}
+
 interface PhanHoiDTO {
   MaPhanHoi: number;
   MaDiemRenLuyen: number;
@@ -31,6 +40,7 @@ interface PhanHoiDTO {
   MaQL: string | null;
   NoiDungXuLy: string | null;
   NgayXuLy: string | null;
+  MinhChung: MinhChungDTO;
 }
 
 interface ApiResponse {
@@ -63,8 +73,17 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [hocKyList, setHocKyList] = useState<HocKyDTO[]>([]);
   const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDongDTO | null>(null);
   const [phanHoiList, setPhanHoiList] = useState<PhanHoiDTO[]>([]);
-  const [showPhanHoiList, setShowPhanHoiList] = useState(false);
+  const [selectedPhanHoi, setSelectedPhanHoi] = useState<PhanHoiDTO | null>(null);
 
+
+  // Animation khi click vào item
+    const handleItemClick = (ph: PhanHoiDTO) => {
+      if (selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi) {
+        setSelectedPhanHoi(null);
+      } else {
+        setSelectedPhanHoi(ph);
+      }
+    };
   const API_URL = "http://localhost:5163/api";
 
   useEffect(() => {
@@ -77,11 +96,14 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [hocKyResponse, hoatDongResponse] = await Promise.all([
+        const [hocKyResponse, hoatDongResponse, phanHoiResponse] = await Promise.all([
           fetch(`${API_URL}/HocKy/lay_hoc_ky`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           fetch(`${API_URL}/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_URL}/PhanHoiDiemRenLuyen/XemPhanHoiCuaSinhVien`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -109,10 +131,10 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
           );
         }
 
-        const data: ApiResponse = await hoatDongResponse.json();
-        console.log("Dữ liệu thô từ API hoạt động:", data);
-        if (data.data && Array.isArray(data.data)) {
-          const formattedData = data.data
+        const dataHoatDong: ApiResponse = await hoatDongResponse.json();
+        console.log("Dữ liệu thô từ API hoạt động:", dataHoatDong);
+        if (dataHoatDong.data && Array.isArray(dataHoatDong.data)) {
+          const formattedData = dataHoatDong.data
             .map((item: any): HoatDongDTO | null => {
               const maDangKy = item.MaDangKy ? Number(item.MaDangKy) : null;
               const maHocKy = item.MaHocKy !== undefined ? Number(item.MaHocKy) : undefined;
@@ -145,6 +167,49 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
           setHoatDong([]);
           setMessage("Dữ liệu từ server không đúng định dạng.");
         }
+
+        if (phanHoiResponse.status === 401) {
+          setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+          localStorage.removeItem("token");
+          setToken(null);
+          return;
+        }
+        if (!phanHoiResponse.ok) {
+          throw new Error(
+            `Lỗi HTTP: ${phanHoiResponse.status} ${phanHoiResponse.statusText}`
+          );
+        }
+
+        const dataPhanHoi: ApiResponse = await phanHoiResponse.json();
+        console.log("Dữ liệu thô từ API phản hồi:", dataPhanHoi);
+        if (dataPhanHoi.data && Array.isArray(dataPhanHoi.data)) {
+          const formattedData = dataPhanHoi.data.map((item: any): PhanHoiDTO => ({
+            MaPhanHoi: item.MaPhanHoi ?? 0,
+            MaDiemRenLuyen: item.MaDiemRenLuyen ?? 0,
+            MaMinhChung: item.MaMinhChung ?? 0,
+            NoiDungPhanHoi: item.NoiDungPhanHoi ?? "",
+            NgayPhanHoi: item.NgayPhanHoi ?? "",
+            TrangThai: item.TrangThai ?? "Chưa xác định",
+            MaQL: item.MaQL ?? null,
+            NoiDungXuLy: item.NoiDungXuLy ?? null,
+            NgayXuLy: item.NgayXuLy ?? null,
+            MinhChung: {
+              MaMinhChung: item.MinhChung?.MaMinhChung ?? 0,
+              MaDangKy: item.MinhChung?.MaDangKy ?? 0,
+              DuongDanFile: item.MinhChung?.DuongDanFile ?? "",
+              MoTa: item.MinhChung?.MoTa ?? "",
+              NgayTao: item.MinhChung?.NgayTao ?? "",
+              TrangThaiMinhChung: item.MinhChung?.TrangThaiMinhChung ?? "Chưa xác định",
+            },
+          }));
+          setPhanHoiList(formattedData);
+          if (formattedData.length === 0) {
+            setMessage("Chưa có phản hồi nào.");
+          }
+        } else {
+          setPhanHoiList([]);
+          setMessage("Dữ liệu phản hồi không đúng định dạng.");
+        }
       } catch (err) {
         setMessage("Lỗi khi lấy dữ liệu: " + (err as Error).message);
       } finally {
@@ -160,61 +225,6 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showNotification]);
-
-  const fetchPhanHoiList = async () => {
-    if (!token) {
-      showNotificationMessage("Vui lòng đăng nhập để xem trạng thái phản hồi.", false);
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${API_URL}/PhanHoiDiemRenLuyen/danh-sach-phan-hoi?MaSv=${maSv}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status === 401) {
-        showNotificationMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.", false);
-        localStorage.removeItem("token");
-        setToken(null);
-        return;
-      }
-      if (!response.ok) {
-        throw new Error(`Lỗi HTTP: ${response.status} ${response.statusText}`);
-      }
-
-      const data: ApiResponse = await response.json();
-      console.log("Dữ liệu thô từ API phản hồi:", data);
-      if (data.data && Array.isArray(data.data)) {
-        const formattedData = data.data.map((item: any): PhanHoiDTO => ({
-          MaPhanHoi: item.MaPhanHoi ?? 0,
-          MaDiemRenLuyen: item.MaDiemRenLuyen ?? 0,
-          MaMinhChung: item.MaMinhChung ?? 0,
-          NoiDungPhanHoi: item.NoiDungPhanHoi ?? "",
-          NgayPhanHoi: item.NgayPhanHoi ?? "",
-          TrangThai: item.TrangThai ?? "Chưa xác định",
-          MaQL: item.MaQL ?? null,
-          NoiDungXuLy: item.NoiDungXuLy ?? null,
-          NgayXuLy: item.NgayXuLy ?? null,
-        }));
-        setPhanHoiList(formattedData);
-        setShowPhanHoiList(true);
-        if (formattedData.length === 0) {
-          showNotificationMessage("Chưa có phản hồi nào.", false);
-        }
-      } else {
-        setPhanHoiList([]);
-        showNotificationMessage("Dữ liệu phản hồi không đúng định dạng.", false);
-      }
-    } catch (err) {
-      showNotificationMessage("Lỗi khi lấy danh sách phản hồi: " + (err as Error).message, false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleActivityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -397,16 +407,8 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
             <h2 className="gph-form-title">
               <i className="gph-icon-feedback"></i>
               Thông tin phản hồi
-              <button
-                  type="button"
-                  className="gph-view-status-button"
-                  onClick={fetchPhanHoiList}
-                  disabled={isLoading}
-                >
-                  Xem Trạng Thái Phản Hồi
-                </button>
             </h2>
-                
+
             <form onSubmit={handleSubmit}>
               <div className="gph-form-group">
                 <label htmlFor="activity-select">Chọn Hoạt Động</label>
@@ -454,7 +456,6 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
 
               <div className="gph-form-group">
                 <label htmlFor="noiDungPhanHoi">Nội Dung Phản Hồi</label>
-                 
                 <textarea
                   id="noiDungPhanHoi"
                   value={noiDungPhanHoi}
@@ -520,70 +521,9 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                 >
                   {isLoading ? "Đang xử lý..." : "Gửi Phản Hồi"}
                 </button>
-               
               </div>
             </form>
           </div>
-
-          {showPhanHoiList && (
-            <div className="gph-phanhoi-section">
-              <div className="gph-phanhoi-card">
-                <h2 className="gph-section-title">
-                  <i className="gph-icon-list"></i>
-                  Danh Sách Phản Hồi
-                </h2>
-                {isLoading ? (
-                  <div className="gph-loading-indicator">
-                    <div className="gph-loader"></div>
-                    <p>Đang tải danh sách phản hồi...</p>
-                  </div>
-                ) : phanHoiList.length > 0 ? (
-                  <div className="gph-phanhoi-table">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Mã Phản Hồi</th>
-                          <th>Mã Điểm RL</th>
-                          <th>Mã Minh Chứng</th>
-                          <th>Nội Dung Phản Hồi</th>
-                          <th>Ngày Phản Hồi</th>
-                          <th>Trạng Thái</th>
-                          <th>Mã QL</th>
-                          <th>Nội Dung Xử Lý</th>
-                          <th>Ngày Xử Lý</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {phanHoiList.map((ph) => (
-                          <tr key={ph.MaPhanHoi}>
-                            <td>{ph.MaPhanHoi}</td>
-                            <td>{ph.MaDiemRenLuyen}</td>
-                            <td>{ph.MaMinhChung}</td>
-                            <td>{ph.NoiDungPhanHoi}</td>
-                            <td>{formatDate(ph.NgayPhanHoi)}</td>
-                            <td>{ph.TrangThai}</td>
-                            <td>{ph.MaQL || "Chưa có"}</td>
-                            <td>{ph.NoiDungXuLy || "Chưa xử lý"}</td>
-                                                    </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="gph-empty-state">
-                    <i className="gph-icon-empty"></i>
-                    <p>Chưa có phản hồi nào</p>
-                  </div>
-                )}
-                <button
-                  className="gph-close-phanhoi-button"
-                  onClick={() => setShowPhanHoiList(false)}
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="gph-activity-section">
@@ -668,6 +608,115 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                 )}
               </div>
             )}
+          </div>
+
+          <div className="gph-phanhoi-card">
+      <h2 className="gph-section-title">
+        <i className="gph-icon-list"></i>
+        Danh Sách Phản Hồi Đã Gửi
+      </h2>
+      
+      {isLoading ? (
+        <div className="gph-loading-indicator">
+          <div className="gph-loader"></div>
+          <p>Đang tải danh sách phản hồi...</p>
+        </div>
+      ) : phanHoiList.length > 0 ? (
+        <div className="gph-phanhoi-list">
+          {phanHoiList.map((ph) => (
+            <div 
+              key={ph.MaPhanHoi} 
+              className="gph-phanhoi-item"
+            >
+              <div className="gph-phanhoi-header">
+                <h3 className="gph-phanhoi-title">Phản Hồi #{ph.MaPhanHoi}</h3>
+                <span
+                  className={`gph-phanhoi-status gph-status-${ph.TrangThai.toLowerCase().replace(
+                    /\s+/g,
+                    "-"
+                  )}`}
+                >
+                  {ph.TrangThai}
+                </span>
+              </div>
+              
+              <div className="gph-phanhoi-details">
+                <div className="gph-detail-row">
+                  <span className="gph-detail-label">Nội dung:</span>
+                  <span className="gph-detail-value">{ph.NoiDungPhanHoi}</span>
+                </div>
+                <div className="gph-detail-row">
+                  <span className="gph-detail-label">Ngày gửi:</span>
+                  <span className="gph-detail-value">{formatDate(ph.NgayPhanHoi)}</span>
+                </div>
+                <div className="gph-detail-row">
+                  <span className="gph-detail-label">Trạng thái xử lý:</span>
+                  <span className="gph-detail-value">{ph.NoiDungXuLy || "Chưa xử lý"}</span>
+                </div>
+                {/* <div className="gph-detail-row">
+                  <span className="gph-detail-label">Ngày xử lý:</span>
+                  <span className="gph-detail-value">{formatDate(ph.NgayXuLy)}</span>
+                </div> */}
+              </div>
+              
+              <button
+                className="gph-detail-button"
+                onClick={() => handleItemClick(ph)}
+              >
+                {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi
+                  ? "Ẩn Chi Tiết Minh Chứng"
+                  : "Xem Chi Tiết Minh Chứng"}
+              </button>
+              
+              {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi && (
+                <div className="gph-minhchung-details">
+                  <h4>Chi Tiết Minh Chứng</h4>
+                  <div className="gph-detail-row">
+                    <span className="gph-detail-label">Mô tả:</span>
+                    <span className="gph-detail-value">
+                      {ph.MinhChung.MoTa || "Không có mô tả"}
+                    </span>
+                  </div>
+                  <div className="gph-detail-row">
+                    <span className="gph-detail-label">File minh chứng:</span>
+                    <span className="gph-detail-value">
+                      {ph.MinhChung.DuongDanFile ? (
+                        <a
+                          href={ph.MinhChung.DuongDanFile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Xem file
+                        </a>
+                      ) : (
+                        "Không có file"
+                      )}
+                    </span>
+                  </div>
+                  <div className="gph-detail-row">
+                    <span className="gph-detail-label">Trạng thái:</span>
+                    <span className="gph-detail-value">{ph.MinhChung.TrangThaiMinhChung}</span>
+                  </div>
+                  <div className="gph-detail-row">
+                    <span className="gph-detail-label">Ngày tạo:</span>
+                    <span className="gph-detail-value">{formatDate(ph.MinhChung.NgayTao)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        
+       
+    
+          
+              <div className="gph-empty-state">
+                <i className="gph-icon-empty"></i>
+                <p>Chưa có phản hồi nào</p>
+              </div>
+            )}
+            
           </div>
         </div>
       </div>

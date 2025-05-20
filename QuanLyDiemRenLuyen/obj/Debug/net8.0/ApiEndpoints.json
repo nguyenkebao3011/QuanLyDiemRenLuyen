@@ -1153,6 +1153,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.PhanHoiDiemRenLuyenController",
+    "Method": "XemPhanHoiCuaSinhVien",
+    "RelativePath": "api/PhanHoiDiemRenLuyen/XemPhanHoiCuaSinhVien",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.PhanHoiDiemRenLuyenController",
     "Method": "XoaMinhChung",
     "RelativePath": "api/PhanHoiDiemRenLuyen/xoa_minh_chung/{maMinhChung}",

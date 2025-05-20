@@ -117,7 +117,7 @@ body {
 }
 
 /* Card styling */
-.gph-form-card,
+
 .gph-activity-card {
   position: relative;
   background: var(--form-bg);
@@ -129,7 +129,18 @@ body {
   overflow: hidden;
   animation: fadeIn 0.6s ease-out;
 }
-
+.gph-form-card {
+  position: relative;
+  background: var(--form-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 2rem;
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+  overflow: hidden;
+  animation: fadeIn 0.6s ease-out;
+padding-bottom: 87px;
+}
 .gph-form-card:hover,
 .gph-activity-card:hover {
   transform: translateY(-5px);
@@ -796,3 +807,116 @@ select.gph-form-control {
 .gph-close-phanhoi-button:hover {
   background-color: #5a6268;
 }
+
+.gph-phanhoi-card {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gph-phanhoi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.gph-phanhoi-item {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.gph-phanhoi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gph-phanhoi-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.gph-phanhoi-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.gph-status-chờ-xử-lý {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.gph-status-đang-xử-lý {
+  background: #d4edda;
+  color: #155724;
+}
+
+.gph-phanhoi-details {
+  margin-bottom: 10px;
+}
+
+.gph-detail-button {
+  padding: 6px 12px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.gph-detail-button:hover {
+  background: #0056b3;
+}
+
+.gph-minhchung-details {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.gph-minhchung-details h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gph-close-details-button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.gph-close-details-button:hover {
+  background: #b02a37;
+}
+
+.gph-close-phanhoi-button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gph-close-phanhoi-button:hover {
+  background: #5a6268;
+}
+
+

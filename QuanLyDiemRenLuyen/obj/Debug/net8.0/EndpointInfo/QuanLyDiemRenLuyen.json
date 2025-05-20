@@ -1981,6 +1981,18 @@
         }
       }
     },
+    "/api/PhanHoiDiemRenLuyen/XemPhanHoiCuaSinhVien": {
+      "get": {
+        "tags": [
+          "PhanHoiDiemRenLuyen"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/QuanLyGiangVien/them_giang_vien": {
       "post": {
         "tags": [

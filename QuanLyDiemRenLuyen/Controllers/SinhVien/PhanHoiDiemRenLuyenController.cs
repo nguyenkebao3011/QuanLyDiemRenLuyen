@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.DTO.SinhVien;
 using QuanLyDiemRenLuyen.Models;
-
+using System.Security.Claims;
 namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 {
     [Route("api/[controller]")]
@@ -97,7 +97,54 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 DuongDanFile = duongDanFile
             });
         }
-        
+        [HttpGet("XemPhanHoiCuaSinhVien")]
+        public async Task<IActionResult> XemPhanHoiCuaSinhVien()
+        {
+            // 1. Lấy MaSv từ token
+            var maSv = User.FindFirst(ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(maSv))
+                return Unauthorized("Không tìm thấy thông tin sinh viên trong token!");
+
+            // 2. Truy vấn phản hồi và minh chứng
+            var phanHoiList = await _context.PhanHoiDiemRenLuyens
+                .Where(ph => ph.MaDiemRenLuyenNavigation.MaSv == maSv)
+                .Include(ph => ph.MaDiemRenLuyenNavigation)
+                .Include(ph => ph.MaMinhChungNavigation)
+                .Select(ph => new
+                {
+                    MaPhanHoi = ph.MaPhanHoi,
+                    MaDiemRenLuyen = ph.MaDiemRenLuyen,
+                    MaMinhChung = ph.MaMinhChung,
+                    NoiDungPhanHoi = ph.NoiDungPhanHoi,
+                    NgayPhanHoi = ph.NgayPhanHoi,
+                    TrangThai = ph.TrangThai,
+                
+                    NoiDungXuLy = ph.NoiDungXuLy,
+                    NgayXuLy = ph.NgayXuLy,
+                    MinhChung = new
+                    {
+                        MaMinhChung = ph.MaMinhChungNavigation.MaMinhChung,
+                        MaDangKy = ph.MaMinhChungNavigation.MaDangKy,
+                        DuongDanFile = ph.MaMinhChungNavigation.DuongDanFile,
+                        MoTa = ph.MaMinhChungNavigation.MoTa,
+                        NgayTao = ph.MaMinhChungNavigation.NgayTao,
+                        TrangThaiMinhChung = ph.MaMinhChungNavigation.TrangThai
+                    }
+                })
+                .ToListAsync();
+
+            // 3. Kiểm tra xem có phản hồi nào không
+            if (!phanHoiList.Any())
+                return NotFound("Không tìm thấy phản hồi nào cho sinh viên này!");
+
+            return Ok(new
+            {
+                success = true,
+                message = "Lấy danh sách phản hồi thành công!",
+                data = phanHoiList
+            });
+        }
+
     }
 }
 
