@@ -1148,3 +1148,6 @@ D:\Ki1_nam4\DoAnChuyenNganh\QuanLyDiemRenLuyen_git\QuanLyDiemRenLuyen\QuanLyDiem
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\EPPlus.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\EPPlus.Interfaces.dll
 D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\EPPlus.dll
+D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\EPPlus.Interfaces.dll
+D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll

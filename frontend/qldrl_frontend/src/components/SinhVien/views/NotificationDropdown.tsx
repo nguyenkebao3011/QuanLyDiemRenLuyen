@@ -310,7 +310,7 @@ const ThongBaoDropdown: React.FC = () => {
           }
         );
         const duLieu: ThongBaoDTOSV[] = response.data;
-        console.log("Danh sách thông báo:", duLieu);
+        
 
         const maThongBaoDuyNhat = new Set(duLieu.map((tb) => tb.MaThongBao));
         let thongBaoHopLe: ThongBaoDTOSV[] = [];
