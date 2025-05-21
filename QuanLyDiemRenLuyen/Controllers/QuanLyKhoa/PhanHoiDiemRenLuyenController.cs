@@ -105,26 +105,70 @@ namespace QuanLyDiemRenLuyen.Controllers
         {
             var phanHoi = await _context.PhanHoiDiemRenLuyens
                 .Include(p => p.MaDiemRenLuyenNavigation)
+                .Include(p => p.MaMinhChungNavigation)
                 .FirstOrDefaultAsync(p => p.MaPhanHoi == maPhanHoi);
 
             if (phanHoi == null)
                 return NotFound("Không tìm thấy phản hồi.");
 
-            // Cập nhật nội dung xử lý và trạng thái
+            // Cập nhật phản hồi
             phanHoi.TrangThai = "Đã xử lý";
             phanHoi.NoiDungXuLy = request.NoiDungXuLy;
             phanHoi.NgayXuLy = DateTime.Now;
             phanHoi.MaQl = request.MaQl;
 
-            // Nếu có cập nhật điểm rèn luyện
-            if (request.CapNhatTongDiem != null && phanHoi.MaDiemRenLuyenNavigation != null)
+            // Nếu check cộng điểm và điểm rèn luyện chưa "Đã chốt", thì cộng điểm hoạt động vào tổng điểm
+            if (request.CoCongDiem == true && phanHoi.MaDiemRenLuyenNavigation != null && phanHoi.MaMinhChungNavigation != null)
             {
-                phanHoi.MaDiemRenLuyenNavigation.TongDiem = request.CapNhatTongDiem;
-                phanHoi.MaDiemRenLuyenNavigation.XepLoai = request.XepLoai ?? phanHoi.MaDiemRenLuyenNavigation.XepLoai;
-                phanHoi.MaDiemRenLuyenNavigation.TrangThai = request.TrangThaiDiemRenLuyen ?? phanHoi.MaDiemRenLuyenNavigation.TrangThai;
+                var diemRenLuyen = phanHoi.MaDiemRenLuyenNavigation;
+                if (!string.Equals(diemRenLuyen.TrangThai, "Đã chốt", StringComparison.OrdinalIgnoreCase))
+                {
+                    var maDangKy = phanHoi.MaMinhChungNavigation.MaDangKy;
+                    if (maDangKy != null)
+                    {
+                        var dangKy = await _context.DangKyHoatDongs
+                            .Include(dk => dk.MaHoatDongNavigation)
+                            .FirstOrDefaultAsync(dk => dk.MaDangKy == maDangKy);
+
+                        if (dangKy?.MaHoatDongNavigation != null)
+                        {
+                            double diemHoatDong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
+                            diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong;
+                            // Nếu cần, có thể cập nhật xếp loại tại đây
+                        }
+                    }
+                }
             }
 
             await _context.SaveChangesAsync();
+
+            // --- Tạo thông báo cho sinh viên về phiếu phản hồi ---
+            var maSv = phanHoi.MaDiemRenLuyenNavigation?.MaSv;
+            if (!string.IsNullOrEmpty(maSv))
+            {
+                var thongBao = new ThongBao
+                {
+                    TieuDe = "Kết quả xử lý phiếu phản hồi điểm rèn luyện",
+                    NoiDung = $"Phiếu phản hồi điểm rèn luyện của bạn đã được xử lý. Nội dung xử lý: {request.NoiDungXuLy}",
+                    NgayTao = DateTime.Now,
+                    MaQl = request.MaQl,
+                    LoaiThongBao = "Phản hồi",
+                    TrangThai = "Đã đăng"
+                };
+                _context.ThongBaos.Add(thongBao);
+                await _context.SaveChangesAsync();
+
+                var chiTietThongBao = new ChiTietThongBao
+                {
+                    MaThongBao = thongBao.MaThongBao,
+                    MaSv = maSv,
+                    DaDoc = false,
+                    NgayDoc = null
+                };
+                _context.ChiTietThongBaos.Add(chiTietThongBao);
+                await _context.SaveChangesAsync();
+            }
+
             return NoContent();
         }
 
@@ -213,12 +257,10 @@ namespace QuanLyDiemRenLuyen.Controllers
                 return NoContent();
             }
     }
-        public class XuLyPhanHoiRequest
+    public class XuLyPhanHoiRequest
     {
         public string MaQl { get; set; }
         public string NoiDungXuLy { get; set; }
-        public double? CapNhatTongDiem { get; set; } // Nếu cần cập nhật điểm cho sinh viên
-        public string? XepLoai { get; set; }
-        public string? TrangThaiDiemRenLuyen { get; set; }
+        public bool? CoCongDiem { get; set; } // true nếu muốn cộng điểm hoạt động
     }
 }

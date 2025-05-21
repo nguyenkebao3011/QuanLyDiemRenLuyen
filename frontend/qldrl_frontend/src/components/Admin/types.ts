@@ -29,7 +29,7 @@ export interface DanhDauDaDocRequest {
   MaSV: string;
 }
 
-export interface TaoThongBaoTuHoatDongRequest {
+export interface TaoThongBaoRequest {
   MaHoatDong: number;
   TieuDe?: string;
   NoiDung?: string;
@@ -251,11 +251,9 @@ export interface MinhChungHoatDongDTO {
 }
 
 export interface XuLyPhanHoiRequest {
-  MaQl: string;
   NoiDungXuLy: string;
-  CapNhatTongDiem?: number | null;
-  XepLoai?: string | null;
-  TrangThaiDiemRenLuyen?: string | null;
+  MaQl: string;
+  CoCongDiem?: boolean;
 }
 
 export interface TaoDiemRenLuyenRequest {
@@ -355,4 +353,15 @@ export interface TaoHoiDongChamDiemRequest {
 export interface ThemThanhVienRequest {
   MaGv: string;
   VaiTroTrongHoiDong: string | null;
+}
+
+export interface HoanThanhHoatDongRequest {
+  MaQl: string;
+  GhiChu?: string;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
 }

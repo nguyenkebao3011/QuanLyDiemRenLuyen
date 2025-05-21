@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { X, Send, AlertCircle } from "lucide-react";
-import type { HoatDong, TaoThongBaoTuHoatDongRequest } from "../types";
+import type { HoatDong, TaoThongBaoRequest } from "../types";
 import { ApiService } from "../../../untils/services/service-api";
 import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
@@ -22,7 +22,7 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState<TaoThongBaoTuHoatDongRequest>({
+  const [formData, setFormData] = useState<TaoThongBaoRequest>({
     MaHoatDong: 0,
     TieuDe: "",
     NoiDung: "",
@@ -155,7 +155,7 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
       setLoading(true);
       setError(null);
       console.log("Form data:", formData);
-      await ApiService.taoThongBaoTuHoatDong(formData);
+      await ApiService.taoThongBao(formData);
       setNotification({
         show: true,
         message: "Tạo thông báo thành công!",
@@ -252,9 +252,6 @@ const CreateThongBaoModal: React.FC<CreateThongBaoModalProps> = ({
               disabled={loading}
             >
               <option value="Hoạt động">Hoạt động</option>
-              <option value="Học tập">Học tập</option>
-              <option value="Khẩn cấp">Khẩn cấp</option>
-              <option value="Khác">Khác</option>
             </select>
           </div>
 

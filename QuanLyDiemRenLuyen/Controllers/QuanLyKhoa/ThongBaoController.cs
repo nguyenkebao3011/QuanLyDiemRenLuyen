@@ -50,7 +50,56 @@ namespace QuanLyDiemRenLuyen.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
+        [HttpGet("lay_thong_bao_hoat_dong")]
+        public async Task<ActionResult<IEnumerable<ThongBaoDTO>>> LayDanhSachThongBaoHoatDong()
+        {
+            try
+            {
+                var thongBaos = await _context.ThongBaos
+                    .Include(t => t.MaQlNavigation)
+                    .Include(t => t.ChiTietThongBaos)
+                    .Where(t => t.TrangThai == "Đã đăng" && t.LoaiThongBao == "Hoạt động")
+                    .OrderByDescending(t => t.NgayTao)
+                    .Select(t => new ThongBaoDTO
+                    {
+                        MaThongBao = t.MaThongBao,
+                        TieuDe = t.TieuDe,
+                        NoiDung = t.NoiDung,
+                        NgayTao = t.NgayTao,
+                        MaQl = t.MaQl,
+                        LoaiThongBao = t.LoaiThongBao,
+                        TrangThai = t.TrangThai,
+                        TenNguoiTao = t.MaQlNavigation.HoTen,
+                        Khoa = t.MaQlNavigation.Khoa,
+                        SoLuotXem = t.ChiTietThongBaos.Count(c => c.DaDoc == true),
+                        DaDoc = false
+                    })
+                    .ToListAsync();
 
+                return Ok(thongBaos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
+        [HttpGet("lay_cac_loai_thong_bao")]
+        public async Task<ActionResult<IEnumerable<string>>> LayCacLoaiThongBao()
+        {
+            try
+            {
+                var loaiThongBaos = await _context.ThongBaos
+                    .Where(tb => !string.IsNullOrEmpty(tb.LoaiThongBao))
+                    .Select(tb => tb.LoaiThongBao)
+                    .Distinct()
+                    .ToListAsync();
+                return Ok(loaiThongBaos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
         // GET: api/ThongBao/lay_chi_tiet_thong_bao/{maThongBao}
         [HttpGet("lay_chi_tiet_thong_bao/{maThongBao}")]
         public async Task<ActionResult<ThongBaoChiTietDTO>> LayChiTietThongBao(int maThongBao)
@@ -331,38 +380,42 @@ namespace QuanLyDiemRenLuyen.Controllers
         }
 
         // POST: api/ThongBao/tao_thong_bao_tu_hoat_dong
-        [HttpPost("tao_thong_bao_tu_hoat_dong")]
-        public async Task<ActionResult> TaoThongBaoTuHoatDong([FromBody] TaoThongBaoTuHoatDongRequest request)
+        [HttpPost("tao_thong_bao")]
+        public async Task<ActionResult> TaoThongBao([FromBody] TaoThongBaoRequest request)
         {
-            if (request == null || request.MaHoatDong <= 0)
-            {
+            if (request == null || string.IsNullOrWhiteSpace(request.MaQl))
                 return BadRequest("Dữ liệu không hợp lệ.");
-            }
 
             try
             {
-                // Tìm hoạt động trong cơ sở dữ liệu
-                var hoatDong = await _context.HoatDongs.FirstOrDefaultAsync(hd => hd.MaHoatDong == request.MaHoatDong);
-                if (hoatDong == null)
+                string tieuDe = request.TieuDe;
+                string noiDung = request.NoiDung;
+
+                // Nếu là loại thông báo "Hoạt động" và có MaHoatDong thì tự sinh tiêu đề/nội dung nếu thiếu
+                if (request.LoaiThongBao == "Hoạt động" && request.MaHoatDong.HasValue)
                 {
-                    return NotFound($"Không tìm thấy hoạt động có mã {request.MaHoatDong}");
+                    var hoatDong = await _context.HoatDongs.FirstOrDefaultAsync(hd => hd.MaHoatDong == request.MaHoatDong.Value);
+                    if (hoatDong == null)
+                        return NotFound($"Không tìm thấy hoạt động có mã {request.MaHoatDong}");
+
+                    if (string.IsNullOrWhiteSpace(tieuDe))
+                        tieuDe = $"Thông báo liên quan đến hoạt động: {hoatDong.TenHoatDong}";
+
+                    if (string.IsNullOrWhiteSpace(noiDung))
+                        noiDung = $"Vui lòng tham gia hoạt động: {hoatDong.TenHoatDong}.";
                 }
 
-                // Sử dụng tiêu đề mặc định nếu không được cung cấp
-                var tieuDeMacDinh = $"Thông báo liên quan đến hoạt động: {hoatDong.TenHoatDong}";
-                var noiDungMacDinh = $"Vui lòng tham gia hoạt động: {hoatDong.TenHoatDong}.";
-
+                // Nếu là loại khác, giữ nguyên tieuDe/noiDung
                 var thongBao = new ThongBao
                 {
-                    TieuDe = string.IsNullOrWhiteSpace(request.TieuDe) ? tieuDeMacDinh : request.TieuDe,
-                    NoiDung = string.IsNullOrWhiteSpace(request.NoiDung) ? noiDungMacDinh : request.NoiDung,
+                    TieuDe = tieuDe,
+                    NoiDung = noiDung,
                     NgayTao = DateTime.Now,
                     TrangThai = "Đã đăng",
                     MaQl = request.MaQl,
-                    LoaiThongBao = string.IsNullOrWhiteSpace(request.LoaiThongBao) ? "Hoạt động" : request.LoaiThongBao
+                    LoaiThongBao = string.IsNullOrWhiteSpace(request.LoaiThongBao) ? "Khác" : request.LoaiThongBao
                 };
 
-                // Lưu thông báo vào cơ sở dữ liệu
                 _context.ThongBaos.Add(thongBao);
                 await _context.SaveChangesAsync();
 
@@ -410,9 +463,9 @@ namespace QuanLyDiemRenLuyen.Controllers
         }
     }
     // DTOs cho các request và response
-    public class TaoThongBaoTuHoatDongRequest
+    public class TaoThongBaoRequest
     {
-        public int MaHoatDong { get; set; }
+        public int? MaHoatDong { get; set; }
         public string? TieuDe { get; set; }
         public string? NoiDung { get; set; }
         public string? MaQl { get; set; }

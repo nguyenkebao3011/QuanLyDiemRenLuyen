@@ -1,5 +1,4 @@
-import type React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Bell,
@@ -10,9 +9,10 @@ import {
   AlertCircle,
   Trash2,
 } from "lucide-react";
-import type { ThongBaoDTO } from "../types";
+import axios from "axios";
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
+import type { ThongBaoDTO } from "../types";
 import Notification from "../../../Pages/Dashboard/Admin/views/Notification";
 
 interface ThongBaoListProps {
@@ -53,6 +53,21 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
     message: "",
     type: "success",
   });
+
+  // Danh sách loại thông báo lấy từ API
+  const [loaiThongBaoList, setLoaiThongBaoList] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Gọi API lấy các loại thông báo
+    axios
+      .get("http://localhost:5163/api/ThongBao/lay_cac_loai_thong_bao")
+      .then((res) => {
+        setLoaiThongBaoList(res.data);
+      })
+      .catch((err) => {
+        setLoaiThongBaoList([]);
+      });
+  }, []);
 
   const handleSort = (field: "NgayTao" | "SoLuotXem") => {
     if (sortBy === field) {
@@ -133,10 +148,11 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
               className="filter-select"
             >
               <option value="all">Tất cả loại</option>
-              <option value="Hoạt động">Hoạt động</option>
-              <option value="Học tập">Học tập</option>
-              <option value="Khẩn cấp">Khẩn cấp</option>
-              <option value="Khác">Khác</option>
+              {loaiThongBaoList.map((loai) => (
+                <option key={loai} value={loai}>
+                  {loai}
+                </option>
+              ))}
             </select>
           </div>
 
