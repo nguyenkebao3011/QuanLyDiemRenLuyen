@@ -409,7 +409,56 @@ namespace QuanLyDiemRenLuyen.Controllers
             }
         }
 
+        // POST: api/DiemDanh/HoanThanhDiemDanh/{maHoatDong}
+        [HttpPost("HoanThanhDiemDanh/{maHoatDong}")]
+        public async Task<IActionResult> HoanThanhDiemDanh(int maHoatDong)
+        {
+            // 1. Tìm hoạt động
+            var hoatDong = await _context.HoatDongs.FirstOrDefaultAsync(h => h.MaHoatDong == maHoatDong);
+            if (hoatDong == null)
+                return NotFound("Không tìm thấy hoạt động");
 
+            // 2. Cập nhật trạng thái hoạt động
+            hoatDong.TrangThai = "Đã kết thúc";
+            _context.Entry(hoatDong).State = EntityState.Modified;
+
+            // 3. Lấy điểm cộng của hoạt động
+            double diemCong = hoatDong.DiemCong ?? 0;
+
+            // 4. Lấy danh sách đăng ký chưa điểm danh
+            var danhSachDangKyChuaDiemDanh = await _context.DangKyHoatDongs
+                .Where(dk => dk.MaHoatDong == maHoatDong && dk.TrangThai == "Đăng ký thành công")
+                .Include(dk => dk.MaSvNavigation)
+                .Include(dk => dk.MaHoatDongNavigation)
+                .Include(dk => dk.DiemDanhHoatDongs)
+                .ToListAsync();
+
+            int soSinhVienTruDiem = 0;
+            foreach (var dangKy in danhSachDangKyChuaDiemDanh)
+            {
+                if (dangKy.DiemDanhHoatDongs.Any()) continue; // Đã điểm danh thì bỏ qua
+
+                var maSv = dangKy.MaSv;
+                var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+
+                var diemRenLuyen = await _context.DiemRenLuyens
+                    .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
+
+                // Nếu đã chốt thì không trừ điểm nữa
+                if (diemRenLuyen == null ||
+                    (diemRenLuyen.TrangThai != null && diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt"))
+                    continue;
+
+                // Trừ điểm, không cho điểm âm
+                diemRenLuyen.TongDiem = Math.Max((diemRenLuyen.TongDiem ?? 0) - diemCong, 0);
+                _context.Entry(diemRenLuyen).State = EntityState.Modified;
+
+                soSinhVienTruDiem++;
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = $"Đã chuyển hoạt động sang trạng thái 'Đã kết thúc'. Đã tự động trừ điểm cho {soSinhVienTruDiem} sinh viên không điểm danh." });
+        }
         // GET: api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}
         [HttpGet("BaoCaoDiemDanh/{maHoatDong}")]
         public async Task<ActionResult> BaoCaoDiemDanh(int maHoatDong)

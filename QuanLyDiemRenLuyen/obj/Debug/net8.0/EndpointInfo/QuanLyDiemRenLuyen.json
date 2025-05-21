@@ -252,6 +252,29 @@
         }
       }
     },
+    "/api/DiemDanh/HoanThanhDiemDanh/{maHoatDong}": {
+      "post": {
+        "tags": [
+          "DiemDanh"
+        ],
+        "parameters": [
+          {
+            "name": "maHoatDong",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}": {
       "get": {
         "tags": [
@@ -2698,6 +2721,82 @@
         }
       }
     },
+    "/api/ThongBao/lay_thong_bao_hoat_dong": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThongBaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThongBao/lay_cac_loai_thong_bao": {
+      "get": {
+        "tags": [
+          "ThongBao"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/ThongBao/lay_chi_tiet_thong_bao/{maThongBao}": {
       "get": {
         "tags": [
@@ -2954,7 +3053,7 @@
         }
       }
     },
-    "/api/ThongBao/tao_thong_bao_tu_hoat_dong": {
+    "/api/ThongBao/tao_thong_bao": {
       "post": {
         "tags": [
           "ThongBao"
@@ -2963,17 +3062,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+                "$ref": "#/components/schemas/TaoThongBaoRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+                "$ref": "#/components/schemas/TaoThongBaoRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/TaoThongBaoTuHoatDongRequest"
+                "$ref": "#/components/schemas/TaoThongBaoRequest"
               }
             }
           }
@@ -4825,12 +4924,13 @@
         },
         "additionalProperties": false
       },
-      "TaoThongBaoTuHoatDongRequest": {
+      "TaoThongBaoRequest": {
         "type": "object",
         "properties": {
           "MaHoatDong": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "TieuDe": {
             "type": "string",
@@ -5177,17 +5277,8 @@
             "type": "string",
             "nullable": true
           },
-          "CapNhatTongDiem": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "XepLoai": {
-            "type": "string",
-            "nullable": true
-          },
-          "TrangThaiDiemRenLuyen": {
-            "type": "string",
+          "CoCongDiem": {
+            "type": "boolean",
             "nullable": true
           }
         },

@@ -137,6 +137,22 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
+    "Method": "HoanThanhDiemDanh",
+    "RelativePath": "api/DiemDanh/HoanThanhDiemDanh/{maHoatDong}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maHoatDong",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.DiemDanhController",
     "Method": "GetThongTinHoatDong",
     "RelativePath": "api/DiemDanh/ThongTinHoatDong/{maHoatDong}",
     "HttpMethod": "GET",
@@ -1926,6 +1942,26 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
+    "Method": "LayCacLoaiThongBao",
+    "RelativePath": "api/ThongBao/lay_cac_loai_thong_bao",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
     "Method": "LayChiTietThongBao",
     "RelativePath": "api/ThongBao/lay_chi_tiet_thong_bao/{maThongBao}",
     "HttpMethod": "GET",
@@ -1998,6 +2034,26 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
+    "Method": "LayDanhSachThongBaoHoatDong",
+    "RelativePath": "api/ThongBao/lay_thong_bao_hoat_dong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.DTOs.ThongBaoDTO, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
     "Method": "LayThongBaoSinhVien",
     "RelativePath": "api/ThongBao/lay_thong_bao_sinh_vien/{maSv}",
     "HttpMethod": "GET",
@@ -2024,15 +2080,15 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.ThongBaoController",
-    "Method": "TaoThongBaoTuHoatDong",
-    "RelativePath": "api/ThongBao/tao_thong_bao_tu_hoat_dong",
+    "Method": "TaoThongBao",
+    "RelativePath": "api/ThongBao/tao_thong_bao",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-        "Type": "QuanLyDiemRenLuyen.Controllers.TaoThongBaoTuHoatDongRequest",
+        "Type": "QuanLyDiemRenLuyen.Controllers.TaoThongBaoRequest",
         "IsRequired": true
       }
     ],

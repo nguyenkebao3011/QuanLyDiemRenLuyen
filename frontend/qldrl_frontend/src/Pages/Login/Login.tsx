@@ -46,9 +46,7 @@ const Login: React.FC = () => {
   // State cho danh sách thông báo
   const [thongBaos, setThongBaos] = useState<ThongBao[]>([]);
   const [loadingThongBao, setLoadingThongBao] = useState(true);
-  const [activeTab, setActiveTab] = useState<
-    "thongbao" | "daihoc" | "saudaihoc" | "nganhan"
-  >("thongbao");
+  const [activeTab, setActiveTab] = useState<"thongbao">("thongbao");
 
   // Auto-hide alert sau 3s
   useEffect(() => {
@@ -75,7 +73,7 @@ const Login: React.FC = () => {
     setLoadingThongBao(true);
     try {
       const response = await axios.get(
-        "http://localhost:5163/api/ThongBao/lay_thong_bao"
+        "http://localhost:5163/api/ThongBao/lay_thong_bao_hoat_dong"
       );
       if (response.status === 200) {
         setThongBaos(response.data);
@@ -327,7 +325,7 @@ const Login: React.FC = () => {
             >
               THÔNG BÁO CHUNG
             </button>
-            <button
+            {/* <button
               className={`tab-button ${activeTab === "daihoc" ? "active" : ""}`}
               onClick={() => setActiveTab("daihoc")}
             >
@@ -348,7 +346,7 @@ const Login: React.FC = () => {
               onClick={() => setActiveTab("nganhan")}
             >
               NGẮN HẠN
-            </button>
+            </button> */}
           </div>
 
           <div className="thong-bao-list">

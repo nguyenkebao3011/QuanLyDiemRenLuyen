@@ -30,9 +30,7 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
   const [formData, setFormData] = useState<XuLyPhanHoiRequest>({
     NoiDungXuLy: "",
     MaQl: maQl,
-    CapNhatTongDiem: null,
-    XepLoai: null,
-    TrangThaiDiemRenLuyen: null,
+    CoCongDiem: false,
   });
   useEffect(() => {
     setFormData((prev) => ({
@@ -40,7 +38,6 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
       MaQl: maQl,
     }));
   }, [maQl]);
-  const [updateScore, setUpdateScore] = useState<boolean>(false);
 
   // Add notification state
   const [notification, setNotification] = useState<{
@@ -53,35 +50,19 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
     type: "success",
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
-    >
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-
-    if (name === "CapNhatTongDiem") {
-      const numValue = value ? Number.parseFloat(value) : null;
-      setFormData((prev: XuLyPhanHoiRequest) => ({
-        ...prev,
-        [name]: numValue,
-        XepLoai: numValue ? calculateXepLoai(numValue) : null,
-      }));
-    } else {
-      setFormData((prev: XuLyPhanHoiRequest) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev: XuLyPhanHoiRequest) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const calculateXepLoai = (diem: number): string => {
-    if (diem >= 90) return "Xuất sắc";
-    if (diem >= 80) return "Tốt";
-    if (diem >= 70) return "Khá";
-    if (diem >= 60) return "Trung bình";
-    if (diem >= 50) return "Yếu";
-    return "Kém";
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev: XuLyPhanHoiRequest) => ({
+      ...prev,
+      CoCongDiem: e.target.checked,
+    }));
   };
 
   const closeNotification = () => {
@@ -101,32 +82,7 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
     }
 
     if (phanHoi) {
-      // Nếu không cập nhật điểm, xóa các trường liên quan
-      if (!updateScore) {
-        const { CapNhatTongDiem, XepLoai, TrangThaiDiemRenLuyen, ...rest } =
-          formData;
-        onSubmit(phanHoi.MaPhanHoi, rest);
-      } else {
-        if (!formData.CapNhatTongDiem) {
-          setNotification({
-            show: true,
-            message: "Vui lòng nhập điểm rèn luyện mới",
-            type: "error",
-          });
-          return;
-        }
-
-        if (!formData.TrangThaiDiemRenLuyen) {
-          setNotification({
-            show: true,
-            message: "Vui lòng chọn trạng thái điểm rèn luyện",
-            type: "error",
-          });
-          return;
-        }
-
-        onSubmit(phanHoi.MaPhanHoi, formData);
-      }
+      onSubmit(phanHoi.MaPhanHoi, formData);
     }
   };
 
@@ -190,66 +146,16 @@ const PhanHoiProcessForm: React.FC<PhanHoiProcessFormProps> = ({
             <div className="checkbox-container">
               <input
                 type="checkbox"
-                id="updateScore"
-                checked={updateScore}
-                onChange={(e) => setUpdateScore(e.target.checked)}
+                id="congDiem"
+                checked={formData.CoCongDiem || false}
+                onChange={handleCheckboxChange}
                 disabled={loading}
               />
-              <label htmlFor="updateScore">Cập nhật điểm rèn luyện</label>
+              <label htmlFor="congDiem">
+                Cộng điểm hoạt động vào điểm rèn luyện
+              </label>
             </div>
           </div>
-
-          {updateScore && (
-            <>
-              <div className="form-group">
-                <label htmlFor="CapNhatTongDiem">Điểm rèn luyện mới:</label>
-                <input
-                  type="number"
-                  id="CapNhatTongDiem"
-                  name="CapNhatTongDiem"
-                  value={formData.CapNhatTongDiem || ""}
-                  onChange={handleInputChange}
-                  min="0"
-                  max="100"
-                  step="0.1"
-                  disabled={loading}
-                  required={updateScore}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="XepLoai">Xếp loại:</label>
-                <input
-                  type="text"
-                  id="XepLoai"
-                  name="XepLoai"
-                  value={formData.XepLoai || ""}
-                  readOnly
-                  disabled
-                />
-                <small>Xếp loại được tính tự động dựa trên điểm</small>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="TrangThaiDiemRenLuyen">
-                  Trạng thái điểm rèn luyện:
-                </label>
-                <select
-                  id="TrangThaiDiemRenLuyen"
-                  name="TrangThaiDiemRenLuyen"
-                  value={formData.TrangThaiDiemRenLuyen || ""}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                  required={updateScore}
-                >
-                  <option value="">-- Chọn trạng thái --</option>
-                  <option value="Chưa duyệt">Chưa duyệt</option>
-                  <option value="Đã duyệt">Đã duyệt</option>
-                  <option value="Đã chốt">Đã chốt</option>
-                </select>
-              </div>
-            </>
-          )}
 
           <div className="form-actions">
             <button

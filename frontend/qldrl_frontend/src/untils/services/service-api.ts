@@ -8,7 +8,7 @@ import type {
   ThongBaoDTO,
   ThongBaoChiTietDTO,
   DanhDauDaDocRequest,
-  TaoThongBaoTuHoatDongRequest,
+  TaoThongBaoRequest,
   TaoPhanHoiRequest,
   HocKy,
   CapNhatDiemRenLuyenRequest,
@@ -28,6 +28,8 @@ import type {
   HoiDongChamDiemDetailDTO,
   HoiDongChamDiemDTO,
   Lop,
+  HoanThanhHoatDongRequest,
+  ApiResponse,
 } from "../../components/Admin/types";
 
 const API_URL = "http://localhost:5163/api";
@@ -108,7 +110,30 @@ export const ApiService = {
     });
     return response.data;
   },
+  hoanThanhHoatDong: async (
+    maHoatDong: number,
+    maQl: string,
+    ghiChu?: string
+  ): Promise<ApiResponse> => {
+    try {
+      const data: HoanThanhHoatDongRequest = {
+        MaQl: maQl,
+      };
 
+      if (ghiChu) {
+        data.GhiChu = ghiChu;
+      }
+
+      const response = await axios.put(
+        `api/HoatDong/hoan-thanh/${maHoatDong}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi hoàn thành hoạt động:", error);
+      throw error;
+    }
+  },
   // QuanLyKhoa services
   thongTinQuanLyKhoa: async (): Promise<QuanLyKhoa> => {
     try {
@@ -189,13 +214,8 @@ export const ApiService = {
     return response.data;
   },
 
-  taoThongBaoTuHoatDong: async (
-    request: TaoThongBaoTuHoatDongRequest
-  ): Promise<ThongBaoDTO> => {
-    const response = await api.post(
-      "/ThongBao/tao_thong_bao_tu_hoat_dong",
-      request
-    );
+  taoThongBao: async (request: TaoThongBaoRequest): Promise<ThongBaoDTO> => {
+    const response = await api.post("/ThongBao/tao_thong_bao", request);
     return response.data;
   },
 

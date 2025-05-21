@@ -1,7 +1,6 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
 import "../css/ChamDiemRenLuyen.css";
-
 // Import components
 import HoatDongList from "../../../../components/Admin/DiemDanh/HoatDongList";
 import HoatDongDetail from "../../../../components/Admin/DiemDanh/HoatDongDetail";

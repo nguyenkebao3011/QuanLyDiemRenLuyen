@@ -226,25 +226,28 @@ const Toast: React.FC<ToastProps> = ({
         onCancel={handleModalCancel}
         okText="Xác nhận"
         cancelText="Hủy"
-        closable={false} // Không cho phép đóng modal bằng nút X
-        maskClosable={false} // Không cho phép đóng modal bằng cách click ngoài
+        closable={false}
+        maskClosable={false}
       >
         <Select
           style={{ width: "100%", marginBottom: "10px" }}
           placeholder="Chọn lý do từ chối"
           onChange={(value: string) => setLyDoTuChoi(value)}
           value={lyDoTuChoi}
-        >
-          <Option value="Lịch cá nhân bận rộn">Lịch cá nhân bận rộn</Option>
-          <Option value="Lý do sức khỏe">Lý do sức khỏe</Option>
-          <Option value="Không quan tâm">Không quan tâm</Option>
-          <Option value="Khác">Khác</Option>
-        </Select>
+          options={[
+            { value: "Lịch cá nhân bận rộn", label: "Lịch cá nhân bận rộn" },
+            { value: "Lý do sức khỏe", label: "Lý do sức khỏe" },
+            { value: "Không quan tâm", label: "Không quan tâm" },
+            { value: "Khác", label: "Khác" },
+          ]}
+        />
         {lyDoTuChoi === "Khác" && (
           <Input
             placeholder="Nhập lý do của bạn"
             value={customLyDo}
-            onChange={(e) => setCustomLyDo(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCustomLyDo(e.target.value)
+            }
             style={{ width: "100%" }}
           />
         )}
