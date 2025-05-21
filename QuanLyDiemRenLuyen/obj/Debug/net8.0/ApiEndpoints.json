@@ -2287,6 +2287,22 @@
     ]
   },
   {
+    "ContainingType": "QuanLyDiemRenLuyen.Bots.WebhookController",
+    "Method": "Post",
+    "RelativePath": "api/Webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.GiangVien.ChiDinhSinhVien",
     "Method": "AssignStudents",
     "RelativePath": "chi-dinh/{maHoatDong}/cho-sinh-vien",

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios, { type AxiosError } from "axios";
 import "./css/Login.css";
 import { saveToken, getRole, isLoggedIn } from "../../untils/auth";
-
+import Chatbot from "../Login/Chatbot"; // Import component Chatbot
 // Định nghĩa các kiểu TypeScript
 interface ApiResponse {
   message: string;
@@ -448,6 +448,7 @@ const Login: React.FC = () => {
             </div>
           </div>
         </div>
+         <Chatbot onOpenForgotPassword={() => setIsForgotPasswordOpen(true)} />
       </div>
 
       {/* Modal Quên Mật Khẩu */}
@@ -495,6 +496,7 @@ const Login: React.FC = () => {
                     }`}
                   >
                     {forgotMessage}
+                   
                   </div>
                 )}
                 <div className="modal-actions">
