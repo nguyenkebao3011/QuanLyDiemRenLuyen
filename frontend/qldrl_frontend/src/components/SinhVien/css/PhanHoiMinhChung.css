@@ -705,8 +705,13 @@ select.gph-form-control {
 .gph-activity-card::after {
   background-size: 200% 200%;
 }
-
-/* Semester selection styling */
+.gph-phanhoi-card {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 .gph-selected-semester {
   padding: 0.75rem 1rem;
   background-color: #f8f9fa;
@@ -737,186 +742,324 @@ select.gph-form-control {
   margin-left: 8px;
   font-weight: 500;
 }
-.gph-view-status-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 10px;
+
+
+/* Tiêu đề trang */
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e5e9f2;
 }
 
-.gph-view-status-button:hover {
-  background-color: #0056b3;
+.icon-list {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='8' y1='6' x2='21' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='12' x2='21' y2='12'%3E%3C/line%3E%3Cline x1='8' y1='18' x2='21' y2='18'%3E%3C/line%3E%3Cline x1='3' y1='6' x2='3.01' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='12' x2='3.01' y2='12'%3E%3C/line%3E%3Cline x1='3' y1='18' x2='3.01' y2='18'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.gph-view-status-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.gph-phanhoi-section {
-  margin-top: 20px;
-}
-
-.gph-phanhoi-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-}
-
-.gph-phanhoi-table {
-  overflow-x: auto;
-}
-
-.gph-phanhoi-table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.gph-phanhoi-table th,
-.gph-phanhoi-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.gph-phanhoi-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-.gph-phanhoi-table tr:hover {
-  background-color: #f9f9f9;
-}
-
-.gph-close-phanhoi-button {
-  background-color: #6c757d;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
-.gph-close-phanhoi-button:hover {
-  background-color: #5a6268;
-}
-
-.gph-phanhoi-card {
-  margin-top: 20px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.gph-phanhoi-list {
+/* Loading */
+.loading-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
 }
 
-.gph-phanhoi-item {
-  padding: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  background: #f9f9f9;
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
 }
 
-.gph-phanhoi-header {
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Danh sách phản hồi */
+.phanhoi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.phanhoi-item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.phanhoi-item:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Header phản hồi */
+.phanhoi-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  padding: 15px 20px;
+  background-color: #f8f9fb;
+  border-bottom: 1px solid #e5e9f2;
 }
 
-.gph-phanhoi-title {
-  font-size: 16px;
+.phanhoi-title {
+  font-size: 1.2rem;
   font-weight: 600;
-  margin: 0;
+  color: #2c3e50;
 }
 
-.gph-phanhoi-status {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+/* Badges trạng thái */
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  min-width: 100px;
 }
 
-.gph-status-chờ-xử-lý {
-  background: #fff3cd;
-  color: #856404;
+.status-chờ-xử-lý {
+  background-color: #fef5e7;
+  color: #e67e22;
 }
 
-.gph-status-đang-xử-lý {
-  background: #d4edda;
-  color: #155724;
+.status-đang-xử-lý {
+  background-color: #e8f4fd;
+  color: #3498db;
 }
 
-.gph-phanhoi-details {
-  margin-bottom: 10px;
+.status-đã-xử-lý {
+  background-color: #e9f7ef;
+  color: #27ae60;
 }
 
-.gph-detail-button {
-  padding: 6px 12px;
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+.status-từ-chối {
+  background-color: #fde9e9;
+  color: #e74c3c;
 }
 
-.gph-detail-button:hover {
-  background: #0056b3;
+/* Nội dung phản hồi */
+.phanhoi-content {
+  padding: 15px 20px;
 }
 
-.gph-minhchung-details {
-  margin-top: 10px;
-  padding: 10px;
-  background: #f1f1f1;
-  border-radius: 4px;
+.detail-row {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: flex-start;
 }
 
-.gph-minhchung-details h4 {
-  margin: 0 0 10px;
-  font-size: 14px;
+.detail-label {
   font-weight: 600;
+  color: #7f8c8d;
+  min-width: 140px;
+  padding-right: 15px;
 }
 
-.gph-close-details-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: #dc3545;
-  color: #fff;
+.detail-value {
+  flex: 1;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+/* Button chi tiết */
+.detail-button {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #f8f9fb;
   border: none;
-  border-radius: 4px;
+  border-top: 1px solid #e5e9f2;
+  color: #3498db;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
   cursor: pointer;
-  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
-.gph-close-details-button:hover {
-  background: #b02a37;
+.detail-button:hover {
+  background-color: #edf2f7;
 }
 
-.gph-close-phanhoi-button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background: #6c757d;
-  color: #fff;
+.detail-button:focus {
+  outline: none;
+}
+
+/* Panel minh chứng */
+.minhchung-panel {
+  background-color: #f8fafc;
+  padding: 15px 20px;
+  border-top: 1px dashed #e5e9f2;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.minhchung-preview-img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 30px;
+  object-fit: contain;
+  margin-top: 8px;
+ 
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.minhchung-title {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e9f2;
+}
+
+/* Link file */
+.file-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.file-link:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+.file-link:before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='9' y1='15' x2='15' y2='15'%3E%3C/line%3E%3C/svg%3E");
+}
+/* Modal preview file */
+.gph-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.gph-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow: auto;
+  position: relative;
+}
+.gph-load-more-button{
+      background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+.gph-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.gph-preview-image {
+  max-width: 100%;
+  max-height: 500px;
+}
+
+.gph-preview-pdf {
+  width: 100%;
+  height: 500px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-.gph-close-phanhoi-button:hover {
-  background: #5a6268;
+.gph-preview-unsupported {
+  color: #dc3545;
+  font-size: 16px;
+}
+
+.gph-download-link {
+  color: #007bff;
+  margin-left: 10px;
+  text-decoration: underline;
+}
+
+.gph-download-link:hover {
+  color: #0056b3;
 }
 
 
+
+
+/* Trạng thái không có dữ liệu */
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fb;
+  border-radius: 8px;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .phanhoi-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .status-badge {
+    align-self: flex-start;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+  }
+  
+  .detail-label {
+    min-width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+}

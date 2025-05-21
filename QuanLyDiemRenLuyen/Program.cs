@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
@@ -118,7 +119,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<IEmailService, EmailService>();
 
 var app = builder.Build();
+app.UseStaticFiles();
 
+// Serve ảnh trong thư mục wwwroot/HinhAnhMinhChung
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "HinhAnhMinhChung")),
+    RequestPath = "/HinhAnhMinhChung"
+});
 // Sử dụng Session
 app.UseSession();
 app.UseCors("AllowFrontend");

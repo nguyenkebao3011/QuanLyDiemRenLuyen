@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../css/PhanHoiMinhChung.css";
 
 interface HoatDongDTO {
@@ -74,150 +74,147 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
   const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDongDTO | null>(null);
   const [phanHoiList, setPhanHoiList] = useState<PhanHoiDTO[]>([]);
   const [selectedPhanHoi, setSelectedPhanHoi] = useState<PhanHoiDTO | null>(null);
-
-
-  // Animation khi click vào item
-    const handleItemClick = (ph: PhanHoiDTO) => {
-      if (selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi) {
-        setSelectedPhanHoi(null);
-      } else {
-        setSelectedPhanHoi(ph);
-      }
-    };
+  const [displayedPhanHoi, setDisplayedPhanHoi] = useState<PhanHoiDTO[]>([]);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+const initialDisplayCount = 2;
   const API_URL = "http://localhost:5163/api";
+   const isImageFile = (url: string): boolean => {
+  return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+};
+    const handleItemClick = (ph: PhanHoiDTO) => {
+    if (selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi) {
+      setSelectedPhanHoi(null);
+    } else {
+      setSelectedPhanHoi(ph);
+    }
+  };
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!token) {
       setMessage("Vui lòng đăng nhập để tiếp tục.");
       setIsLoading(false);
       return;
     }
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [hocKyResponse, hoatDongResponse, phanHoiResponse] = await Promise.all([
-          fetch(`${API_URL}/HocKy/lay_hoc_ky`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${API_URL}/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${API_URL}/PhanHoiDiemRenLuyen/XemPhanHoiCuaSinhVien`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+    setIsLoading(true);
+    try {
+      const [hocKyResponse, hoatDongResponse, phanHoiResponse] = await Promise.all([
+        fetch(`${API_URL}/HocKy/lay_hoc_ky`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${API_URL}/DangKyHoatDongs/danh-sach-dang-ky-da-ket-thuc`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${API_URL}/PhanHoiDiemRenLuyen/XemPhanHoiCuaSinhVien`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-        if (hocKyResponse.ok) {
-          const hocKyData = await hocKyResponse.json();
-          console.log("Danh sách học kỳ:", hocKyData);
-          setHocKyList(hocKyData);
-          if (hocKyData.length === 0) {
-            setMessage("Không tìm thấy danh sách học kỳ.");
-          }
-        } else {
-          throw new Error("Lỗi khi lấy danh sách học kỳ");
+      if (hocKyResponse.ok) {
+        const hocKyData = await hocKyResponse.json();
+        setHocKyList(hocKyData);
+        if (hocKyData.length === 0) {
+          setMessage("Không tìm thấy danh sách học kỳ.");
         }
-
-        if (hoatDongResponse.status === 401) {
-          setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
-          localStorage.removeItem("token");
-          setToken(null);
-          return;
-        }
-        if (!hoatDongResponse.ok) {
-          throw new Error(
-            `Lỗi HTTP: ${hoatDongResponse.status} ${hoatDongResponse.statusText}`
-          );
-        }
-
-        const dataHoatDong: ApiResponse = await hoatDongResponse.json();
-        console.log("Dữ liệu thô từ API hoạt động:", dataHoatDong);
-        if (dataHoatDong.data && Array.isArray(dataHoatDong.data)) {
-          const formattedData = dataHoatDong.data
-            .map((item: any): HoatDongDTO | null => {
-              const maDangKy = item.MaDangKy ? Number(item.MaDangKy) : null;
-              const maHocKy = item.MaHocKy !== undefined ? Number(item.MaHocKy) : undefined;
-              console.log(`Hoạt động: ${item.TenHoatDong}, MaHocKy: ${maHocKy}, MaDangKy: ${maDangKy}`);
-              if (!maDangKy || maDangKy <= 0) {
-                console.warn(`Bỏ qua hoạt động không hợp lệ: ${JSON.stringify(item)}`);
-                return null;
-              }
-              return {
-                MaDangKy: maDangKy,
-                MaSv: item.MaSV ?? maSv,
-                MaHoatDong: item.MaHoatDong ?? 0,
-                TenHoatDong: item.TenHoatDong ?? `Hoạt động không tên`,
-                NgayDangKy: item.NgayDangKy ?? "",
-                TrangThai: item.TrangThai ?? item.TrangThaiHoatDong ?? "Chưa xác định",
-                DiaDiem: item.diaDiem ?? undefined,
-                NgayBatDau: item.NgayBatDau ?? "",
-                DiemCong: item.diemCong ?? 0,
-                MoTa: item.MoTa ?? "",
-                MaHocKy: maHocKy,
-              };
-            })
-            .filter((item): item is HoatDongDTO => item !== null);
-          console.log("Dữ liệu hoạt động sau khi xử lý:", formattedData);
-          setHoatDong(formattedData);
-          if (formattedData.length === 0) {
-            setMessage("Không có hoạt động hợp lệ nào để gửi phản hồi.");
-          }
-        } else {
-          setHoatDong([]);
-          setMessage("Dữ liệu từ server không đúng định dạng.");
-        }
-
-        if (phanHoiResponse.status === 401) {
-          setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
-          localStorage.removeItem("token");
-          setToken(null);
-          return;
-        }
-        if (!phanHoiResponse.ok) {
-          throw new Error(
-            `Lỗi HTTP: ${phanHoiResponse.status} ${phanHoiResponse.statusText}`
-          );
-        }
-
-        const dataPhanHoi: ApiResponse = await phanHoiResponse.json();
-        console.log("Dữ liệu thô từ API phản hồi:", dataPhanHoi);
-        if (dataPhanHoi.data && Array.isArray(dataPhanHoi.data)) {
-          const formattedData = dataPhanHoi.data.map((item: any): PhanHoiDTO => ({
-            MaPhanHoi: item.MaPhanHoi ?? 0,
-            MaDiemRenLuyen: item.MaDiemRenLuyen ?? 0,
-            MaMinhChung: item.MaMinhChung ?? 0,
-            NoiDungPhanHoi: item.NoiDungPhanHoi ?? "",
-            NgayPhanHoi: item.NgayPhanHoi ?? "",
-            TrangThai: item.TrangThai ?? "Chưa xác định",
-            MaQL: item.MaQL ?? null,
-            NoiDungXuLy: item.NoiDungXuLy ?? null,
-            NgayXuLy: item.NgayXuLy ?? null,
-            MinhChung: {
-              MaMinhChung: item.MinhChung?.MaMinhChung ?? 0,
-              MaDangKy: item.MinhChung?.MaDangKy ?? 0,
-              DuongDanFile: item.MinhChung?.DuongDanFile ?? "",
-              MoTa: item.MinhChung?.MoTa ?? "",
-              NgayTao: item.MinhChung?.NgayTao ?? "",
-              TrangThaiMinhChung: item.MinhChung?.TrangThaiMinhChung ?? "Chưa xác định",
-            },
-          }));
-          setPhanHoiList(formattedData);
-          if (formattedData.length === 0) {
-            setMessage("Chưa có phản hồi nào.");
-          }
-        } else {
-          setPhanHoiList([]);
-          setMessage("Dữ liệu phản hồi không đúng định dạng.");
-        }
-      } catch (err) {
-        setMessage("Lỗi khi lấy dữ liệu: " + (err as Error).message);
-      } finally {
-        setIsLoading(false);
+      } else {
+        throw new Error("Lỗi khi lấy danh sách học kỳ");
       }
-    };
+
+      if (hoatDongResponse.status === 401) {
+        setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+        localStorage.removeItem("token");
+        setToken(null);
+        return;
+      }
+      if (!hoatDongResponse.ok) {
+        throw new Error(`Lỗi HTTP: ${hoatDongResponse.status}`);
+      }
+
+      const dataHoatDong: ApiResponse = await hoatDongResponse.json();
+      if (dataHoatDong.data && Array.isArray(dataHoatDong.data)) {
+        const formattedData = dataHoatDong.data
+          .map((item: any): HoatDongDTO | null => {
+            const maDangKy = item.MaDangKy ? Number(item.MaDangKy) : null;
+            const maHocKy = item.MaHocKy !== undefined ? Number(item.MaHocKy) : undefined;
+            if (!maDangKy || maDangKy <= 0) {
+              return null;
+            }
+            return {
+              MaDangKy: maDangKy,
+              MaSv: item.MaSV ?? maSv,
+              MaHoatDong: item.MaHoatDong ?? 0,
+              TenHoatDong: item.TenHoatDong ?? `Hoạt động không tên`,
+              NgayDangKy: item.NgayDangKy ?? "",
+              TrangThai: item.TrangThai ?? item.TrangThaiHoatDong ?? "Chưa xác định",
+              DiaDiem: item.diaDiem ?? undefined,
+              NgayBatDau: item.NgayBatDau ?? "",
+              DiemCong: item.diemCong ?? 0,
+              MoTa: item.MoTa ?? "",
+              MaHocKy: maHocKy,
+            };
+          })
+          .filter((item): item is HoatDongDTO => item !== null);
+        setHoatDong(formattedData);
+        if (formattedData.length === 0) {
+          setMessage("Không có hoạt động hợp lệ nào để gửi phản hồi.");
+        }
+      } else {
+        setHoatDong([]);
+        setMessage("Dữ liệu từ server không đúng định dạng.");
+      }
+
+      if (phanHoiResponse.status === 401) {
+        setMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+        localStorage.removeItem("token");
+        setToken(null);
+        return;
+      }
+      if (!phanHoiResponse.ok) {
+        throw new Error(`Lỗi HTTP: ${phanHoiResponse.status}`);
+      }
+
+      const dataPhanHoi: ApiResponse = await phanHoiResponse.json();
+      if (dataPhanHoi.data && Array.isArray(dataPhanHoi.data)) {
+        const formattedData = dataPhanHoi.data.map((item: any): PhanHoiDTO => ({
+          MaPhanHoi: item.MaPhanHoi ?? 0,
+          MaDiemRenLuyen: item.MaDiemRenLuyen ?? 0,
+          MaMinhChung: item.MaMinhChung ?? 0,
+          NoiDungPhanHoi: item.NoiDungPhanHoi ?? "",
+          NgayPhanHoi: item.NgayPhanHoi ?? "",
+          TrangThai: item.TrangThai ?? "Chưa xác định",
+          MaQL: item.MaQL ?? null,
+          NoiDungXuLy: item.NoiDungXuLy ?? null,
+          NgayXuLy: item.NgayXuLy ?? null,
+          MinhChung: {
+            MaMinhChung: item.MinhChung?.MaMinhChung ?? 0,
+            MaDangKy: item.MinhChung?.MaDangKy ?? 0,
+            DuongDanFile: item.MinhChung?.DuongDanFile ?? "",
+            MoTa: item.MinhChung?.MoTa ?? "",
+            NgayTao: item.MinhChung?.NgayTao ?? "",
+            TrangThaiMinhChung: item.MinhChung?.TrangThaiMinhChung ?? "Chưa xác định",
+          },
+        }));
+        setPhanHoiList(formattedData);
+        setDisplayedPhanHoi(formattedData.slice(0, itemsPerPage));
+        if (formattedData.length === 0) {
+          setMessage("Chưa có phản hồi nào.");
+        }
+      } else {
+        setPhanHoiList([]);
+        setDisplayedPhanHoi([]);
+        setMessage("Dữ liệu phản hồi không đúng định dạng.");
+      }
+    } catch (err) {
+      setMessage("Lỗi khi lấy dữ liệu: " + (err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, maSv]);
+
+  useEffect(() => {
     fetchData();
-  }, [token, API_URL, maSv]);
+  }, [fetchData]);
 
   useEffect(() => {
     if (showNotification) {
@@ -225,31 +222,30 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showNotification]);
-
+ 
+// Hàm để ẩn bớt, trở về trạng thái ban đầu
+  const hideMorePhanHoi = () => {
+    setDisplayedPhanHoi(phanHoiList.slice(0, initialDisplayCount));
+  };
   const handleActivityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     const selectedValue = value ? Number.parseInt(value) : null;
-    console.log(`Chọn hoạt động: value=${value}, selectedValue=${selectedValue}`);
     setMaDangKy(selectedValue);
 
     if (selectedValue !== null && !isNaN(selectedValue) && selectedValue > 0) {
       const selected = hoatDong.find((hd) => hd.MaDangKy === selectedValue);
-      console.log(`Hoạt động được chọn:`, selected);
       setSelectedHoatDong(selected || null);
 
       if (selected && selected.MaHocKy !== undefined && !isNaN(selected.MaHocKy)) {
         const maHocKyNumber = Number(selected.MaHocKy);
         const hocKy = hocKyList.find((hk) => hk.MaHocKy === maHocKyNumber);
         if (hocKy) {
-          console.log(`Chọn học kỳ tự động: ${hocKy.TenHocKy} - ${hocKy.NamHoc} (MaHocKy: ${maHocKyNumber})`);
           setMaHocKy(maHocKyNumber);
         } else {
-          console.warn(`Không tìm thấy học kỳ với MaHocKy: ${maHocKyNumber}`);
           setMaHocKy(undefined);
           showNotificationMessage("Học kỳ không hợp lệ. Vui lòng liên hệ quản trị viên.", false);
         }
       } else {
-        console.warn(`Hoạt động không có MaHocKy hợp lệ: ${JSON.stringify(selected)}`);
         setMaHocKy(undefined);
         showNotificationMessage("Hoạt động không có thông tin học kỳ. Vui lòng liên hệ quản trị viên.", false);
       }
@@ -261,6 +257,31 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       }
     }
   };
+
+  const loadMorePhanHoi = () => {
+    const nextPage = page + 1;
+    const newDisplayed = phanHoiList.slice(0, nextPage * itemsPerPage);
+    setDisplayedPhanHoi(newDisplayed);
+    setPage(nextPage);
+  };
+
+  const handleScroll = useCallback(() => {
+    const container = document.querySelector(".phanhoi-list");
+    if (container) {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 5 && displayedPhanHoi.length < phanHoiList.length) {
+        loadMorePhanHoi();
+      }
+    }
+  }, [displayedPhanHoi.length, phanHoiList.length, page]);
+
+  useEffect(() => {
+    const container = document.querySelector(".phanhoi-list");
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
+  }, [handleScroll]);
 
   const getHocKyName = (maHocKy?: number): string => {
     if (maHocKy === undefined || isNaN(maHocKy)) {
@@ -288,16 +309,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       return;
     }
 
-    console.log("=== THÔNG TIN GỬI BACKEND ===");
-    console.log("MaSv:", maSv);
-    console.log("MaHocKy:", maHocKy);
-    console.log("MaDangKy:", maDangKy);
-    console.log("NoiDungPhanHoi:", noiDungPhanHoi);
-    console.log("MoTaMinhChung:", moTaMinhChung);
-    console.log("FileMinhChung:", fileMinhChung);
-    console.log("=============================");
     setIsLoading(true);
-
     const formData = new FormData();
     formData.append("MaSv", maSv);
     formData.append("MaHocKy", maHocKy!.toString());
@@ -311,7 +323,6 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
     }
 
     const submitUrl = `${API_URL}/PhanHoiDiemRenLuyen/TaoPhanHoiVeHoatDong`;
-    console.log("[SUBMIT FETCH URL]", submitUrl);
     try {
       const res = await fetch(submitUrl, {
         method: "POST",
@@ -320,17 +331,13 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
       });
 
       if (res.status === 401) {
-        showNotificationMessage(
-          "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
-          false
-        );
+        showNotificationMessage("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.", false);
         localStorage.removeItem("token");
         setToken(null);
         return;
       }
 
       const data: SubmitResponse = await res.json();
-
       if (res.ok) {
         showNotificationMessage(data.message || "Gửi phản hồi thành công!", true);
         setMaDangKy(null);
@@ -341,11 +348,10 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
         setFileName("");
         setMaHocKy(undefined);
         (document.getElementById("fileInput") as HTMLInputElement).value = "";
+        await fetchData(); // Refresh danh sách phản hồi
       } else {
-        showNotificationMessage(
-          "Lỗi: " + (data.message || "Không thể gửi phản hồi."),
-          false
-        );
+        showNotificationMessage(data.message || "Không thể gửi phản hồi.", false);
+        
       }
     } catch (err) {
       showNotificationMessage("Lỗi: " + (err as Error).message, false);
@@ -484,7 +490,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
               <div className="gph-form-group">
                 <label htmlFor="fileInput">
                   Upload Minh Chứng{" "}
-                  <span className="gph-required">(Tùy chọn)</span>
+                  <span className="gph-required">(Bắt buộc)</span>
                 </label>
                 <div className="gph-file-input-wrapper">
                   <input
@@ -494,6 +500,7 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
                     onChange={handleFileChange}
                     disabled={isLoading}
                     className="gph-hidden-file-input"
+                    required
                   />
                   <div className="gph-custom-file-input">
                     <span className="gph-file-name">
@@ -611,112 +618,126 @@ const GuiPhanHoiDiemRenLuyen: React.FC = () => {
           </div>
 
           <div className="gph-phanhoi-card">
-      <h2 className="gph-section-title">
-        <i className="gph-icon-list"></i>
-        Danh Sách Phản Hồi Đã Gửi
-      </h2>
-      
-      {isLoading ? (
-        <div className="gph-loading-indicator">
-          <div className="gph-loader"></div>
-          <p>Đang tải danh sách phản hồi...</p>
-        </div>
-      ) : phanHoiList.length > 0 ? (
-        <div className="gph-phanhoi-list">
-          {phanHoiList.map((ph) => (
-            <div 
-              key={ph.MaPhanHoi} 
-              className="gph-phanhoi-item"
-            >
-              <div className="gph-phanhoi-header">
-                <h3 className="gph-phanhoi-title">Phản Hồi #{ph.MaPhanHoi}</h3>
-                <span
-                  className={`gph-phanhoi-status gph-status-${ph.TrangThai.toLowerCase().replace(
-                    /\s+/g,
-                    "-"
-                  )}`}
-                >
-                  {ph.TrangThai}
-                </span>
+            <h2 className="gph-section-title">
+              <i className="gph-icon-list"></i>
+              Danh Sách Phản Hồi Đã Gửi
+            </h2>
+
+            {isLoading ? (
+              <div className="loading-container">
+                <div className="loader"></div>
+                <p>Đang tải danh sách phản hồi...</p>
               </div>
-              
-              <div className="gph-phanhoi-details">
-                <div className="gph-detail-row">
-                  <span className="gph-detail-label">Nội dung:</span>
-                  <span className="gph-detail-value">{ph.NoiDungPhanHoi}</span>
-                </div>
-                <div className="gph-detail-row">
-                  <span className="gph-detail-label">Ngày gửi:</span>
-                  <span className="gph-detail-value">{formatDate(ph.NgayPhanHoi)}</span>
-                </div>
-                <div className="gph-detail-row">
-                  <span className="gph-detail-label">Trạng thái xử lý:</span>
-                  <span className="gph-detail-value">{ph.NoiDungXuLy || "Chưa xử lý"}</span>
-                </div>
-                {/* <div className="gph-detail-row">
-                  <span className="gph-detail-label">Ngày xử lý:</span>
-                  <span className="gph-detail-value">{formatDate(ph.NgayXuLy)}</span>
-                </div> */}
-              </div>
-              
-              <button
-                className="gph-detail-button"
-                onClick={() => handleItemClick(ph)}
-              >
-                {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi
-                  ? "Ẩn Chi Tiết Minh Chứng"
-                  : "Xem Chi Tiết Minh Chứng"}
-              </button>
-              
-              {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi && (
-                <div className="gph-minhchung-details">
-                  <h4>Chi Tiết Minh Chứng</h4>
-                  <div className="gph-detail-row">
-                    <span className="gph-detail-label">Mô tả:</span>
-                    <span className="gph-detail-value">
-                      {ph.MinhChung.MoTa || "Không có mô tả"}
-                    </span>
-                  </div>
-                  <div className="gph-detail-row">
-                    <span className="gph-detail-label">File minh chứng:</span>
-                    <span className="gph-detail-value">
-                      {ph.MinhChung.DuongDanFile ? (
-                        <a
-                          href={ph.MinhChung.DuongDanFile}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Xem file
-                        </a>
+            ) : displayedPhanHoi.length > 0 ? (
+              <div className="phanhoi-list" style={{ maxHeight: "8000px", overflowY: "auto" }}>
+                {displayedPhanHoi.map((ph) => (
+                  <div key={ph.MaPhanHoi} className="phanhoi-item">
+                    <div className="phanhoi-header">
+                      <h3 className="phanhoi-title">Phản Hồi #{ph.MaPhanHoi}</h3>
+                      <span
+                        className={`status-badge status-${ph.TrangThai.toLowerCase().replace(/\s+/g, "-")}`}
+                      >
+                        {ph.TrangThai}
+                      </span>
+                    </div>
+
+                    <div className="phanhoi-content">
+                      <div className="detail-row">
+                        <span className="detail-label">Nội dung:</span>
+                        <span className="detail-value">{ph.NoiDungPhanHoi}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Ngày gửi:</span>
+                        <span className="detail-value">{formatDate(ph.NgayPhanHoi)}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Nội dung xử lý:</span>
+                        <span className="detail-value">{ph.NoiDungXuLy || "Vui lòng đợi cập nhật"}</span>
+                      </div>
+                       <div className="detail-row">
+                        <span className="detail-label">Ngày xử lý:</span>
+                        <span className="detail-value">{ph.NgayXuLy || "Đang chờ"}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      className="detail-button"
+                      onClick={() => handleItemClick(ph)}
+                    >
+                      {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi
+                        ? "Ẩn Chi Tiết Minh Chứng"
+                        : "Xem Chi Tiết Minh Chứng"}
+                    </button>
+
+                    {selectedPhanHoi && selectedPhanHoi.MaPhanHoi === ph.MaPhanHoi && (
+                      <div className="minhchung-panel">
+                        <h4 className="minhchung-title">Chi Tiết Minh Chứng</h4>
+                        <div className="detail-row">
+                          <span className="detail-label">Mô tả:</span>
+                          <span className="detail-value">
+                            {ph.MinhChung.MoTa || "Không có mô tả"}
+                          </span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Hình ảnh minh chứng:</span>
+                      
+                    <span className="detail-value">
+                      {ph.MinhChung && ph.MinhChung.DuongDanFile ? (
+                        <img
+                          src={`http://localhost:5163/HinhAnhMinhChung/${encodeURIComponent(
+                            ph.MinhChung.DuongDanFile.replace("/HinhAnhMinhChung/", "")
+                          )}`}
+                          alt="Minh chứng"
+                          className="minhchung-preview-img"
+                          onError={() => console.log("Lỗi tải hình ảnh:", ph.MinhChung.DuongDanFile)}
+                        />
                       ) : (
                         "Không có file"
                       )}
                     </span>
+                    
+                        </div>
+                        {/* <div className="detail-row">
+                          <span className="detail-label">Trạng thái:</span>
+                          <span className="detail-value">{ph.MinhChung.TrangThaiMinhChung}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Ngày tạo:</span>
+                          <span className="detail-value">{formatDate(ph.MinhChung.NgayTao)}</span>
+                        </div> */}
+                      </div>
+                    )}
                   </div>
-                  <div className="gph-detail-row">
-                    <span className="gph-detail-label">Trạng thái:</span>
-                    <span className="gph-detail-value">{ph.MinhChung.TrangThaiMinhChung}</span>
+                ))}
+                {displayedPhanHoi.length < phanHoiList.length && (
+                  <div className="load-more-container">
+                    <button
+                      className="gph-load-more-button"
+                      onClick={loadMorePhanHoi}
+                      disabled={isLoading}
+                    >
+                    Xem thêm
+                    </button>
                   </div>
-                  <div className="gph-detail-row">
-                    <span className="gph-detail-label">Ngày tạo:</span>
-                    <span className="gph-detail-value">{formatDate(ph.MinhChung.NgayTao)}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        
-       
-    
-          
+                )}
+                    {displayedPhanHoi.length > initialDisplayCount && (
+                      <button
+                        className="gph-load-more-button"
+                        onClick={hideMorePhanHoi}
+                        disabled={isLoading}
+                        style={{ marginLeft: "10px" }} // Thêm khoảng cách giữa hai nút
+                      >
+                        Ẩn bớt
+                      </button>
+                    )}
+              </div>
+                
+            ) : (
               <div className="gph-empty-state">
                 <i className="gph-icon-empty"></i>
                 <p>Chưa có phản hồi nào</p>
               </div>
             )}
-            
           </div>
         </div>
       </div>
