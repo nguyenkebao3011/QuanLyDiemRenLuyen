@@ -22,8 +22,13 @@ namespace QuanLyDiemRenLuyen.Bots
         {
             try
             {
-                // Lấy action từ request
-                string action = body.GetProperty("queryResult").GetProperty("action").GetString();
+                // Lấy action từ request, kiểm tra an toàn
+                string action = "";
+                if (body.TryGetProperty("queryResult", out var queryResultElement) &&
+                    queryResultElement.TryGetProperty("action", out var actionElement))
+                {
+                    action = actionElement.GetString() ?? "";
+                }
 
                 // Xử lý xem điểm rèn luyện
                 if (action == "mssv")
@@ -81,7 +86,7 @@ namespace QuanLyDiemRenLuyen.Bots
                         }
 
                         var ngayChot = diemHocKy.NgayChot.HasValue ? diemHocKy.NgayChot.Value.ToString("yyyy-MM-dd") : "Chưa chốt";
-                        var reply = $"Điểm rèn luyện học kỳ {diemHocKy.TenHocKy} của MSSV {mssv} là {diemHocKy.TongDiem} điểm, xếp loại {diemHocKy.XepLoai} (ngày chốt: {ngayChot}).";
+                        var reply = $"Điểm rèn luyện  {diemHocKy.TenHocKy} của MSSV {mssv} là {diemHocKy.TongDiem} điểm, xếp loại {diemHocKy.XepLoai} (ngày chốt: {ngayChot}).";
                         return Ok(new { fulfillmentText = reply });
                     }
                     else
@@ -123,8 +128,7 @@ namespace QuanLyDiemRenLuyen.Bots
 
                     // Lấy danh sách hoạt động đang mở đăng ký
                     var hoatDongDangMoDangKyList = await _context.HoatDongs
-                // Corrected condition for filtering activities
-                .Where(hd => hd.TrangThai == "Đang mở đăng ký" || hd.TrangThai == "Đang diễn ra")
+                        .Where(hd => hd.TrangThai == "Đang mở đăng ký" || hd.TrangThai == "Đang diễn ra")
                         .ToListAsync();
 
                     var hoatDongDangMoDangKy = hoatDongDangMoDangKyList.Select(hd => new
@@ -133,8 +137,7 @@ namespace QuanLyDiemRenLuyen.Bots
                         hd.MoTa,
                         hd.DiemCong,
                         hd.DiaDiem,
-                        hd.SoLuongToiDa,
-                        
+                        hd.SoLuongToiDa
                     });
 
                     // Soạn nội dung phản hồi
@@ -142,37 +145,155 @@ namespace QuanLyDiemRenLuyen.Bots
 
                     if (hoatDongDangDienRa.Any())
                     {
-                        reply += "🔴 **Các hoạt động đang diễn ra:**\n";
-                        reply += string.Join("\n", hoatDongDangDienRa.Select(hd =>
-                            $"- {hd.TenHoatDong}:\n  {hd.MoTa}\n  📍 Địa điểm: {hd.DiaDiem}\n  🕐 {hd.ThoiGianBatDau} → {hd.ThoiGianKetThuc}\n  ⭐ Điểm cộng: {hd.DiemCong}\n  👥 Số lượng tối đa: {hd.SoLuongToiDa}"
+                        reply += "🔴 **Các Hoạt Động Đang Diễn Ra** 🔴\n\n";
+                        reply += string.Join("\n\n", hoatDongDangDienRa.Select(hd =>
+                            $"**{hd.TenHoatDong}**\n" +
+                            $"📝 --Mô tả--: {hd.MoTa}\n" +
+                            $"📍 --Địa điểm--: {hd.DiaDiem}\n" +
+                            $"🕒 --Thời gian--: {hd.ThoiGianBatDau} → {hd.ThoiGianKetThuc}\n" +
+                            $"⭐ --Điểm cộng--: {hd.DiemCong}\n" +
+                            $"👥 --Số lượng tối đa--: {hd.SoLuongToiDa}"
                         ));
                         reply += "\n\n";
                     }
 
                     if (hoatDongDangMoDangKy.Any())
                     {
-                        reply += "🟢 **Các hoạt động đang mở đăng ký:**\n";
-                        reply += string.Join("\n", hoatDongDangMoDangKy.Select(hd =>
-                            $"- {hd.TenHoatDong}:\n  {hd.MoTa}\n  📍 Địa điểm: {hd.DiaDiem}\n    ⭐ Điểm cộng: {hd.DiemCong}\n  👥 Số lượng tối đa: {hd.SoLuongToiDa}"
+                        reply += "🟢 **Các Hoạt Động Đang Mở Đăng Ký** 🟢\n\n";
+                        reply += string.Join("\n\n", hoatDongDangMoDangKy.Select(hd =>
+                            $"{hd.TenHoatDong}\n" +
+                            $"📝 --Mô tả--: {hd.MoTa}\n" +
+                            $"📍 --Địa điểm--: {hd.DiaDiem}\n" +
+                            $"⭐ --Điểm cộng--: {hd.DiemCong}\n" +
+                            $"👥 --Số lượng tối đa--: {hd.SoLuongToiDa}"
                         ));
+                        reply += "\n";
                     }
 
                     if (string.IsNullOrEmpty(reply))
                     {
-                        reply = "Hiện tại không có hoạt động nào đang diễn ra hoặc mở đăng ký.";
+                        reply = "🔔 Hiện tại không có hoạt động nào đang diễn ra hoặc mở đăng ký.";
                     }
+
                     return Ok(new { fulfillmentText = reply });
                 }
+                else if (action == "locHoatDong")
+                {
+                    var now = DateTime.UtcNow.AddHours(7); // Điều chỉnh múi giờ +07 (04:40 PM +07, 22/05/2025)
+
+                    // Lấy parameters từ request với kiểm tra an toàn
+                    var parameters = body.GetProperty("queryResult").GetProperty("parameters");
+                    string tenHoatDong = parameters.TryGetProperty("tenHoatDong", out var tenHoatDongElement)
+                        ? tenHoatDongElement.GetString()?.Trim() ?? ""
+                        : "";
+                    string trangThai = parameters.TryGetProperty("trangThai", out var trangThaiElement)
+                        ? trangThaiElement.GetString()?.Trim() ?? ""
+                        : "";
+                    DateTime? ngayBatDau = parameters.TryGetProperty("ngayBatDau", out var ngayBatDauElement)
+                        ? DateTime.TryParse(ngayBatDauElement.GetString(), out DateTime nb) ? nb : (DateTime?)null
+                        : null;
+                    DateTime? ngayKetThuc = parameters.TryGetProperty("ngayKetThuc", out var ngayKetThucElement)
+                        ? DateTime.TryParse(ngayKetThucElement.GetString(), out DateTime nk) ? nk : (DateTime?)null
+                        : null;
+                    int? diemToiThieu = parameters.TryGetProperty("diemToiThieu", out var diemToiThieuElement)
+                        ? int.TryParse(diemToiThieuElement.GetString(), out int dt) ? dt : (int?)null
+                        : null;
+                    int? diemToiDa = parameters.TryGetProperty("diemtoiDa", out var diemToiDaElement) // Sửa key "diemtoiDa"
+                        ? int.TryParse(diemToiDaElement.GetString(), out int dd) ? dd : (int?)null
+                        : null;
+                    bool hoatDongMoiNhat = parameters.TryGetProperty("moiNhat", out var moiNhatElement)
+                        ? moiNhatElement.GetString()?.Trim().ToLower() == "true"
+                        : false;
+
+                    // Xây dựng query cơ bản
+                    var hoatDongQuery = _context.HoatDongs.AsQueryable();
+
+                    // Lọc theo tên
+                    if (!string.IsNullOrEmpty(tenHoatDong))
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.TenHoatDong.Contains(tenHoatDong));
+                    }
+
+                    // Lọc theo trạng thái
+                    if (!string.IsNullOrEmpty(trangThai) && trangThai != "Tất cả")
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.TrangThai == trangThai);
+                    }
+
+                    // Lọc theo thời gian
+                    if (ngayBatDau.HasValue)
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.NgayBatDau >= ngayBatDau);
+                    }
+                    if (ngayKetThuc.HasValue)
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.NgayKetThuc <= ngayKetThuc);
+                    }
+
+                    // Lọc theo điểm
+                    if (diemToiThieu.HasValue)
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.DiemCong >= diemToiThieu);
+                    }
+                    if (diemToiDa.HasValue)
+                    {
+                        hoatDongQuery = hoatDongQuery.Where(hd => hd.DiemCong <= diemToiDa);
+                    }
+
+                    // Lấy danh sách hoạt động
+                    var hoatDongList = await hoatDongQuery.ToListAsync();
+
+                    // Nếu chọn hoạt động mới nhất
+                    if (hoatDongMoiNhat && hoatDongList.Any())
+                    {
+                        var hoatDongMoiNhatItem = hoatDongList.OrderByDescending(hd => hd.NgayBatDau).First();
+                        hoatDongList = new List<HoatDong> { hoatDongMoiNhatItem };
+                    }
+
+                    var hoatDongResult = hoatDongList.Select(hd => new
+                    {
+                        hd.TenHoatDong,
+                        hd.MoTa,
+                        hd.DiemCong,
+                        hd.DiaDiem,
+                        hd.SoLuongToiDa,
+                        ThoiGianBatDau = hd.NgayBatDau?.ToString("yyyy-MM-dd HH:mm"),
+                        ThoiGianKetThuc = hd.NgayKetThuc?.ToString("yyyy-MM-dd HH:mm"),
+                        hd.TrangThai
+                    });
+
+                    // Soạn nội dung phản hồi
+                    var reply = "";
+                    if (hoatDongResult.Any())
+                    {
+                        reply += "🔵 **Kết quả lọc hoạt động** 🔵\n\n";
+                        reply += string.Join("\n\n", hoatDongResult.Select(hd =>
+                            $"**{hd.TenHoatDong}**\n" +
+                            $"📝 --Mô tả--: {hd.MoTa}\n" +
+                            $"📍 --Địa điểm--: {hd.DiaDiem}\n" +
+                            $"🕒 --Thời gian--: {hd.ThoiGianBatDau} → {hd.ThoiGianKetThuc}\n" +
+                            $"⭐ --Điểm cộng--: {hd.DiemCong}\n" +
+                            $"👥 --Số lượng tối đa--: {hd.SoLuongToiDa}\n" +
+                            $"🔔 --Trạng thái--: {hd.TrangThai}"
+                        ));
+                    }
                     else
                     {
-                        // Trả về nếu action không hợp lệ hoặc không được hỗ trợ
-                        return Ok(new { fulfillmentText = "Yêu cầu không hợp lệ hoặc hành động không được hỗ trợ." });
+                        reply = "🔔 Không tìm thấy hoạt động nào khớp với điều kiện lọc.";
                     }
+
+                    return Ok(new { fulfillmentText = reply });
+                }
+                else
+                {
+                    // Trả về nếu action không hợp lệ hoặc không được hỗ trợ
+                    return Ok(new { fulfillmentText = "Yêu cầu không hợp lệ hoặc hành động không được hỗ trợ." });
+                }
             }
             catch (Exception ex)
             {
                 return Ok(new { fulfillmentText = "Có lỗi xảy ra: " + ex.Message });
             }
+            }
         }
-    }
 }

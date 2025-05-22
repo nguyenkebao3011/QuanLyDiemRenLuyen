@@ -48,7 +48,9 @@ const StudentSidebar: React.FC = () => {
               >
                 <Icon size={22} className="text-white" />
                 <span className="text-base font-medium">{item.label}</span>
-              </Link>
+            
+                </Link>
+              
             );
           })}
         </nav>

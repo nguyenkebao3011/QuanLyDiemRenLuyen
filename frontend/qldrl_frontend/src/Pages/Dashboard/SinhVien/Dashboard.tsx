@@ -11,8 +11,8 @@ import {
 } from "react-feather";
 import axios from "axios";
 import "./StudentDashboard.css";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate,useSearchParams } from "react-router-dom";
+import Chatbot from "../../Login/Chatbot";
 import { Facebook, Mail, Phone, MapPin, Globe } from 'react-feather';
 
 import XemHoatDong from "../../../components/SinhVien/views/XemHoatDong";
@@ -24,7 +24,6 @@ import HoatDongDaDangKy from "../../../components/SinhVien/views/HoatDongDaDangK
 import NotificationDropdown from "../../../components/SinhVien/views/NotificationDropdown";
 
 type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
-
 interface Student {
   MaSV: string;
   HoTen: string;
@@ -119,6 +118,7 @@ const StudentDashboard: React.FC = () => {
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
+
  
   const navigate = useNavigate();
 
@@ -315,6 +315,7 @@ const StudentDashboard: React.FC = () => {
             ))}
           </ul>
         </nav>
+        
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={18} />
@@ -370,6 +371,9 @@ const StudentDashboard: React.FC = () => {
         <div className="content-body">{renderContent()}</div>
         <Footer /> 
       </div>
+      
+          <Chatbot />
+
     </div>
   );
 };

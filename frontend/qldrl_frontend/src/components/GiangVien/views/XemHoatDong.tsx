@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../css/ChiDinhSinhVien.css";
+import "../css/ChiDinhSinhVien.css";  
 
 type HoatDong = {
   MaHoatDong: number;
@@ -377,10 +377,36 @@ const HoatDongList: React.FC = () => {
   const formatThoiGianDienRa = (ngayBatDau: string, ngayKetThuc: string) => {
     const start = new Date(ngayBatDau);
     const end = new Date(ngayKetThuc);
-    if (start.toDateString() !== end.toDateString()) return "Chưa xác định";
-    const formatTime = (date: Date) => date.toTimeString().slice(0, 5);
-    return `${formatTime(start)}-${formatTime(end)}`;
+
+    // Hàm định dạng giờ
+    const formatTime = (date: Date) =>
+      date.toLocaleTimeString("vi-VN", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    // So sánh giờ (bỏ qua ngày)
+    const startTime = start.toLocaleTimeString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTime = end.toLocaleTimeString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    // Nếu giờ giống nhau, trả về một khung giờ
+    if (startTime === endTime) {
+      return startTime;
+    }
+
+    // Nếu giờ khác nhau, trả về khoảng giờ
+    return `${startTime}-${endTime}`;
   };
+
 
   const handleViewDetail = (hoatDong: HoatDong) => {
     setSelectedDetailHoatDong(hoatDong);
