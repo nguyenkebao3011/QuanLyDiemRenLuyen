@@ -1160,3 +1160,12 @@ D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Micros
 D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Schema.dll
 D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Streaming.dll
 D:\DoAnChuyenNganh\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Rest.ClientRuntime.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\AdaptiveCards.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Builder.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Builder.Integration.AspNet.Core.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Configuration.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Connector.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Connector.Streaming.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Schema.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Bot.Streaming.dll
+D:\DoAnChuyenNganh\QuanLyDRL_Git\QuanLyDiemRenLuyen\QuanLyDiemRenLuyen\bin\Debug\net8.0\Microsoft.Rest.ClientRuntime.dll
