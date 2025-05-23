@@ -134,7 +134,6 @@ namespace QuanLyDiemRenLuyen.Controllers
                         {
                             double diemHoatDong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
                             diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong;
-                            // Nếu cần, có thể cập nhật xếp loại tại đây
                         }
                     }
                 }
@@ -153,7 +152,7 @@ namespace QuanLyDiemRenLuyen.Controllers
                     NgayTao = DateTime.Now,
                     MaQl = request.MaQl,
                     LoaiThongBao = "Phản hồi",
-                    TrangThai = "Đã đăng"
+                    TrangThai = "DaGui"
                 };
                 _context.ThongBaos.Add(thongBao);
                 await _context.SaveChangesAsync();
