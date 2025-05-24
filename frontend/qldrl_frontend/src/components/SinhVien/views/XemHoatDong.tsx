@@ -27,7 +27,7 @@ const HoatDongList: React.FC = () => {
     "http://localhost:5163/api/HoatDongs/lay-danh-sach-hoat-dong"
   );
   const itemsPerPage = 6;
-  sdhgfvdìhbdksjfbvdksjv;
+ 
   // State cho bộ lọc
   const [ten, setTen] = useState("");
   const [batDauTu, setBatDauTu] = useState("");

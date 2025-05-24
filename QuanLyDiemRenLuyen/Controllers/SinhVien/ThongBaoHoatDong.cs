@@ -40,7 +40,8 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 .Join(_context.ThongBaos
                     .Where(tb => tb.LoaiThongBao == "Thay đổi lịch trình"
                               || tb.LoaiThongBao == "Nhắc nhở hoạt động"
-                              || tb.LoaiThongBao == "Chỉ định sinh viên"),
+                              || tb.LoaiThongBao == "Chỉ định sinh viên"
+                              || tb.LoaiThongBao == "Phản hồi"),
                     ct => ct.MaThongBao,
                     tb => tb.MaThongBao,
                     (ct, tb) => new ThongBaoDTOSV
