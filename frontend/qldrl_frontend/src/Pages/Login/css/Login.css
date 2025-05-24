@@ -1,5 +1,7 @@
 /* Reset CSS */
-* {
+
+*{
+
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -516,8 +518,8 @@ body {
 
 /* Button để mở/đóng chatbot */
 .chat-toggle-btn {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: #2979ff;
   color: white;
@@ -804,17 +806,15 @@ body {
   background-position: center;
 }
 
-.chat-icon-chat {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z'/%3E%3C/svg%3E");
-}
 
 .chat-icon-robot {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='6' y='7' width='12' height='10' rx='3' ry='3' fill='%23B2DFFC' stroke='%230074C1' stroke-width='1.5'/%3E%3Ccircle cx='9' cy='12' r='1.5' fill='%230074C1'/%3E%3Ccircle cx='15' cy='12' r='1.5' fill='%230074C1'/%3E%3Cpath d='M9 16h6' stroke='%230074C1' stroke-width='1.5' stroke-linecap='round'/%3E%3Crect x='10' y='4' width='4' height='3' rx='1.5' ry='1.5' fill='%23D6EBFF' stroke='%230074C1' stroke-width='1.5'/%3E%3Ccircle cx='8' cy='5' r='0.7' fill='%230074C1'/%3E%3Ccircle cx='16' cy='5' r='0.7' fill='%230074C1'/%3E%3C/svg%3E");
+  background-image: url("https://static.vecteezy.com/system/resources/previews/013/153/367/large_2x/cute-robot-cartoon-icon-illustration-technology-robot-icon-concept-isolated-premium-flat-cartoon-style-vector.jpg");
+  border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  width: 32px;
-  height: 32px;
+  width: 60px;
+  height: 60px;
 }
 
 
@@ -861,8 +861,8 @@ body {
   }
   
   .chat-toggle-btn {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
   
   .message-content {

@@ -211,7 +211,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
     const selectedHoatDong = activeHoatDong[index - 1];
     try {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
+      // if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
       await axios.post(
         "http://localhost:5163/api/DangKyHoatDongs/dang-ky",
         { MaHoatDong: selectedHoatDong.MaHoatDong },
@@ -231,16 +231,17 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
     }
   };
 
-  const handleChatSend = async () => {
-    if (!chatInput.trim()) return;
+ const handleChatSend = async () => {
+  if (!chatInput.trim()) return;
 
-    const currentTime = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
-    const userMessage: ChatMessage = { text: chatInput, isUser: true, timestamp: currentTime };
-    setChatMessages((prev) => [...prev, userMessage]);
-    setIsChatLoading(true);
+  const currentTime = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+  const userMessage: ChatMessage = { text: chatInput, isUser: true, timestamp: currentTime };
+  setChatMessages((prev) => [...prev, userMessage]);
+  setIsChatLoading(true);
 
-    let responseText = "Tôi chưa hiểu yêu cầu của bạn. Hãy thử: 'xem thông tin', 'chỉnh sửa thông tin', 'phản hồi điểm', 'đăng ký hoạt động', 'xem điểm', 'xem thông báo', 'thời tiết [địa điểm]', hoặc 'quên mật khẩu'.";
+  let responseText = "Tôi chưa hiểu yêu cầu của bạn. Hãy thử: 'xem thông tin', 'chỉnh sửa thông tin', 'phản hồi điểm', 'đăng ký hoạt động', 'xem điểm', 'xem thông báo', 'thời tiết [địa điểm]', hoặc 'quên mật khẩu'.";
 
+  try {
     if (waitingForActivityConfirmation !== null) {
       const confirmMatch = chatInput.match(/(có|đồng ý|ok|yes)/i);
       if (confirmMatch) {
@@ -255,7 +256,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
     } else if (waitingForActivitySelection) {
       const index = parseInt(chatInput.trim(), 10);
       if (!isNaN(index)) {
-        const activeHoatDong = hoatDongList.filter((hd) => hd.TrangThai === "Đang diễn ra");
+        const activeHoatDong = hoatDongList.filter((hd) => hd.TrangThai === "Đang diễn ra" || hd.TrangThai === "Đang mở đăng ký");
         if (index < 1 || index > activeHoatDong.length) {
           responseText = "Số thứ tự không hợp lệ. Vui lòng chọn lại.";
         } else {
@@ -289,18 +290,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
         if (!maSV) {
           responseText = "Vui lòng đăng nhập để chỉnh sửa thông tin.";
         } else {
-                  setTimeout(() => {
-    navigate("/chinh-sua-thong-tin");
-  }, 4000); // chờ 2 giây 
-            responseText = "Đang chuyển hướng đến trang cập nhật thông tin...";
-          }
-        } else if (phanHoiMatch) {
-          if (!maSV) {
-            responseText = "Vui lòng đăng nhập để phản hồi điểm rèn luyện.";
-          } else {
-           navigate("/sinhvien/dashboard?menu=evidence");
-            responseText = "Đang chuyển hướng đến trang phản hồi điểm rèn luyện...";
-          }
+          setTimeout(() => {
+            navigate("/chinh-sua-thong-tin");
+          }, 4000);
+          responseText = "Đang chuyển hướng đến trang cập nhật thông tin...";
+        }
+      } else if (phanHoiMatch) {
+        if (!maSV) {
+          responseText = "Vui lòng đăng nhập để phản hồi điểm rèn luyện.";
+        } else {
+          navigate("/sinhvien/dashboard?menu=evidence");
+          responseText = "Đang chuyển hướng đến trang phản hồi điểm rèn luyện...";
+        }
       } else if (dangKyMatch) {
         if (!maSV) {
           responseText = "Vui lòng đăng nhập để đăng ký hoạt động.";
@@ -314,46 +315,17 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
         } else {
           mssv = mssv.replace(/\s+/g, "").toUpperCase();
           const hocKy = hocKyMatch ? hocKyMatch[1] : null;
-          try {
-            const token = localStorage.getItem("token");
-            if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
-            const response = await axios.post(
-              "http://localhost:5163/api/Webhook",
-              {
-                queryResult: {
-                  action: "mssv",
-                  parameters: {
-                    mssv,
-                    ...(hocKy && { hocKy }),
-                  },
-                },
-              },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            responseText = response.data.fulfillmentText || "Không tìm thấy thông tin.";
-          } catch (error: any) {
-            console.error("Lỗi khi gọi webhook:", error);
-            responseText =
-              error.response?.status === 401
-                ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
-                : "Có lỗi xảy ra khi lấy điểm rèn luyện.";
-          }
-        }
-      } else if (hoatDongMatch) {
-        try {
           const token = localStorage.getItem("token");
-          if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
+          // if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
           const response = await axios.post(
             "http://localhost:5163/api/Webhook",
             {
               queryResult: {
-                action: "hoatdong",
-                parameters: {},
+                action: "mssv",
+                parameters: {
+                  mssv,
+                  ...(hocKy && { hocKy }),
+                },
               },
             },
             {
@@ -363,31 +335,39 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
               },
             }
           );
-          responseText = response.data.fulfillmentText || "Không có hoạt động nào.";
-        } catch (error: any) {
-          console.error("Lỗi khi lấy hoạt động:", error);
-          responseText =
-            error.response?.status === 401
-              ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
-              : "Có lỗi khi lấy danh sách hoạt động.";
+          responseText = response.data.fulfillmentText || "Không tìm thấy thông tin.";
         }
-      } else if (thongBaoMatch) {
-        try {
-          const response = await axios.get("http://localhost:5163/api/ThongBao/lay_thong_bao", {
-            headers: { "Content-Type": "application/json" },
-          });
-          if (response.data && response.data.length > 0) {
-            responseText = "Các thông báo mới nhất:\n\n";
-            response.data.forEach((tb: ThongBao, index: number) => {
-              responseText += `${index + 1}. ${tb.TieuDe} - ${new Date(tb.NgayTao).toLocaleDateString("vi-VN")}\n`;
-            });
-            responseText += "\nTôi đã cho bạn những thông báo mới nhất. Nếu cần xem chi tiết hãy truy cập vào danh sách thông báo ở phía bên phải trang web.\n";
-          } else {
-            responseText = "Không có thông báo mới nào.";
+      } else if (hoatDongMatch) {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
+        const response = await axios.post(
+          "http://localhost:5163/api/Webhook",
+          {
+            queryResult: {
+              action: "hoatdong",
+              parameters: {},
+            },
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           }
-        } catch (error) {
-          console.error("Lỗi khi lấy thông báo:", error);
-          responseText = "Có lỗi khi lấy thông báo.";
+        );
+        responseText = response.data.fulfillmentText || "Không có hoạt động nào.";
+      } else if (thongBaoMatch) {
+        const response = await axios.get("http://localhost:5163/api/ThongBao/lay_thong_bao", {
+          headers: { "Content-Type": "application/json" },
+        });
+        if (response.data && response.data.length > 0) {
+          responseText = "Các thông báo mới nhất:\n\n";
+          response.data.forEach((tb: ThongBao, index: number) => {
+            responseText += `${index + 1}. ${tb.TieuDe} - ${new Date(tb.NgayTao).toLocaleDateString("vi-VN")}\n`;
+          });
+          responseText += "\nTôi đã cho bạn những thông báo mới nhất. Nếu cần xem chi tiết hãy truy cập vào danh sách thông báo ở phía bên phải trang web.\n";
+        } else {
+          responseText = "Không có thông báo mới nào.";
         }
       } else if (quenMatKhauMatch) {
         if (onOpenForgotPassword && !maSV) {
@@ -398,20 +378,48 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
         }
       } else if (ngayMatch) {
         responseText = `Hôm nay là ${new Date().toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })} (${new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}).`;
+      } else {
+        // Gửi câu hỏi không khớp đến WebhookController với action chatBot
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          "http://localhost:5163/api/Webhook",
+          {
+            queryResult: {
+              action: "chatBot",
+              queryText: chatInput,
+            },
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+          }
+        );
+        responseText = response.data.fulfillmentText || "Không nhận được câu trả lời từ chatbot.";
       }
     }
+  } catch (error: any) {
+    console.error("Lỗi khi xử lý yêu cầu:", error);
+    responseText =
+      error.response?.status === 401
+        ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
+        : error.response?.status === 400
+        ? "Yêu cầu không hợp lệ. Vui lòng kiểm tra lại câu hỏi."
+        : "Có lỗi xảy ra khi xử lý yêu cầu. Vui lòng thử lại sau.";
+  }
 
-    setTimeout(() => {
-      const botMessage: ChatMessage = {
-        text: responseText,
-        isUser: false,
-        timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-      };
-      setChatMessages((prev) => [...prev, botMessage]);
-      setChatInput("");
-      setIsChatLoading(false);
-    }, 2000);
-  };
+  setTimeout(() => {
+    const botMessage: ChatMessage = {
+      text: responseText,
+      isUser: false,
+      timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+    };
+    setChatMessages((prev) => [...prev, botMessage]);
+    setChatInput("");
+    setIsChatLoading(false);
+  }, 2000);
+};
 
   const handleToggleChat = () => {
     setIsChatOpen(!isChatOpen);
@@ -535,7 +543,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
         onClick={handleToggleChat}
         title={isChatOpen ? "Đóng" : "Trợ lý ảo"}
       >
-        <i className={`chat-icon ${isChatOpen ? "chat-icon-close" : "chat-icon-chat"}`}></i>
+        <i className={`chat-icon ${isChatOpen ? "chat-icon-close" : "chat-icon chat-icon-robot"}`}></i>
       </button>
     </div>
   );
