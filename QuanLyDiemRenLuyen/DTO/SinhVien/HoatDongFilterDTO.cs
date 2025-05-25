@@ -11,5 +11,6 @@
         public string? TrangThai { get; set; }
 
         public bool IsLatest { get; set; } // Thêm thuộc tính này
+        public bool IsLongerThanTwoDays { get; set; }
     }
 }

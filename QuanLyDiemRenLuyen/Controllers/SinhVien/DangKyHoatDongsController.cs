@@ -56,9 +56,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                if (hoatDong.TrangThai != "Chưa bắt đầu" && hoatDong.TrangThai != "Đang mở đăng ký" && hoatDong.TrangThai != "Đang diễn ra")
+                if ( hoatDong.TrangThai != "Đang mở đăng ký" )
                 {
-                    return BadRequest(new { message = "Chỉ có thể đăng ký các hoạt động chưa bắt đầu hoặc đang mở đăng ký" });
+                    return BadRequest(new { message = "Chỉ có thể đăng ký các hoạt động đang mở đăng ký" });
                 }
 
                 // Kiểm tra số lượng tối đa

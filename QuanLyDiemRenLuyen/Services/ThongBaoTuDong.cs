@@ -74,7 +74,7 @@ public class ThongBaoScheduledService : BackgroundService
                             h.NgayBatDau.Value.Date <= today.AddDays(3))
                 .ToListAsync(stoppingToken);
 
-            _logger.LogInformation($"Tìm thấy {hoatDongs.Count} hoạt động trong 3 ngày tới từ {today:dd/MM/yyyy}.");
+            _logger.LogInformation($"Tim thay {hoatDongs.Count} hoat dong trong 3 ngày toi tu {today:dd/MM/yyyy}.");
 
             var validMaQls = new List<string> { "QL01", "QL02", "QL03" };
 
@@ -98,7 +98,7 @@ public class ThongBaoScheduledService : BackgroundService
 
                 if (!sinhVienCanGui.Any())
                 {
-                    _logger.LogInformation($"Không có sinh viên mới cần gửi thông báo cho hoạt động {hd.MaHoatDong}.");
+                    _logger.LogInformation($"Khong co sinh vien moi can gui thong bao cho hoat dong {hd.MaHoatDong}.");
                     continue;
                 }
 

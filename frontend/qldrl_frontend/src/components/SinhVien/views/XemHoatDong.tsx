@@ -27,7 +27,7 @@ const HoatDongList: React.FC = () => {
     "http://localhost:5163/api/HoatDongs/lay-danh-sach-hoat-dong"
   );
   const itemsPerPage = 6;
- 
+
   // State cho bộ lọc
   const [ten, setTen] = useState("");
   const [batDauTu, setBatDauTu] = useState("");
@@ -35,7 +35,8 @@ const HoatDongList: React.FC = () => {
   const [diemMin, setDiemMin] = useState("");
   const [diemMax, setDiemMax] = useState("");
   const [trangThai, setTrangThai] = useState("");
-  const [isLatest, setIsLatest] = useState(false); // Thêm state cho bộ lọc mới nhất
+  const [isLatest, setIsLatest] = useState(false);
+  const [isLongerThanTwoDays, setIsLongerThanTwoDays] = useState(false); // Thêm state mới
   const [filterVisible, setFilterVisible] = useState(false);
 
   // State cho modal đăng ký
@@ -147,7 +148,8 @@ const HoatDongList: React.FC = () => {
       if (diemMin) url += `DiemMin=${encodeURIComponent(diemMin)}&`;
       if (diemMax) url += `DiemMax=${encodeURIComponent(diemMax)}&`;
       if (trangThai) url += `TrangThai=${encodeURIComponent(trangThai)}&`;
-      if (isLatest) url += `IsLatest=${isLatest}&`; // Thêm tham số IsLatest
+      if (isLatest) url += `IsLatest=${isLatest}&`;
+      if (isLongerThanTwoDays) url += `IsLongerThanTwoDays=${isLongerThanTwoDays}&`; // Thêm tham số mới
 
       url = url.endsWith("&") ? url.slice(0, -1) : url;
 
@@ -180,7 +182,8 @@ const HoatDongList: React.FC = () => {
     setDiemMin("");
     setDiemMax("");
     setTrangThai("");
-    setIsLatest(false); // Xóa trạng thái IsLatest
+    setIsLatest(false);
+    setIsLongerThanTwoDays(false); // Reset state mới
     fetchHoatDong();
   };
 
@@ -393,10 +396,12 @@ const HoatDongList: React.FC = () => {
                   className="filter-select"
                 >
                   <option value="">Tất cả</option>
-                  <option value="Chưa bắt đầu">Chưa bắt đầu</option>
+                  
                   <option value="Đang diễn ra">Đang diễn ra</option>
+                 
+
                   <option value="Đang mở đăng ký">Đang mở đăng ký</option>
-                  <option value="Đã kết thúc">Đã kết thúc</option>
+                
                 </select>
               </div>
             </div>
@@ -459,6 +464,17 @@ const HoatDongList: React.FC = () => {
                     onChange={(e) => setIsLatest(e.target.checked)}
                   />
                   Hoạt động mới nhất
+                </label>
+              </div>
+              <div className="filter-group">
+                <label>
+                  <input
+                    className="checkbox-filter"
+                    type="checkbox"
+                    checked={isLongerThanTwoDays}
+                    onChange={(e) => setIsLongerThanTwoDays(e.target.checked)}
+                  />
+                  Hoạt động diễn ra nhiều ngày
                 </label>
               </div>
             </div>
@@ -743,7 +759,8 @@ const HoatDongList: React.FC = () => {
                     onClick={() => handleRegisterClick(hd)}
                     disabled={
                       hd.TrangThai === "Đã kết thúc" ||
-                      hd.TrangThai === "Hủy bỏ"
+                      hd.TrangThai === "Hủy bỏ" 
+                    
                     }
                   >
                     Đăng ký tham gia

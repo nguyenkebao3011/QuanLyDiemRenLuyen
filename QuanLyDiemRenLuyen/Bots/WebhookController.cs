@@ -194,7 +194,7 @@ namespace QuanLyDiemRenLuyen.Bots
                         }
 
                         var ngayChot = diemHocKy.NgayChot.HasValue ? diemHocKy.NgayChot.Value.ToString("yyyy-MM-dd") : "Chưa chốt";
-                        var reply = $"Điểm rèn luyện {diemHocKy.TenHocKy} của MSSV {mssv} là {diemHocKy.TongDiem} điểm, xếp loại {diemHocKy.XepLoai} (ngày chốt: {ngayChot}).";
+                        var reply = $"Điểm rèn luyện {diemHocKy.TenHocKy}  của MSSV {mssv} là {diemHocKy.TongDiem} điểm, xếp loại {diemHocKy.XepLoai} (ngày chốt: {ngayChot}).";
                         return Ok(new { fulfillmentText = reply });
                     }
                     else
@@ -209,7 +209,7 @@ namespace QuanLyDiemRenLuyen.Bots
                         }
 
                         var ngayChot = diemMoiNhat.NgayChot.HasValue ? diemMoiNhat.NgayChot.Value.ToString("yyyy-MM-dd") : "Chưa chốt";
-                        var reply = $"Điểm rèn luyện học kỳ {diemMoiNhat.TenHocKy} của MSSV {mssv} là {diemMoiNhat.TongDiem} điểm, xếp loại {diemMoiNhat.XepLoai} (ngày chốt: {ngayChot}).";
+                        var reply = $"Điểm rèn luyện {diemMoiNhat.TenHocKy} của MSSV {mssv} là {diemMoiNhat.TongDiem} điểm, xếp loại {diemMoiNhat.XepLoai} (ngày cập nhật: {ngayChot}).";
                         return Ok(new { fulfillmentText = reply });
                     }
                 }

@@ -31,7 +31,7 @@ public partial class HoatDong
 
     public int? SoLuongDaDangKy { get; set; }
 
-    
+    public bool? NgayDienRa { get; set; }
 
     public virtual ICollection<DangKyHoatDong> DangKyHoatDongs { get; set; } = new List<DangKyHoatDong>();
 

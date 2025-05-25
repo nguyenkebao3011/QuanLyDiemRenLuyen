@@ -41,13 +41,19 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             if (filter.DiemMax.HasValue)
                 query = query.Where(h => h.DiemCong <= filter.DiemMax.Value);
 
-            var cacTrangThaiHopLe = new[]
+            if (filter.IsLongerThanTwoDays)
             {
-        "chưa bắt đầu",
-        "đang diễn ra",
-        "đang mở đăng ký",
-        "đã kết thúc"
-    };
+                query = query.Where(h => h.NgayDienRa == true);
+            }
+
+            var cacTrangThaiHopLe = new[]
+                    {
+       
+                "đang diễn ra",
+                "đang mở đăng ký",
+                "đã đóng đăng ký",
+                "đã kết thúc"
+            };
 
             if (!string.IsNullOrWhiteSpace(filter.TrangThai))
             {

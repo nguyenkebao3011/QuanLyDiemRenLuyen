@@ -765,6 +765,11 @@
         "Name": "IsLatest",
         "Type": "System.Boolean",
         "IsRequired": false
+      },
+      {
+        "Name": "IsLongerThanTwoDays",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
