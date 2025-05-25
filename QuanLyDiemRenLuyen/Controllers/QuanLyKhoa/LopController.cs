@@ -2,9 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiemRenLuyen.DTO.QuanLyKhoa;
 using QuanLyDiemRenLuyen.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-  
+
 namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
 {
     [Route("api/[controller]")]
@@ -55,7 +56,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         [HttpPost("them_lop")]
         public async Task<ActionResult<LopDTO>> CreateLop([FromBody] LopDTO dto)
         {
-            // Kiểm tra mã lớp đã tồn tại chưa
             if (await _context.Lops.AnyAsync(l => l.MaLop == dto.MaLop))
                 return Conflict(new { message = "Mã lớp đã tồn tại" });
 
@@ -108,7 +108,5 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
 
             return Ok(new { message = "Xóa lớp thành công" });
         }
-
-     
     }
 }

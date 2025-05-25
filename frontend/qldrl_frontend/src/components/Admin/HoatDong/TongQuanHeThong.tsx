@@ -9,9 +9,15 @@ import {
   Award,
   FileText,
 } from "lucide-react";
-import type { TongQuanThongKeDTO, HoatDong, ThongBao } from "../types";
+import type {
+  TongQuanThongKeDTO,
+  HoatDong,
+  ThongBao,
+  QuanLyKhoa,
+} from "../types";
 import { ApiService } from "../../../untils/services/service-api";
-
+import ImportSinhVien from "../../../components/Admin/QuanLyDanhMuc/SinhVien/ImportSinhVien";
+import CreateThongBaoModal from "../../../components/Admin/ThongBao/CreateThongBaoModal";
 const TongQuanHeThong: React.FC = () => {
   const [recentActivities, setRecentActivities] = useState<HoatDong[]>([]);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(true);
@@ -20,14 +26,38 @@ const TongQuanHeThong: React.FC = () => {
   );
   const [loadingNotifications, setLoadingNotifications] =
     useState<boolean>(true);
+  const [showImportSinhVienModal, setShowImportSinhVienModal] = useState(false);
   const [stats, setStats] = useState<TongQuanThongKeDTO>({
     TongSinhVien: 0,
     TongGiangVien: 0,
     TongHoatDong: 0,
     TongPhanHoi: 0,
   });
+  const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
   const [loadingStats, setLoadingStats] = useState<boolean>(true);
+  const handleOpenImportSinhVienModal = () => {
+    setShowImportSinhVienModal(true);
+  };
+  const [showCreateThongBaoModal, setShowCreateThongBaoModal] = useState(false);
+  const handleCloseImportSinhVienModal = () => {
+    setShowImportSinhVienModal(false);
+  };
+  const handleOpenCreateThongBaoModal = () => {
+    setShowCreateThongBaoModal(true);
+  };
 
+  const handleCloseCreateThongBaoModal = () => {
+    setShowCreateThongBaoModal(false);
+  };
+
+  const handleCreateThongBaoSuccess = () => {
+    setShowCreateThongBaoModal(false);
+    // Thêm logic nếu muốn refresh data hoặc thông báo
+  };
+  const handleImportSinhVienSuccess = () => {
+    // Có thể thêm xử lý sau khi import thành công nếu cần
+    setShowImportSinhVienModal(false);
+  };
   // Thêm useEffect để lấy dữ liệu hoạt động gần đây và thông báo
   useEffect(() => {
     fetchRecentActivities();
@@ -39,6 +69,8 @@ const TongQuanHeThong: React.FC = () => {
     setLoadingStats(true);
     try {
       const response = await ApiService.layThongKeTongQuan();
+      const qlKhoaData = await ApiService.thongTinQuanLyKhoa();
+      setQuanLyKhoa(qlKhoaData);
       setStats(response);
     } catch (error) {
       console.error("Lỗi khi lấy thống kê:", error);
@@ -47,7 +79,6 @@ const TongQuanHeThong: React.FC = () => {
       setLoadingStats(false);
     }
   };
-
   // Hàm lấy dữ liệu hoạt động gần đây từ API
   const fetchRecentActivities = async () => {
     setLoadingActivities(true);
@@ -153,7 +184,10 @@ const TongQuanHeThong: React.FC = () => {
       return "Không xác định";
     }
   };
-
+  const handleOpenCreateReport = () => {
+    window.history.pushState({}, "", "?menu=statistics&view=create");
+    window.dispatchEvent(new Event("popstate"));
+  };
   // Hàm xử lý khi tạo hoạt động mới
   const handleCreateActivity = () => {
     // Thay đổi URL và cập nhật lịch sử
@@ -298,7 +332,10 @@ const TongQuanHeThong: React.FC = () => {
           </div>
           <div className="widget-content">
             <div className="quick-action-grid">
-              <button className="quick-action-btn">
+              <button
+                className="quick-action-btn"
+                onClick={handleOpenImportSinhVienModal}
+              >
                 <Users size={20} />
                 <span>Thêm sinh viên</span>
               </button>
@@ -309,11 +346,17 @@ const TongQuanHeThong: React.FC = () => {
                 <Calendar size={20} />
                 <span>Tạo hoạt động</span>
               </button>
-              <button className="quick-action-btn">
+              <button
+                className="quick-action-btn"
+                onClick={handleOpenCreateThongBaoModal}
+              >
                 <Bell size={20} />
                 <span>Gửi thông báo</span>
               </button>
-              <button className="quick-action-btn">
+              <button
+                className="quick-action-btn"
+                onClick={handleOpenCreateReport}
+              >
                 <BarChart2 size={20} />
                 <span>Xuất báo cáo</span>
               </button>
@@ -321,6 +364,21 @@ const TongQuanHeThong: React.FC = () => {
           </div>
         </div>
       </div>
+      {showImportSinhVienModal && (
+        <ImportSinhVien
+          isOpen={showImportSinhVienModal}
+          onClose={handleCloseImportSinhVienModal}
+          onSuccess={handleImportSinhVienSuccess}
+        />
+      )}
+      {showCreateThongBaoModal && (
+        <CreateThongBaoModal
+          isOpen={showCreateThongBaoModal}
+          onClose={handleCloseCreateThongBaoModal}
+          onSuccess={handleCreateThongBaoSuccess}
+          maQl={quanLyKhoa?.MaQl || "QL01"}
+        />
+      )}
     </div>
   );
 };

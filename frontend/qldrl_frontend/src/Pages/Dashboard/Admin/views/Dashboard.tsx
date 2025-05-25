@@ -19,8 +19,11 @@ import {
 } from "lucide-react";
 import "../css/Dashboard.css";
 
-// Import các components
+// Import các components quản lý
 import QuanLyDanhMuc from "./QuanLyDanhMuc";
+import QuanLyLop from "../views/QuanLyLop";
+import QuanLyHocKy from "../views/QuanLyHocKy";
+import ProfileQuanLyKhoa from "../views/ProfileQuanLyKhoa";
 import HoatDongNamHoc from "./HoatDongNamHoc";
 import ChamDiemRenLuyen from "./ChamDiemRenLuyen";
 import ThongBaoDiemDanh from "./ThongBaoDiemDanh";
@@ -29,18 +32,28 @@ import ThongKeBaoCao from "./ThongKeBaoCao";
 import HoiDongChamDiem from "./HoiDongChamDiem";
 import TongQuanHeThong from "../../../../components/Admin/HoatDong/TongQuanHeThong";
 import TaoHoatDong from "../../../../components/Admin/HoatDong/TaoHoatDong";
+import TaoBaoCao from "../../../Dashboard/Admin/views/ThongKeBaoCao";
 import { ApiService } from "../../../../untils/services/service-api";
 import { QuanLyKhoa } from "../../../../components/Admin/types";
+
+// Import modal components
+import ImportSinhVien from "../../../../components/Admin/QuanLyDanhMuc/SinhVien/ImportSinhVien";
+import CreateThongBaoModal from "../../../../components/Admin/ThongBao/CreateThongBaoModal";
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [viewParam, setViewParam] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-
-  const username = localStorage.getItem("username") || "Admin";
+  const [showProfileView, setShowProfileView] = useState(false);
+  // Modal states
+  const [showImportSinhVienModal, setShowImportSinhVienModal] =
+    useState<boolean>(false);
+  const [showCreateThongBaoModal, setShowCreateThongBaoModal] =
+    useState<boolean>(false);
 
   const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
+
   useEffect(() => {
     const handleUrlChange = () => {
       const params = new URLSearchParams(window.location.search);
@@ -65,6 +78,7 @@ const Dashboard: React.FC = () => {
       window.removeEventListener("popstate", handleUrlChange);
     };
   }, []);
+
   const fetchQLKhoa = async () => {
     try {
       const data = await ApiService.thongTinQuanLyKhoa();
@@ -73,23 +87,67 @@ const Dashboard: React.FC = () => {
       console.error("Lỗi khi lấy thông tin quản lý khoa:", err);
     }
   };
+
   useEffect(() => {
     fetchQLKhoa();
   }, []);
+
+  // Handlers for modal visibility
+  const handleOpenImportSinhVienModal = () => {
+    setShowImportSinhVienModal(true);
+  };
+
+  const handleCloseImportSinhVienModal = () => {
+    setShowImportSinhVienModal(false);
+  };
+
+  const handleImportSinhVienSuccess = () => {};
+
+  const handleOpenCreateThongBaoModal = () => {
+    setShowCreateThongBaoModal(true);
+  };
+
+  const handleCloseCreateThongBaoModal = () => {
+    setShowCreateThongBaoModal(false);
+  };
+  const handleCreateReport = () => {
+    setActiveMenu("statistics");
+    setViewParam("create");
+    window.history.pushState({}, "", "?menu=statistics&view=create");
+  };
+  const handleCreateThongBaoSuccess = () => {
+    // Refresh data or perform other actions after successful notification creation
+  };
+
   const renderContent = () => {
+    if (showProfileView) {
+      return <ProfileQuanLyKhoa />;
+    }
+
     if (activeMenu === "activities" && viewParam === "create") {
       return <TaoHoatDong />;
+    }
+    if (activeMenu === "statistics" && viewParam === "create") {
+      return <TaoBaoCao />;
     }
 
     switch (activeMenu) {
       case "category":
-        return <QuanLyDanhMuc />;
+        return <QuanLyDanhMuc onAddStudent={handleOpenImportSinhVienModal} />;
+      case "class":
+        return <QuanLyLop />;
+      case "semester":
+        return <QuanLyHocKy />;
       case "activities":
         return <HoatDongNamHoc />;
       case "scoring":
         return <ChamDiemRenLuyen />;
       case "notification":
-        return <ThongBaoDiemDanh />;
+        return (
+          <ThongBaoDiemDanh
+            onCreateNotification={handleOpenCreateThongBaoModal}
+          />
+        );
       case "feedback":
         return <PhanHoiDiem />;
       case "statistics":
@@ -114,6 +172,10 @@ const Dashboard: React.FC = () => {
         return "Tổng quan hệ thống";
       case "category":
         return "Quản lý danh mục";
+      case "class":
+        return "Quản lý lớp";
+      case "semester":
+        return "Quản lý học kỳ";
       case "activities":
         return viewParam === "create"
           ? "Tạo hoạt động mới"
@@ -127,7 +189,7 @@ const Dashboard: React.FC = () => {
       case "feedback":
         return "Phản hồi điểm rèn luyện";
       case "statistics":
-        return "Thống kê, báo cáo";
+        return viewParam === "create" ? "Tạo báo cáo mới" : "Thống kê, báo cáo";
       case "committee":
         return "Hội đồng chấm điểm";
       default:
@@ -169,6 +231,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "dashboard" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("dashboard");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=dashboard");
               }}
             >
@@ -179,6 +242,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "category" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("category");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=category");
               }}
             >
@@ -186,9 +250,32 @@ const Dashboard: React.FC = () => {
               <span>Quản lý danh mục</span>
             </li>
             <li
+              className={activeMenu === "class" ? "active" : ""}
+              onClick={() => {
+                setActiveMenu("class");
+                setViewParam(null);
+                window.history.pushState({}, "", "?menu=class");
+              }}
+            >
+              <Users size={18} />
+              <span>Quản lý lớp</span>
+            </li>
+            <li
+              className={activeMenu === "semester" ? "active" : ""}
+              onClick={() => {
+                setActiveMenu("semester");
+                setViewParam(null);
+                window.history.pushState({}, "", "?menu=semester");
+              }}
+            >
+              <Calendar size={18} />
+              <span>Quản lý học kỳ</span>
+            </li>
+            <li
               className={activeMenu === "activities" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("activities");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=activities");
               }}
             >
@@ -199,6 +286,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "scoring" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("scoring");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=scoring");
               }}
             >
@@ -209,6 +297,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "notification" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("notification");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=notification");
               }}
             >
@@ -219,6 +308,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "feedback" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("feedback");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=feedback");
               }}
             >
@@ -229,6 +319,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "statistics" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("statistics");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=statistics");
               }}
             >
@@ -239,6 +330,7 @@ const Dashboard: React.FC = () => {
               className={activeMenu === "committee" ? "active" : ""}
               onClick={() => {
                 setActiveMenu("committee");
+                setViewParam(null);
                 window.history.pushState({}, "", "?menu=committee");
               }}
             >
@@ -293,7 +385,15 @@ const Dashboard: React.FC = () => {
 
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <button className="dropdown-item">Hồ sơ</button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      setShowProfileView(true);
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    Hồ sơ
+                  </button>
                   <button className="dropdown-item">Cài đặt</button>
                   <button className="dropdown-item" onClick={handleLogout}>
                     Đăng xuất
@@ -310,6 +410,24 @@ const Dashboard: React.FC = () => {
         </header>
 
         <div className="content-body">{renderContent()}</div>
+
+        {/* Modals */}
+        {showImportSinhVienModal && (
+          <ImportSinhVien
+            isOpen={showImportSinhVienModal}
+            onClose={handleCloseImportSinhVienModal}
+            onSuccess={handleImportSinhVienSuccess}
+          />
+        )}
+
+        {showCreateThongBaoModal && (
+          <CreateThongBaoModal
+            isOpen={showCreateThongBaoModal}
+            onClose={handleCloseCreateThongBaoModal}
+            onSuccess={handleCreateThongBaoSuccess}
+            maQl={quanLyKhoa?.MaQl || ""}
+          />
+        )}
       </div>
     </div>
   );

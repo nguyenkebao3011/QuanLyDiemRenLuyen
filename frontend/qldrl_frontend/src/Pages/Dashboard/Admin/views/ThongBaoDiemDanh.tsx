@@ -16,8 +16,13 @@ import "../css/ThongBaoDiemDanh.css";
 import type { QuanLyKhoa } from "../../../../components/Admin/types";
 
 const pageSize = 10;
+interface ThongBaoDiemDanhProps {
+  onCreateNotification: () => void;
+}
 
-const ThongBaoDiemDanh: React.FC = () => {
+const ThongBaoDiemDanh: React.FC<ThongBaoDiemDanhProps> = ({
+  onCreateNotification,
+}) => {
   // State cho danh sách thông báo
   const [thongBaos, setThongBaos] = useState<ThongBaoDTO[]>([]);
   const [filteredThongBaos, setFilteredThongBaos] = useState<ThongBaoDTO[]>([]);
@@ -379,7 +384,7 @@ const ThongBaoDiemDanh: React.FC = () => {
         <div className="header-actions">
           <button
             className="btn-create-thong-bao"
-            onClick={handleOpenCreateModal}
+            onClick={onCreateNotification}
           >
             <Plus className="create-icon" />
             <span>Tạo thông báo mới</span>

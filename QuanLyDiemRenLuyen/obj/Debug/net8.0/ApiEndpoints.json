@@ -776,6 +776,43 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
+    "Method": "UpdateHocKy",
+    "RelativePath": "api/HocKy/cap_nhat_hoc_ky/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "QuanLyDiemRenLuyen.DTO.QuanLyKhoa.HocKyDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
+    "Method": "GetHocKyById",
+    "RelativePath": "api/HocKy/lay_chi_tiet_hoc_ky/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
     "Method": "GetHocKy",
     "RelativePath": "api/HocKy/lay_hoc_ky",
     "HttpMethod": "GET",
@@ -793,8 +830,24 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "hocKy",
-        "Type": "QuanLyDiemRenLuyen.Models.HocKy",
+        "Name": "dto",
+        "Type": "QuanLyDiemRenLuyen.DTO.QuanLyKhoa.HocKyDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.HocKyController",
+    "Method": "DeleteHocKy",
+    "RelativePath": "api/HocKy/xoa_hoc_ky/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -1374,6 +1427,22 @@
       {
         "Name": "id",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.QuanLyKhoa.QuanLyKhoaController",
+    "Method": "UpdateQuanLyKhoa",
+    "RelativePath": "api/QuanLyKhoa/cap_nhat_thong_tin",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updatedInfo",
+        "Type": "QuanLyDiemRenLuyen.DTO.QuanLyKhoa.QuanLyKhoaDTO",
         "IsRequired": true
       }
     ],

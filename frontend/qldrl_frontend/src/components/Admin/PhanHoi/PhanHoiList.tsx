@@ -126,16 +126,20 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
       <div className="phan-hoi-list-header">
         <h2>Danh sách phản hồi điểm rèn luyện</h2>
         <div className="search-filter-container">
-          <div className="search-container">
-            <Search className="search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm phản hồi..."
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="search-input"
-            />
-          </div>
+          <form className="search-form">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Tìm kiếm phản hồi..."
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="search-input"
+              />
+              <button type="submit" className="search-button">
+                <Search size={18} />
+              </button>
+            </div>
+          </form>
 
           <div className="filter-container">
             <Filter className="filter-icon" />

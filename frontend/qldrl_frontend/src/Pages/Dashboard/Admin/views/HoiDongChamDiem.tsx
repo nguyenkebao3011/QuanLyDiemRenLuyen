@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { ApiService } from "../../../../untils/services/service-api";
@@ -492,7 +490,7 @@ const HoiDongChamDiem: React.FC = () => {
                 <X size={20} />
               </button>
             </div>
-            <div className="modal-content confirm">
+            <div className="modal-content-admin confirm">
               <AlertCircle className="warning-icon" />
               <p>
                 {isDeleteMember

@@ -1260,6 +1260,29 @@
         }
       }
     },
+    "/api/HocKy/lay_chi_tiet_hoc_ky/{id}": {
+      "get": {
+        "tags": [
+          "HocKy"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HocKy/tao_hoc_ky": {
       "post": {
         "tags": [
@@ -1269,21 +1292,86 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HocKy"
+                "$ref": "#/components/schemas/HocKyDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/HocKy"
+                "$ref": "#/components/schemas/HocKyDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/HocKy"
+                "$ref": "#/components/schemas/HocKyDTO"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HocKy/cap_nhat_hoc_ky/{id}": {
+      "put": {
+        "tags": [
+          "HocKy"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKyDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKyDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HocKyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HocKy/xoa_hoc_ky/{id}": {
+      "delete": {
+        "tags": [
+          "HocKy"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -2143,6 +2231,37 @@
         "tags": [
           "QuanLyKhoa"
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/QuanLyKhoa/cap_nhat_thong_tin": {
+      "put": {
+        "tags": [
+          "QuanLyKhoa"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuanLyKhoaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuanLyKhoaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuanLyKhoaDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -4040,6 +4159,34 @@
         },
         "additionalProperties": false
       },
+      "HocKyDTO": {
+        "type": "object",
+        "properties": {
+          "MaHocKy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TenHocKy": {
+            "type": "string",
+            "nullable": true
+          },
+          "NamHoc": {
+            "type": "string",
+            "nullable": true
+          },
+          "NgayBatDau": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "NgayKetThuc": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "HoiDongChamDiem": {
         "type": "object",
         "properties": {
@@ -4661,6 +4808,36 @@
             "items": {
               "$ref": "#/components/schemas/ThongBao"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuanLyKhoaDTO": {
+        "type": "object",
+        "properties": {
+          "MaQl": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaTaiKhoan": {
+            "type": "string",
+            "nullable": true
+          },
+          "HoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "Khoa": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "SoDienThoai": {
+            "type": "string",
             "nullable": true
           }
         },

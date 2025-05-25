@@ -94,7 +94,7 @@ const CreateHoiDongForm: React.FC<CreateHoiDongFormProps> = ({
           </button>
         </div>
 
-        <div className="modal-content">
+        <div className="modal-content-admin">
           {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>

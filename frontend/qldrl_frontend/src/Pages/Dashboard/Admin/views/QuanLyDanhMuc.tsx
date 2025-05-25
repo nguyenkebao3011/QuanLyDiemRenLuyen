@@ -4,7 +4,9 @@ import QuanLySinhVien from "../../../../components/Admin/QuanLyDanhMuc/SinhVien/
 import QuanLyGiangVien from "../../../../components/Admin/QuanLyDanhMuc/GiangVien/QuanLyGiangVien";
 import "../css/QuanLyDanhMuc.css";
 
-const QuanLyDanhMuc: React.FC = () => {
+const QuanLyDanhMuc: React.FC<{ onAddStudent: () => void }> = ({
+  onAddStudent,
+}) => {
   const [activeTab, setActiveTab] = useState<string>("sinh-vien");
 
   return (
@@ -27,7 +29,11 @@ const QuanLyDanhMuc: React.FC = () => {
       </div>
 
       <div className="category-content">
-        {activeTab === "sinh-vien" ? <QuanLySinhVien /> : <QuanLyGiangVien />}
+        {activeTab === "sinh-vien" ? (
+          <QuanLySinhVien onAddStudent={onAddStudent} />
+        ) : (
+          <QuanLyGiangVien />
+        )}
       </div>
     </div>
   );

@@ -137,14 +137,6 @@ export const ApiService = {
   // QuanLyKhoa services
   thongTinQuanLyKhoa: async (): Promise<QuanLyKhoa> => {
     try {
-      // Lấy thông tin từ sessionStorage nếu đã có
-      const cachedData = sessionStorage.getItem("quanLyKhoa");
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData);
-        console.log("Đã lấy thông tin quản lý khoa từ cache:", parsedData);
-        return parsedData;
-      }
-
       const response = await api.get("/QuanLyKhoa/thong_tin");
       const qlKhoaData = response.data;
       console.log("Đã lấy thông tin quản lý khoa:", qlKhoaData);
@@ -538,7 +530,7 @@ export const ApiService = {
   },
 
   // GiaoVien services (needed for adding members)
-  layDanhSachGiaoVien: async (): Promise<GiaoVien[]> => {
+  layDanhSachGiaoVien: async (): Promise<any[]> => {
     try {
       const response = await api.get("/GiaoViens");
       return response.data;
@@ -669,7 +661,7 @@ export const ApiService = {
     }
   },
 
-  layDanhSachLop: async (): Promise<Lop[]> => {
+  layDanhSachLop: async (): Promise<any> => {
     try {
       const response = await api.get(`/Lop/lay_danh_sach_lop`);
       return Array.isArray(response.data) ? response.data : [response.data];
@@ -778,5 +770,101 @@ export const ApiService = {
       console.error(`Lỗi khi xóa hoạt động ${maHoatDong}:`, error);
       throw error;
     }
+  },
+
+  // Lop services
+  layChiTietLop: async (maLop: string): Promise<any> => {
+    try {
+      const response = await api.get(`/Lop/lay_chi_tiet_lop/${maLop}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy chi tiết lớp ${maLop}:`, error);
+      throw error;
+    }
+  },
+
+  themLop: async (lopData: any): Promise<any> => {
+    try {
+      const response = await api.post("/Lop/them_lop", lopData);
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi thêm lớp mới:", error);
+      throw error;
+    }
+  },
+
+  capNhatLop: async (maLop: string, lopData: any): Promise<any> => {
+    try {
+      const response = await api.put(`/Lop/cap_nhat_lop/${maLop}`, lopData);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi cập nhật lớp ${maLop}:`, error);
+      throw error;
+    }
+  },
+
+  xoaLop: async (maLop: string): Promise<any> => {
+    try {
+      const response = await api.delete(`/Lop/xoa_lop/${maLop}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi xóa lớp ${maLop}:`, error);
+      throw error;
+    }
+  },
+
+  layChiTietHocKy: async (maHocKy: number): Promise<HocKy | null> => {
+    try {
+      const response = await api.get(`/HocKy/lay_chi_tiet_hoc_ky/${maHocKy}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy chi tiết học kỳ ${maHocKy}:`, error);
+      return null;
+    }
+  },
+
+  taoHocKy: async (hocKyData: Partial<HocKy>): Promise<HocKy> => {
+    try {
+      const response = await api.post("/HocKy/tao_hoc_ky", hocKyData);
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi tạo học kỳ mới:", error);
+      throw error;
+    }
+  },
+
+  capNhatHocKy: async (
+    maHocKy: number,
+    hocKyData: Partial<HocKy>
+  ): Promise<any> => {
+    try {
+      const response = await api.put(
+        `/HocKy/cap_nhat_hoc_ky/${maHocKy}`,
+        hocKyData
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi cập nhật học kỳ ${maHocKy}:`, error);
+      throw error;
+    }
+  },
+
+  xoaHocKy: async (maHocKy: number): Promise<any> => {
+    try {
+      const response = await api.delete(`/HocKy/xoa_hoc_ky/${maHocKy}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi xóa học kỳ ${maHocKy}:`, error);
+      throw error;
+    }
+  },
+  capNhatQuanLyKhoa: async (
+    updatedInfo: Partial<QuanLyKhoa>
+  ): Promise<void> => {
+    const response = await api.put(
+      "/QuanLyKhoa/cap_nhat_thong_tin",
+      updatedInfo
+    );
+    return response.data;
   },
 };

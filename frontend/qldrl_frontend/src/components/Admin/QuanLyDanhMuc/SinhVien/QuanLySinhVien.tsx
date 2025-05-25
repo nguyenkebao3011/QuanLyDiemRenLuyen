@@ -10,6 +10,7 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import "./QuanLySinhVien.css";
 import type { SinhVien, Lop } from "../../types";
@@ -22,8 +23,10 @@ import { ApiService } from "../../../../untils/services/service-api";
 import ImportSinhVien from "./ImportSinhVien";
 
 const pageSize = 10;
-
-const QuanLySinhVien: React.FC = () => {
+interface QuanLySinhVienProps {
+  onAddStudent: () => void;
+}
+const QuanLySinhVien: React.FC<QuanLySinhVienProps> = ({ onAddStudent }) => {
   const [sinhVienList, setSinhVienList] = useState<SinhVien[]>([]);
   const [filteredList, setFilteredList] = useState<SinhVien[]>([]);
   const [lopList, setLopList] = useState<Lop[]>([]);
@@ -267,7 +270,7 @@ const QuanLySinhVien: React.FC = () => {
             <Download size={16} />
             <span>Xuất Excel</span>
           </button>
-          <button className="import-btn" onClick={handleImportClick}>
+          <button className="import-btn" onClick={onAddStudent}>
             <Upload size={16} />
             <span>Import Excel</span>
           </button>
@@ -321,22 +324,20 @@ const QuanLySinhVien: React.FC = () => {
             </select>
           </div>
         </div>
-        <div className="search-box">
-          <form onSubmit={() => handleSearch} className="search-form">
-            <div className="search-input-container">
-              <input
-                type="text"
-                placeholder="Tìm kiếm sinh viên..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
-              <button type="submit" className="search-button">
-                <span>Q</span>
-              </button>
-            </div>
-          </form>
-        </div>
+        <form onSubmit={() => handleSearch} className="search-form">
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="Tìm kiếm sinh viên..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="search-button">
+              <Search size={18} />
+            </button>
+          </div>
+        </form>
       </div>
 
       {error && (

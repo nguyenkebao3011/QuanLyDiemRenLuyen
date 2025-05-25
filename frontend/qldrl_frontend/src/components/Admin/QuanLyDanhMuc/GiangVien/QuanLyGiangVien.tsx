@@ -10,6 +10,7 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import "./QuanLyGiangVien.css";
 import type { GiaoVien } from "../../types";
@@ -246,23 +247,20 @@ const QuanLyGiangVien: React.FC = () => {
         </div>
       </div>
 
-      <div className="search-box">
-        <form onSubmit={handleSearch} className="search-form">
-          <div className="search-input-container">
-            <input
-              type="text"
-              placeholder="Tìm kiếm giảng viên..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button type="submit" className="search-button">
-              <span>Q</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
+      <form className="search-form">
+        <div className="search-input-container">
+          <input
+            type="text"
+            placeholder="Tìm kiếm giảng viên..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">
+            <Search size={18} />
+          </button>
+        </div>
+      </form>
       {error && (
         <div className="error-message">
           <AlertCircle size={18} />

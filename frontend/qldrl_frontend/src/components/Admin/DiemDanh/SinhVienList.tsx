@@ -65,14 +65,20 @@ const SinhVienList: React.FC<SinhVienListProps> = ({
     <div>
       <div className="filter-bar">
         <div className="search-container">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder="Tìm kiếm sinh viên..."
-            value={searchSinhVien}
-            onChange={(e) => setSearchSinhVien(e.target.value)}
-            className="search-input"
-          />
+          <form className="search-form">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Tìm kiếm sinh viên..."
+                value={searchSinhVien}
+                onChange={(e) => setSearchSinhVien(e.target.value)}
+                className="search-input"
+              />
+              <button type="submit" className="search-button">
+                <Search size={18} />
+              </button>
+            </div>
+          </form>
         </div>
 
         <div className="filter-container">

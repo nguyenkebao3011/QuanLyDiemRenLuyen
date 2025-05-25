@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuanLyDiemRenLuyen.DTO.QuanLyKhoa;
 using QuanLyDiemRenLuyen.Models;
 
 namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
@@ -23,7 +24,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         }
 
         [HttpGet("thong_tin")]
-        [Authorize] // Chỉ cho phép truy cập khi đã đăng nhập
+        [Authorize] 
         public IActionResult GetLoggedInQuanLyKhoaInfo()
         {
             try
@@ -51,6 +52,26 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
             {
                 return StatusCode(500, $"Đã xảy ra lỗi: {ex.Message}");
             }
+        }
+        [HttpPut("cap_nhat_thong_tin")]
+        [Authorize]
+        public IActionResult UpdateQuanLyKhoa([FromBody] QuanLyKhoaDTO updatedInfo)
+        {
+            var maTaiKhoan = User.Claims.FirstOrDefault(c => c.Type == "maTaiKhoan")?.Value;
+            if (string.IsNullOrEmpty(maTaiKhoan))
+                return Unauthorized();
+
+            var existing = _context.QuanLyKhoas.FirstOrDefault(q => q.MaTaiKhoan == maTaiKhoan);
+            if (existing == null)
+                return NotFound();
+
+            existing.HoTen = updatedInfo.HoTen;
+            existing.Khoa = updatedInfo.Khoa;
+            existing.Email = updatedInfo.Email;
+            existing.SoDienThoai = updatedInfo.SoDienThoai;
+
+            _context.SaveChanges();
+            return Ok(existing);
         }
     }
 }

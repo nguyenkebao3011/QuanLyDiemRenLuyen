@@ -72,18 +72,20 @@ const HoiDongList: React.FC<HoiDongListProps> = ({
         </div>
       )}
 
-      <div className="search-filter-container">
-        <div className="search-container">
-          <Search className="search-icon" size={16} />
+      <form className="search-form">
+        <div className="search-input-container">
           <input
             type="text"
-            className="search-input"
-            placeholder="Tìm kiếm theo tên hội đồng hoặc học kỳ..."
+            placeholder="Tìm kiếm hội đồng..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
+            className="search-input"
           />
+          <button type="submit" className="search-button">
+            <Search size={18} />
+          </button>
         </div>
-      </div>
+      </form>
 
       <div className="hoi-dong-table-container">
         <table className="hoi-dong-table">

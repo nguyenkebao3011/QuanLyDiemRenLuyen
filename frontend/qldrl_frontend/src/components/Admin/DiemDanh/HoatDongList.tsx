@@ -122,16 +122,20 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
         <p className="card-description">
           Chọn một hoạt động để quản lý điểm danh
         </p>
-        <div className="search-container">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder="Tìm kiếm hoạt động..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        <form className="search-form">
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="Tìm kiếm hoạt động..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="search-button">
+              <Search size={18} />
+            </button>
+          </div>
+        </form>
       </div>
       <div className="card-content">
         <div className="filter-container">
