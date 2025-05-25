@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DiemRenLuyenApp</string>
+    <string name="title_activity_main">DiemRenLuyenApp</string>
+    <string name="package_name">com.huit.drl</string>
+    <string name="custom_url_scheme">com.huit.drl</string>
+</resources>
