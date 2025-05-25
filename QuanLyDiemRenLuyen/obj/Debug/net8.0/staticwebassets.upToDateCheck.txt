@@ -44,3 +44,5 @@ wwwroot\HinhAnhMinhChung\bebc195a-2433-45b7-a974-63c3f972f6ae.jpeg
 wwwroot\HinhAnhMinhChung\6ff97de7-73a7-407e-bd0e-2c14fd8d0928.jpeg
 wwwroot\HinhAnhMinhChung\ab4ac1f6-cb44-4bf8-8498-d9e899360e4d.jpeg
 wwwroot\HinhAnhMinhChung\2cc57806-a436-4d21-90d4-bc53597a66d5.png
+wwwroot\avatars\DHTH387104_638837742043083977.jpg
+wwwroot\avatars\DHTH387104_638837749337332394.png

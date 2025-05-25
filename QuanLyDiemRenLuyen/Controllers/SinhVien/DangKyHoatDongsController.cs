@@ -254,7 +254,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     {
                         MaSv = maSV,
                         MaHoatDong = request.MaHoatDong,
-
+                        TenHoatDong = hoatDong.TenHoatDong,
                         ThoiGianHuy = ngayHienTai,
                         LyDo = string.IsNullOrEmpty(request.LyDoHuy) ? "Hủy bởi sinh viên" : request.LyDoHuy.Trim(),
                         TrangThai = "Thành công"
@@ -282,17 +282,39 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 return StatusCode(500, new { message = "Có lỗi xảy ra, vui lòng thử lại sau", error = ex.Message });
             }
         }
-        [HttpGet("lich-su-huy")]
-        public async Task<IActionResult> GetLichSuHuy()
-        {
-            var maSV = User.Identity?.Name;
-            var lichSu = await _context.LichSuHuyDangKys
-                .Where(h => h.MaSv == maSV)
-                .OrderByDescending(h => h.ThoiGianHuy)
-                .ToListAsync();
+            [HttpGet("lich-su-huy")]
+            public async Task<IActionResult> GetLichSuHuy()
+            {
+                try
+                {
+                    var maSV = User.Identity?.Name;
+                    if (string.IsNullOrEmpty(maSV))
+                    {
+                        return Unauthorized(new { message = "Không tìm thấy mã sinh viên trong token" });
+                    }
 
-            return Ok(new { count = lichSu.Count, data = lichSu });
-        }
+                    var lichSu = await _context.LichSuHuyDangKys
+                        .Where(h => h.MaSv == maSV)
+                        .OrderByDescending(h => h.ThoiGianHuy)
+                        .Select(h => new
+                        {
+                            h.Id,
+                            h.MaSv,
+                            h.MaHoatDong,
+                            TenHoatDong = h.TenHoatDong ?? "",
+                            LyDo = h.LyDo ?? "",
+                            h.ThoiGianHuy,
+                            TrangThai = h.TrangThai ?? ""
+                        })
+                        .ToListAsync();
+
+                    return Ok(new { message = "Lấy lịch sử hủy thành công", data = lichSu });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy lịch sử hủy", error = ex.Message });
+                }
+            }
         [HttpGet("danh-sach-dang-ky-da-ket-thuc")]
         public async Task<IActionResult> XemDanhSachDangKyHoatDongDaKetThuc()
         {

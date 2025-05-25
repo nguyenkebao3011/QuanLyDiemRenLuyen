@@ -442,7 +442,7 @@ const HoatDongDaDangKy: React.FC = () => {
                   <table className="hddk-table">
                     <thead>
                       <tr>
-                        <th>Mã HĐ</th>
+                   
                         <th>Tên hoạt động</th>
                         <th>Lý do</th>
                         <th>Thời gian hủy</th>
@@ -452,7 +452,7 @@ const HoatDongDaDangKy: React.FC = () => {
                     <tbody>
                       {historyData.map((item) => (
                         <tr key={item.Id} className="hddk-table-row">
-                          <td>{item.MaHoatDong}</td>
+                         
                           <td>{item.TenHoatDong || getActivityName(item.MaHoatDong)}</td>
                           <td>{item.LyDo || 'Không có lý do'}</td>
                           <td>{new Date(item.ThoiGianHuy).toLocaleString('vi-VN')}</td>
