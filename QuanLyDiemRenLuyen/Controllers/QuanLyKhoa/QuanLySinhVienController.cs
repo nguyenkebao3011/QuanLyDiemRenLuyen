@@ -454,7 +454,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                             }
                         }
 
-                        result.Insert(0, $"Tổng cộng: {successCount} thành công, {failCount} lỗi.");
+                        result.Insert(0, $"Tổng cộng: {successCount} thành công");
                     }
                 }
 
