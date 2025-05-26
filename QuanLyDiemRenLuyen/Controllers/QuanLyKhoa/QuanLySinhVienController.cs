@@ -173,228 +173,342 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         [HttpPost("import_sinh_vien")]
         public async Task<IActionResult> ImportSinhVien(IFormFile? file, [FromQuery] bool capTaiKhoan = false)
         {
-            // Kiểm tra file có tồn tại không
             if (file == null || file.Length == 0)
                 return BadRequest(new { message = "Vui lòng chọn file Excel." });
 
-            // Kiểm tra định dạng file
             string extension = Path.GetExtension(file.FileName).ToLower();
             if (extension != ".xlsx" && extension != ".xls")
                 return BadRequest(new { message = "File phải có định dạng .xlsx hoặc .xls" });
 
-            // Giới hạn kích thước file (tùy chỉnh theo nhu cầu)
-            if (file.Length > 10 * 1024 * 1024) // 10MB
+            if (file.Length > 10 * 1024 * 1024)
                 return BadRequest(new { message = "Kích thước file vượt quá giới hạn cho phép (10MB)" });
 
             var result = new List<string>();
+            int successCount = 0;
+            int failCount = 0;
 
             try
             {
+                // Lấy danh sách mã lớp hợp lệ một lần duy nhất
+                var validMaLopList = await _context.Lops.Select(l => l.MaLop).ToListAsync();
+
+                // Lấy danh sách mã sinh viên đã tồn tại để kiểm tra duplicate
+                var existingMaSVList = await _context.SinhViens.Select(sv => sv.MaSV).ToListAsync();
+
+                // Khởi tạo số tài khoản ban đầu nếu cần tạo tài khoản
+                int currentTaiKhoanNumber = 0;
+                if (capTaiKhoan)
+                {
+                    var lastTaiKhoan = await _context.TaiKhoans
+                        .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
+                        .OrderByDescending(tk => tk.MaTaiKhoan)
+                        .FirstOrDefaultAsync();
+
+                    if (lastTaiKhoan != null)
+                    {
+                        string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4);
+                        if (int.TryParse(lastNumber, out int number))
+                            currentTaiKhoanNumber = number;
+                    }
+                }
+
                 using (var stream = new MemoryStream())
                 {
                     await file.CopyToAsync(stream);
                     stream.Position = 0;
 
-                    try
+                    using (var package = new ExcelPackage(stream))
                     {
-                        // Sử dụng ExcelPackage để đọc file Excel
-                        using (var package = new ExcelPackage(stream))
+                        var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                        if (worksheet == null)
+                            return BadRequest(new { message = "File không hợp lệ hoặc không có sheet." });
+
+                        int rowCount = worksheet.Dimension?.Rows ?? 0;
+                        if (rowCount <= 1)
+                            return BadRequest(new { message = "File Excel không chứa dữ liệu sinh viên." });
+
+                        // Kiểm tra header
+                        string header1 = worksheet.Cells[1, 1].Text?.Trim();
+                        string header2 = worksheet.Cells[1, 2].Text?.Trim();
+
+                        if (header1 != "MaSV" || header2 != "HoTen")
+                            return BadRequest(new { message = "File Excel không đúng định dạng. Hãy sử dụng mẫu được cung cấp." });
+
+                        // Danh sách để theo dõi mã sinh viên trong file hiện tại
+                        var maSVInCurrentFile = new HashSet<string>();
+
+                        // Xử lý từng dòng
+                        for (int row = 2; row <= rowCount; row++)
                         {
-                            var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-                            if (worksheet == null)
-                                return BadRequest(new { message = "File không hợp lệ hoặc không có sheet." });
-
-                            int rowCount = worksheet.Dimension?.Rows ?? 0;
-                            if (rowCount <= 1) // Chỉ có header, không có dữ liệu
-                                return BadRequest(new { message = "File Excel không chứa dữ liệu sinh viên." });
-
-                            // Kiểm tra xem worksheet có đúng định dạng không
-                            string header1 = worksheet.Cells[1, 1].Text?.Trim();
-                            string header2 = worksheet.Cells[1, 2].Text?.Trim();
-
-                            if (header1 != "MaSV" || header2 != "HoTen")
-                                return BadRequest(new { message = "File Excel không đúng định dạng. Hãy sử dụng mẫu được cung cấp." });
-
-                            // Danh sách mã lớp hợp lệ từ cơ sở dữ liệu (cache lại để tránh truy vấn nhiều lần)
-                            var validMaLopList = await _context.Lops.Select(l => l.MaLop).ToListAsync();
-                            int successCount = 0;
-                            int failCount = 0;
-
-                            for (int row = 2; row <= rowCount; row++)
+                            try
                             {
-                                try
+                                // Đọc dữ liệu từ Excel
+                                var maSV = worksheet.Cells[row, 1].Text?.Trim();
+                                var hoTen = worksheet.Cells[row, 2].Text?.Trim();
+                                var maLop = worksheet.Cells[row, 3].Text?.Trim();
+                                var email = worksheet.Cells[row, 4].Text?.Trim();
+                                var soDienThoai = worksheet.Cells[row, 5].Text?.Trim();
+                                var diaChi = worksheet.Cells[row, 6].Text?.Trim();
+                                var ngaySinh = worksheet.Cells[row, 7].Text?.Trim();
+                                var gioiTinh = worksheet.Cells[row, 8].Text?.Trim();
+                                var maVaiTro = worksheet.Cells[row, 9].Text?.Trim();
+                                var trangThai = worksheet.Cells[row, 10].Text?.Trim();
+
+                                // Log dữ liệu đọc được để debug
+                                result.Add($"Debug - Dòng {row}: MaSV={maSV}, HoTen={hoTen}, MaLop={maLop}");
+
+                                // Validation cơ bản
+                                if (string.IsNullOrEmpty(maSV))
                                 {
-                                    var maSV = worksheet.Cells[row, 1].Text?.Trim();
-                                    var hoTen = worksheet.Cells[row, 2].Text?.Trim();
-                                    var maLop = worksheet.Cells[row, 3].Text?.Trim();
-                                    var email = worksheet.Cells[row, 4].Text?.Trim();
-                                    var soDienThoai = worksheet.Cells[row, 5].Text?.Trim();
-                                    var diaChi = worksheet.Cells[row, 6].Text?.Trim();
-                                    var ngaySinh = worksheet.Cells[row, 7].Text?.Trim();
-                                    var gioiTinh = worksheet.Cells[row, 8].Text?.Trim();
-                                    var maVaiTro = worksheet.Cells[row, 9].Text?.Trim();
-                                    var trangThai = worksheet.Cells[row, 10].Text?.Trim();
+                                    result.Add($"Dòng {row}: Bỏ qua do thiếu mã sinh viên.");
+                                    failCount++;
+                                    continue;
+                                }
 
-                                    // Kiểm tra dữ liệu bắt buộc
-                                    if (string.IsNullOrEmpty(maSV))
+                                if (string.IsNullOrEmpty(hoTen))
+                                {
+                                    result.Add($"Dòng {row}: Sinh viên {maSV} - Thiếu họ tên.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra độ dài MaSV
+                                if (maSV.Length > 50) // Giả sử max length là 50
+                                {
+                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} quá dài.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra độ dài HoTen
+                                if (hoTen.Length > 255) // Giả sử max length là 255
+                                {
+                                    result.Add($"Dòng {row}: Họ tên {hoTen} quá dài.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra trùng lặp trong database
+                                if (existingMaSVList.Contains(maSV))
+                                {
+                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} đã tồn tại trong hệ thống.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra trùng lặp trong file hiện tại
+                                if (maSVInCurrentFile.Contains(maSV))
+                                {
+                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} bị trùng lặp trong file.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra mã lớp
+                                if (!string.IsNullOrEmpty(maLop) && !validMaLopList.Contains(maLop))
+                                {
+                                    result.Add($"Dòng {row}: Mã lớp {maLop} của sinh viên {maSV} không tồn tại.");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Kiểm tra email
+                                if (!string.IsNullOrEmpty(email))
+                                {
+                                    if (email.Length > 100) // Kiểm tra độ dài email
                                     {
-                                        result.Add($"Dòng {row}: Bỏ qua do thiếu mã sinh viên.");
+                                        result.Add($"Dòng {row}: Email {email} quá dài.");
                                         failCount++;
                                         continue;
                                     }
 
-                                    if (string.IsNullOrEmpty(hoTen))
-                                    {
-                                        result.Add($"Dòng {row}: Sinh viên {maSV} - Thiếu họ tên.");
-                                        failCount++;
-                                        continue;
-                                    }
-
-                                    // Kiểm tra mã sinh viên đã tồn tại chưa
-                                    if (await _context.SinhViens.AnyAsync(sv => sv.MaSV == maSV))
-                                    {
-                                        result.Add($"Dòng {row}: Mã sinh viên {maSV} đã tồn tại.");
-                                        failCount++;
-                                        continue;
-                                    }
-
-                                    // Kiểm tra và xử lý mã lớp
-                                    if (!string.IsNullOrEmpty(maLop) && !validMaLopList.Contains(maLop))
-                                    {
-                                        result.Add($"Dòng {row}: Mã lớp {maLop} của sinh viên {maSV} không tồn tại.");
-                                        failCount++;
-                                        continue;
-                                    }
-
-                                    // Kiểm tra định dạng email
-                                    if (!string.IsNullOrEmpty(email) && !Regex.IsMatch(email, @"^[\w-\.]+@[\w-\.]+\.[a-z]{2,4}$"))
+                                    if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
                                     {
                                         result.Add($"Dòng {row}: Email {email} của sinh viên {maSV} không hợp lệ.");
                                         failCount++;
                                         continue;
                                     }
+                                }
 
-                                    // Kiểm tra định dạng số điện thoại
-                                    if (!string.IsNullOrEmpty(soDienThoai) && !Regex.IsMatch(soDienThoai, @"^\d{10}$"))
+                                // Kiểm tra số điện thoại
+                                if (!string.IsNullOrEmpty(soDienThoai) && !Regex.IsMatch(soDienThoai, @"^\d{10}$"))
+                                {
+                                    result.Add($"Dòng {row}: SĐT {soDienThoai} của sinh viên {maSV} không hợp lệ (cần đúng 10 chữ số).");
+                                    failCount++;
+                                    continue;
+                                }
+
+                                // Xử lý ngày sinh
+                                DateTime ngaySinhValue;
+                                if (!DateTime.TryParse(ngaySinh, out ngaySinhValue))
+                                {
+                                    ngaySinhValue = DateTime.Now;
+                                }
+
+                                // Kiểm tra ngày sinh hợp lý
+                                if (ngaySinhValue > DateTime.Now || ngaySinhValue < new DateTime(1900, 1, 1))
+                                {
+                                    ngaySinhValue = DateTime.Now;
+                                    result.Add($"Dòng {row}: Ngày sinh không hợp lý, sử dụng ngày hiện tại cho sinh viên {maSV}.");
+                                }
+
+                                // Sử dụng transaction riêng cho từng dòng
+                                using (var transaction = await _context.Database.BeginTransactionAsync())
+                                {
+                                    try
                                     {
-                                        result.Add($"Dòng {row}: Số điện thoại {soDienThoai} của sinh viên {maSV} không hợp lệ (cần đúng 10 chữ số).");
-                                        failCount++;
-                                        continue;
-                                    }
-
-                                    // Kiểm tra và xử lý ngày sinh
-                                    DateTime ngaySinhValue;
-                                    if (!DateTime.TryParse(ngaySinh, out ngaySinhValue))
-                                    {
-                                        ngaySinhValue = DateTime.Now;
-                                        result.Add($"Dòng {row}: Ngày sinh của sinh viên {maSV} không hợp lệ, sử dụng ngày hiện tại.");
-                                    }
-
-                                    // Xử lý cấp tài khoản nếu được yêu cầu
-                                    string? maTaiKhoan = null;
-                                    if (capTaiKhoan)
-                                    {
-                                        // Tạo mã tài khoản mới
-                                        var lastTaiKhoan = await _context.TaiKhoans
-                                            .Where(tk => tk.MaTaiKhoan.StartsWith("TKSV"))
-                                            .OrderByDescending(tk => tk.MaTaiKhoan)
-                                            .FirstOrDefaultAsync();
-
-                                        if (lastTaiKhoan != null)
+                                        // Tạo tài khoản nếu cần
+                                        string? maTaiKhoan = null;
+                                        if (capTaiKhoan)
                                         {
-                                            string lastNumber = lastTaiKhoan.MaTaiKhoan.Substring(4);
-                                            int number;
-                                            if (int.TryParse(lastNumber, out number))
-                                                maTaiKhoan = $"TKSV{number + 1}";
-                                            else
-                                                maTaiKhoan = "TKSV1";
+                                            currentTaiKhoanNumber++;
+                                            maTaiKhoan = $"TKSV{currentTaiKhoanNumber}";
+
+                                            // Kiểm tra mã tài khoản đã tồn tại chưa
+                                            var existingTaiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
+                                            if (existingTaiKhoan != null)
+                                            {
+                                                result.Add($"Dòng {row}: Mã tài khoản {maTaiKhoan} đã tồn tại.");
+                                                failCount++;
+                                                continue;
+                                            }
+
+                                            var passwordHasher = new PasswordHasher<string>();
+                                            string hash = passwordHasher.HashPassword(null, maSV);
+
+                                            var taiKhoan = new TaiKhoan
+                                            {
+                                                MaTaiKhoan = maTaiKhoan,
+                                                TenDangNhap = maSV,
+                                                MatKhau = hash,
+                                                VaiTro = "SinhVien"
+                                            };
+
+                                            _context.TaiKhoans.Add(taiKhoan);
+
+                                            // Lưu tài khoản trước
+                                            await _context.SaveChangesAsync();
                                         }
-                                        else
-                                        {
-                                            maTaiKhoan = "TKSV1";
-                                        }
 
-                                        string defaultPassword = maSV;
-                                        var passwordHasher = new PasswordHasher<string>();
-                                        string hash = passwordHasher.HashPassword(null, defaultPassword);
-
-                                        var taiKhoan = new TaiKhoan
+                                        // Tạo sinh viên
+                                        var sinhVien = new Models.SinhVien
                                         {
+                                            MaSV = maSV,
                                             MaTaiKhoan = maTaiKhoan,
-                                            TenDangNhap = maSV,
-                                            MatKhau = hash,
-                                            VaiTro = "SinhVien"
+                                            HoTen = hoTen,
+                                            MaLop = string.IsNullOrEmpty(maLop) ? null : maLop,
+                                            Email = string.IsNullOrEmpty(email) ? null : email,
+                                            SoDienThoai = string.IsNullOrEmpty(soDienThoai) ? null : soDienThoai,
+                                            DiaChi = string.IsNullOrEmpty(diaChi) ? null : diaChi,
+                                            NgaySinh = ngaySinhValue,
+                                            GioiTinh = string.IsNullOrEmpty(gioiTinh) ? null : gioiTinh,
+                                            MaVaiTro = int.TryParse(maVaiTro, out var mvt) ? mvt : 1,
+                                            TrangThai = string.IsNullOrEmpty(trangThai) ? "HoatDong" : trangThai,
+                                            AnhDaiDien = null
                                         };
 
-                                        _context.TaiKhoans.Add(taiKhoan);
+                                        _context.SinhViens.Add(sinhVien);
+
+                                        // Lưu sinh viên
+                                        await _context.SaveChangesAsync();
+                                        await transaction.CommitAsync();
+
+                                        // Thêm vào danh sách theo dõi
+                                        maSVInCurrentFile.Add(maSV);
+                                        existingMaSVList.Add(maSV);
+
+                                        result.Add($"Dòng {row}: Đã thêm sinh viên {maSV} - {hoTen} thành công.");
+                                        successCount++;
                                     }
-
-                                    // Tạo đối tượng sinh viên mới
-                                    var sinhVien = new Models.SinhVien
+                                    catch (DbUpdateException dbEx)
                                     {
-                                        MaSV = maSV,
-                                        MaTaiKhoan = maTaiKhoan, // null nếu không cấp tài khoản
-                                        HoTen = hoTen,
-                                        MaLop = maLop,
-                                        Email = email,
-                                        SoDienThoai = soDienThoai,
-                                        DiaChi = diaChi,
-                                        NgaySinh = ngaySinhValue,
-                                        GioiTinh = gioiTinh,
-                                        MaVaiTro = int.TryParse(maVaiTro, out var mvt) ? mvt : 1,
-                                        TrangThai = string.IsNullOrEmpty(trangThai) ? "HoatDong" : trangThai
-                                    };
+                                        await transaction.RollbackAsync();
 
-                                    _context.SinhViens.Add(sinhVien);
-                                    result.Add($"Dòng {row}: Đã thêm sinh viên {maSV} - {hoTen} thành công.");
-                                    successCount++;
-                                }
-                                catch (Exception ex)
-                                {
-                                    result.Add($"Dòng {row}: Lỗi - {ex.Message}");
-                                    failCount++;
+                                        // Rollback số tài khoản nếu có lỗi
+                                        if (capTaiKhoan)
+                                            currentTaiKhoanNumber--;
+
+                                        string detailError = GetDbUpdateExceptionDetails(dbEx);
+                                        result.Add($"Dòng {row}: Lỗi database - {detailError}");
+                                        failCount++;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        await transaction.RollbackAsync();
+
+                                        // Rollback số tài khoản nếu có lỗi
+                                        if (capTaiKhoan)
+                                            currentTaiKhoanNumber--;
+
+                                        string errorDetail = ex.InnerException?.Message ?? ex.Message;
+                                        result.Add($"Dòng {row}: Lỗi không xác định - {errorDetail}");
+                                        failCount++;
+                                    }
                                 }
                             }
-
-                            // Lưu các thay đổi vào database
-                            await _context.SaveChangesAsync();
-
-                            // Tóm tắt kết quả import
-                            result.Insert(0, $"Tổng cộng: {successCount} sinh viên được import thành công, {failCount} sinh viên gặp lỗi.");
+                            catch (Exception ex)
+                            {
+                                string errorDetail = ex.InnerException?.Message ?? ex.Message;
+                                result.Add($"Dòng {row}: Lỗi đọc dữ liệu - {errorDetail}");
+                                failCount++;
+                            }
                         }
-                    }
-                    catch (InvalidDataException ex)
-                    {
-                        // Lỗi khi file Excel không đúng định dạng
-                        return StatusCode(500, new
-                        {
-                            message = "File Excel không đúng định dạng",
-                            error = ex.Message
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        // Các lỗi khác khi đọc file Excel
-                        return StatusCode(500, new
-                        {
-                            message = "Lỗi khi đọc file Excel",
-                            error = ex.Message
-                        });
+
+                        result.Insert(0, $"Tổng cộng: {successCount} thành công, {failCount} lỗi.");
                     }
                 }
 
-                return Ok(new { message = "Import hoàn tất", chiTiet = result });
+                return Ok(new
+                {
+                    message = "Import hoàn tất",
+                    chiTiet = result,
+                    thongKe = new
+                    {
+                        tongSo = successCount + failCount,
+                        thanhCong = successCount,
+                        thatBai = failCount
+                    }
+                });
             }
             catch (Exception ex)
             {
-                // Xử lý các lỗi khác
+                string errorDetail = ex.InnerException?.Message ?? ex.Message;
                 return StatusCode(500, new
                 {
                     message = "Đã xảy ra lỗi khi import sinh viên",
-                    error = ex.Message
+                    error = errorDetail,
+                    stackTrace = ex.StackTrace
                 });
             }
         }
+
+        // Thêm method helper để lấy chi tiết lỗi database
+        private string GetDbUpdateExceptionDetails(DbUpdateException ex)
+        {
+            var details = new List<string>();
+
+            if (ex.InnerException != null)
+            {
+                details.Add($"Inner Exception: {ex.InnerException.Message}");
+            }
+
+            foreach (var entry in ex.Entries)
+            {
+                details.Add($"Entity: {entry.Entity.GetType().Name}");
+                details.Add($"State: {entry.State}");
+
+                foreach (var property in entry.Properties)
+                {
+                    if (property.IsModified)
+                    {
+                        details.Add($"Property {property.Metadata.Name}: {property.CurrentValue}");
+                    }
+                }
+            }
+
+            return string.Join(" | ", details);
+        }
+
 
         [HttpGet("download_template")]
         public IActionResult DownloadTemplate()

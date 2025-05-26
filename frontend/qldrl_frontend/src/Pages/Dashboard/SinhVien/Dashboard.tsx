@@ -11,9 +11,9 @@ import {
 } from "react-feather";
 import axios from "axios";
 import "./StudentDashboard.css";
-import { useNavigate,useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Chatbot from "../../Login/Chatbot";
-import { Facebook, Mail, Phone, MapPin, Globe } from 'react-feather';
+import { Facebook, Mail, Phone, MapPin, Globe } from "react-feather";
 
 import XemHoatDong from "../../../components/SinhVien/views/XemHoatDong";
 import XemDiemRenLuyen from "../../../components/SinhVien/views/XemDiemRenLuyen";
@@ -23,7 +23,12 @@ import ThongTinSinhVien from "../../../components/SinhVien/views/ThongTinSinhVie
 import HoatDongDaDangKy from "../../../components/SinhVien/views/HoatDongDaDangKy";
 import NotificationDropdown from "../../../components/SinhVien/views/NotificationDropdown";
 
-type MenuKey = "dashboard" | "activities" | "score" | "notifications" | "evidence";
+type MenuKey =
+  | "dashboard"
+  | "activities"
+  | "score"
+  | "notifications"
+  | "evidence";
 interface Student {
   MaSV: string;
   HoTen: string;
@@ -43,16 +48,16 @@ const Footer: React.FC = () => {
       <div className="footer-container">
         <div className="footer-column">
           <div className="footer-logo">
-            <img 
-              src="../hinhanh/HUIT(2).jpeg" 
-              alt="Logo trường HUIT" 
-              className="footer-logo-img" 
+            <img
+              src="../hinhanh/HUIT(2).jpeg"
+              alt="Logo trường HUIT"
+              className="footer-logo-img"
             />
           </div>
           <h3>TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h3>
           <p>HO CHI MINH CITY UNIVERSITY OF INDUSTRY AND TRADE</p>
         </div>
-        
+
         <div className="footer-column">
           <h4>Liên hệ</h4>
           <ul className="footer-links">
@@ -74,21 +79,32 @@ const Footer: React.FC = () => {
             </li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Liên kết nhanh</h4>
           <ul className="footer-links">
-            <li><a href="/">Trang chủ</a></li>
-            <li><a href="/">Thông báo</a></li>
-            <li><a href="/">Điểm rèn luyện</a></li>
-            <li><a href="/">Hoạt động</a></li>
+            <li>
+              <a href="/">Trang chủ</a>
+            </li>
+            <li>
+              <a href="/">Thông báo</a>
+            </li>
+            <li>
+              <a href="/">Điểm rèn luyện</a>
+            </li>
+            <li>
+              <a href="/">Hoạt động</a>
+            </li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Kết nối với chúng tôi</h4>
           <div className="social-links">
-            <a href="https://www.facebook.com/huit.edu.vn" className="social-link">
+            <a
+              href="https://www.facebook.com/huit.edu.vn"
+              className="social-link"
+            >
               <Facebook size={24} />
             </a>
             <a href="mailto:contact@huit.edu.vn" className="social-link">
@@ -101,9 +117,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} Hệ thống Quản lý điểm rèn luyện - Trường Đại học Công Thương TP.HCM</p>
+        <p>
+          © {new Date().getFullYear()} Hệ thống Quản lý điểm rèn luyện - Trường
+          Đại học Công Thương TP.HCM
+        </p>
       </div>
     </footer>
   );
@@ -119,18 +138,18 @@ const StudentDashboard: React.FC = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
 
- 
   const navigate = useNavigate();
 
   const BASE_URL = "http://localhost:5163";
 
-  const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> = {
-    dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
-    activities: { title: "Xem hoạt động", icon: <Calendar size={18} /> },
-    score: { title: "Xem điểm rèn luyện", icon: <Award size={18} /> },
-    notifications: { title: "Thông báo", icon: <Bell size={18} /> },
-    evidence: { title: "Gửi phản hồi", icon: <FileText size={18} /> },
-  };
+  const menuConfig: Record<MenuKey, { title: string; icon: React.ReactNode }> =
+    {
+      dashboard: { title: "Tổng quan", icon: <BookOpen size={18} /> },
+      activities: { title: "Xem hoạt động", icon: <Calendar size={18} /> },
+      score: { title: "Xem điểm rèn luyện", icon: <Award size={18} /> },
+      notifications: { title: "Thông báo", icon: <Bell size={18} /> },
+      evidence: { title: "Gửi phản hồi", icon: <FileText size={18} /> },
+    };
 
   const handleAvatarClick = () => {
     setMenuVisible(!menuVisible);
@@ -238,8 +257,8 @@ const StudentDashboard: React.FC = () => {
               <>
                 <ThongTinSinhVien student={studentData} />
                 <HoatDongDaDangKy />
-                
-               <XemThongBao/>
+
+                <XemThongBao />
               </>
             ) : (
               <p>Đang tải thông tin sinh viên...</p>
@@ -248,7 +267,7 @@ const StudentDashboard: React.FC = () => {
         );
     }
   };
-  
+
   const handleLogout = () => {
     try {
       localStorage.clear();
@@ -315,7 +334,7 @@ const StudentDashboard: React.FC = () => {
             ))}
           </ul>
         </nav>
-        
+
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={18} />
@@ -334,46 +353,53 @@ const StudentDashboard: React.FC = () => {
             <div>
               <NotificationDropdown />
             </div>
-            
           </div>
           <div className="avatar-menu-container" ref={avatarRef}>
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt="avatar nhỏ"
-                  className="mini-avatar"
-                  onClick={handleAvatarClick}
-                />
-              ) : (
-                <div className="mini-avatar" onClick={handleAvatarClick}>
-                  {studentName.charAt(0).toUpperCase()}
-                </div>
-              )}
+            {avatar ? (
+              <img
+                src={avatar}
+                alt="avatar nhỏ"
+                className="mini-avatar"
+                onClick={handleAvatarClick}
+              />
+            ) : (
+              <div className="mini-avatar" onClick={handleAvatarClick}>
+                {studentName.charAt(0).toUpperCase()}
+              </div>
+            )}
 
-              {menuVisible && (
-                <div className="avatar-dropdown">
-                  <div className="menu-item" onClick={() => navigate("/chinh-sua-thong-tin")}>
-                    Chỉnh sửa thông tin
-                  </div>
-                  <div className="menu-item" onClick={() => navigate("/doi-mat-khau")}>
-                    Đổi mật khẩu
-                  </div>
-                  <div className="menu-item" onClick={() => {
+            {menuVisible && (
+              <div className="avatar-dropdown">
+                <div
+                  className="menu-item"
+                  onClick={() => navigate("/chinh-sua-thong-tin")}
+                >
+                  Chỉnh sửa thông tin
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => navigate("/doi-mat-khau")}
+                >
+                  Đổi mật khẩu
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => {
                     localStorage.clear();
                     navigate("/login");
-                  }}>
-                    Đăng xuất
-                  </div>
+                  }}
+                >
+                  Đăng xuất
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+          </div>
         </header>
         <div className="content-body">{renderContent()}</div>
-        <Footer /> 
+        <Footer />
       </div>
-      
-          <Chatbot />
 
+      <Chatbot />
     </div>
   );
 };
