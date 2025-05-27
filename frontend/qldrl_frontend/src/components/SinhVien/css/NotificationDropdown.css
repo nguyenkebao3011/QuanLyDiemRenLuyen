@@ -1,5 +1,5 @@
-/* Toast event time */
-.toast-event-time {
+/* Thời gian sự kiện toast */
+.thoi-gian-su-kien-toast {
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -10,15 +10,15 @@
   border-radius: 12px;
   width: fit-content;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  animation: shimmer 2s infinite linear;
+  animation: long-lanh 2s infinite linear;
 }
 
-.event-time-icon {
+.bieu-tuong-thoi-gian-su-kien {
   margin-right: 5px;
   font-size: 14px;
 }
 
-@keyframes shimmer {
+@keyframes long-lanh {
   0% {
     background-position: -100px;
   }
@@ -27,30 +27,30 @@
   }
 }
 
-/* NotificationDropdown.css */
+/* CSS Dropdown Thông báo */
 :root {
-  --primary-color: #07559f;
-  --primary-hover: #3a5de4;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --danger-color: #ff4757;
-  --warning-color: #ffa502;
-  --info-color: #0abde3;
-  --light-bg: #f8f9fa;
-  --dark-bg: #343a40;
-  --shadow-color: rgba(0, 0, 0, 0.15);
-  --border-radius: 8px;
-  --transition: all 0.3s ease;
+  --mau-chinh: #07559f;
+  --mau-chinh-hover: #3a5de4;
+  --mau-phu: #6c757d;
+  --mau-thanh-cong: #28a745;
+  --mau-nguy-hiem: #ff4757;
+  --mau-canh-bao: #ffa502;
+  --mau-thong-tin: #0abde3;
+  --nen-sang: #f8f9fa;
+  --nen-toi: #343a40;
+  --mau-bong: rgba(0, 0, 0, 0.15);
+  --ban-kinh-vien: 8px;
+  --chuyen-tiep: all 0.3s ease;
 }
 
-/* Notification Icon Container */
-.notification-icon-container {
+/* Container biểu tượng thông báo */
+.container-bieu-tuong-thong-bao {
   position: relative;
   display: inline-block;
 }
 
-/* Notification Icon */
-.notification-icon {
+/* Biểu tượng thông báo */
+.bieu-tuong-thong-bao {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,17 +59,17 @@
   border-radius: 50%;
   background-color: #f5f5f5;
   cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 2px 5px var(--shadow-color);
+  transition: var(--chuyen-tiep);
+  box-shadow: 0 2px 5px var(--mau-bong);
 }
 
-.notification-icon:hover {
+.bieu-tuong-thong-bao:hover {
   background-color: #e9e9e9;
   transform: scale(1.05);
 }
 
-/* Notification Badge */
-.notification-badge2 {
+/* Huy hiệu thông báo */
+.huy-hieu-thong-bao {
   position: absolute;
   top: -3px;
   right: -3px;
@@ -79,44 +79,44 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: var(--danger-color);
+  background-color: var(--mau-nguy-hiem);
   color: white;
   font-size: 12px;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(255, 71, 87, 0.4);
-  animation: pulse 1.5s infinite;
+  animation: nhap-nhay 1.5s infinite;
 }
 
-/* Notification Dropdown */
-.notification-dropdown {
+/* Dropdown thông báo */
+.dropdown-thong-bao {
   position: absolute;
   top: 50px;
   right: 0;
   width: 380px;
   max-height: 500px;
   background-color: white;
-  border-radius: var(--border-radius);
+  border-radius: var(--ban-kinh-vien);
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   transform-origin: top right;
-  animation: dropdown-appear 0.3s ease;
+  animation: hien-thi-dropdown 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Notification Dropdown Header */
-.notification-dropdown-header {
-  background: linear-gradient(135deg, var(--primary-color), #4a6cf7);
+/* Header dropdown thông báo */
+.header-dropdown-thong-bao {
+  background: linear-gradient(135deg, var(--mau-chinh), #4a6cf7);
   color: white;
   padding: 16px 20px;
   text-align: center;
-  border-top-left-radius: var(--border-radius);
-  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--ban-kinh-vien);
+  border-top-right-radius: var(--ban-kinh-vien);
   position: relative;
   overflow: hidden;
 }
 
-.notification-dropdown-header::before {
-  content: '';
+.header-dropdown-thong-bao::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -126,7 +126,7 @@
   pointer-events: none;
 }
 
-.notification-dropdown-header h3 {
+.header-dropdown-thong-bao h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
@@ -134,8 +134,8 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Notification List */
-.notification-list2 {
+/* Danh sách thông báo */
+.danh-sach-thong-bao {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -144,21 +144,21 @@
   scrollbar-width: thin;
 }
 
-.notification-list2::-webkit-scrollbar {
+.danh-sach-thong-bao::-webkit-scrollbar {
   width: 6px;
 }
 
-.notification-list2::-webkit-scrollbar-thumb {
+.danh-sach-thong-bao::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #d1d5db, #9ca3af);
   border-radius: 10px;
 }
 
-.notification-list2::-webkit-scrollbar-track {
+.danh-sach-thong-bao::-webkit-scrollbar-track {
   background-color: #f9fafb;
 }
 
-/* Notification Item */
-.notification-item {
+/* Mục thông báo */
+.muc-thong-bao {
   padding: 16px 20px;
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
@@ -167,31 +167,31 @@
   background: linear-gradient(to right, transparent, rgba(94, 114, 228, 0.02));
 }
 
-.notification-item:hover {
+.muc-thong-bao:hover {
   background: linear-gradient(to right, rgba(94, 114, 228, 0.05), rgba(94, 114, 228, 0.02));
   transform: translateX(2px);
 }
 
-.notification-item:last-child {
+.muc-thong-bao:last-child {
   border-bottom: none;
-  border-bottom-left-radius: var(--border-radius);
-  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--ban-kinh-vien);
+  border-bottom-right-radius: var(--ban-kinh-vien);
 }
 
-.notification-item.read {
+.muc-thong-bao.da-doc {
   background-color: #fdfdfd;
   opacity: 0.8;
 }
 
-/* Notification Content */
-.notification-content {
+/* Nội dung thông báo */
+.noi-dung-thong-bao {
   display: flex;
   align-items: flex-start;
   gap: 15px;
 }
 
-/* Notification Icon Type */
-.notification-icon-type {
+/* Biểu tượng loại thông báo */
+.bieu-tuong-loai-thong-bao {
   flex-shrink: 0;
   width: 44px;
   height: 44px;
@@ -204,8 +204,8 @@
   position: relative;
 }
 
-.notification-icon-type::after {
-  content: '';
+.bieu-tuong-loai-thong-bao::after {
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -215,37 +215,43 @@
   transform: scale(1.3);
 }
 
-.schedule {
+.lich-trinh {
   background: linear-gradient(135deg, rgba(10, 189, 227, 0.2), rgba(10, 189, 227, 0.1));
-  color: var(--info-color);
+  color: var(--mau-thong-tin);
   border: 2px solid rgba(10, 189, 227, 0.3);
 }
 
-.reminder {
+.nhac-nho {
   background: linear-gradient(135deg, rgba(255, 165, 2, 0.2), rgba(255, 165, 2, 0.1));
-  color: var(--warning-color);
+  color: var(--mau-canh-bao);
   border: 2px solid rgba(255, 165, 2, 0.3);
 }
 
-.event {
+.su-kien {
   background: linear-gradient(135deg, rgba(94, 114, 228, 0.2), rgba(94, 114, 228, 0.1));
   color: #5e72e4;
   border: 2px solid rgba(94, 114, 228, 0.3);
 }
 
-.general {
+.tong-quat {
   background: linear-gradient(135deg, rgba(130, 94, 228, 0.2), rgba(130, 94, 228, 0.1));
   color: #825ee4;
   border: 2px solid rgba(130, 94, 228, 0.3);
 }
 
-/* Notification Details */
-.notification-details {
-  flex-grow: 1;
-  min-width: 0; /* Important for text overflow */
+.chi-dinh {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.1));
+  color: #ec4899;
+  border: 2px solid rgba(236, 72, 153, 0.3);
 }
 
-.notification-details h4 {
+/* Chi tiết thông báo */
+.chi-tiet-thong-bao {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.chi-tiet-thong-bao h4 {
   margin: 0 0 8px 0;
   font-size: 15px;
   font-weight: 600;
@@ -255,12 +261,12 @@
   hyphens: auto;
 }
 
-.notification-details h4.read {
-  color: var(--primary-color);
+.chi-tiet-thong-bao h4.da-doc {
+  color: var(--mau-chinh);
   font-weight: 700;
 }
 
-.title-prominent {
+.tieu-de-noi-bat {
   font-size: 16px !important;
   font-weight: 700 !important;
   color: #111827 !important;
@@ -269,7 +275,7 @@
   line-height: 1.4;
 }
 
-.notification-details div {
+.chi-tiet-thong-bao div {
   font-size: 13px;
   color: #6b7280;
   margin-bottom: 6px;
@@ -278,9 +284,9 @@
   hyphens: auto;
 }
 
-/* Highlight styles for formatted content */
-.notification-details .highlight-date,
-.toast-message .highlight-date {
+/* Styles làm nổi bật cho nội dung được định dạng */
+.chi-tiet-thong-bao .lam-noi-bat-ngay,
+.tin-nhan-toast .lam-noi-bat-ngay {
   color: #2563eb;
   font-weight: 600;
   background: rgba(37, 99, 235, 0.1);
@@ -291,8 +297,8 @@
   margin: 0 2px;
 }
 
-.notification-details .highlight-time,
-.toast-message .highlight-time {
+.chi-tiet-thong-bao .lam-noi-bat-gio,
+.tin-nhan-toast .lam-noi-bat-gio {
   color: #059669;
   font-weight: 600;
   background: rgba(5, 150, 105, 0.1);
@@ -303,8 +309,8 @@
   margin: 0 2px;
 }
 
-.notification-details .highlight-important,
-.toast-message .highlight-important {
+.chi-tiet-thong-bao .lam-noi-bat-quan-trong,
+.tin-nhan-toast .lam-noi-bat-quan-trong {
   color: #dc2626;
   font-weight: 600;
   background: rgba(220, 38, 38, 0.1);
@@ -314,7 +320,7 @@
   margin: 0 2px;
 }
 
-.highlight-location {
+.lam-noi-bat-dia-diem {
   color: #ea6100;
   font-weight: 600;
   background: rgba(234, 97, 0, 0.1);
@@ -324,27 +330,27 @@
   margin: 0 2px;
 }
 
-.notification-details .date {
+.chi-tiet-thong-bao .ngay-thang {
   font-size: 11px;
   color: #9ca3af;
   margin: 8px 0 0 0;
   font-style: italic;
 }
 
-/* Notification Unread Dot */
-.notification-unread-dot {
+/* Chấm thông báo chưa đọc */
+.cham-chua-doc-thong-bao {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--danger-color), #ff6b87);
+  background: linear-gradient(135deg, var(--mau-nguy-hiem), #ff6b87);
   position: absolute;
   top: 16px;
   right: 16px;
   box-shadow: 0 0 0 2px white, 0 2px 4px rgba(255, 71, 87, 0.3);
-  animation: pulse-dot 2s infinite;
+  animation: nhap-nhay-cham 2s infinite;
 }
 
-@keyframes pulse-dot {
+@keyframes nhap-nhay-cham {
   0% {
     transform: scale(1);
     opacity: 1;
@@ -359,8 +365,8 @@
   }
 }
 
-/* Empty Notification */
-.notification-empty {
+/* Thông báo trống */
+.thong-bao-trong {
   padding: 40px 20px;
   text-align: center;
   color: #9ca3af;
@@ -368,16 +374,16 @@
   font-size: 14px;
 }
 
-.notification-empty::before {
-  content: '🔔';
+.thong-bao-trong::before {
+  content: "🔔";
   display: block;
   font-size: 32px;
   margin-bottom: 10px;
   opacity: 0.5;
 }
 
-/* Response Toast */
-.response-toast {
+/* Toast phản hồi */
+.toast-phan-hoi {
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -388,31 +394,31 @@
   border-radius: 8px;
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-  animation: fadeInOut 3s ease-in-out forwards;
+  animation: mo-dan-tat-dan 3s ease-in-out forwards;
   font-weight: 500;
 }
 
-@keyframes fadeInOut {
-  0% { 
-    opacity: 0; 
+@keyframes mo-dan-tat-dan {
+  0% {
+    opacity: 0;
     transform: translateX(-50%) translateY(20px);
   }
-  10% { 
-    opacity: 1; 
+  10% {
+    opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
-  90% { 
-    opacity: 1; 
+  90% {
+    opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
-  100% { 
-    opacity: 0; 
+  100% {
+    opacity: 0;
     transform: translateX(-50%) translateY(-20px);
   }
 }
 
-/* Toast Container */
-.toast-container {
+/* Container Toast */
+.container-toast {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -423,31 +429,27 @@
   perspective: 1000px;
 }
 
-.toast-notification {
-  /* width: 360px;
+.thong-bao-toast {
+  width: 360px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
   backdrop-filter: blur(12px);
   border-radius: 16px;
-  box-shadow: 
-    0 12px 28px rgba(0, 0, 0, 0.12), 
-    0 6px 12px rgba(0, 0, 0, 0.08), 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 6px 12px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
   padding: 20px 22px;
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  animation: toast-slide-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-             toast-glow 3s infinite alternate, 
-             toast-float 5s infinite ease-in-out;
+  animation: truot-vao-toast 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), sang-toast 3s infinite alternate, bay-toast
+    5s infinite ease-in-out;
   border-left: 5px solid;
   border-image: linear-gradient(to bottom, #5e72e4, #825ee4) 1;
   transform-origin: center right;
   position: relative;
-  overflow: hidden; */
+  overflow: hidden;
 }
 
-.toast-notification::before {
-  content: '';
+.thong-bao-toast::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -457,18 +459,18 @@
   pointer-events: none;
 }
 
-.toast-notification::after {
-  content: '';
+.thong-bao-toast::after {
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 3px;
   background: linear-gradient(to right, transparent, rgba(94, 114, 228, 0.8), transparent);
-  animation: toast-progress 8s linear forwards;
+  animation: tien-trinh-toast 8s linear forwards;
 }
 
-.toast-icon {
+.bieu-tuong-toast {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -480,57 +482,57 @@
   color: white;
   flex-shrink: 0;
   box-shadow: 0 6px 12px rgba(94, 114, 228, 0.4);
-  animation: toast-icon-pulse 2s infinite alternate;
+  animation: nhap-nhay-bieu-tuong-toast 2s infinite alternate;
   position: relative;
 }
 
-.toast-icon::after {
-  content: '';
+.bieu-tuong-toast::after {
+  content: "";
   position: absolute;
   width: 60px;
   height: 60px;
   border-radius: 50%;
   background: transparent;
   border: 2px solid rgba(94, 114, 228, 0.3);
-  animation: toast-ripple 2s infinite;
+  animation: song-toast 2s infinite;
 }
 
-/* Different colors for different notification types */
-.toast-notification[data-type="Thay đổi lịch trình"] {
+/* Màu sắc khác nhau cho các loại thông báo khác nhau */
+.thong-bao-toast[data-type="Thay đổi lịch trình"] {
   border-image: linear-gradient(to bottom, #11cdef, #1171ef) 1;
 }
 
-.toast-notification[data-type="Thay đổi lịch trình"] .toast-icon {
+.thong-bao-toast[data-type="Thay đổi lịch trình"] .bieu-tuong-toast {
   background: linear-gradient(135deg, #11cdef, #1171ef);
   box-shadow: 0 6px 12px rgba(17, 205, 239, 0.4);
 }
 
-.toast-notification[data-type="Thay đổi lịch trình"]::after {
+.thong-bao-toast[data-type="Thay đổi lịch trình"]::after {
   background: linear-gradient(to right, transparent, rgba(17, 205, 239, 0.8), transparent);
 }
 
-/* Reminder type styling */
-.toast-notification[data-type="Nhắc nhở"] {
+/* Styling loại nhắc nhở */
+.thong-bao-toast[data-type="Nhắc nhở"] {
   border-image: linear-gradient(to bottom, #fb6340, #fbb140) 1;
 }
 
-.toast-notification[data-type="Nhắc nhở"] .toast-icon {
+.thong-bao-toast[data-type="Nhắc nhở"] .bieu-tuong-toast {
   background: linear-gradient(135deg, #fb6340, #fbb140);
   box-shadow: 0 6px 12px rgba(251, 99, 64, 0.4);
 }
 
-.toast-notification[data-type="Nhắc nhở"]::after {
+.thong-bao-toast[data-type="Nhắc nhở"]::after {
   background: linear-gradient(to right, transparent, rgba(251, 99, 64, 0.8), transparent);
 }
 
-.toast-content {
+.noi-dung-toast {
   flex-grow: 1;
   position: relative;
   z-index: 2;
   min-width: 0;
 }
 
-.toast-title {
+.tieu-de-toast {
   margin: 0 0 8px 0;
   font-weight: 700;
   font-size: 16px;
@@ -541,8 +543,8 @@
   word-wrap: break-word;
 }
 
-.toast-title::after {
-  content: '';
+.tieu-de-toast::after {
+  content: "";
   position: absolute;
   left: 0;
   bottom: -3px;
@@ -551,7 +553,7 @@
   background: linear-gradient(to right, #5e72e4, transparent);
 }
 
-.toast-message {
+.tin-nhan-toast {
   margin: 0 0 12px 0;
   font-size: 14px;
   color: #4b5563;
@@ -561,7 +563,7 @@
   hyphens: auto;
 }
 
-.toast-time {
+.thoi-gian-toast {
   font-size: 11px;
   color: #8898aa;
   margin: 0;
@@ -570,13 +572,13 @@
   font-weight: 500;
 }
 
-.toast-time::before {
-  content: '🕒';
+.thoi-gian-toast::before {
+  content: "🕒";
   font-size: 12px;
   margin-right: 6px;
 }
 
-.toast-close {
+.dong-toast {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -596,23 +598,23 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.toast-close:hover {
+.dong-toast:hover {
   color: #ef4444;
   background: rgba(255, 255, 255, 0.5);
   transform: rotate(90deg) scale(1.1);
 }
 
-/* Action Buttons */
-.toast-actions,
-.notification-actions {
+/* Nút hành động */
+.hanh-dong-toast,
+.hanh-dong-thong-bao {
   display: flex;
   gap: 10px;
   margin-top: 12px;
   flex-wrap: wrap;
 }
 
-.toast-action-button,
-.action-button {
+.nut-hanh-dong-toast,
+.nut-hanh-dong {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
@@ -623,26 +625,26 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.toast-action-button.confirm2,
-.action-button.confirm {
+.nut-hanh-dong-toast.xac-nhan,
+.nut-hanh-dong.xac-nhan {
   background: linear-gradient(135deg, #10b981, #059669);
   color: white;
 }
 
-.toast-action-button.reject2,
-.action-button.reject {
+.nut-hanh-dong-toast.tu-choi,
+.nut-hanh-dong.tu-choi {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
 }
 
-.toast-action-button:hover,
-.action-button:hover {
+.nut-hanh-dong-toast:hover,
+.nut-hanh-dong:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Animations */
-@keyframes dropdown-appear {
+@keyframes hien-thi-dropdown {
   from {
     opacity: 0;
     transform: scale(0.95) translateY(-10px);
@@ -653,7 +655,7 @@
   }
 }
 
-@keyframes toast-slide-in {
+@keyframes truot-vao-toast {
   from {
     opacity: 0;
     transform: translateX(100%) rotateY(-10deg);
@@ -667,7 +669,7 @@
   }
 }
 
-@keyframes toast-glow {
+@keyframes sang-toast {
   0% {
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 6px 12px rgba(0, 0, 0, 0.08);
   }
@@ -679,8 +681,9 @@
   }
 }
 
-@keyframes toast-float {
-  0%, 100% {
+@keyframes bay-toast {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -688,7 +691,7 @@
   }
 }
 
-@keyframes toast-icon-pulse {
+@keyframes nhap-nhay-bieu-tuong-toast {
   0% {
     transform: scale(1);
   }
@@ -697,7 +700,7 @@
   }
 }
 
-@keyframes toast-ripple {
+@keyframes song-toast {
   0% {
     transform: scale(0.8);
     opacity: 1;
@@ -708,7 +711,7 @@
   }
 }
 
-@keyframes toast-progress {
+@keyframes tien-trinh-toast {
   0% {
     width: 100%;
   }
@@ -717,7 +720,7 @@
   }
 }
 
-@keyframes pulse {
+@keyframes nhap-nhay {
   0% {
     transform: scale(1);
   }
@@ -729,20 +732,20 @@
   }
 }
 
-/* Responsive Design */
+/* Thiết kế responsive */
 @media (max-width: 480px) {
-  .notification-dropdown {
+  .dropdown-thong-bao {
     width: 320px;
     left: 50%;
     transform: translateX(-50%);
     right: auto;
   }
-  
-  .toast-notification {
+
+  .thong-bao-toast {
     width: 320px;
   }
-  
-  .toast-container {
+
+  .container-toast {
     left: 10px;
     right: 10px;
   }

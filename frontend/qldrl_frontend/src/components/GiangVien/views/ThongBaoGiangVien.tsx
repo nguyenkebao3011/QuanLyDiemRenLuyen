@@ -76,17 +76,17 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead }) => {
   const eventTime = extractEventTime(thongBao.NoiDung);
 
   return (
-    <div className="toast-notification" onClick={handleClick} data-type={thongBao.LoaiThongBao}>
-      <div className="toast-icon">{getEmoji()}</div>
-      <div className="toast-content">
-        <h4 className="toast-title title-prominent">{thongBao.TieuDe}</h4>
-        <p className="toast-message" dangerouslySetInnerHTML={{ __html: formattedContent }}></p>
+    <div className="thong-bao-toast" onClick={handleClick} data-type={thongBao.LoaiThongBao}>
+      <div className="bieu-tuong-toast">{getEmoji()}</div>
+      <div className="noi-dung-toast">
+        <h4 className="tieu-de-toast tieu-de-noi-bat">{thongBao.TieuDe}</h4>
+        <p className="tin-nhan-toast" dangerouslySetInnerHTML={{ __html: formattedContent }}></p>
         {eventTime && (
-          <p className="toast-event-time">
-            <span className="event-time-icon">📆</span> {eventTime}
+          <p className="thoi-gian-su-kien-toast">
+            <span className="bieu-tuong-thoi-gian-su-kien">📆</span> {eventTime}
           </p>
         )}
-        <p className="toast-time">{new Date(thongBao.NgayTao).toLocaleString('vi-VN')}</p>
+        <p className="thoi-gian-toast">{new Date(thongBao.NgayTao).toLocaleString('vi-VN')}</p>
       </div>
       <button
         className="toast-close"
@@ -191,39 +191,39 @@ const ThongBaoDropdown: React.FC = () => {
 
   return (
     <>
-      <div className="notification-icon-container" ref={dropdownRef}>
-        <div className="notification-icon" onClick={() => setHienThi(!hienThi)}>
+      <div className="container-bieu-tuong-thong-bao" ref={dropdownRef}>
+        <div className="bieu-tuong-thong-bao" onClick={() => setHienThi(!hienThi)}>
           <Bell size={20} />
-          {soThongBaoChuaDoc > 0 && <span className="notification-badge2">{soThongBaoChuaDoc}</span>}
+          {soThongBaoChuaDoc > 0 && <span className="huy-hieu-thong-bao">{soThongBaoChuaDoc}</span>}
         </div>
 
         {hienThi && (
-          <div className="notification-dropdown">
-            <div className="notification-dropdown-header">
+          <div className="dropdown-thong-bao">
+            <div className="header-dropdown-thong-bao">
               <h3>Thông báo</h3>
             </div>
             {danhSachThongBao.length === 0 ? (
-              <div className="notification-empty">Không có thông báo nào</div>
+              <div className="thong-bao-trong">Không có thông báo nào</div>
             ) : (
-              <ul className="notification-list2">
+              <ul className="danh-sach-thong-bao">
                 {danhSachThongBao.map((tb, index) => {
                   const processedContent = formatNoiDung(tb.NoiDung);
                   return (
                     <li
                       key={tb.MaThongBao ?? `thongbao-${index}`}
-                      className={`notification-item ${tb.DaDoc ? 'read' : ''}`}
+                      className={`muc-thong-bao ${tb.DaDoc ? "da-doc" : ''}`}
                       onClick={() => !tb.DaDoc && tb.MaThongBao && danhDauDaDoc(tb.MaThongBao)}
                     >
-                      <div className="notification-content">
-                        <div className="notification-icon-type">
+                      <div className="noi-dung-thong-bao">
+                        <div className="bieu-tuong-loai-thong-bao">
                           <span className="rejection">🚫</span>
                         </div>
-                        <div className="notification-details">
-                          <h4 className={`title-prominent ${tb.DaDoc ? 'read' : ''}`}>{tb.TieuDe}</h4>
+                        <div className="chi-tiet-thong-bao">
+                          <h4 className={`tieu-de-noi-bat ${tb.DaDoc ? 'da-doc' : ''}`}>{tb.TieuDe}</h4>
                           <div dangerouslySetInnerHTML={{ __html: processedContent }}></div>
-                          <p className="date">{new Date(tb.NgayTao).toLocaleString('vi-VN')}</p>
+                          <p className="ngay-thang">{new Date(tb.NgayTao).toLocaleString('vi-VN')}</p>
                         </div>
-                        {!tb.DaDoc && <span className="notification-unread-dot"></span>}
+                        {!tb.DaDoc && <span className="cham-chua-doc-thong-bao"></span>}
                       </div>
                     </li>
                   );
@@ -235,7 +235,7 @@ const ThongBaoDropdown: React.FC = () => {
       </div>
 
       {danhSachToast.length > 0 && (
-        <div className="toast-container">
+        <div className="container-toast">
           {danhSachToast.map((tb) => (
             <Toast
               key={tb.MaThongBao}

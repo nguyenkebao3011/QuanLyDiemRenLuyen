@@ -1,194 +1,158 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Bell, X } from "lucide-react";
-import axios from "axios";
-import { Modal, Select, Input } from "antd";
-import "../css/NotificationDropdown.css";
+import type React from "react"
+import { useState, useEffect, useRef } from "react"
+import { Bell, X } from "lucide-react"
+import axios from "axios"
+import { Modal, Select, Input } from "antd"
+import "../css/NotificationDropdown.css"
 
 interface ThongBaoDTOSV {
-  MaThongBao: number;
-  MaChiTietThongBao: number;
-  TieuDe: string;
-  NoiDung: string;
-  NgayTao: string;
-  DaDoc: boolean;
-  NgayDoc?: string | null;
-  LoaiThongBao: string;
+  MaThongBao: number
+  MaChiTietThongBao: number
+  TieuDe: string
+  NoiDung: string
+  NgayTao: string
+  DaDoc: boolean
+  NgayDoc?: string | null
+  LoaiThongBao: string
 }
 
 interface ToastProps {
-  thongBao: ThongBaoDTOSV;
-  onClose: () => void;
-  onRead: () => void;
-  onRespond?: (
-    maChiTietThongBao: number,
-    response: "XacNhan" | "TuChoi",
-    lyDoTuChoi?: string
-  ) => void;
+  thongBao: ThongBaoDTOSV
+  onClose: () => void
+  onRead: () => void
+  onRespond?: (maChiTietThongBao: number, response: "XacNhan" | "TuChoi", lyDoTuChoi?: string) => void
 }
 
-const formatNoiDung = (noiDung: string): string => {
-  let formattedContent = noiDung.replace(/\[MaHoatDong:\d+\]$/, "").trim();
-  formattedContent = formattedContent.replace(
-    /(\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4})/g,
-    '<span class="highlight-date">$1</span>'
-  );
-  formattedContent = formattedContent.replace(
-    /(\d{1,2}:\d{2}(:\d{2})?)/g,
-    '<span class="highlight-time">$1</span>'
-  );
-  formattedContent = formattedContent.replace(
-    /\b(Địa điểm|ở)\s+([A-ZÀ-Ỵ][^\.,\n]+)/g,
-    '$1 <span class="highlight-location">$2</span>'
-  );
-  const importantWords = [
-    "bắt đầu",
-    "kết thúc",
-    "quan trọng",
-    "lưu ý",
-    "hạn chót",
-  ];
-  importantWords.forEach((word) => {
-    const regex = new RegExp(`\\b${word}\\b`, "gi");
-    formattedContent = formattedContent.replace(
-      regex,
-      `<span class="highlight-important">${word}</span>`
-    );
-  });
-  return formattedContent;
-};
+const dinhDangNoiDung = (noiDung: string): string => {
+  let noiDungDaDinhDang = noiDung.replace(/\[MaHoatDong:\d+\]$/, "").trim()
+  noiDungDaDinhDang = noiDungDaDinhDang.replace(
+    /(\d{1,2}[/.]\d{1,2}[/.]\d{2,4})/g,
+    '<span class="lam-noi-bat-ngay">$1</span>',
+  )
+  noiDungDaDinhDang = noiDungDaDinhDang.replace(/(\d{1,2}:\d{2}(:\d{2})?)/g, '<span class="lam-noi-bat-gio">$1</span>')
+  noiDungDaDinhDang = noiDungDaDinhDang.replace(
+    /\b(Địa điểm|ở)\s+([A-ZÀ-Ỵ][^.,\n]+)/g,
+    '$1 <span class="lam-noi-bat-dia-diem">$2</span>',
+  )
+  const tuQuanTrong = ["bắt đầu", "kết thúc", "quan trọng", "lưu ý", "hạn chót"]
+  tuQuanTrong.forEach((tu) => {
+    const regex = new RegExp(`\\b${tu}\\b`, "gi")
+    noiDungDaDinhDang = noiDungDaDinhDang.replace(regex, `<span class="lam-noi-bat-quan-trong">${tu}</span>`)
+  })
+  return noiDungDaDinhDang
+}
 
-const extractEventTime = (noiDung: string): string | null => {
-  const dateMatch = noiDung.match(/(\d{1,2}[\/\.\-]\d{1,2}[\/\.\-]\d{2,4})/);
-  const timeMatch = noiDung.match(/(\d{1,2}:\d{2}(:\d{2})?)/);
-  if (dateMatch && timeMatch) {
-    return `${dateMatch[0]} ${timeMatch[0]}`;
-  } else if (dateMatch) {
-    return dateMatch[0];
-  } else if (timeMatch) {
-    return timeMatch[0];
+const trichXuatThoiGianSuKien = (noiDung: string): string | null => {
+  const khopNgay = noiDung.match(/(\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4})/)
+  const khopGio = noiDung.match(/(\d{1,2}:\d{2}(:\d{2})?)/)
+  if (khopNgay && khopGio) {
+    return `${khopNgay[0]} ${khopGio[0]}`
+  } else if (khopNgay) {
+    return khopNgay[0]
+  } else if (khopGio) {
+    return khopGio[0]
   }
-  return null;
-};
+  return null
+}
 
-const Toast: React.FC<ToastProps> = ({
-  thongBao,
-  onClose,
-  onRead,
-  onRespond,
-}) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [lyDoTuChoi, setLyDoTuChoi] = useState("");
-  const [customLyDo, setCustomLyDo] = useState("");
-  const [showResponseToast, setShowResponseToast] = useState<string | null>(null);
+const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) => {
+  const [hienThiModal, setHienThiModal] = useState(false)
+  const [lyDoTuChoi, setLyDoTuChoi] = useState("")
+  const [lyDoTuyChinh, setLyDoTuyChinh] = useState("")
+  const [hienThiToastPhanHoi, setHienThiToastPhanHoi] = useState<string | null>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isModalVisible && !showResponseToast) onClose();
-    }, 110008000);
-    return () => clearTimeout(timer);
-  }, [onClose, isModalVisible, showResponseToast]);
+    const boHenGio = setTimeout(() => {
+      if (!hienThiModal && !hienThiToastPhanHoi) onClose()
+    }, 8000)
+    return () => clearTimeout(boHenGio)
+  }, [onClose, hienThiModal, hienThiToastPhanHoi])
 
-  const handleClick = () => {
-    onRead();
-    onClose();
-  };
+  const xuLyNhap = () => {
+    onRead()
+    onClose()
+  }
 
-  const getEmoji = () => {
-    const title = thongBao.TieuDe.toLowerCase();
-    if (thongBao.LoaiThongBao === "Thay đổi lịch trình") return "📅";
-    if (thongBao.LoaiThongBao === "Nhắc nhở") return "⏰";
-    if (thongBao.LoaiThongBao === "Chỉ định sinh viên") return "🎯";
-    if (title.includes("giới thiệu") || title.includes("thể thao")) return "🏆";
-    if (title.includes("hội thao") || title.includes("thi đấu")) return "🎯";
-    if (title.includes("hỗ trợ") || title.includes("hướng dẫn")) return "🎓";
-    if (title.includes("tổ chức") || title.includes("chào mừng")) return "🎉";
-    return "🔔";
-  };
+  const layBieuTuong = () => {
+    const tieuDe = thongBao.TieuDe.toLowerCase()
+    if (thongBao.LoaiThongBao === "Thay đổi lịch trình") return "📅"
+    if (thongBao.LoaiThongBao === "Nhắc nhở") return "⏰"
+    if (thongBao.LoaiThongBao === "Chỉ định sinh viên") return "🎯"
+    if (tieuDe.includes("giới thiệu") || tieuDe.includes("thể thao")) return "🏆"
+    if (tieuDe.includes("hội thao") || tieuDe.includes("thi đấu")) return "🎯"
+    if (tieuDe.includes("hỗ trợ") || tieuDe.includes("hướng dẫn")) return "🎓"
+    if (tieuDe.includes("tổ chức") || tieuDe.includes("chào mừng")) return "🎉"
+    return "🔔"
+  }
 
-  const handleTuChoi = () => {
-    setIsModalVisible(true);
-  };
+  const xuLyTuChoi = () => {
+    setHienThiModal(true)
+  }
 
-  const handleModalOk = () => {
-    let finalLyDo = lyDoTuChoi;
-    if (lyDoTuChoi === "Khác" && !customLyDo) {
-      alert('Vui lòng nhập lý do khi chọn "Khác".');
-      return;
+  const xuLyModalDongY = () => {
+    let lyDoCuoiCung = lyDoTuChoi
+    if (lyDoTuChoi === "Khác" && !lyDoTuyChinh) {
+      setHienThiToastPhanHoi('Vui lòng nhập lý do khi chọn "Khác".')
+      return
     }
-    if (lyDoTuChoi === "Khác") finalLyDo = customLyDo;
-    if (!finalLyDo && lyDoTuChoi !== "Khác") {
-      alert("Vui lòng chọn lý do từ chối.");
-      return;
+    if (lyDoTuChoi === "Khác") lyDoCuoiCung = lyDoTuyChinh
+    if (!lyDoCuoiCung && lyDoTuChoi !== "Khác") {
+      setHienThiToastPhanHoi("Vui lòng chọn lý do từ chối.")
+      return
     }
-    onRespond?.(thongBao.MaChiTietThongBao, "TuChoi", finalLyDo);
-    setShowResponseToast("Bạn đã từ chối tham gia hoạt động này");
-    setIsModalVisible(false);
-    setLyDoTuChoi("");
-    setCustomLyDo("");
-    setTimeout(() => setShowResponseToast(null), 3000);
-  };
+    onRespond?.(thongBao.MaChiTietThongBao, "TuChoi", lyDoCuoiCung)
+    setHienThiModal(false)
+    setLyDoTuChoi("")
+    setLyDoTuyChinh("")
+    onClose() // Đóng Toast ngay sau khi từ chối
+  }
 
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-    setLyDoTuChoi("");
-    setCustomLyDo("");
-  };
+  const xuLyModalHuy = () => {
+    setHienThiModal(false)
+    setLyDoTuChoi("")
+    setLyDoTuyChinh("")
+  }
 
-  const handleRespondWithToast = (
-    response: "XacNhan" | "TuChoi",
-    lyDoTuChoi?: string
-  ) => {
-    onRespond?.(thongBao.MaChiTietThongBao, response, lyDoTuChoi);
-    setShowResponseToast(
-      response === "XacNhan"
-        ? "Bạn đã đăng ký tham gia hoạt động này"
-        : "Bạn đã từ chối tham gia hoạt động này"
-    );
-    setTimeout(() => setShowResponseToast(null), 3000);
-  };
+  const xuLyPhanHoiVoiToast = (phanHoi: "XacNhan" | "TuChoi", lyDoTuChoi?: string) => {
+    onRespond?.(thongBao.MaChiTietThongBao, phanHoi, lyDoTuChoi)
+    onClose() // Đóng Toast ngay sau khi xác nhận hoặc từ chối
+  }
 
-  const formattedContent = formatNoiDung(thongBao.NoiDung);
-  const eventTime = extractEventTime(thongBao.NoiDung);
+  const noiDungDaDinhDang = dinhDangNoiDung(thongBao.NoiDung)
+  const thoiGianSuKien = trichXuatThoiGianSuKien(thongBao.NoiDung)
 
   return (
     <div
-      className="toast-notification"
-      onClick={
-        thongBao.LoaiThongBao !== "Chỉ định sinh viên" ? handleClick : undefined
-      }
+      className="thong-bao-toast"
+      onClick={thongBao.LoaiThongBao !== "Chỉ định sinh viên" ? xuLyNhap : undefined}
       data-type={thongBao.LoaiThongBao}
     >
-      <div className="toast-icon">{getEmoji()}</div>
-      <div className="toast-content">
-        <h4 className="toast-title title-prominent">{thongBao.TieuDe}</h4>
-        <p
-          className="toast-message"
-          dangerouslySetInnerHTML={{ __html: formattedContent }}
-        ></p>
-        {eventTime && (
-          <p className="toast-event-time">
-            <span className="event-time-icon">📆</span> {eventTime}
+      <div className="bieu-tuong-toast">{layBieuTuong()}</div>
+      <div className="noi-dung-toast">
+        <h4 className="tieu-de-toast tieu-de-noi-bat">{thongBao.TieuDe}</h4>
+        <p className="tin-nhan-toast" dangerouslySetInnerHTML={{ __html: noiDungDaDinhDang }}></p>
+        {thoiGianSuKien && (
+          <p className="thoi-gian-su-kien-toast">
+            <span className="bieu-tuong-thoi-gian-su-kien">📆</span> {thoiGianSuKien}
           </p>
-        )} 
-        <p className="toast-time">
-          {new Date(thongBao.NgayTao).toLocaleString("vi-VN")}
-        </p>
+        )}
+        <p className="thoi-gian-toast">{new Date(thongBao.NgayTao).toLocaleString("vi-VN")}</p>
         {thongBao.LoaiThongBao === "Chỉ định sinh viên" && !thongBao.DaDoc && (
-          <div className="toast-actions">
+          <div className="hanh-dong-toast">
             <button
-              className="toast-action-button confirm2"
+              className="nut-hanh-dong-toast xac-nhan"
               onClick={(e) => {
-                e.stopPropagation();
-                handleRespondWithToast("XacNhan");
+                e.stopPropagation()
+                xuLyPhanHoiVoiToast("XacNhan")
               }}
             >
               Xác Nhận
             </button>
             <button
-              className="toast-action-button reject2"
+              className="nut-hanh-dong-toast tu-choi"
               onClick={(e) => {
-                e.stopPropagation();
-                handleTuChoi();
+                e.stopPropagation()
+                xuLyTuChoi()
               }}
             >
               Từ Chối
@@ -197,26 +161,25 @@ const Toast: React.FC<ToastProps> = ({
         )}
       </div>
       <button
-        className="toast-close"
+        className="dong-toast"
         onClick={(e) => {
-          e.stopPropagation();
-          if (!isModalVisible && !showResponseToast) onClose();
+          e.stopPropagation()
+          if (!hienThiModal && !hienThiToastPhanHoi) onClose()
         }}
-        disabled={isModalVisible || !!showResponseToast}
+        disabled={hienThiModal || !!hienThiToastPhanHoi}
       >
         <X size={16} />
       </button>
 
       <Modal
         title="Lý do từ chối"
-        open={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
+        open={hienThiModal}
+        onOk={xuLyModalDongY}
+        onCancel={xuLyModalHuy}
         okText="Xác nhận"
         cancelText="Hủy"
         closable={false}
         maskClosable={false}
-        // Sử dụng type assertion để bỏ qua lỗi children
         {...({} as any)}
       >
         <Select
@@ -230,194 +193,180 @@ const Toast: React.FC<ToastProps> = ({
             { value: "Không quan tâm", label: "Không quan tâm" },
             { value: "Khác", label: "Khác" },
           ]}
-          // Sử dụng type assertion để bỏ qua lỗi Select
           {...({} as any)}
         />
         {lyDoTuChoi === "Khác" && (
           <Input
             placeholder="Nhập lý do của bạn"
-            value={customLyDo}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setCustomLyDo(e.target.value)
-            }
+            value={lyDoTuyChinh}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLyDoTuyChinh(e.target.value)}
             style={{ width: "100%" }}
-            // Sử dụng type assertion để bỏ qua lỗi Input
             {...({} as any)}
           />
         )}
       </Modal>
 
-      {showResponseToast && (
-        <div className="response-toast">{showResponseToast}</div>
-      )}
+      {hienThiToastPhanHoi && <div className="toast-phan-hoi">{hienThiToastPhanHoi}</div>}
     </div>
-  );
-};
+  )
+}
 
 const ThongBaoDropdown: React.FC = () => {
-  const [hienThi, setHienThi] = useState<boolean>(false);
-  const [danhSachThongBao, setDanhSachThongBao] = useState<ThongBaoDTOSV[]>([]);
-  const [soThongBaoChuaDoc, setSoThongBaoChuaDoc] = useState<number>(0);
-  const [danhSachToast, setDanhSachToast] = useState<ThongBaoDTOSV[]>([]);
-  const [daHienThiToast, setDaHienThiToast] = useState<Set<number>>(new Set());
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [hienThi, setHienThi] = useState<boolean>(false)
+  const [danhSachThongBao, setDanhSachThongBao] = useState<ThongBaoDTOSV[]>([])
+  const [soThongBaoChuaDoc, setSoThongBaoChuaDoc] = useState<number>(0)
+  const [danhSachToast, setDanhSachToast] = useState<ThongBaoDTOSV[]>([])
+  const [daHienThiToast, setDaHienThiToast] = useState<Set<number>>(new Set())
+  const [thongBaoPhanHoi, setThongBaoPhanHoi] = useState<string | null>(null)
+  const thamChieuDropdown = useRef<HTMLDivElement>(null)
 
-  const token = localStorage.getItem("token") || "";
+  const token = localStorage.getItem("token") || ""
 
-  const handleRespond = async (
-    maChiTietThongBao: number,
-    response: "XacNhan" | "TuChoi",
-    lyDoTuChoi?: string
-  ) => {
+  const xuLyPhanHoi = async (maChiTietThongBao: number, phanHoi: "XacNhan" | "TuChoi", lyDoTuChoi?: string) => {
     try {
-      const payload = {
+      const duLieuGui = {
         MaChiTietThongBao: maChiTietThongBao,
-        Response: response,
-        ...(response === "TuChoi" && { LyDoTuChoi: lyDoTuChoi }),
-      };
-      await axios.post(
-        `http://localhost:5163/api/ThongBaoHoatDong/${maChiTietThongBao}/respond`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setDanhSachThongBao((prev) =>
-        prev.map((tb) =>
-          tb.MaChiTietThongBao === maChiTietThongBao
-            ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() }
-            : tb
-        )
-      );
-      setSoThongBaoChuaDoc((prev) => prev - 1);
-    } catch (error) {
-      console.error("Lỗi khi gửi phản hồi:", error);
-      alert("Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại.");
+        Response: phanHoi,
+        ...(phanHoi === "TuChoi" && { LyDoTuChoi: lyDoTuChoi }),
+      }
+      await axios.post(`http://localhost:5163/api/ThongBaoHoatDong/${maChiTietThongBao}/respond`, duLieuGui, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setDanhSachThongBao((truocDo) =>
+        truocDo.map((tb) =>
+          tb.MaChiTietThongBao === maChiTietThongBao ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() } : tb,
+        ),
+      )
+      setSoThongBaoChuaDoc((truocDo) => truocDo - 1)
+      // Hiển thị thông báo phản hồi trong dropdown
+      setThongBaoPhanHoi(
+        phanHoi === "XacNhan" ? "Bạn đã xác nhận tham gia hoạt động này" : "Bạn đã từ chối tham gia hoạt động này",
+      )
+      setTimeout(() => setThongBaoPhanHoi(null), 3000)
+    } catch (loi) {
+      console.error("Lỗi khi gửi phản hồi:", loi)
+      alert("Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại.")
     }
-  };
+  }
 
   useEffect(() => {
     const layDanhSachThongBao = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5163/api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const duLieu: ThongBaoDTOSV[] = response.data;
+        const phanHoi = await axios.get("http://localhost:5163/api/ThongBaoHoatDong/ThongBao-Thay-Doi-va-nhac-nho", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const duLieu: ThongBaoDTOSV[] = phanHoi.data
 
-        const maThongBaoDuyNhat = new Set(duLieu.map((tb) => tb.MaThongBao));
-        let thongBaoHopLe: ThongBaoDTOSV[] = [];
+        const maThongBaoDuyNhat = new Set(duLieu.map((tb) => tb.MaThongBao))
+        let thongBaoHopLe: ThongBaoDTOSV[] = []
         if (maThongBaoDuyNhat.size !== duLieu.length) {
-          console.warn("Phát hiện MaThongBao bị trùng:", duLieu);
-          thongBaoHopLe = Array.from(
-            new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values()
-          );
+          console.warn("Phát hiện MaThongBao bị trùng:", duLieu)
+          thongBaoHopLe = Array.from(new Map(duLieu.map((tb) => [tb.MaThongBao, tb])).values())
         } else {
-          const coMaThongBaoKhongHopLe = duLieu.some(
-            (tb) => tb.MaThongBao == null
-          );
+          const coMaThongBaoKhongHopLe = duLieu.some((tb) => tb.MaThongBao == null)
           if (coMaThongBaoKhongHopLe) {
-            console.warn(
-              "Phát hiện MaThongBao không hợp lệ (undefined/null):",
-              duLieu
-            );
-            thongBaoHopLe = duLieu.filter((tb) => tb.MaThongBao != null);
+            console.warn("Phát hiện MaThongBao không hợp lệ (undefined/null):", duLieu)
+            thongBaoHopLe = duLieu.filter((tb) => tb.MaThongBao != null)
           } else {
-            thongBaoHopLe = duLieu;
+            thongBaoHopLe = duLieu
           }
         }
 
-        setDanhSachThongBao(thongBaoHopLe);
-        setSoThongBaoChuaDoc(thongBaoHopLe.filter((tb) => !tb.DaDoc).length);
+        setDanhSachThongBao(thongBaoHopLe)
+        setSoThongBaoChuaDoc(thongBaoHopLe.filter((tb) => !tb.DaDoc).length)
 
-        const thongBaoChuaDoc = thongBaoHopLe.filter(
-          (tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao)
-        );
+        const thongBaoChuaDoc = thongBaoHopLe.filter((tb) => !tb.DaDoc && !daHienThiToast.has(tb.MaThongBao))
         if (thongBaoChuaDoc.length > 0) {
-          const toastsToShow = thongBaoChuaDoc.slice(0, 3);
-          setDanhSachToast(toastsToShow);
-          setDaHienThiToast((prevSet) => {
-            const newSet = new Set(prevSet);
-            toastsToShow.forEach((tb) => newSet.add(tb.MaThongBao));
-            return newSet;
-          });
+          const toastCanHienThi = thongBaoChuaDoc.slice(0, 3)
+          setDanhSachToast(toastCanHienThi)
+          setDaHienThiToast((tapTruocDo) => {
+            const tapMoi = new Set(tapTruocDo)
+            toastCanHienThi.forEach((tb) => tapMoi.add(tb.MaThongBao))
+            return tapMoi
+          })
         }
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách thông báo:", error);
+      } catch (loi) {
+        console.error("Lỗi khi lấy danh sách thông báo:", loi)
       }
-    };
+    }
 
-    layDanhSachThongBao();
-    const interval = setInterval(layDanhSachThongBao, 30000);
-    return () => clearInterval(interval);
-  }, [token, daHienThiToast]);
+    layDanhSachThongBao()
+    const khoangThoiGian = setInterval(layDanhSachThongBao, 4000)
+    return () => clearInterval(khoangThoiGian)
+  }, [token, daHienThiToast])
 
   useEffect(() => {
-    const xuLyNhapChuotNgoai = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setHienThi(false);
+    const xuLyNhapChuotNgoai = (suKien: MouseEvent) => {
+      if (thamChieuDropdown.current && !thamChieuDropdown.current.contains(suKien.target as Node)) {
+        setHienThi(false)
       }
-    };
-    document.addEventListener("mousedown", xuLyNhapChuotNgoai);
-    return () => document.removeEventListener("mousedown", xuLyNhapChuotNgoai);
-  }, []);
+    }
+    document.addEventListener("mousedown", xuLyNhapChuotNgoai)
+    return () => document.removeEventListener("mousedown", xuLyNhapChuotNgoai)
+  }, [])
 
   const danhDauDaDoc = async (maThongBao: number) => {
     if (!maThongBao) {
-      console.error("MaThongBao không hợp lệ hoặc undefined");
-      return;
+      console.error("MaThongBao không hợp lệ hoặc undefined")
+      return
     }
     try {
       await axios.put(
         `http://localhost:5163/api/ThongBaoHoatDong/doc/${maThongBao}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
       setDanhSachThongBao((truocDo) =>
         truocDo.map((tb) =>
-          tb.MaThongBao === maThongBao
-            ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() }
-            : tb
-        )
-      );
-      setSoThongBaoChuaDoc((truocDo) => truocDo - 1);
-    } catch (error) {
-      console.error("Lỗi khi đánh dấu đã đọc:", error);
+          tb.MaThongBao === maThongBao ? { ...tb, DaDoc: true, NgayDoc: new Date().toISOString() } : tb,
+        ),
+      )
+      setSoThongBaoChuaDoc((truocDo) => truocDo - 1)
+    } catch (loi) {
+      console.error("Lỗi khi đánh dấu đã đọc:", loi)
     }
-  };
+  }
 
   const dongToast = (maThongBao: number) => {
-    setDanhSachToast((prevToasts) =>
-      prevToasts.filter((toast) => toast.MaThongBao !== maThongBao)
-    );
-  };
+    setDanhSachToast((toastTruocDo) => toastTruocDo.filter((toast) => toast.MaThongBao !== maThongBao))
+  }
+
+  const layBieuTuongLoaiThongBao = (loaiThongBao: string) => {
+    switch (loaiThongBao) {
+      case "Thay đổi lịch trình":
+        return <span className="lich-trinh">📅</span>
+      case "Nhắc nhở":
+        return <span className="nhac-nho">⏰</span>
+      case "Chỉ định sinh viên":
+        return <span className="chi-dinh">🎯</span>
+      default:
+        return <span className="tong-quat">🔔</span>
+    }
+  }
 
   return (
     <>
-      <div className="notification-icon-container" ref={dropdownRef}>
-        <div className="notification-icon" onClick={() => setHienThi(!hienThi)}>
+      <div className="container-bieu-tuong-thong-bao" ref={thamChieuDropdown}>
+        <div className="bieu-tuong-thong-bao" onClick={() => setHienThi(!hienThi)}>
           <Bell size={20} />
-          {soThongBaoChuaDoc > 0 && (
-            <span className="notification-badge2">{soThongBaoChuaDoc}</span>
-          )}
+          {soThongBaoChuaDoc > 0 && <span className="huy-hieu-thong-bao">{soThongBaoChuaDoc}</span>}
         </div>
 
         {hienThi && (
-          <div className="notification-dropdown">
-            <div className="notification-dropdown-header">
+          <div className="dropdown-thong-bao">
+            <div className="header-dropdown-thong-bao">
               <h3>Thông báo</h3>
             </div>
             {danhSachThongBao.length === 0 ? (
-              <div className="notification-empty">Không có thông báo nào</div>
+              <div className="thong-bao-trong">Không có thông báo nào</div>
             ) : (
-              <ul className="notification-list2">
-                {danhSachThongBao.map((tb, index) => {
-                  const processedContent = formatNoiDung(tb.NoiDung);
+              <ul className="danh-sach-thong-bao">
+                {danhSachThongBao.map((tb, chiSo) => {
+                  const noiDungDaXuLy = dinhDangNoiDung(tb.NoiDung)
                   return (
                     <li
-                      key={tb.MaThongBao ?? `thongbao-${index}`}
-                      className={`notification-item ${tb.DaDoc ? "read" : ""}`}
+                      key={tb.MaThongBao ?? `thongbao-${chiSo}`}
+                      className={`muc-thong-bao ${tb.DaDoc ? "da-doc" : ""}`}
                       onClick={() =>
                         !tb.DaDoc &&
                         tb.MaThongBao &&
@@ -425,94 +374,66 @@ const ThongBaoDropdown: React.FC = () => {
                         danhDauDaDoc(tb.MaThongBao)
                       }
                     >
-                      <div className="notification-content">
-                        <div className="notification-icon-type">
-                          {tb.LoaiThongBao === "Thay đổi lịch trình" ? (
-                            <span className="schedule">📅</span>
-                          ) : tb.LoaiThongBao === "Nhắc nhở" ? (
-                            <span className="reminder">⏰</span>
-                          ) : tb.LoaiThongBao === "Chỉ định sinh viên" ? (
-                            <span className="assignment">🎯</span>
-                          ) : (
-                            <span className="general">🔔</span>
-                          )}
-                        </div>
-                        <div className="notification-details">
-                          <h4
-                            className={`title-prominent ${
-                              tb.DaDoc ? "read" : ""
-                            }`}
-                          >
-                            {tb.TieuDe}
-                          </h4>
+                      <div className="noi-dung-thong-bao">
+                        <div className="bieu-tuong-loai-thong-bao">{layBieuTuongLoaiThongBao(tb.LoaiThongBao)}</div>
+                        <div className="chi-tiet-thong-bao">
+                          <h4 className={`tieu-de-noi-bat ${tb.DaDoc ? "da-doc" : ""}`}>{tb.TieuDe}</h4>
                           <div
                             dangerouslySetInnerHTML={{
-                              __html: processedContent,
+                              __html: noiDungDaXuLy,
                             }}
                           ></div>
-                          <p className="date">
-                            {new Date(tb.NgayTao).toLocaleString("vi-VN")}
-                          </p>
-                          {tb.LoaiThongBao === "Chỉ định sinh viên" &&
-                            !tb.DaDoc && (
-                              <div className="notification-actions">
-                                <button
-                                  className="action-button confirm"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    tb.MaChiTietThongBao &&
-                                      handleRespond(
-                                        tb.MaChiTietThongBao,
-                                        "XacNhan"
-                                      );
-                                  }}
-                                >
-                                  Xác Nhận
-                                </button>
-                                <button
-                                  className="action-button reject"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    tb.MaChiTietThongBao &&
-                                      handleRespond(
-                                        tb.MaChiTietThongBao,
-                                        "TuChoi"
-                                      );
-                                  }}
-                                >
-                                  Từ Chối
-                                </button>
-                              </div>
-                            )}
+                          <p className="ngay-thang">{new Date(tb.NgayTao).toLocaleString("vi-VN")}</p>
+                          {tb.LoaiThongBao === "Chỉ định sinh viên" && !tb.DaDoc && (
+                            <div className="hanh-dong-thong-bao">
+                              <button
+                                className="nut-hanh-dong xac-nhan"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  tb.MaChiTietThongBao && xuLyPhanHoi(tb.MaChiTietThongBao, "XacNhan")
+                                }}
+                              >
+                                Xác Nhận
+                              </button>
+                              <button
+                                className="nut-hanh-dong tu-choi"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  tb.MaChiTietThongBao && xuLyPhanHoi(tb.MaChiTietThongBao, "TuChoi")
+                                }}
+                              >
+                                Từ Chối
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        {!tb.DaDoc && (
-                          <span className="notification-unread-dot"></span>
-                        )}
+                        {!tb.DaDoc && <span className="cham-chua-doc-thong-bao"></span>}
                       </div>
                     </li>
-                  );
+                  )
                 })}
               </ul>
             )}
+            {thongBaoPhanHoi && <div className="toast-phan-hoi">{thongBaoPhanHoi}</div>}
           </div>
         )}
       </div>
 
       {danhSachToast.length > 0 && (
-        <div className="toast-container">
+        <div className="container-toast">
           {danhSachToast.map((tb) => (
             <Toast
               key={tb.MaThongBao}
               thongBao={tb}
               onClose={() => dongToast(tb.MaThongBao)}
               onRead={() => danhDauDaDoc(tb.MaThongBao)}
-              onRespond={handleRespond}
+              onRespond={xuLyPhanHoi}
             />
           ))}
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ThongBaoDropdown;
+export default ThongBaoDropdown

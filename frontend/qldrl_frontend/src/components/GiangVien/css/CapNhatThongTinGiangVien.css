@@ -1,0 +1,447 @@
+/* Shared Variables */
+:root {
+  --primary-color: #07559f;
+  --primary-light: rgba(7, 85, 159, 0.1);
+  --primary-dark: #054a8a;
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --bg-white: #ffffff;
+  --bg-gray-50: #f8fafc;
+  --bg-gray-100: #f1f5f9;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+/* Lecturer Info Styles */
+.lecturer-info-wrapper {
+  min-height: 100vh;
+
+  padding: 20px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.lecturer-info-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lecturer-info-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lecturer-info-card-header {
+  background: linear-gradient(135deg, #07559f 0%, #054a8a 100%);
+  padding: 2rem;
+  text-align: center;
+}
+
+.lecturer-info-title {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.lecturer-info-title-icon {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.lecturer-info-content {
+  padding: 2.5rem;
+}
+
+/* Avatar Section */
+.lecturer-info-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.lecturer-info-avatar-container {
+  margin-bottom: 1.5rem;
+}
+
+.lecturer-info-avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(7, 85, 159, 0.3);
+  transition: var(--transition);
+}
+
+.lecturer-info-avatar-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(7, 85, 159, 0.4);
+}
+
+.lecturer-info-avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #07559f 0%, #054a8a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(7, 85, 159, 0.3);
+}
+
+.lecturer-info-basic-info {
+  margin-bottom: 1rem;
+}
+
+.lecturer-info-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.lecturer-info-lecturer-id {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Information Grid */
+.lecturer-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.lecturer-info-address-item {
+  grid-column: 1 / -1;
+}
+
+.lecturer-info-item {
+  background: var(--bg-gray-50);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.lecturer-info-item:hover {
+  background: var(--bg-gray-100);
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.lecturer-info-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lecturer-info-label svg {
+  color: var(--primary-color);
+}
+
+.lecturer-info-value {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Loading State */
+.lecturer-info-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  color: white;
+  text-align: center;
+}
+
+.lecturer-info-spinner {
+  margin-bottom: 1rem;
+}
+
+.lecturer-info-spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* Error State */
+.lecturer-info-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  color: white;
+  text-align: center;
+  gap: 1rem;
+}
+
+.lecturer-info-error p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* No Data State */
+.lecturer-info-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  text-align: center;
+  gap: 1rem;
+}
+
+.lecturer-info-no-data p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* Student Info Styles */
+.student-info-wrapper {
+  min-height: 100vh;
+ 
+  padding: 20px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.student-info-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.student-info-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.student-info-card-header {
+  background: linear-gradient(135deg, #07559f 0%, #054a8a 100%);
+  padding: 2rem;
+  text-align: center;
+}
+
+.student-info-title {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.student-info-title-icon {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.student-info-content {
+  padding: 2.5rem;
+}
+
+/* Avatar Section */
+.student-info-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.student-info-avatar-container {
+  margin-bottom: 1.5rem;
+}
+
+.student-info-avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(7, 85, 159, 0.3);
+  transition: var(--transition);
+}
+
+.student-info-avatar-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(7, 85, 159, 0.4);
+}
+
+.student-info-avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #07559f 0%, #054a8a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(7, 85, 159, 0.3);
+}
+
+.student-info-basic-info {
+  margin-bottom: 1rem;
+}
+
+.student-info-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.student-info-student-id {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Information Grid */
+.student-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.student-info-item {
+  background: var(--bg-gray-50);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.student-info-item:hover {
+  background: var(--bg-gray-100);
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.student-info-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.student-info-label svg {
+  color: var(--primary-color);
+}
+
+.student-info-value {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lecturer-info-wrapper,
+  .student-info-wrapper {
+    padding: 1rem;
+  }
+
+  .lecturer-info-content,
+  .student-info-content {
+    padding: 1.5rem;
+  }
+
+  .lecturer-info-grid,
+  .student-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .lecturer-info-title,
+  .student-info-title {
+    font-size: 1.25rem;
+  }
+
+  .lecturer-info-avatar-image,
+  .lecturer-info-avatar-placeholder,
+  .student-info-avatar-image,
+  .student-info-avatar-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .lecturer-info-name,
+  .student-info-name {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lecturer-info-card,
+  .student-info-card {
+    border-radius: 16px;
+  }
+
+  .lecturer-info-card-header,
+  .student-info-card-header {
+    padding: 1.5rem;
+  }
+
+  .lecturer-info-content,
+  .student-info-content {
+    padding: 1rem;
+  }
+}
