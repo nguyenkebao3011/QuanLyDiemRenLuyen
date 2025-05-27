@@ -255,19 +255,19 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 var trangThai = worksheet.Cells[row, 10].Text?.Trim();
 
                                 // Log dữ liệu đọc được để debug
-                                result.Add($"Debug - Dòng {row}: MaSV={maSV}, HoTen={hoTen}, MaLop={maLop}");
+                               
 
                                 // Validation cơ bản
                                 if (string.IsNullOrEmpty(maSV))
                                 {
-                                    result.Add($"Dòng {row}: Bỏ qua do thiếu mã sinh viên.");
+                          
                                     failCount++;
                                     continue;
                                 }
 
                                 if (string.IsNullOrEmpty(hoTen))
                                 {
-                                    result.Add($"Dòng {row}: Sinh viên {maSV} - Thiếu họ tên.");
+                       
                                     failCount++;
                                     continue;
                                 }
@@ -275,7 +275,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra độ dài MaSV
                                 if (maSV.Length > 50) // Giả sử max length là 50
                                 {
-                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} quá dài.");
+                                   
                                     failCount++;
                                     continue;
                                 }
@@ -283,7 +283,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra độ dài HoTen
                                 if (hoTen.Length > 255) // Giả sử max length là 255
                                 {
-                                    result.Add($"Dòng {row}: Họ tên {hoTen} quá dài.");
+                                
                                     failCount++;
                                     continue;
                                 }
@@ -291,7 +291,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra trùng lặp trong database
                                 if (existingMaSVList.Contains(maSV))
                                 {
-                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} đã tồn tại trong hệ thống.");
+                                
                                     failCount++;
                                     continue;
                                 }
@@ -299,7 +299,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra trùng lặp trong file hiện tại
                                 if (maSVInCurrentFile.Contains(maSV))
                                 {
-                                    result.Add($"Dòng {row}: Mã sinh viên {maSV} bị trùng lặp trong file.");
+                                  
                                     failCount++;
                                     continue;
                                 }
@@ -307,7 +307,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra mã lớp
                                 if (!string.IsNullOrEmpty(maLop) && !validMaLopList.Contains(maLop))
                                 {
-                                    result.Add($"Dòng {row}: Mã lớp {maLop} của sinh viên {maSV} không tồn tại.");
+                                  
                                     failCount++;
                                     continue;
                                 }
@@ -317,14 +317,14 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 {
                                     if (email.Length > 100) // Kiểm tra độ dài email
                                     {
-                                        result.Add($"Dòng {row}: Email {email} quá dài.");
+                          
                                         failCount++;
                                         continue;
                                     }
 
                                     if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
                                     {
-                                        result.Add($"Dòng {row}: Email {email} của sinh viên {maSV} không hợp lệ.");
+                                 
                                         failCount++;
                                         continue;
                                     }
@@ -333,7 +333,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra số điện thoại
                                 if (!string.IsNullOrEmpty(soDienThoai) && !Regex.IsMatch(soDienThoai, @"^\d{10}$"))
                                 {
-                                    result.Add($"Dòng {row}: SĐT {soDienThoai} của sinh viên {maSV} không hợp lệ (cần đúng 10 chữ số).");
+                              
                                     failCount++;
                                     continue;
                                 }
@@ -349,7 +349,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 if (ngaySinhValue > DateTime.Now || ngaySinhValue < new DateTime(1900, 1, 1))
                                 {
                                     ngaySinhValue = DateTime.Now;
-                                    result.Add($"Dòng {row}: Ngày sinh không hợp lý, sử dụng ngày hiện tại cho sinh viên {maSV}.");
+                              
                                 }
 
                                 // Sử dụng transaction riêng cho từng dòng
@@ -368,7 +368,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             var existingTaiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
                                             if (existingTaiKhoan != null)
                                             {
-                                                result.Add($"Dòng {row}: Mã tài khoản {maTaiKhoan} đã tồn tại.");
+                                               
                                                 failCount++;
                                                 continue;
                                             }
@@ -417,7 +417,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                         maSVInCurrentFile.Add(maSV);
                                         existingMaSVList.Add(maSV);
 
-                                        result.Add($"Dòng {row}: Đã thêm sinh viên {maSV} - {hoTen} thành công.");
+                                     
                                         successCount++;
                                     }
                                     catch (DbUpdateException dbEx)
@@ -429,7 +429,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             currentTaiKhoanNumber--;
 
                                         string detailError = GetDbUpdateExceptionDetails(dbEx);
-                                        result.Add($"Dòng {row}: Lỗi database - {detailError}");
+                                  
                                         failCount++;
                                     }
                                     catch (Exception ex)
@@ -441,7 +441,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             currentTaiKhoanNumber--;
 
                                         string errorDetail = ex.InnerException?.Message ?? ex.Message;
-                                        result.Add($"Dòng {row}: Lỗi không xác định - {errorDetail}");
+                               
                                         failCount++;
                                     }
                                 }
@@ -449,7 +449,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                             catch (Exception ex)
                             {
                                 string errorDetail = ex.InnerException?.Message ?? ex.Message;
-                                result.Add($"Dòng {row}: Lỗi đọc dữ liệu - {errorDetail}");
+                    
                                 failCount++;
                             }
                         }

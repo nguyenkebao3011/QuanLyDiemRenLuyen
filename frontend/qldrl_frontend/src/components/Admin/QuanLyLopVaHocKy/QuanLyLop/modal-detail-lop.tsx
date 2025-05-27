@@ -41,7 +41,7 @@ const ModalDetailLop: React.FC<ModalDetailLopProps> = ({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="modal-header2">
           <h2 className="modal-title">
             <GraduationCap className="icon" />
             Chi tiết lớp học
@@ -63,10 +63,10 @@ const ModalDetailLop: React.FC<ModalDetailLopProps> = ({
                   <Calendar className="icon" />
                   Niên khóa
                 </label>
-                <span className="badge badge-secondary">{lop.NienKhoa}</span>
+                <p className="badge2 badge-secondary">{lop.NienKhoa}</p>
               </div>
               <div className="detail-item">
-                <label className="detail-label flex items-center gap-1">
+                <label className="detail-label2 flex items-center gap-1">
                   <Users className="icon" />
                   Số sinh viên
                 </label>
@@ -89,12 +89,12 @@ const ModalDetailLop: React.FC<ModalDetailLopProps> = ({
                     <label className="detail-label">Email</label>
                     <p style={{ color: "var(--primary)" }}>{giangVien.Email}</p>
                   </div>
-                  <div className="detail-item">
+                  {/* <div className="detail-item">
                     <label className="detail-label">Khoa</label>
                     <span className="badge badge-outline">
                       {giangVien.Khoa}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}

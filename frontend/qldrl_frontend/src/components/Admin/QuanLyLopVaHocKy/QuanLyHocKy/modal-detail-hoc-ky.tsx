@@ -96,7 +96,7 @@ const ModalDetailHocKy: React.FC<ModalDetailHocKyProps> = ({
             </div>
             <div className="detail-info-item">
               <label className="detail-info-label">Trạng thái</label>
-              <span className={`status-badge ${status.class}`}>
+              <span className={`status-badge2 ${status.class}`}>
                 {status.text}
               </span>
             </div>
