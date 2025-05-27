@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState } from "react";
 import { Save, X, GraduationCap, RotateCcw } from "lucide-react";

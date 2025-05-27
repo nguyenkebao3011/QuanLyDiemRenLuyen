@@ -25,7 +25,7 @@ interface LopDTO {
   TenLop: string;
   NienKhoa: string;
   MaGv: string;
-  SoLuongSinhVien?: number;
+  SoSinhVien?: number;
   TenGiangVien?: string;
 }
 
@@ -387,7 +387,7 @@ const QuanLyLop: React.FC = () => {
                       <td>
                         <div className="student-count">
                           <Users className="icon" />
-                          <span>{lop.SoLuongSinhVien || 0}</span>
+                          <span>{lop.SoSinhVien || 0}</span>
                         </div>
                       </td>
                       <td>
