@@ -150,13 +150,23 @@ body {
 
 /* Avatar image styling */
 .student-avatar {
-  width: 110%;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
   border: 5px solid #fff;
   transition: var(--transition);
   
+}
+
+.student-avatar2 {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  transition: var(--transition);
+  margin: 5px 0
 }
 
 /* Default avatar when image is not available */

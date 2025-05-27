@@ -281,13 +281,13 @@ const CapNhatThongTin: React.FC = () => {
       <div className="thongtin-container">
         <h3>Thông tin sinh viên</h3>
         {studentData && (
-          <div className="thongtin-content">
+          <div className="thongtin-content2">
           <div className="avatar-container">
             {previewAvatar || studentData?.AnhDaiDien ? (
               <img
                 src={previewAvatar || studentData!.AnhDaiDien!}
                 alt="Ảnh đại diện"
-                className="student-avatar"
+                className="student-avatar2"
               />
             ) : (
               <div className="default-avatar2">
@@ -312,7 +312,7 @@ const CapNhatThongTin: React.FC = () => {
           
           </div>
 
-            <div className="info-section">
+            <div className="info-section2">
               <div className="info-row">
                 <div className="info-item">
                   <label>Mã sinh viên:</label>

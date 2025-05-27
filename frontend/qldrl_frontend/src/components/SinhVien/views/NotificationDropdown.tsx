@@ -84,7 +84,7 @@ const Toast: React.FC<ToastProps> = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isModalVisible && !showResponseToast) onClose();
-    }, 8000);
+    }, 110008000);
     return () => clearTimeout(timer);
   }, [onClose, isModalVisible, showResponseToast]);
 
@@ -169,7 +169,7 @@ const Toast: React.FC<ToastProps> = ({
           <p className="toast-event-time">
             <span className="event-time-icon">📆</span> {eventTime}
           </p>
-        )}
+        )} 
         <p className="toast-time">
           {new Date(thongBao.NgayTao).toLocaleString("vi-VN")}
         </p>

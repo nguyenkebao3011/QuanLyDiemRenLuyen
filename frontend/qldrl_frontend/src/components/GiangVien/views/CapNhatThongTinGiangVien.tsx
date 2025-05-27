@@ -368,19 +368,17 @@ const CapNhatThongTinGiangVien: React.FC = () => {
               )}
 
               {editMode && (
-                <div className="file-input">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="file-input-hidden"
-                    id="avatar-upload"
-                  />
-                  <label htmlFor="avatar-upload" className="chon-tep-btn">
-                    Chọn tệp
-                  </label>
-                </div>
-              )}
+              <label htmlFor="avatar-upload" className="chon-tep-btn">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="file-input-hidden"
+                  id="avatar-upload"
+                />
+                Chọn tệp
+              </label>
+            )}
             </div>
 
             <div className="info-section">
