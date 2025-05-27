@@ -141,7 +141,7 @@ const PhanHoiList: React.FC<PhanHoiListProps> = ({
             </div>
           </form>
 
-          <div className="filter-container">
+          <div className="filter-container2">
             <Filter className="filter-icon" />
             <select
               value={selectedTrangThai}

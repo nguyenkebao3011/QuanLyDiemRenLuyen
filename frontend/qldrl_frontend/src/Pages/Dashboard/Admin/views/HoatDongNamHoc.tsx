@@ -414,7 +414,7 @@ const HoatDongNamHoc: React.FC = () => {
                             Kết thúc: {formatDateTime(hoatDong.NgayKetThuc)}
                           </div>
                         </div>
-                      </td>
+                      </td> 
                       <td>
                         {hoatDong.MaHocKyNavigation
                           ? `${hoatDong.MaHocKyNavigation.TenHocKy} - ${hoatDong.MaHocKyNavigation.NamHoc}`
@@ -434,7 +434,7 @@ const HoatDongNamHoc: React.FC = () => {
                       <td className="diem-cong">{hoatDong.DiemCong}</td>
                       <td>
                         <span
-                          className={`status-badge ${getStatusColor(
+                          className={`status-badge3 ${getStatusColor(
                             hoatDong.TrangThai
                           )}`}
                         >

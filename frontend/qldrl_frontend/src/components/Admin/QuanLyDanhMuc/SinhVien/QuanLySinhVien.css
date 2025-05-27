@@ -36,8 +36,11 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
+      margin: 22px;
 }
-
+.detail-item {
+  padding: 5px;
+}
 .refresh-btn,
 .export-btn {
   background-color: var(--card);
