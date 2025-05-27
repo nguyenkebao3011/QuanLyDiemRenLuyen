@@ -24,32 +24,39 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
         public async Task<ActionResult<IEnumerable<LopDTO>>> GetLopList()
         {
             var list = await _context.Lops
-                .Select(lop => new LopDTO
-                {
-                    MaLop = lop.MaLop,
-                    TenLop = lop.TenLop,
-                    NienKhoa = lop.NienKhoa,
-                    MaGv = lop.MaGv
-                }).ToListAsync();
+             .Include(l => l.SinhViens)   // để EF load navigation
+             .Select(lop => new LopDTO
+             {
+                 MaLop = lop.MaLop,
+                 TenLop = lop.TenLop,
+                 NienKhoa = lop.NienKhoa,
+                 MaGv = lop.MaGv,
+                 SoSinhVien = lop.SinhViens.Count  // đếm sinh viên
+             })
+             .ToListAsync();
 
-            return Ok(list);
+                return Ok(list);
         }
 
         // Lấy chi tiết lớp
         [HttpGet("lay_chi_tiet_lop/{id}")]
         public async Task<ActionResult<LopDTO>> GetLop(string id)
         {
-            var lop = await _context.Lops.FindAsync(id);
-            if (lop == null)
-                return NotFound(new { message = "Không tìm thấy lớp" });
+            var lop = await _context.Lops
+            .Include(l => l.SinhViens)
+            .FirstOrDefaultAsync(l => l.MaLop == id);
 
-            return Ok(new LopDTO
-            {
-                MaLop = lop.MaLop,
-                TenLop = lop.TenLop,
-                NienKhoa = lop.NienKhoa,
-                MaGv = lop.MaGv
-            });
+                if (lop == null)
+                    return NotFound(new { message = "Không tìm thấy lớp" });
+
+                return Ok(new LopDTO
+                {
+                    MaLop = lop.MaLop,
+                    TenLop = lop.TenLop,
+                    NienKhoa = lop.NienKhoa,
+                    MaGv = lop.MaGv,
+                    SoSinhVien = lop.SinhViens.Count
+                });
         }
 
         // Thêm lớp mới

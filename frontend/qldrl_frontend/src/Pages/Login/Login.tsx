@@ -1,9 +1,9 @@
-import type React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios, { type AxiosError } from "axios";
 import "./css/Login.css";
 import { saveToken, getRole, isLoggedIn } from "../../untils/auth";
 import Chatbot from "../Login/Chatbot"; // Import component Chatbot
+
 // Định nghĩa các kiểu TypeScript
 interface ApiResponse {
   message: string;
@@ -78,7 +78,6 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         setThongBaos(response.data);
       }
-      console.log("Danh sách thông báo:", response.data);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách thông báo:", error);
     } finally {
@@ -102,6 +101,7 @@ const Login: React.FC = () => {
     }
   };
 
+  // Xử lý đăng nhập
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
@@ -125,24 +125,29 @@ const Login: React.FC = () => {
       // Chuyển hướng dựa trên vai trò
       redirectBasedOnRole(response.data.role);
     } catch (error: any) {
+      setIsLoading(false);
+
       if (error.response) {
-        console.error("Error response:", error.response.data);
-        const data = error.response.data;
-        if (typeof data === "object" && data !== null && "message" in data) {
-          setErrorMessage(data.message);
-        } else if (typeof data === "string") {
-          setErrorMessage(data);
+        // Trường hợp tài khoản bị khoá (HTTP 403)
+        if (error.response.status === 403) {
+          setErrorMessage(
+            error.response.data?.message || "Tài khoản đang bị khoá."
+          );
         } else {
-          setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
+          const data = error.response.data;
+          if (typeof data === "object" && data !== null && "message" in data) {
+            setErrorMessage(data.message);
+          } else if (typeof data === "string") {
+            setErrorMessage(data);
+          } else {
+            setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
+          }
         }
       } else {
-        console.error("Unknown error:", error);
-        setErrorMessage("Đã xảy ra lỗi khi đăng nhập.");
+        setErrorMessage("Đã xảy ra lỗi khi kết nối đến server.");
       }
-      setIsLoading(false);
     }
   };
-
   // Xử lý quên mật khẩu: Gửi yêu cầu OTP
   const handleForgotPassword = async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -393,8 +398,6 @@ const Login: React.FC = () => {
           </div>
 
           <div className="login-form">
-            {/* Đã chuyển alert ra ngoài, chỗ này không cần nữa */}
-
             <form onSubmit={handleLogin}>
               <div className="form-group">
                 <input
@@ -419,6 +422,7 @@ const Login: React.FC = () => {
                   required
                 />
               </div>
+
               <div className="form-group">
                 <button
                   type="submit"
@@ -446,7 +450,8 @@ const Login: React.FC = () => {
             </div>
           </div>
         </div>
-         <Chatbot onOpenForgotPassword={() => setIsForgotPasswordOpen(true)} />
+
+        <Chatbot onOpenForgotPassword={() => setIsForgotPasswordOpen(true)} />
       </div>
 
       {/* Modal Quên Mật Khẩu */}
@@ -494,7 +499,6 @@ const Login: React.FC = () => {
                     }`}
                   >
                     {forgotMessage}
-                   
                   </div>
                 )}
                 <div className="modal-actions">

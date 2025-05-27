@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Save, X } from "lucide-react";
@@ -10,7 +8,7 @@ interface LopDTO {
   TenLop: string;
   NienKhoa: string;
   MaGv: string;
-  SoLuongSinhVien?: number;
+  SoSinhVien?: number;
   TenGiangVien?: string;
 }
 

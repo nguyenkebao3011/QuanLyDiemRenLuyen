@@ -4509,6 +4509,10 @@
           "MaGv": {
             "type": "string",
             "nullable": true
+          },
+          "SoSinhVien": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

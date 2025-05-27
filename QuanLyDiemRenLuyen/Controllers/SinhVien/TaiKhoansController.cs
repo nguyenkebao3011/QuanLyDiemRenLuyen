@@ -154,32 +154,47 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         //    return Ok("Đã hash xong toàn bộ mật khẩu.");
         //}
         [HttpPost("login")]
-        public IActionResult Login(LoginDto request)
+        public async Task<IActionResult> Login(LoginDto request)
         {
-            var user = _context.TaiKhoans
-                .FirstOrDefault(x => x.TenDangNhap == request.MaDangNhap);
+            var user = await _context.TaiKhoans
+                .Include(x => x.SinhVien)
+                .Include(x => x.GiaoVien)
+                .FirstOrDefaultAsync(x => x.TenDangNhap == request.MaDangNhap);
 
             if (user == null)
-                return BadRequest("Sai tên đăng nhập");
+                return BadRequest(new { message = "Sai tên đăng nhập" });
 
-            // Kiểm tra mật khẩu đã được hash và so sánh
-            var passwordHasher = new PasswordHasher<string>();
-            var result = passwordHasher.VerifyHashedPassword(null, user.MatKhau, request.MatKhau);
+            // Kiểm tra mật khẩu
+            var hasher = new PasswordHasher<string>();
+            var verify = hasher.VerifyHashedPassword(null, user.MatKhau, request.MatKhau);
+            if (verify == PasswordVerificationResult.Failed)
+                return BadRequest(new { message = "Sai tên đăng nhập hoặc mật khẩu" });
 
-            if (result == PasswordVerificationResult.Failed)
-                return BadRequest("Sai tên đăng nhập hoặc mật khẩu");
+            // **KIỂM TRA TRẠNG THÁI**
+            if (user.SinhVien != null)
+            {
+                if (user.SinhVien.TrangThai != "HoatDong")
+                    return StatusCode(
+                        StatusCodes.Status403Forbidden,
+                        new { message = "Tài khoản sinh viên đang bị khoá." }
+                    );
+            }
+            else if (user.GiaoVien != null)
+            {
+                if (user.GiaoVien.TrangThai != "HoatDong")
+                    return StatusCode(
+                        StatusCodes.Status403Forbidden,
+                        new { message = "Tài khoản giảng viên đang bị khoá." }
+                    );
+            }
 
-            // Ghi log thông tin (chỉ để debug)
-
-
-            // Nếu đúng mật khẩu => tạo token
+            // Tạo JWT như bình thường
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, user.TenDangNhap),
         new Claim(ClaimTypes.Role, user.VaiTro),
         new Claim("maTaiKhoan", user.MaTaiKhoan),
     };
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -187,7 +202,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_config["Jwt:ExpiresInMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:ExpiresInMinutes"])),
                 signingCredentials: creds
             );
 

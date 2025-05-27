@@ -8,5 +8,8 @@ namespace QuanLyDiemRenLuyen.DTO.QuanLyKhoa
         public string TenLop { get; set; }
         public string? NienKhoa { get; set; }
         public string? MaGv { get; set; }
+
+        // thêm:
+        public int SoSinhVien { get; set; }
     }
 }

@@ -131,6 +131,13 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "HinhAnhMinhChung")),
     RequestPath = "/HinhAnhMinhChung"
 });
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+    Path.Combine(app.Environment.ContentRootPath, "wwwroot", "avatars")),
+    RequestPath = "/avatars",
+    EnableDirectoryBrowsing = true
+});
 // Sử dụng Session
 app.UseSession();
 app.UseCors("AllowFrontend");

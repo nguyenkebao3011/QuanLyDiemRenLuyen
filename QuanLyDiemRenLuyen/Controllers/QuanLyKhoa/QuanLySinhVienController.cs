@@ -19,6 +19,51 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
             _context = context;
         }
 
+        private async Task<HocKy?> GetCurrentHocKy(DateTime ngayKiemTra)
+        {
+            // Convert DateTime to DateOnly for comparison
+            var ngayKiemTraDateOnly = DateOnly.FromDateTime(ngayKiemTra);
+
+            return await _context.HocKies
+                .Where(hk => ngayKiemTraDateOnly >= hk.NgayBatDau && ngayKiemTraDateOnly <= hk.NgayKetThuc)
+                .FirstOrDefaultAsync();
+        }
+
+        // Method helper để tạo điểm rèn luyện mặc định
+        private async Task<bool> TaoDiemRenLuyenMacDinh(string maSv, int maHocKy)
+        {
+            try
+            {
+                // Kiểm tra xem đã có điểm rèn luyện cho học kỳ này chưa
+                var existingDiem = await _context.DiemRenLuyens
+                    .FirstOrDefaultAsync(d => d.MaSv == maSv && d.MaHocKy == maHocKy);
+
+                if (existingDiem != null)
+                {
+                    return true; // Đã có rồi, không cần tạo mới
+                }
+
+                // Tạo điểm rèn luyện mới với điểm mặc định 70
+                var diemRenLuyen = new DiemRenLuyen
+                {
+                    MaSv = maSv,
+                    MaHocKy = maHocKy,
+                    TongDiem = 70, // Điểm mặc định
+                    XepLoai = "Khá", // Xếp loại tương ứng với 70 điểm
+                    NgayChot = null,
+                    TrangThai = "Chưa chốt"
+                };
+
+                _context.DiemRenLuyens.Add(diemRenLuyen);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         [HttpPost("them_sinh_vien")]
         public async Task<ActionResult<SinhVienDTO>> CreateSinhVien(
          [FromForm] SinhVienDTO sinhVienDTO,
@@ -138,7 +183,7 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 var sinhVien = new Models.SinhVien
                 {
                     MaSV = sinhVienDTO.MaSV,
-                    MaTaiKhoan = maTaiKhoan, // null nếu không cấp tài khoản
+                    MaTaiKhoan = maTaiKhoan,
                     HoTen = sinhVienDTO.HoTen,
                     MaLop = sinhVienDTO.MaLop,
                     Email = sinhVienDTO.Email,
@@ -154,6 +199,15 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                 _context.SinhViens.Add(sinhVien);
                 await _context.SaveChangesAsync();
 
+                // === TẠO ĐIỂM RÈN LUYỆN CHO HỌC KỲ HIỆN TẠI ===
+                var currentHocKy = await GetCurrentHocKy(DateTime.Now);
+                bool diemRenLuyenCreated = false;
+
+                if (currentHocKy != null)
+                {
+                    diemRenLuyenCreated = await TaoDiemRenLuyenMacDinh(sinhVienDTO.MaSV, currentHocKy.MaHocKy);
+                }
+
                 sinhVienDTO.AnhDaiDien = anhDaiDienPath;
 
                 return Ok(new
@@ -161,7 +215,9 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     message = "Thêm sinh viên thành công",
                     capTaiKhoan = CapTaiKhoan,
                     maTaiKhoan = maTaiKhoan,
-                    sinhVien = sinhVienDTO
+                    sinhVien = sinhVienDTO,
+                    diemRenLuyenCreated = diemRenLuyenCreated,
+                    hocKyHienTai = currentHocKy?.TenHocKy
                 });
             }
             catch (Exception ex)
@@ -186,9 +242,13 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
             var result = new List<string>();
             int successCount = 0;
             int failCount = 0;
+            int diemRenLuyenCount = 0;
 
             try
             {
+                // Lấy học kỳ hiện tại
+                var currentHocKy = await GetCurrentHocKy(DateTime.Now);
+
                 // Lấy danh sách mã lớp hợp lệ một lần duy nhất
                 var validMaLopList = await _context.Lops.Select(l => l.MaLop).ToListAsync();
 
@@ -254,36 +314,29 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 var maVaiTro = worksheet.Cells[row, 9].Text?.Trim();
                                 var trangThai = worksheet.Cells[row, 10].Text?.Trim();
 
-                                // Log dữ liệu đọc được để debug
-                               
-
                                 // Validation cơ bản
                                 if (string.IsNullOrEmpty(maSV))
                                 {
-                          
                                     failCount++;
                                     continue;
                                 }
 
                                 if (string.IsNullOrEmpty(hoTen))
                                 {
-                       
                                     failCount++;
                                     continue;
                                 }
 
                                 // Kiểm tra độ dài MaSV
-                                if (maSV.Length > 50) // Giả sử max length là 50
+                                if (maSV.Length > 50)
                                 {
-                                   
                                     failCount++;
                                     continue;
                                 }
 
                                 // Kiểm tra độ dài HoTen
-                                if (hoTen.Length > 255) // Giả sử max length là 255
+                                if (hoTen.Length > 255)
                                 {
-                                
                                     failCount++;
                                     continue;
                                 }
@@ -291,7 +344,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra trùng lặp trong database
                                 if (existingMaSVList.Contains(maSV))
                                 {
-                                
                                     failCount++;
                                     continue;
                                 }
@@ -299,7 +351,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra trùng lặp trong file hiện tại
                                 if (maSVInCurrentFile.Contains(maSV))
                                 {
-                                  
                                     failCount++;
                                     continue;
                                 }
@@ -307,7 +358,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra mã lớp
                                 if (!string.IsNullOrEmpty(maLop) && !validMaLopList.Contains(maLop))
                                 {
-                                  
                                     failCount++;
                                     continue;
                                 }
@@ -315,16 +365,14 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra email
                                 if (!string.IsNullOrEmpty(email))
                                 {
-                                    if (email.Length > 100) // Kiểm tra độ dài email
+                                    if (email.Length > 100)
                                     {
-                          
                                         failCount++;
                                         continue;
                                     }
 
                                     if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
                                     {
-                                 
                                         failCount++;
                                         continue;
                                     }
@@ -333,7 +381,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 // Kiểm tra số điện thoại
                                 if (!string.IsNullOrEmpty(soDienThoai) && !Regex.IsMatch(soDienThoai, @"^\d{10}$"))
                                 {
-                              
                                     failCount++;
                                     continue;
                                 }
@@ -349,7 +396,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                 if (ngaySinhValue > DateTime.Now || ngaySinhValue < new DateTime(1900, 1, 1))
                                 {
                                     ngaySinhValue = DateTime.Now;
-                              
                                 }
 
                                 // Sử dụng transaction riêng cho từng dòng
@@ -368,7 +414,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             var existingTaiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
                                             if (existingTaiKhoan != null)
                                             {
-                                               
                                                 failCount++;
                                                 continue;
                                             }
@@ -385,8 +430,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             };
 
                                             _context.TaiKhoans.Add(taiKhoan);
-
-                                            // Lưu tài khoản trước
                                             await _context.SaveChangesAsync();
                                         }
 
@@ -408,16 +451,24 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                         };
 
                                         _context.SinhViens.Add(sinhVien);
-
-                                        // Lưu sinh viên
                                         await _context.SaveChangesAsync();
+
+                                        // === TẠO ĐIỂM RÈN LUYỆN CHO HỌC KỲ HIỆN TẠI ===
+                                        if (currentHocKy != null)
+                                        {
+                                            bool diemCreated = await TaoDiemRenLuyenMacDinh(maSV, currentHocKy.MaHocKy);
+                                            if (diemCreated)
+                                            {
+                                                diemRenLuyenCount++;
+                                            }
+                                        }
+
                                         await transaction.CommitAsync();
 
                                         // Thêm vào danh sách theo dõi
                                         maSVInCurrentFile.Add(maSV);
                                         existingMaSVList.Add(maSV);
 
-                                     
                                         successCount++;
                                     }
                                     catch (DbUpdateException dbEx)
@@ -429,7 +480,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             currentTaiKhoanNumber--;
 
                                         string detailError = GetDbUpdateExceptionDetails(dbEx);
-                                  
                                         failCount++;
                                     }
                                     catch (Exception ex)
@@ -441,7 +491,6 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                                             currentTaiKhoanNumber--;
 
                                         string errorDetail = ex.InnerException?.Message ?? ex.Message;
-                               
                                         failCount++;
                                     }
                                 }
@@ -449,12 +498,11 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                             catch (Exception ex)
                             {
                                 string errorDetail = ex.InnerException?.Message ?? ex.Message;
-                    
                                 failCount++;
                             }
                         }
 
-                        result.Insert(0, $"Tổng cộng: {successCount} thành công");
+                        result.Insert(0, $"Tổng cộng: {successCount} thành công, {diemRenLuyenCount} điểm rèn luyện được tạo");
                     }
                 }
 
@@ -466,7 +514,9 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
                     {
                         tongSo = successCount + failCount,
                         thanhCong = successCount,
-                        thatBai = failCount
+                        thatBai = failCount,
+                        diemRenLuyenTao = diemRenLuyenCount,
+                        hocKyHienTai = currentHocKy?.TenHocKy
                     }
                 });
             }

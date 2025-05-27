@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { GraduationCap, Users, Calendar, User } from "lucide-react";
 
@@ -8,7 +6,7 @@ interface LopDTO {
   TenLop: string;
   NienKhoa: string;
   MaGv: string;
-  SoLuongSinhVien?: number;
+  SoSinhVien?: number;
   TenGiangVien?: string;
 }
 
@@ -70,7 +68,7 @@ const ModalDetailLop: React.FC<ModalDetailLopProps> = ({
                   <Users className="icon" />
                   Số sinh viên
                 </label>
-                <p className="detail-value">{lop.SoLuongSinhVien || 0}</p>
+                <p className="detail-value">{lop.SoSinhVien || 0}</p>
               </div>
             </div>
 
