@@ -111,7 +111,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://192.168.1.246:8081") // Chỉ định origin cụ thể
+        policy.WithOrigins("http://localhost:3000", "http://0.0.0.0:8081") // Chỉ định origin cụ thể
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Giữ lại nếu cần gửi credentials
