@@ -66,14 +66,14 @@
 
 .bieu-tuong-thong-bao:hover {
   background-color: #e9e9e9;
-  transform: scale(1.05);
+  
 }
 
 /* Huy hiệu thông báo */
 .huy-hieu-thong-bao {
   position: absolute;
-  top: -3px;
-  right: -3px;
+  top: -43px;
+  right: -7px;
   display: flex;
   align-items: center;
   justify-content: center;

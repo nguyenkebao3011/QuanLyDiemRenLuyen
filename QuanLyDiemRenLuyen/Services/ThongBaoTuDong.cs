@@ -135,7 +135,7 @@ public class ThongBaoScheduledService : BackgroundService
                 _logger.LogInformation($"Gửi thông báo cho hoạt động {hd.MaHoatDong} ({hd.TenHoatDong}) với {sinhVienCanGui.Count} sinh viên.");
             }
 
-            _logger.LogInformation("Đã gửi xong thông báo tự động.");
+            _logger.LogInformation("Da gui xong thong bao tu dong.");
         }
         catch (Exception ex)
         {
