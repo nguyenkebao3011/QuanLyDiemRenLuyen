@@ -142,7 +142,7 @@
 .tb-badge-academic { background: #3b82f6; }
 .tb-badge-exam { background: #f97316; }
 .tb-badge-fee { background: #ef4444; }
-.tb-badge-general { background: #6b7280; }
+.tb-badge-general { background: #c71205; }
 
 /* Detail Panel */
 .tb-detail {
@@ -158,7 +158,7 @@
 
 .tb-detail h2 {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 600;
   margin-bottom: 1rem;
   color: #1e293b;
 }

@@ -89,7 +89,10 @@ const initialDisplayCount = 2;
       setSelectedPhanHoi(ph);
     }
   };
-
+  const formatDate2 = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+  };
   const fetchData = useCallback(async () => {
     if (!token) {
       setMessage("Vui lòng đăng nhập để tiếp tục.");
@@ -633,7 +636,7 @@ const initialDisplayCount = 2;
                 {displayedPhanHoi.map((ph) => (
                   <div key={ph.MaPhanHoi} className="phanhoi-item">
                     <div className="phanhoi-header">
-                      <h3 className="phanhoi-title">Phản Hồi #{ph.MaPhanHoi}</h3>
+                      <h3 className="phanhoi-title">Phản Hồi ngày {formatDate2(ph.NgayPhanHoi)}</h3>
                       <span
                         className={`status-badge status-${ph.TrangThai.toLowerCase().replace(/\s+/g, "-")}`}
                       >
@@ -656,7 +659,7 @@ const initialDisplayCount = 2;
                       </div>
                        <div className="detail-row">
                         <span className="detail-label">Ngày xử lý:</span>
-                        <span className="detail-value">{ph.NgayXuLy || "Đang chờ"}</span>
+                      <span className="detail-value">{ph.NgayXuLy ? formatDate(ph.NgayXuLy) : "Đang chờ"}</span>
                       </div>
                     </div>
 

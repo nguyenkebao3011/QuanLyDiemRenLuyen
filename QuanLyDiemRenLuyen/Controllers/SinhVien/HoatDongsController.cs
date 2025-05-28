@@ -96,6 +96,14 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return Ok(hoatDongs);
         }
 
-       
+        [HttpGet("lay-danh-sach-hoat-dong-mo-dang-ky")]
+        public async Task<ActionResult<IEnumerable<HoatDong>>> GetHoatDongsMoDangKy()
+        {
+            var hoatDongs = await _context.HoatDongs
+                .Where(h => h.TrangThai == "Đang mở đăng ký")
+                .ToListAsync();
+
+            return Ok(hoatDongs);
+        }
     }
 }
