@@ -1315,6 +1315,88 @@
       ]
     },
     {
+      "Route": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "AssetFile": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "207841"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 28 May 2025 03:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.uj1jyoc60d.jpg",
+      "AssetFile": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "207841"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 28 May 2025 03:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "uj1jyoc60d"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk="
+        },
+        {
+          "Name": "label",
+          "Value": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg"
+        }
+      ]
+    },
+    {
       "Route": "HinhAnhMinhChung/bebc195a-2433-45b7-a974-63c3f972f6ae.6c5563bg09.jpeg",
       "AssetFile": "HinhAnhMinhChung/bebc195a-2433-45b7-a974-63c3f972f6ae.jpeg",
       "Selectors": [],

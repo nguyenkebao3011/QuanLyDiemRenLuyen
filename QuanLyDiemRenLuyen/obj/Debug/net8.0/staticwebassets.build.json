@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "O33iGvJ4qXR3HFHD2hWT9K0hNPcoijVhCCzgoxzlmX0=",
+  "Hash": "oyJm72kjiNGSqBXlUif6fZx2ZEzbBd7mwwqGebqE90c=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -960,6 +960,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\ab4ac1f6-cb44-4bf8-8498-d9e899360e4d.jpeg"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "uj1jyoc60d",
+      "Integrity": "mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg"
     },
     {
       "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\bebc195a-2433-45b7-a974-63c3f972f6ae.jpeg",
@@ -4667,6 +4688,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-uvN0qODCsu3AZZD2LBYQR1OkIs0jGFcDp/bzNvZPCI8="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "207841"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 28 May 2025 03:55:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.uj1jyoc60d.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "207841"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 28 May 2025 03:55:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "uj1jyoc60d"
+        },
+        {
+          "Name": "label",
+          "Value": "HinhAnhMinhChung/b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mpAyumgO60gi9LaS+wkXMDaQ++dm6jAJ9EvWxQjRujk="
         }
       ]
     },
