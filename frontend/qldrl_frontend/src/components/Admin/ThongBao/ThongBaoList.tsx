@@ -247,13 +247,7 @@ const ThongBaoList: React.FC<ThongBaoListProps> = ({
                         {thongBao.TieuDe}
                       </td>
                       <td>
-                        <span
-                          className={`badge ${getLoaiThongBaoClass(
-                            thongBao.LoaiThongBao
-                          )}`}
-                        >
-                          {thongBao.LoaiThongBao}
-                        </span>
+                        <span>{thongBao.LoaiThongBao}</span>
                       </td>
                       <td>{thongBao.TenNguoiTao}</td>
                       <td>

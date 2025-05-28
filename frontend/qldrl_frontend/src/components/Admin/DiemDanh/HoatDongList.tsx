@@ -1,4 +1,4 @@
-import type React from "react";
+import React, { useMemo } from "react";
 import {
   Search,
   Calendar,
@@ -49,17 +49,15 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
   handleTrangThaiChange,
   uniqueTrangThai = [],
 }) => {
-  // Format date
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "";
     try {
       return format(parseISO(dateString), "dd/MM/yyyy HH:mm", { locale: vi });
-    } catch (error) {
+    } catch {
       return dateString;
     }
   };
 
-  // Render trạng thái hoạt động
   const renderTrangThaiHoatDong = (trangThai: string | null) => {
     switch (trangThai) {
       case "Đang diễn ra":
@@ -75,45 +73,30 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
     }
   };
 
-  // Xử lý khi chọn học kỳ - sử dụng handler được truyền vào nếu có
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
+  const displayedHoatDong = useMemo(() => {
+    if (!searchTerm) return filteredHoatDong;
+    return filteredHoatDong.filter((hd) =>
+      hd.TenHoatDong.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [filteredHoatDong, searchTerm]);
+
   const onHocKyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (handleHocKyChange) {
-      handleHocKyChange(e);
-    } else {
-      setSelectedHocKy(e.target.value);
-    }
+    if (handleHocKyChange) handleHocKyChange(e);
+    else setSelectedHocKy(e.target.value);
   };
 
-  // Xử lý khi chọn trạng thái - sử dụng handler được truyền vào nếu có
   const onTrangThaiChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (handleTrangThaiChange) {
-      handleTrangThaiChange(e);
-    } else {
-      setSelectedTrangThai(e.target.value);
-    }
+    if (handleTrangThaiChange) handleTrangThaiChange(e);
+    else setSelectedTrangThai(e.target.value);
   };
 
-  // Xử lý khi nhấn nút "Xem tất cả học kỳ"
-  const viewAllHocKy = () => {
-    if (handleHocKyChange) {
-      handleHocKyChange({
-        target: { value: "all" },
-      } as React.ChangeEvent<HTMLSelectElement>);
-    } else {
-      setSelectedHocKy("all");
-    }
-  };
-
-  // Xử lý khi nhấn nút "Xem tất cả trạng thái"
-  const viewAllTrangThai = () => {
-    if (handleTrangThaiChange) {
-      handleTrangThaiChange({
-        target: { value: "all" },
-      } as React.ChangeEvent<HTMLSelectElement>);
-    } else {
-      setSelectedTrangThai("all");
-    }
-  };
+  const viewAllHocKy = () => onHocKyChange({ target: { value: "all" } } as any);
+  const viewAllTrangThai = () =>
+    onTrangThaiChange({ target: { value: "all" } } as any);
 
   return (
     <div className="card">
@@ -122,7 +105,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
         <p className="card-description">
           Chọn một hoạt động để quản lý điểm danh
         </p>
-        <form className="search-form">
+        <form className="search-form" onSubmit={handleSearchSubmit}>
           <div className="search-input-container">
             <input
               type="text"
@@ -137,6 +120,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
           </div>
         </form>
       </div>
+
       <div className="card-content">
         <div className="filter-container">
           <select
@@ -145,10 +129,10 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
             onChange={onHocKyChange}
           >
             <option value="all">Tất cả học kỳ</option>
-            {hocKys && hocKys.length > 0
+            {hocKys.length > 0
               ? hocKys.map((hk) => (
                   <option key={hk.MaHocKy} value={hk.TenHocKy}>
-                    {hk.TenHocKy} năm học {hk.NamHoc || ""}
+                    {hk.TenHocKy} {hk.NamHoc && `- ${hk.NamHoc}`}
                   </option>
                 ))
               : uniqueHocKy.map((hocKy) => (
@@ -164,7 +148,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
             onChange={onTrangThaiChange}
           >
             <option value="all">Tất cả trạng thái</option>
-            {uniqueTrangThai && uniqueTrangThai.length > 0
+            {uniqueTrangThai.length > 0
               ? uniqueTrangThai.map((trangThai) => (
                   <option key={trangThai} value={trangThai}>
                     {trangThai}
@@ -185,20 +169,30 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
 
         <div className="hoat-dong-list">
           {loadingHoatDong ? (
-            // Skeleton loading
-            Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index} className="skeleton-item">
-                  <div className="skeleton-line"></div>
-                  <div className="skeleton-line" style={{ width: "50%" }}></div>
-                  <div className="skeleton-line" style={{ width: "70%" }}></div>
-                </div>
-              ))
-          ) : filteredHoatDong.length === 0 ? (
+            // Skeleton loading state
+            Array.from({ length: 5 }).map((_, idx) => (
+              <div key={idx} className="skeleton-item">
+                <div className="skeleton-line" />
+                <div className="skeleton-line" style={{ width: "50%" }} />
+                <div className="skeleton-line" style={{ width: "70%" }} />
+              </div>
+            ))
+          ) : displayedHoatDong.length === 0 ? (
             <div className="empty-state">
               <AlertCircle className="empty-icon" />
-              {selectedHocKy !== "all" ? (
+              {searchTerm ? (
+                <>
+                  <p>
+                    Không tìm thấy hoạt động phù hợp với từ khóa “{searchTerm}”
+                  </p>
+                  <button
+                    className="btn btn-outline btn-sm mt-3"
+                    onClick={() => setSearchTerm("")}
+                  >
+                    Xóa tìm kiếm
+                  </button>
+                </>
+              ) : selectedHocKy !== "all" ? (
                 <>
                   <p>Không tìm thấy hoạt động nào trong {selectedHocKy}</p>
                   <button
@@ -211,8 +205,8 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
               ) : selectedTrangThai !== "all" ? (
                 <>
                   <p>
-                    Không tìm thấy hoạt động nào có trạng thái "
-                    {selectedTrangThai}"
+                    Không tìm thấy hoạt động nào có trạng thái “
+                    {selectedTrangThai}”
                   </p>
                   <button
                     className="btn btn-outline btn-sm mt-3"
@@ -221,25 +215,12 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
                     Xem tất cả trạng thái
                   </button>
                 </>
-              ) : searchTerm ? (
-                <>
-                  <p>
-                    Không tìm thấy hoạt động nào phù hợp với từ khóa "
-                    {searchTerm}"
-                  </p>
-                  <button
-                    className="btn btn-outline btn-sm mt-3"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    Xóa tìm kiếm
-                  </button>
-                </>
               ) : (
-                <p>Không tìm thấy hoạt động nào</p>
+                <p>Chưa có hoạt động nào.</p>
               )}
             </div>
           ) : (
-            filteredHoatDong.map((hoatDong) => (
+            displayedHoatDong.map((hoatDong) => (
               <div
                 key={hoatDong.MaHoatDong}
                 className={`hoat-dong-item ${
@@ -262,9 +243,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
                   </div>
                   <div className="hoat-dong-detail">
                     <Users className="detail-icon" />
-                    <span>
-                      {hoatDong.SoLuongDaDangKy || 0} sinh viên đăng ký
-                    </span>
+                    <span>{hoatDong.SoLuongDaDangKy || 0} sinh viên</span>
                   </div>
                 </div>
               </div>
@@ -272,6 +251,7 @@ const HoatDongList: React.FC<HoatDongListProps> = ({
           )}
         </div>
       </div>
+
       <div className="card-footer">
         <button
           className="btn btn-outline"

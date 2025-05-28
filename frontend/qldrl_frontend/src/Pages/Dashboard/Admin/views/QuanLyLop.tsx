@@ -449,7 +449,7 @@ const QuanLyLop: React.FC = () => {
         lop={lopToEdit}
         giangViens={giangViens}
         onSuccess={handleEditSuccess}
-        showToast={() => {}} // không dùng toast
+        showToast={() => {}}
       />
 
       <ModalDetailLop

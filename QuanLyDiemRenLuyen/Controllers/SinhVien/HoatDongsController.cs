@@ -78,7 +78,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             // Thêm bộ lọc cho hoạt động mới nhất
             if (filter.IsLatest)
             {
-                query = query.OrderByDescending(h => h.NgayBatDau);
+                query = query.OrderByDescending(h => h.NgayTao);
             }
 
             var result = query.ToList();

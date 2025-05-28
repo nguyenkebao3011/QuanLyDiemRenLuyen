@@ -7,9 +7,9 @@ import HoatDongDetail from "../../../../components/Admin/DiemDanh/HoatDongDetail
 import SinhVienList from "../../../../components/Admin/DiemDanh/SinhVienList";
 import BaoCaoDiemDanhView from "../../../../components/Admin/DiemDanh/BaoCaoDiemDanhView";
 import DiemDanhDialog from "../../../../components/Admin/DiemDanh/DiemDanhDialog";
-import Toast from "../../../../components/Admin/DiemDanh/Toast";
 import { Info } from "lucide-react";
-
+import "../css/notification.css";
+import Notification from "../views/Notification";
 // Import types
 import type {
   HoatDong,
@@ -24,6 +24,9 @@ import type {
 import { ApiService } from "../../../../untils/services/service-api";
 
 export default function DiemDanh() {
+  const [notifications, setNotifications] = useState<
+    { id: number; message: string; type: "success" | "error" | "info" }[]
+  >([]);
   // State cho danh sách hoạt động
   const [danhSachHoatDong, setDanhSachHoatDong] = useState<HoatDong[]>([]);
   const [filteredHoatDong, setFilteredHoatDong] = useState<HoatDong[]>([]);
@@ -76,11 +79,6 @@ export default function DiemDanh() {
   // State cho tab hiện tại
   const [activeTab, setActiveTab] = useState("danh-sach");
 
-  // State cho toast
-  const [toasts, setToasts] = useState<
-    { id: number; title: string; description: string; variant: string }[]
-  >([]);
-
   // Chuẩn hóa chuỗi để so sánh
   const normalizeString = (str: string | null | undefined): string => {
     if (!str) return "";
@@ -88,20 +86,16 @@ export default function DiemDanh() {
   };
 
   // Hiển thị toast
-  const showToast = (
-    title: string,
-    description: string,
-    variant = "default"
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info" = "info"
   ) => {
     const id = Date.now();
-    setToasts((prev) => [...prev, { id, title, description, variant }]);
-
-    // Tự động ẩn toast sau 5 giây
+    setNotifications((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
     }, 5000);
   };
-
   // Lấy danh sách học kỳ từ API
   const fetchHocKy = useCallback(async () => {
     // Nếu đã gọi API rồi thì không gọi lại
@@ -150,10 +144,9 @@ export default function DiemDanh() {
       setError("Lỗi khi lấy danh sách học kỳ");
 
       // Chỉ hiển thị toast một lần
-      showToast(
-        "Lỗi",
-        "Không thể lấy danh sách học kỳ. Sẽ sử dụng dữ liệu từ hoạt động.",
-        "warning"
+      showNotification(
+        "Lỗi: Không thể lấy danh sách học kỳ. Sẽ sử dụng dữ liệu từ hoạt động.",
+        "error"
       );
     } finally {
       setLoadingHocKy(false);
@@ -265,9 +258,8 @@ export default function DiemDanh() {
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách hoạt động:", error);
-      showToast(
-        "Lỗi",
-        "Không thể lấy danh sách hoạt động. Vui lòng thử lại sau.",
+      showNotification(
+        "Lỗi:Không thể lấy danh sách hoạt động. Vui lòng thử lại sau.",
         "error"
       );
     } finally {
@@ -400,9 +392,9 @@ export default function DiemDanh() {
       setUniqueLop(lops);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách sinh viên:", error);
-      showToast(
-        "Lỗi",
-        "Không thể lấy danh sách sinh viên. Vui lòng thử lại sau.",
+      showNotification(
+        "Lỗi : Không thể lấy danh sách sinh viên. Vui lòng thử lại sau.",
+
         "error"
       );
     } finally {
@@ -420,9 +412,8 @@ export default function DiemDanh() {
       setThongTinHoatDong(response);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin hoạt động:", error);
-      showToast(
-        "Lỗi",
-        "Không thể lấy thông tin hoạt động. Vui lòng thử lại sau.",
+      showNotification(
+        "Lỗi:Không thể lấy thông tin hoạt động. Vui lòng thử lại sau.",
         "error"
       );
     } finally {
@@ -440,9 +431,8 @@ export default function DiemDanh() {
       setBaoCaoDiemDanh(response);
     } catch (error) {
       console.error("Lỗi khi lấy báo cáo điểm danh:", error);
-      showToast(
-        "Lỗi",
-        "Không thể lấy báo cáo điểm danh. Vui lòng thử lại sau.",
+      showNotification(
+        "Lỗi: Không thể lấy báo cáo điểm danh. Vui lòng thử lại sau.",
         "error"
       );
     } finally {
@@ -453,10 +443,9 @@ export default function DiemDanh() {
   // Điểm danh sinh viên
   const diemDanhSinhVien = async (maDangKy: number) => {
     if (!maQL) {
-      showToast(
-        "Cảnh báo",
-        "Không thể điểm danh khi chưa có thông tin quản lý.",
-        "warning"
+      showNotification(
+        "Cảnh báo: Không thể điểm danh khi chưa có thông tin quản lý.",
+        "error"
       );
       return;
     }
@@ -476,7 +465,10 @@ export default function DiemDanh() {
       );
 
       if (response.success) {
-        showToast("Thành công", "Điểm danh sinh viên thành công", "success");
+        showNotification(
+          "Thành công: Điểm danh sinh viên thành công",
+          "success"
+        );
         // Cập nhật lại danh sách sinh viên
         if (selectedHoatDong) {
           fetchDanhSachSinhVien(selectedHoatDong);
@@ -488,9 +480,8 @@ export default function DiemDanh() {
 
       // Hiển thị thông tin lỗi chi tiết hơn
       const errorMessage = error.response?.data || "Vui lòng thử lại sau.";
-      showToast(
-        "Lỗi",
-        `Không thể điểm danh sinh viên. ${errorMessage}`,
+      showNotification(
+        "Lỗi: Không thể điểm danh sinh viên. ${errorMessage}",
         "error"
       );
     } finally {
@@ -502,19 +493,17 @@ export default function DiemDanh() {
   // Điểm danh nhóm sinh viên
   const diemDanhNhom = async () => {
     if (!maQL) {
-      showToast(
-        "Cảnh báo",
-        "Không thể điểm danh khi chưa có thông tin quản lý.",
-        "warning"
+      showNotification(
+        "Cảnh báo : Không thể điểm danh khi chưa có thông tin quản lý.",
+        "error"
       );
       return;
     }
 
     if (selectedSinhVien.length === 0) {
-      showToast(
-        "Cảnh báo",
-        "Vui lòng chọn ít nhất một sinh viên để điểm danh",
-        "warning"
+      showNotification(
+        "Cảnh báo : Vui lòng chọn ít nhất một sinh viên để điểm danh",
+        "error"
       );
       return;
     }
@@ -534,9 +523,8 @@ export default function DiemDanh() {
       );
 
       if (response.success) {
-        showToast(
-          "Thành công",
-          `Điểm danh ${selectedSinhVien.length} sinh viên thành công`,
+        showNotification(
+          `Thành công : Điểm danh ${selectedSinhVien.length} sinh viên thành công`,
           "success"
         );
         // Cập nhật lại danh sách sinh viên
@@ -561,7 +549,10 @@ export default function DiemDanh() {
     if (!baoCaoDiemDanh) return;
 
     // Trong thực tế, đây sẽ là API call để xuất Excel
-    showToast("Thông báo", "Chức năng xuất Excel đang được phát triển", "info");
+    showNotification(
+      "Thông báo: Chức năng xuất Excel đang được phát triển",
+      "info"
+    );
   };
 
   // Xử lý chọn hoạt động
@@ -802,9 +793,16 @@ export default function DiemDanh() {
         setGhiChu={setGhiChu}
         diemDanhNhom={diemDanhNhom}
       />
-
-      {/* Toast notifications */}
-      <Toast toasts={toasts} setToasts={setToasts} />
+      {notifications.map((n) => (
+        <Notification
+          key={n.id}
+          message={n.message}
+          type={n.type}
+          onClose={() =>
+            setNotifications((prev) => prev.filter((x) => x.id !== n.id))
+          }
+        />
+      ))}
     </div>
   );
 }

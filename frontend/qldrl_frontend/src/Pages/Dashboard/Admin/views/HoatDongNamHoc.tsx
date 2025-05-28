@@ -81,7 +81,13 @@ const HoatDongNamHoc: React.FC = () => {
     setError(null);
     try {
       const data = await ApiService.layDanhSachHoatDongAll();
-      setHoatDongs(data);
+      const sorted = [...data].sort((a, b) => {
+        const da = new Date(a.NgayTao).getTime();
+        const db = new Date(b.NgayTao).getTime();
+        return db - da;
+      });
+
+      setHoatDongs(sorted);
     } catch (err) {
       console.error("Lỗi khi tải danh sách hoạt động:", err);
       if (
@@ -414,7 +420,7 @@ const HoatDongNamHoc: React.FC = () => {
                             Kết thúc: {formatDateTime(hoatDong.NgayKetThuc)}
                           </div>
                         </div>
-                      </td> 
+                      </td>
                       <td>
                         {hoatDong.MaHocKyNavigation
                           ? `${hoatDong.MaHocKyNavigation.TenHocKy} - ${hoatDong.MaHocKyNavigation.NamHoc}`

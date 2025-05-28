@@ -87,8 +87,8 @@ const TongQuanHeThong: React.FC = () => {
       // Lấy 4 hoạt động gần đây nhất
       const recentData = data
         .sort((a: HoatDong, b: HoatDong) => {
-          const dateA = new Date(a.NgayBatDau || a.NgayBatDau || "");
-          const dateB = new Date(b.NgayKetThuc || b.NgayKetThuc || "");
+          const dateA = new Date(a.NgayTao);
+          const dateB = new Date(b.NgayTao);
           return dateB.getTime() - dateA.getTime();
         })
         .slice(0, 4);
@@ -129,7 +129,7 @@ const TongQuanHeThong: React.FC = () => {
       case "Đã kết thúc":
         return { class: "completed", text: "Đã kết thúc" };
       default:
-        return { class: "new", text: "Mới" };
+        return { class: "new", text: "..." };
     }
   };
 
