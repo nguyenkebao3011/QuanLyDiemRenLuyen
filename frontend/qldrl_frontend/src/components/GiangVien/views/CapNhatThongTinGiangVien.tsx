@@ -3,7 +3,21 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import { Upload, User, Mail, Phone, MapPin, Calendar, GraduationCap, Edit3, Save, X, CheckCircle, AlertCircle, BadgeIcon as IdCard } from 'lucide-react'
+import {
+  Upload,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  GraduationCap,
+  Edit3,
+  Save,
+  X,
+  CheckCircle,
+  AlertCircle,
+  BadgeIcon as IdCard,
+} from "lucide-react"
 import "../css/CapNhatThongTinGiangVien.css"
 interface Lecturer {
   MaGV: string
@@ -139,12 +153,9 @@ const LecturerInfoUpdate: React.FC = () => {
         return
       }
 
-      const response = await axios.get<{ data: Lecturer }>(
-        `${BASE_URL}/api/GiaoViens/lay-giangvien-theo-vai-tro`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      const response = await axios.get<{ data: Lecturer }>(`${BASE_URL}/api/GiaoViens/lay-giangvien-theo-vai-tro`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
 
       const lecturer = response.data.data
 

@@ -172,64 +172,90 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
   }, [isChatOpen]);
 
   // Lấy danh sách hoạt động
-  const fetchHoatDong = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
-      const response = await axios.get("http://localhost:5163/api/DiemDanh/DanhSachHoatDong", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      setHoatDongList(response.data);
-      let responseText = "Các hoạt động đang mở đăng ký:\n\n";
-      const activeHoatDong = response.data.filter((hd: HoatDong) => hd.TrangThai === "Đang diễn ra");
-      if (activeHoatDong.length === 0) {
-        return "Hiện không có hoạt động nào đang mở đăng ký.";
-      }
-      activeHoatDong.forEach((hd: HoatDong, index: number) => {
-        responseText += `${index + 1}. ${hd.TenHoatDong} - ${new Date(hd.NgayBatDau).toLocaleDateString("vi-VN")} - ${hd.DiaDiem}\n`;
-      });
-      responseText += "\nNhập số thứ tự để đăng ký.";
-      setWaitingForActivitySelection(true);
-      return responseText;
-    } catch (error: any) {
-      console.error("Lỗi khi lấy danh sách hoạt động:", error);
-      return error.response?.status === 401
-        ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
-        : "Có lỗi khi lấy danh sách hoạt động.";
+  // Lấy danh sách hoạt động
+const fetchHoatDong = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return "Vui lòng đăng nhập để sử dụng tính năng này.";
     }
-  };
+    const response = await axios.get("http://localhost:5163/api/HoatDongs/lay-danh-sach-hoat-dong-mo-dang-ky", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setHoatDongList(response.data);
+    const activeHoatDong = response.data.filter(
+      (hd: HoatDong) => hd.TrangThai === "Đang diễn ra" || hd.TrangThai === "Đang mở đăng ký"
+    );
+    console.log("Danh sách hoạt động:", activeHoatDong); // Log để kiểm tra
+    if (activeHoatDong.length === 0) {
+      return "Hiện không có hoạt động nào đang mở đăng ký.";
+    }
+    let responseText = "Các hoạt động đang mở đăng ký:\n\n";
+    activeHoatDong.forEach((hd: HoatDong, index: number) => {
+      responseText += `${index + 1}. ${hd.TenHoatDong} - ${new Date(hd.NgayBatDau).toLocaleDateString("vi-VN")} - ${hd.DiaDiem}\n`;
+    });
+    responseText += "\nNhập số thứ tự để đăng ký.";
+    setWaitingForActivitySelection(true);
+    return responseText;
+  } catch (error: any) {
+    console.error("Lỗi khi lấy danh sách hoạt động:", {
+      message: error.message,
+      response: error.response?.data,
+    });
+    return error.response?.status === 401
+      ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
+      : "Có lỗi khi lấy danh sách hoạt động.";
+  }
+};
 
-  // Đăng ký hoạt động
-  const handleDangKyHoatDong = async (index: number) => {
-    const activeHoatDong = hoatDongList.filter((hd) => hd.TrangThai === "Đang diễn ra"|| hd.TrangThai == "Đang mở đăng ký");
+// Đăng ký hoạt động
+const handleDangKyHoatDong = async (index: number) => {
+  try {
+    const activeHoatDong = hoatDongList.filter(
+      (hd) => hd.TrangThai === "Đang diễn ra" || hd.TrangThai === "Đang mở đăng ký"
+    );
+    console.log("Active HoatDong in handleDangKyHoatDong:", activeHoatDong); // Log để kiểm tra
     if (index < 1 || index > activeHoatDong.length) {
       return "Số thứ tự không hợp lệ. Vui lòng chọn lại.";
     }
     const selectedHoatDong = activeHoatDong[index - 1];
-    try {
-      const token = localStorage.getItem("token");
-      // if (!token) throw new Error("Vui lòng đăng nhập để sử dụng tính năng này.");
-      await axios.post(
-        "http://localhost:5163/api/DangKyHoatDongs/dang-ky",
-        { MaHoatDong: selectedHoatDong.MaHoatDong },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return `Đăng ký thành công: ${selectedHoatDong.TenHoatDong}.`;
-    } catch (error: any) {
-      console.error("Lỗi khi đăng ký hoạt động:", error);
-      return error.response?.status === 401
-        ? "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại."
-        : "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.";
+    console.log("Selected HoatDong:", selectedHoatDong); // Log để kiểm tra
+    if (!selectedHoatDong?.MaHoatDong) {
+      return "Lỗi: Mã hoạt động không hợp lệ.";
     }
-  };
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return "Vui lòng đăng nhập để sử dụng tính năng này.";
+    }
+    const response = await axios.post(
+      "http://localhost:5163/api/DangKyHoatDongs/dang-ky",
+      { MaHoatDong: Number(selectedHoatDong.MaHoatDong) }, // Ép kiểu nếu cần
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return `Đăng ký thành công: ${selectedHoatDong.TenHoatDong}.`;
+  } catch (error: any) {
+    console.error("Lỗi khi đăng ký hoạt động:", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
+    if (error.response?.status === 401) {
+      return "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.";
+    }
+    if (error.response?.status === 400) {
+      return `Lỗi đăng ký: ${error.response?.data?.message || "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại."}`;
+    }
+    return "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.";
+  }
+};
 
  const handleChatSend = async () => {
   if (!chatInput.trim()) return;
@@ -273,7 +299,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
       const phanHoiMatch = chatInput.match(/(phản hồi |khiếu nại điểm rèn luyện|phản hồi điểm rèn luyện)/i);
       const dangKyMatch = chatInput.match(/(đăng ký hoạt động|tham gia sự kiện| tham gia)/i);
       const diemMatch = chatInput.match(/(xem điểm\s*(?:DRL\s*)?(?:của\s*)?(?:MSSV\s*)?|điểm\s*(?:rèn luyện|DRL)\s*(?:kỳ này\s*)?(?:của\s*)?(?:tôi|MSSV\s*)?|tôi được bao nhiêu điểm|MSSV\s*(\w+)\s*điểm\s*(?:luyện|rèn luyện)\s*bao nhiêu)(\w+)?/i);
-      const hocKyMatch = chatInput.match(/học kỳ\s*(\d+)/i);
+      const hocKyMatch = chatInput.match(/ kỳ\s*(\d+)/i);
       const mssvMatch = chatInput.match(/DHTH\d+/i);
       const hoatDongMatch = chatInput.toLowerCase().includes("hoạt động") && !dangKyMatch;
       const thongBaoMatch = chatInput.toLowerCase().includes("thông báo");
@@ -365,7 +391,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
           response.data.forEach((tb: ThongBao, index: number) => {
             responseText += `${index + 1}. ${tb.TieuDe} - ${new Date(tb.NgayTao).toLocaleDateString("vi-VN")}\n`;
           });
-          responseText += "\nTôi đã cho bạn những thông báo mới nhất. Nếu cần xem chi tiết hãy truy cập vào danh sách thông báo ở phía bên phải trang web.\n";
+          responseText += "\nTôi đã cho bạn những thông báo mới nhất. Nếu cần xem chi tiết hãy truy cập vào danh sách thông báo ở phía bên trái trang web.\n";
         } else {
           responseText = "Không có thông báo mới nào.";
         }

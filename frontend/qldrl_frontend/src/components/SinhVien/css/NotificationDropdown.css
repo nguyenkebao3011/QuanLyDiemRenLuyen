@@ -61,6 +61,7 @@
   cursor: pointer;
   transition: var(--chuyen-tiep);
   box-shadow: 0 2px 5px var(--mau-bong);
+      margin-top: -38px;
 }
 
 .bieu-tuong-thong-bao:hover {

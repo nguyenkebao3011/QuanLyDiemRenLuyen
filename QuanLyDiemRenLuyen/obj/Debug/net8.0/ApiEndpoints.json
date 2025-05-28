@@ -725,6 +725,26 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "GetHoatDongsMoDangKy",
+    "RelativePath": "api/HoatDongs/lay-danh-sach-hoat-dong-mo-dang-ky",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.HoatDong, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
     "Method": "GetHoatDong",
     "RelativePath": "api/HoatDongs/loc-hoat-dong",
     "HttpMethod": "GET",

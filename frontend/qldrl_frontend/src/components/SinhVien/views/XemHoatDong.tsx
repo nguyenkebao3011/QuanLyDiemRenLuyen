@@ -731,8 +731,9 @@ const HoatDongList: React.FC = () => {
                   <div className="hoatdong-details">
                     <p>
                       <i className="icon-calendar"></i>{" "}
-                      <strong>Thời gian:</strong> {formatDate(hd.NgayBatDau)} →{" "}
-                      {formatDate(hd.NgayKetThuc)}
+                      <strong>Thời gian:</strong> {formatDate(hd.NgayBatDau)} 
+                      {/* →{" "}
+                      {formatDate(hd.NgayKetThuc)} */}
                     </p>
                     <p>
                       <i className="icon-location"></i>{" "}
