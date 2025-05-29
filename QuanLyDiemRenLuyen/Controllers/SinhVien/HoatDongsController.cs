@@ -118,10 +118,10 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             return Ok(hoatDongs);
         }
 
-                [HttpPost("goi-y-hoat-dong")]
-                public async Task<IActionResult> Recommend([FromBody] RecommendationRequest request)
-                {
-                    try
+         [HttpPost("goi-y-hoat-dong")]
+              public async Task<IActionResult> Recommend([FromBody] RecommendationRequest request)
+                 {
+                   try
                     {
                         // Chuẩn bị payload để gửi tới FastAPI
                         var payload = new
