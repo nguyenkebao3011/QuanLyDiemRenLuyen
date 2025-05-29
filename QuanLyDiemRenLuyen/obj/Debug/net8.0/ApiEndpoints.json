@@ -705,6 +705,22 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
+    "Method": "Recommend",
+    "RelativePath": "api/HoatDongs/goi-y-hoat-dong",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QuanLyDiemRenLuyen.Controllers.SinhVien.RecommendationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.HoatDongsController",
     "Method": "GetHoatDongs",
     "RelativePath": "api/HoatDongs/lay-danh-sach-hoat-dong",
     "HttpMethod": "GET",

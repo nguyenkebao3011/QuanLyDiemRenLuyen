@@ -1286,6 +1286,37 @@
         }
       }
     },
+    "/api/HoatDongs/goi-y-hoat-dong": {
+      "post": {
+        "tags": [
+          "HoatDongs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/HocKy/lay_hoc_ky": {
       "get": {
         "tags": [
@@ -4132,6 +4163,10 @@
             "type": "boolean",
             "nullable": true
           },
+          "LoaiHoatDong": {
+            "type": "string",
+            "nullable": true
+          },
           "DangKyHoatDongs": {
             "type": "array",
             "items": {
@@ -4881,6 +4916,20 @@
           "SoDienThoai": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecommendationRequest": {
+        "type": "object",
+        "properties": {
+          "MaSinhVien": {
+            "type": "string",
+            "nullable": true
+          },
+          "TopN": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

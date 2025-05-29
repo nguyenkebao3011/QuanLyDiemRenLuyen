@@ -22,6 +22,8 @@ import GuiPhanHoi from "../../../components/SinhVien/views/PhanHoiDiemRenLuyen";
 import ThongTinSinhVien from "../../../components/SinhVien/views/ThongTinSinhVien";
 import HoatDongDaDangKy from "../../../components/SinhVien/views/HoatDongDaDangKy";
 import NotificationDropdown from "../../../components/SinhVien/views/NotificationDropdown";
+import GoiYHoatDong from "../../../components/SinhVien/views/GoiYHoatDong";
+
 
 type MenuKey =
   | "dashboard"
@@ -257,7 +259,7 @@ const StudentDashboard: React.FC = () => {
               <>
                 <ThongTinSinhVien student={studentData} />
                 <HoatDongDaDangKy />
-
+                {/* <GoiYHoatDong /> */}
                 <XemThongBao />
               </>
             ) : (

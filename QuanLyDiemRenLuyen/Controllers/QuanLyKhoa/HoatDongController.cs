@@ -27,18 +27,88 @@ namespace QuanLyDiemRenLuyen.Controllers.QuanLyKhoa
             {
                 return BadRequest("Dữ liệu không hợp lệ.");
             }
+
             try
             {
                 hoatDong.NgayTao = DateTime.Now;
                 hoatDong.SoLuongDaDangKy = 0;
-                _context.HoatDongs.Add(hoatDong);
+
+                // Tính số ngày diễn ra
+                // Fix for nullable DateTime properties
+                var soNgay = ((hoatDong.NgayKetThuc?.Date ?? DateTime.MinValue) - (hoatDong.NgayBatDau?.Date ?? DateTime.MinValue)).Days + 1;
+
+                if (soNgay >= 2)
+                {
+                    // Tạo bản ghi cho từng ngày
+                    for (int i = 0; i < soNgay; i++)
+                    {
+                        var ngayDienRa = (hoatDong.NgayBatDau?.Date ?? DateTime.MinValue).AddDays(i);
+                        var hoatDongMoi = new HoatDong
+                        {
+                            // Không cần gán MaHoatDong vì nó là IDENTITY
+                            TenHoatDong = $"{hoatDong.TenHoatDong} (Ngày {i + 1})",
+                            MoTa = hoatDong.MoTa,
+                            NgayBatDau = ngayDienRa.Add(hoatDong.NgayBatDau?.TimeOfDay ?? TimeSpan.Zero),
+                            NgayKetThuc = ngayDienRa.Add(hoatDong.NgayKetThuc?.TimeOfDay ?? TimeSpan.Zero),
+                            DiaDiem = hoatDong.DiaDiem,
+                            SoLuongToiDa = hoatDong.SoLuongToiDa,
+                            DiemCong = hoatDong.DiemCong,
+                            MaHocKy = hoatDong.MaHocKy,
+                            MaQl = hoatDong.MaQl,
+                            TrangThai = hoatDong.TrangThai,
+                            NgayTao = hoatDong.NgayTao,
+                            SoLuongDaDangKy = hoatDong.SoLuongDaDangKy,
+                            NgayDienRa = true, // Gán 1 cho hoạt động nhiều ngày
+                            LoaiHoatDong = DetermineLoaiHoatDong(hoatDong.TenHoatDong, hoatDong.MoTa)
+                        };
+
+                        _context.HoatDongs.Add(hoatDongMoi);
+                    }
+                }
+                else
+                {
+                    // Hoạt động 1 ngày
+                    hoatDong.NgayDienRa = false;
+                    hoatDong.LoaiHoatDong = DetermineLoaiHoatDong(hoatDong.TenHoatDong, hoatDong.MoTa);
+                    _context.HoatDongs.Add(hoatDong);
+                }
+
                 await _context.SaveChangesAsync();
+
+                // Trả về bản ghi đầu tiên hoặc danh sách các bản ghi
                 return CreatedAtAction(nameof(GetHoatDongById), new { id = hoatDong.MaHoatDong }, hoatDong);
             }
             catch (Exception ex)
             {
+            
                 return StatusCode(500, $"Lỗi khi thêm hoạt động: {ex.Message}");
             }
+        }
+
+        // Hàm helper để xác định LoaiHoatDong
+        private string DetermineLoaiHoatDong(string tenHoatDong, string moTa)
+        {
+            if (string.IsNullOrEmpty(tenHoatDong) && string.IsNullOrEmpty(moTa))
+                return "Khác";
+
+            tenHoatDong = tenHoatDong?.ToLower() ?? "";
+            moTa = moTa?.ToLower() ?? "";
+
+            if (tenHoatDong.Contains("hội thảo") || tenHoatDong.Contains("tập huấn") || moTa.Contains("hội thảo") || moTa.Contains("tập huấn"))
+                return "Hội thảo";
+            if (tenHoatDong.Contains("tình nguyện") || tenHoatDong.Contains("dọn dẹp") || tenHoatDong.Contains("hỗ trợ trẻ em") ||
+                tenHoatDong.Contains("người cao tuổi") || tenHoatDong.Contains("khuyết tật") || moTa.Contains("tình nguyện") || moTa.Contains("dọn dẹp"))
+                return "Tình nguyện";
+            if (tenHoatDong.Contains("hỗ trợ") || tenHoatDong.Contains("nhập liệu") || tenHoatDong.Contains("sắp xếp") ||
+                moTa.Contains("hỗ trợ") || moTa.Contains("nhập liệu"))
+                return "Hỗ trợ";
+            if (tenHoatDong.Contains("giải") || tenHoatDong.Contains("thi") || tenHoatDong.Contains("hùng biện") || tenHoatDong.Contains(" thể thao") ||
+                moTa.Contains("thi đấu") || moTa.Contains("hùng biện"))
+                return "Thi đấu";
+            if (tenHoatDong.Contains("ngày hội") || tenHoatDong.Contains("tổ chức") || moTa.Contains("ngày hội") || moTa.Contains("tổ chức"))
+                return "Tổ chức";
+
+            return "Khác";
         }
 
         // GET: api/HoatDong/lay_hoat_dong_all

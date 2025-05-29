@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using QuanLyDiemRenLuyen.DTO.SinhVien;
 using QuanLyDiemRenLuyen.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 {
@@ -15,10 +18,12 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
     public class HoatDongsController : ControllerBase
     {
         private readonly QlDrlContext _context;
-
-        public HoatDongsController(QlDrlContext context)
+        private readonly HttpClient _httpClient;
+        public HoatDongsController(QlDrlContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClient = httpClientFactory.CreateClient(); // Khởi tạo HttpClient từ IHttpClientFactory
+            _httpClient.BaseAddress = new Uri("http://localhost:5555"); // Địa chỉ FastAPI
         }
         [HttpGet("loc-hoat-dong")]
         public IActionResult GetHoatDong([FromQuery] HoatDongFilterDTO filter)
@@ -112,5 +117,57 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
 
             return Ok(hoatDongs);
         }
-    }
+
+                [HttpPost("goi-y-hoat-dong")]
+                public async Task<IActionResult> Recommend([FromBody] RecommendationRequest request)
+                {
+                    try
+                    {
+                        // Chuẩn bị payload để gửi tới FastAPI
+                        var payload = new
+                        {
+                            ma_sinh_vien = request.MaSinhVien,
+                            top_n = request.TopN
+                        };
+                        var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+
+                        // Gọi API FastAPI
+                        var response = await _httpClient.PostAsync("/recommend", content);
+                        response.EnsureSuccessStatusCode();
+
+                        // Đọc kết quả từ FastAPI
+                        var responseString = await response.Content.ReadAsStringAsync();
+                        var recommendations = JsonConvert.DeserializeObject<RecommendationResponse>(responseString);
+
+                        // Trả về kết quả
+                        return Ok(recommendations);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        return StatusCode(500, new { error = $"Lỗi khi gọi API gợi ý: {ex.Message}" });
+                    }
+                }
+            }
+
+            public class RecommendationRequest
+            {
+                public string MaSinhVien { get; set; }
+                public int TopN { get; set; } = 6;
+            }
+
+            public class RecommendationResponse
+            {
+                public List<RecommendationItem> Recommendations { get; set; }
+                public string Type { get; set; }
+                public string Error { get; set; }
+            }
+
+            public class RecommendationItem
+            {
+                public int MaHoatDong { get; set; }
+                public string TenHoatDong { get; set; }
+                public string LoaiHoatDong { get; set; }
+                public int NgayDienRa { get; set; }
+            }
 }
+
