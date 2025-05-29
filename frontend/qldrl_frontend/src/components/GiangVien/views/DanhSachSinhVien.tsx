@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // Định nghĩa interface cho sinh viên
 interface SinhVienType {
@@ -21,14 +21,12 @@ interface DiemRenLuyenType {
   MaHocKy: number;
   TenHocKy: string;
   TongDiem: number;
- 
 }
 
 interface DiemRenLuyenResponse {
   MaSV: string;
   HoTen: string;
   DiemRenLuyenTheoHocKy: DiemRenLuyenType[];
-  
 }
 
 const DanhSachSinhVien: React.FC = () => {
@@ -36,8 +34,10 @@ const DanhSachSinhVien: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [diemRenLuyen, setDiemRenLuyen] = useState<DiemRenLuyenResponse | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [diemRenLuyen, setDiemRenLuyen] = useState<DiemRenLuyenResponse | null>(
+    null
+  );
   const [diemLoading, setDiemLoading] = useState<boolean>(false);
   const [diemError, setDiemError] = useState<string | null>(null);
 
@@ -45,44 +45,52 @@ const DanhSachSinhVien: React.FC = () => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         if (!token) {
-          setError('Không tìm thấy token. Vui lòng đăng nhập lại.');
+          setError("Không tìm thấy token. Vui lòng đăng nhập lại.");
           setLoading(false);
           return;
         }
-        
-        const response = await fetch('http://localhost:5163/api/SinhVien/lay-sinhvien-theo-vai-tro', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+
+        const response = await fetch(
+          "http://localhost:5163/api/SinhVien/lay-sinhvien-theo-vai-tro",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           }
-        });
-        
+        );
+
         if (!response.ok) {
           if (response.status === 401) {
-            setError('Không được phép truy cập. Vui lòng đăng nhập lại.');
+            setError("Không được phép truy cập. Vui lòng đăng nhập lại.");
             setLoading(false);
             return;
           }
-          throw new Error(`Lỗi HTTP: ${response.status} - ${response.statusText}`);
+          throw new Error(
+            `Lỗi HTTP: ${response.status} - ${response.statusText}`
+          );
         }
-        
+
         const result = await response.json();
         if (Array.isArray(result)) {
           // Sắp xếp sinh viên theo MaLop để đảm bảo thứ tự
-          const sortedSinhVien = result.sort((a: SinhVienType, b: SinhVienType) => 
-            a.MaLop.localeCompare(b.MaLop)
+          const sortedSinhVien = result.sort(
+            (a: SinhVienType, b: SinhVienType) => a.MaLop.localeCompare(b.MaLop)
           );
           setSinhVien(sortedSinhVien as SinhVienType[]);
         } else {
-          setError('Không tìm thấy dữ liệu sinh viên.');
+          setError("Không tìm thấy dữ liệu sinh viên.");
         }
         setLoading(false);
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi tải dữ liệu sinh viên';
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Đã xảy ra lỗi khi tải dữ liệu sinh viên";
         setError(errorMessage);
         setLoading(false);
       }
@@ -102,44 +110,53 @@ const DanhSachSinhVien: React.FC = () => {
     const fetchDiemRenLuyen = async (): Promise<void> => {
       setDiemLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         if (!token) {
-          setDiemError('Không tìm thấy token. Vui lòng đăng nhập lại.');
+          setDiemError("Không tìm thấy token. Vui lòng đăng nhập lại.");
           setDiemLoading(false);
           return;
         }
-        
+
         const response = await fetch(
           `http://localhost:5163/api/giangvien/DiemRenLuyens/${expandedStudent}giang-vien/xem-diem-ren-luyen`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           }
         );
-        
+
         if (!response.ok) {
           if (response.status === 401) {
-            setDiemError('Không được phép truy cập. Vui lòng đăng nhập lại.');
+            setDiemError("Không được phép truy cập. Vui lòng đăng nhập lại.");
             setDiemLoading(false);
             return;
           }
           if (response.status === 404) {
-            setDiemRenLuyen({ MaSV: expandedStudent, HoTen: '', DiemRenLuyenTheoHocKy: []  }); // Xử lý 404
+            setDiemRenLuyen({
+              MaSV: expandedStudent,
+              HoTen: "",
+              DiemRenLuyenTheoHocKy: [],
+            }); // Xử lý 404
             setDiemLoading(false);
             return;
           }
-          throw new Error(`Lỗi HTTP: ${response.status} - ${response.statusText}`);
+          throw new Error(
+            `Lỗi HTTP: ${response.status} - ${response.statusText}`
+          );
         }
-        
+
         const result = await response.json();
         setDiemRenLuyen(result as DiemRenLuyenResponse);
         setDiemLoading(false);
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi tải điểm rèn luyện';
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Đã xảy ra lỗi khi tải điểm rèn luyện";
         setDiemError(errorMessage);
         setDiemLoading(false);
       }
@@ -162,9 +179,10 @@ const DanhSachSinhVien: React.FC = () => {
   };
 
   // Lọc sinh viên theo tìm kiếm
-  const filteredStudents = sinhVien.filter(sv => 
-    sv.HoTen.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sv.MaSV.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = sinhVien.filter(
+    (sv) =>
+      sv.HoTen.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sv.MaSV.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Nhóm sinh viên theo MaLop
@@ -173,7 +191,7 @@ const DanhSachSinhVien: React.FC = () => {
     if (!acc[lop]) {
       acc[lop] = {
         TenLop: sv.TenLop,
-        sinhViens: []
+        sinhViens: [],
       };
     }
     acc[lop].sinhViens.push(sv);
@@ -183,10 +201,10 @@ const DanhSachSinhVien: React.FC = () => {
   // Chuyển groupedStudents thành mảng để dễ render
   const groupedStudentsArray = Object.keys(groupedStudents)
     .sort() // Sắp xếp theo MaLop
-    .map(lop => ({
+    .map((lop) => ({
       MaLop: lop,
       TenLop: groupedStudents[lop].TenLop,
-      sinhViens: groupedStudents[lop].sinhViens
+      sinhViens: groupedStudents[lop].sinhViens,
     }));
 
   return (
@@ -238,11 +256,11 @@ const DanhSachSinhVien: React.FC = () => {
                       <div className="cot-ho-ten">{sv.HoTen}</div>
                       <div className="cot-lop">{sv.TenLop}</div>
                       <div className="cot-hanh-dong">
-                        <button 
-                          className="nut-chi-tiet" 
+                        <button
+                          className="nut-chi-tiet"
                           onClick={() => toggleChiTiet(sv.MaSV)}
                         >
-                          {expandedStudent === sv.MaSV ? 'Ẩn' : 'Xem'}
+                          {expandedStudent === sv.MaSV ? "Ẩn" : "Xem"}
                         </button>
                       </div>
                     </div>
@@ -263,32 +281,40 @@ const DanhSachSinhVien: React.FC = () => {
                         </div>
                         <div className="hang-chi-tiet">
                           <span className="nhan">Ngày Sinh:</span>
-                          <span className="gia-tri">{formatNgaySinh(sv.NgaySinh)}</span>
+                          <span className="gia-tri">
+                            {formatNgaySinh(sv.NgaySinh)}
+                          </span>
                         </div>
                         <div className="hang-chi-tiet">
                           <span className="nhan">Giới Tính:</span>
                           <span className="gia-tri">{sv.GioiTinh}</span>
                         </div>
-                        
+
                         <div className="hang-chi-tiet">
                           <span className="nhan">Điểm Rèn Luyện:</span>
                           <div className="gia-tri">
-                            {diemLoading && <div>Đang tải điểm rèn luyện...</div>}
-                            {diemError && <div className="error-text">{diemError}</div>}
-                            {!diemLoading && !diemError && diemRenLuyen && (
-                              diemRenLuyen.DiemRenLuyenTheoHocKy.length > 0 ? (
+                            {diemLoading && (
+                              <div>Đang tải điểm rèn luyện...</div>
+                            )}
+                            {diemError && (
+                              <div className="error-text">{diemError}</div>
+                            )}
+                            {!diemLoading &&
+                              !diemError &&
+                              diemRenLuyen &&
+                              (diemRenLuyen.DiemRenLuyenTheoHocKy.length > 0 ? (
                                 <ul>
-                                  {diemRenLuyen.DiemRenLuyenTheoHocKy.map((diem) => (
-                                    <li key={diem.MaHocKy}>
-                                      {diem.TenHocKy}: {diem.TongDiem} điểm 
-                                    </li>
-                                   
-                                  ))}
+                                  {diemRenLuyen.DiemRenLuyenTheoHocKy.map(
+                                    (diem) => (
+                                      <li key={diem.MaHocKy}>
+                                        {diem.TenHocKy}: {diem.TongDiem} điểm
+                                      </li>
+                                    )
+                                  )}
                                 </ul>
                               ) : (
                                 <div>Không có dữ liệu điểm rèn luyện</div>
-                              )
-                            )}
+                              ))}
                           </div>
                         </div>
                       </div>
@@ -300,8 +326,6 @@ const DanhSachSinhVien: React.FC = () => {
           )}
         </div>
       )}
-
-      
     </div>
   );
 };
