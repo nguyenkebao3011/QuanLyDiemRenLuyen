@@ -123,7 +123,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                  {
                    try
                     {
-                        // Chuẩn bị payload để gửi tới FastAPI
+                         
                         var payload = new
                         {
                             ma_sinh_vien = request.MaSinhVien,

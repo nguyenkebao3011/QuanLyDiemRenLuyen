@@ -56,7 +56,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Hoạt động không tồn tại" });
                 }
 
-                if ( hoatDong.TrangThai != "Đang mở đăng ký" )
+                if (hoatDong.TrangThai != "Đang mở đăng ký")
                 {
                     return BadRequest(new { message = "Chỉ có thể đăng ký các hoạt động đang mở đăng ký" });
                 }
@@ -73,6 +73,32 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 if (daDangKy)
                 {
                     return BadRequest(new { message = "Sinh viên đã đăng ký hoạt động này" });
+                }
+
+                // Kiểm tra chồng chéo thời gian
+                var ngayBatDauMoi = hoatDong.NgayBatDau?.Date;
+                var ngayKetThucMoi = hoatDong.NgayKetThuc?.Date;
+
+                if (ngayBatDauMoi == null || ngayKetThucMoi == null)
+                {
+                    return BadRequest(new { message = "Hoạt động không có thông tin ngày bắt đầu hoặc kết thúc hợp lệ" });
+                }
+
+                var overlappingActivity = await _context.DangKyHoatDongs
+                    .Join(_context.HoatDongs,
+                        dk => dk.MaHoatDong,
+                        hd => hd.MaHoatDong,
+                        (dk, hd) => new { DangKy = dk, HoatDong = hd })
+                    .Where(x => x.DangKy.MaSv == maSV &&
+                                x.HoatDong.NgayBatDau.HasValue && x.HoatDong.NgayKetThuc.HasValue &&
+                                // Kiểm tra chồng chéo ngày
+                                ((x.HoatDong.NgayBatDau.Value.Date <= ngayKetThucMoi &&
+                                  x.HoatDong.NgayKetThuc.Value.Date >= ngayBatDauMoi)))
+                    .AnyAsync();
+
+                if (overlappingActivity)
+                {
+                    return BadRequest(new { message = "Không thể đăng ký do trùng lặp thời gian với hoạt động khác" });
                 }
 
                 // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
@@ -110,9 +136,6 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
             }
         }
 
-
-
-
         [HttpGet("danh-sach-dang-ky")]
         public async Task<IActionResult> XemDanhSachDangKyHoatDong()
         {
@@ -145,7 +168,7 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                             MaSv = maSV,
                             dangKy.MaHoatDong,
                             hoatDong.TenHoatDong,
-                            NgayBatDau = hoatDong.NgayBatDau.HasValue ? hoatDong.NgayBatDau.Value.ToString("yyyy-MM-dd") : null,
+                            NgayBatDau = hoatDong.NgayBatDau.HasValue ? hoatDong.NgayBatDau.Value.ToString("yyyy-MM-dd HH:mm") : null,
                             hoatDong.MoTa,
                             diaDiem = hoatDong.DiaDiem,
                             diemCong = hoatDong.DiemCong,

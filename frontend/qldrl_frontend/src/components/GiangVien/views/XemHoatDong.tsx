@@ -595,14 +595,11 @@ const HoatDongList: React.FC = () => {
               </p>
               <p>
                 <strong>Mô tả công việc:</strong> {selectedDetailHoatDong.MoTa}.
-                Sinh viên sẽ tham gia hỗ trợ với sự hướng dẫn của Giảng Viên
-                hoặc các nhân viên nhà trường. Các bạn phải có mặt đúng giờ,
-                chấp hành các nội quy đã đề ra. Sinh viên đăng ký mà không tham
-                gia sẽ bị trừ điểm <>5 điểm / hoạt động</>. Mong các bạn thực
-                hiện nghiêm túc!
+               
               </p>
+             
               <p>
-                <strong>Số lượng sinh viên có thể đăng ký:</strong>{" "}
+                <strong>Số lượng sinh viên có thể chỉ định:</strong>{" "}
                 {Math.max(
                   0,
                   selectedDetailHoatDong.SoLuongToiDa -
@@ -624,13 +621,11 @@ const HoatDongList: React.FC = () => {
                 <strong>Địa điểm:</strong> {selectedDetailHoatDong.DiaDiem}
               </p>
               <p>
-                <strong>Quy định về đồng phục: </strong> Đối với các hoạt động
-                trong trường: Các bạn vui lòng thực hiện đúng đồng phục (áo sơ
-                mi, áo thể chất, áo khoa,...). Đối với các hoạt động ngoài
-                trường, nhà trường vẫn khuyến khích các bạn mặc đồng phục nhà
-                trường để thuận tiện cho công tác quản lý điểm danh sinh viên.
-                Các bạn muốn mặc trang phục khác phải chỉnh tề, nghiêm túc phù
-                hợp với hoạt động.
+              Giảng viên có thể đề cử sinh viên thuộc lớp phụ trách tham gia hoạt động này nhằm đảm bảo sự phối hợp và quản lý hiệu quả. Việc đề cử giúp xác định rõ trách nhiệm, đồng thời tạo điều kiện cho sinh viên tích lũy điểm rèn luyện thông qua các hoạt động ngoại khóa.
+              </p>
+               <p>
+                <strong>Lưu ý: </strong> Giảng viên vui lòng chọn sinh viên có thái độ nghiêm túc, đúng giờ và có khả năng phối hợp nhóm tốt.
+               Trường hợp sinh viên được đề cử nhưng vắng mặt không lý do sẽ bị trừ điểm như quy định chung: <strong>5 điểm/hoạt động</strong> .
               </p>
             </div>
             <div className="modal-footer">

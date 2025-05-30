@@ -398,11 +398,11 @@ class RecommendationList extends Component<{}, State> {
       <div className="hoatdong-container">
         <div className="header">
           <h2 className="hoatdong-title">Gợi ý hoạt động</h2>
-          {recommendationType && (
+          {/* {recommendationType && (
             <div className="recommendation-type">
               <span className="type-label">Loại gợi ý: {recommendationType}</span>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Modal xác nhận đăng ký */}

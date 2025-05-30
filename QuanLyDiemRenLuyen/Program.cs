@@ -104,8 +104,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 //Thong Bao Tu Dong
 builder.Services.AddHostedService<ThongBaoScheduledService>();
-// Cap nhat trang thai
-//builder.Services.AddHostedService<AutoUpdateHoatDongService>();
+ //Cap nhat trang thai
+builder.Services.AddHostedService<AutoUpdateHoatDongService>();
 // Gộp chính sách CORS
 builder.Services.AddCors(options =>
 {

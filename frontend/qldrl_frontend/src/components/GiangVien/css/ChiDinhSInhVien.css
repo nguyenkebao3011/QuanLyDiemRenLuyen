@@ -42,12 +42,12 @@
 
 /* Status badge styles for better visual indication */
 .status-badge.đang-diễn-ra {
-  background-color: #ff9800;
+  background-color: #dabc14;
   color: white;
 }
 
 .status-badge.đã-đóng-đăng-ký {
-  background-color: #795548;
+  background-color: #d41818;
   color: white;
 }
 

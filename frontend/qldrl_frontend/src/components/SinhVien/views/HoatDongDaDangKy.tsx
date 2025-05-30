@@ -303,6 +303,18 @@ const HoatDongDaDangKy: React.FC = () => {
                     </div>
                     <span><strong>Mô tả:</strong> {activity.MoTa || 'Không có mô tả'}</span>
                   </div>
+                   <div className="hddk-detail-item">
+                    <div className="hddk-detail-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </div>
+                     <span><strong>Điểm cộng:</strong> <span className="hddk-points">{activity.diemCong ?? 0} điểm</span></span>
+                  </div>
                   <div className="hddk-detail-item">
                     <div className="hddk-detail-icon">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -310,7 +322,15 @@ const HoatDongDaDangKy: React.FC = () => {
                         <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
                     </div>
-                    <span><strong>Điểm cộng:</strong> <span className="hddk-points">{activity.diemCong ?? 0} điểm</span></span>
+                                              
+                            <span>
+                              <strong>Thời gian bắt đầu:</strong>{' '}
+                              <span style={{ color: 'red', fontWeight: 'bold' }}>
+                                {activity.NgayBatDau
+                                  ? new Date(activity.NgayBatDau).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                  : 'Không có mô tả'}
+                              </span>
+                            </span>
                   </div>
                 </div>
                 <div className="hddk-activity-actions">

@@ -38,7 +38,6 @@ wwwroot\HinhAnhMinhChung\956f064c-cb02-4f81-aa94-8837b6d9801a.jpg
 wwwroot\HinhAnhMinhChung\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg
 wwwroot\HinhAnhMinhChung\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg
 wwwroot\HinhAnhMinhChung\ab4ac1f6-cb44-4bf8-8498-d9e899360e4d.jpeg
-wwwroot\HinhAnhMinhChung\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg
 wwwroot\HinhAnhMinhChung\bebc195a-2433-45b7-a974-63c3f972f6ae.jpeg
 wwwroot\HinhAnhMinhChung\c6d5db3d-bfd2-4c5a-9d0c-f714d7663547.png
 wwwroot\HinhAnhMinhChung\d1394777-2601-4a94-bbf5-c5bad706e97f.jpg
@@ -51,3 +50,4 @@ wwwroot\HinhAnhMinhChung\8dd93599-0ab8-4461-9f9b-8bcd327935f8.jpg
 wwwroot\HinhAnhMinhChung\f000e253-642b-426f-87f8-768ae891b552.jpg
 wwwroot\HinhAnhMinhChung\4da26607-cf74-4f69-b5a7-40577ee93702.png
 wwwroot\HinhAnhMinhChung\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg
+wwwroot\avatars\GV01_638840472750673050.jpeg
