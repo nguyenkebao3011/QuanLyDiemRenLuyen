@@ -111,7 +111,7 @@ class RecommendationList extends Component<{}, State> {
         error: null,
       })
 
-      console.log("Gửi maSinhVien:", tenDangNhap)
+
 
       const requestData = {
         maSinhVien: tenDangNhap,
@@ -129,7 +129,7 @@ class RecommendationList extends Component<{}, State> {
         },
       )
 
-      console.log("Response từ API gợi ý:", response.data)
+     
 
       if (response.data.Error) {
         this.setState({
@@ -178,7 +178,7 @@ class RecommendationList extends Component<{}, State> {
           continue
         }
 
-        console.log(`Đang lấy chi tiết cho hoạt động ID: ${rec.MaHoatDong}`)
+        
 
         // Chỉ sử dụng endpoint hoạt động: /api/HoatDong/{id}
         const detailResponse = await axios.get(`http://localhost:5163/api/HoatDong/${rec.MaHoatDong}`, {
@@ -189,7 +189,7 @@ class RecommendationList extends Component<{}, State> {
         })
 
         if (detailResponse.data) {
-          console.log(`Chi tiết hoạt động ${rec.MaHoatDong}:`, detailResponse.data)
+          
 
           // Merge dữ liệu từ gợi ý và chi tiết
           detailedRecommendations.push({

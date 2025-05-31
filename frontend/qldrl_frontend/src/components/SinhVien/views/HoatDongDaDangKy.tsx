@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/HoatDongDaDangKy.css';
+import XemLichTheoTuan from "./XemLichTheoTuan";
 
 const HoatDongDaDangKy: React.FC = () => {
   const [activities, setActivities] = useState<any[]>([]);
@@ -15,10 +16,11 @@ const HoatDongDaDangKy: React.FC = () => {
   const [activitiesMap, setActivitiesMap] = useState<{ [key: number]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const itemsPerPage = 3;
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const cancelReasons = [
     'Lịch trình cá nhân thay đổi',
-    'Không còn quan tâm đến hoạt động',
+    'Vướng lịch học',
     'Lý do sức khỏe',
     'Hoạt động không phù hợp',
     'Khác',
@@ -140,7 +142,7 @@ const HoatDongDaDangKy: React.FC = () => {
     setSelectedReasons([]);
     setError(null);
   };
-
+  
   const handleReasonChange = (reason: string) => {
     setSelectedReasons((prev) =>
       prev.includes(reason)
@@ -214,10 +216,19 @@ const HoatDongDaDangKy: React.FC = () => {
       setError(error.message || 'Có lỗi xảy ra khi hủy hoạt động.');
     }
   };
-
+ 
   const openHistoryModal = () => setShowHistoryModal(true);
   const closeHistoryModal = () => setShowHistoryModal(false);
+  
+  const openCalendarModal = () => {
+    
+    setIsCalendarOpen(true);
+  };
 
+  const closeCalendarModal = () => {
+    setIsCalendarOpen(false);
+  };
+  
   const getActivityName = (maHoatDong: number) => {
     return activitiesMap[maHoatDong] || 'Không tìm thấy tên';
   };
@@ -226,6 +237,23 @@ const HoatDongDaDangKy: React.FC = () => {
     <div className="hddk-container">
       <div className="hddk-header">
         <h2 className="hddk-title">Hoạt động đã đăng ký</h2>
+        <button className="hddk-show-calend-btn" onClick={openCalendarModal}>
+          <span className="hddk-icon2">
+           <svg xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          </span>
+          Xem lịch theo tuần  
+        </button>
         <button className="hddk-history-btn" onClick={openHistoryModal}>
           <span className="hddk-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -266,9 +294,9 @@ const HoatDongDaDangKy: React.FC = () => {
               <div key={activity.MaHoatDong} className="hddk-activity-card">
                 <div className="hddk-activity-header">
                   <h3 className="hddk-activity-name">{activity.TenHoatDong}</h3>
-                  <span className={`hddk-status ${activity.TrangThaiHoatDong === 'Đã kết thúc' ? 'hddk-status-ended' : 'hddk-status-active'}`}>
+                  {/* <span className={`hddk-status ${activity.TrangThaiHoatDong === 'Đã kết thúc' ? 'hddk-status-ended' : 'hddk-status-active'}`}>
                     {activity.TrangThaiHoatDong}
-                  </span>
+                  </span> */}
                 </div>
                 <div className="hddk-activity-details">
                   <div className="hddk-detail-item">
@@ -383,6 +411,14 @@ const HoatDongDaDangKy: React.FC = () => {
         </div>
       )}
 
+      {/* Modal Xem lịch theo tuần - ĐÂY LÀ PHẦN BỊ THIẾU */}
+      {isCalendarOpen && (
+        <XemLichTheoTuan 
+          isOpen={isCalendarOpen} 
+          onClose={closeCalendarModal} 
+        />
+      )}
+
       {showCancelModal && (
         <div className="hddk-modal-overlay">
           <div className="hddk-modal">
@@ -462,7 +498,6 @@ const HoatDongDaDangKy: React.FC = () => {
                   <table className="hddk-table">
                     <thead>
                       <tr>
-                   
                         <th>Tên hoạt động</th>
                         <th>Lý do</th>
                         <th>Thời gian hủy</th>
@@ -472,7 +507,6 @@ const HoatDongDaDangKy: React.FC = () => {
                     <tbody>
                       {historyData.map((item) => (
                         <tr key={item.Id} className="hddk-table-row">
-                         
                           <td>{item.TenHoatDong || getActivityName(item.MaHoatDong)}</td>
                           <td>{item.LyDo || 'Không có lý do'}</td>
                           <td>{new Date(item.ThoiGianHuy).toLocaleString('vi-VN')}</td>

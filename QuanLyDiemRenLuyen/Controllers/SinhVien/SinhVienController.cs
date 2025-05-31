@@ -218,18 +218,18 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     }
                 }
 
-                // Ràng buộc email
-                if (!string.IsNullOrEmpty(sinhVienDTO.Email))
-                {
-                    if (sinhVienDTO.Email.EndsWith("@huit.edu.vn") && Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@huit\.edu\.vn$"))
-                    {
-                        sinhVien.Email = sinhVienDTO.Email;
-                    }
-                    else
-                    {
-                        return BadRequest(new { message = "Email phải có định dạng @huit.edu.vn." });
-                    }
-                }
+                //// Ràng buộc email
+                //if (!string.IsNullOrEmpty(sinhVienDTO.Email))
+                //{
+                //    if (sinhVienDTO.Email.EndsWith("@huit.edu.vn") && Regex.IsMatch(sinhVienDTO.Email, @"^[\w-\.]+@huit\.edu\.vn$"))
+                //    {
+                //        sinhVien.Email = sinhVienDTO.Email;
+                //    }
+                //    else
+                //    {
+                //        return BadRequest(new { message = "Email phải có định dạng @huit.edu.vn." });
+                //    }
+                //}
 
                 // Kiểm tra và cập nhật địa chỉ
                 if (!string.IsNullOrEmpty(sinhVienDTO.DiaChi))

@@ -64,7 +64,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onOpenForgotPassword }) => {
         const payload = JSON.parse(atob(token.split(".")[1]));
         const mssv = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
         setMaSV(mssv || null);
-        console.log("Extracted maSV from token:", mssv);
+        
       } catch (error) {
         console.error("Lỗi khi giải mã token:", error);
         setMaSV(null);

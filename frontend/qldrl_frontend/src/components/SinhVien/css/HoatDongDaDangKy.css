@@ -67,12 +67,38 @@
     cursor: pointer;
     transition: var(--transition);
   }
+  .hddk-show-calend-btn{
+        align-items: center;
+        margin-left: 479px;
+          padding: 8px 16px;
+    background-color: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+
+  }
   
+  .hddk-show-calend-btn:hover {
+     background-color: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
   .hddk-history-btn:hover {
     background-color: var(--primary-color);
     color: var(--white);
     transform: translateY(-2px);
     box-shadow: var(--shadow);
+  }
+    .hddk-icon2 {
+    display: inline-flex;
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
   }
   
   .hddk-icon {
