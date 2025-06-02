@@ -363,6 +363,32 @@
   },
   {
     "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
+    "Method": "GetLichSuDiem",
+    "RelativePath": "api/DiemRenLuyens/LichSuDiem/{maSV}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "maSV",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[QuanLyDiemRenLuyen.Models.LichSuDiem, QuanLyDiemRenLuyen, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QuanLyDiemRenLuyen.Controllers.SinhVien.DiemRenLuyensController",
     "Method": "XemDiemRenLuyenTatCaHocKy",
     "RelativePath": "api/DiemRenLuyens/xem-diem-tat-ca-hoc-ky",
     "HttpMethod": "GET",

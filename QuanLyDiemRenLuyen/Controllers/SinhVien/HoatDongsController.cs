@@ -101,11 +101,12 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
         [HttpGet("lay-danh-sach-hoat-dong")]
         public async Task<ActionResult<IEnumerable<HoatDong>>> GetHoatDongs()
         {
-                    var hoatDongs = await _context.HoatDongs
-                .Where(h => h.TrangThai != "Đã kết thúc")
-                .ToListAsync();
+            var hoatDongs = await _context.HoatDongs
+        .Where(h => h.TrangThai != "Đã kết thúc")
+        .OrderBy(h => h.NgayBatDau) // Sắp xếp theo NgayBatDau tăng dần
+        .ToListAsync();
 
-                    return Ok(hoatDongs);
+            return Ok(hoatDongs); // Trả về mảng HoatDongs trực tiếp
         }
 
         [HttpGet("lay-danh-sach-hoat-dong-mo-dang-ky")]

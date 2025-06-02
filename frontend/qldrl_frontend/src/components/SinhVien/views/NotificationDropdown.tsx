@@ -64,7 +64,7 @@ const Toast: React.FC<ToastProps> = ({ thongBao, onClose, onRead, onRespond }) =
   useEffect(() => {
     const boHenGio = setTimeout(() => {
       if (!hienThiModal && !hienThiToastPhanHoi) onClose()
-    }, 8000)
+    }, 5000)
     return () => clearTimeout(boHenGio)
   }, [onClose, hienThiModal, hienThiToastPhanHoi])
 

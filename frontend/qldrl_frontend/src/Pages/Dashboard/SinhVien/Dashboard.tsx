@@ -259,7 +259,7 @@ const StudentDashboard: React.FC = () => {
               <>
                 <ThongTinSinhVien student={studentData} />
                 <HoatDongDaDangKy />
-                <GoiYHoatDong />
+                {/* <GoiYHoatDong /> */}
                 <XemThongBao />
               </>
             ) : (

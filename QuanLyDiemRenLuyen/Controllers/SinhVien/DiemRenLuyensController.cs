@@ -153,6 +153,28 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                 return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách điểm rèn luyện", error = ex.Message });
             }
         }
+        [HttpGet("LichSuDiem/{maSV}")]
+        public async Task<ActionResult<IEnumerable<LichSuDiem>>> GetLichSuDiem(string maSV)
+        {
+            try
+            {
+                var lichSuDiem = await _context.LichSuDiems
+                    .Where(ls => ls.MaSv == maSV)
+                    .OrderByDescending(ls => ls.NgayThayDoi)
+                    .ToListAsync();
+
+                if (lichSuDiem == null || !lichSuDiem.Any())
+                {
+                    return NotFound(new { message = $"Không tìm thấy lịch sử điểm cho sinh viên có mã {maSV}." });
+                }
+
+                return Ok(lichSuDiem);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Lỗi server: {ex.Message}" });
+            }
+        }
         // PUT: api/DiemRenLuyens/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

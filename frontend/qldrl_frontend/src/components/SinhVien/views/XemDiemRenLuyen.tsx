@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, Award, ChevronDown } from 'lucide-react';
 import '../css/XemDiemRenLuyen.css';
+
 // Interface định nghĩa kiểu dữ liệu học kỳ
 interface HocKy {
   MaHocKy: string;
@@ -9,6 +10,17 @@ interface HocKy {
   TrangThai: string;
   TongDiem: number;
   XepLoai: string;
+}
+
+// Interface định nghĩa kiểu dữ liệu lịch sử điểm
+interface LichSuDiem {
+  MaLichSu: number;
+  MaSv: string;
+  KieuThayDoi: string;
+  SoDiem: number;
+  NgayThayDoi: string;
+  LyDo: string;
+  MaSvNavigation: null | any;
 }
 
 // Hàm lấy token từ cookie
@@ -25,6 +37,11 @@ const XemDiemRenLuyen: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lichSuDiem, setLichSuDiem] = useState<LichSuDiem[]>([]);
+  const [isLichSuOpen, setIsLichSuOpen] = useState<boolean>(false);
+
+  // Giả sử MaSv được lấy từ localStorage hoặc context (thay bằng logic thực tế của bạn)
+  const maSv = localStorage.getItem('username') || 'DHTH387104'; // Mặc định là DHTH387104 để thử nghiệm
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,12 +49,9 @@ const XemDiemRenLuyen: React.FC = () => {
         setIsLoading(true);
         setErrorMessage(null);
 
-        // Thử lấy token từ localStorage, sessionStorage, và cookie
         const localToken = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('jwt');
         const sessionToken = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || sessionStorage.getItem('jwt');
         const cookieToken = getCookie('authToken') || getCookie('token') || getCookie('jwt');
-
-       
 
         const token = localToken || sessionToken || cookieToken;
 
@@ -51,11 +65,8 @@ const XemDiemRenLuyen: React.FC = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          credentials: 'include', // Gửi cookie nếu backend dùng HTTP-only cookie
+          credentials: 'include',
         });
-
-        
-      
 
         if (!response.ok) {
           let errorText = '';
@@ -78,8 +89,6 @@ const XemDiemRenLuyen: React.FC = () => {
         }
 
         const result = await response.json();
-        
-
         setDiemRenLuyenData(result.data || []);
         setSelectedHocKy(result.data[0] ?? null);
         setIsLoading(false);
@@ -92,6 +101,60 @@ const XemDiemRenLuyen: React.FC = () => {
 
     fetchData();
   }, []);
+
+  // Lấy lịch sử điểm khi nhấn nút
+  const fetchLichSuDiem = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      const localToken = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('jwt');
+      const sessionToken = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || sessionStorage.getItem('jwt');
+      const cookieToken = getCookie('authToken') || getCookie('token') || getCookie('jwt');
+
+      const token = localToken || sessionToken || cookieToken;
+
+      if (!token) {
+        throw new Error('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+      }
+
+      const response = await fetch(`http://localhost:5163/api/DiemRenLuyens/LichSuDiem/${maSv}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        let errorText = '';
+        try {
+          errorText = await response.text();
+        } catch (e) {
+          errorText = 'Không thể đọc response';
+        }
+        console.log('Response body:', errorText);
+
+        if (response.status === 401) {
+          localStorage.removeItem('authToken');
+          sessionStorage.removeItem('authToken');
+          throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+        } else {
+          throw new Error(`Lỗi ${response.status}: ${errorText || response.statusText}`);
+        }
+      }
+
+      const result = await response.json();
+      setLichSuDiem(result);
+      setIsLichSuOpen(true);
+      setIsLoading(false);
+    } catch (error: any) {
+      console.error('Lỗi khi lấy lịch sử điểm:', error);
+      setErrorMessage(error.message || 'Có lỗi xảy ra khi lấy lịch sử điểm.');
+      setIsLoading(false);
+    }
+  };
 
   const handleHocKyChange = (hocKy: HocKy) => {
     setSelectedHocKy(hocKy);
@@ -173,6 +236,13 @@ const XemDiemRenLuyen: React.FC = () => {
               ))}
             </div>
           )}
+          {/* Nút xem lịch sử điểm */}
+          <button
+            className="view-history-button"
+            onClick={fetchLichSuDiem}
+          >
+            Xem Lịch Sử Điểm
+          </button>
         </div>
       </div>
 
@@ -217,7 +287,7 @@ const XemDiemRenLuyen: React.FC = () => {
 
             <div className="progress-container">
               <div
-                className="progress-bar"
+                className="progress-bar2"
                 style={{ width: `${getDiemProgress(selectedHocKy.TongDiem)}%` }}
               ></div>
             </div>
@@ -230,6 +300,44 @@ const XemDiemRenLuyen: React.FC = () => {
                 {selectedHocKy.XepLoai}
               </span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal hiển thị lịch sử điểm */}
+      {isLichSuOpen && (
+        <div className="modal-overlay" onClick={() => setIsLichSuOpen(false)}>
+          <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
+            <h3>Lịch Sử Điểm Rèn Luyện</h3>
+            <button className="close-button2" onClick={() => setIsLichSuOpen(false)}>
+              &times;
+            </button>
+            {lichSuDiem.length > 0 ? (
+              <table className="lich-su-table">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Thay Đổi</th>
+                    <th>Số Điểm</th>
+                    <th>Ngày Thay Đổi</th>
+                    <th>Lý Do</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lichSuDiem.map((item, index) => (
+                    <tr key={item.MaLichSu}>
+                      <td>{index + 1}</td>
+                      <td>{item.KieuThayDoi === '+' ? `+${item.SoDiem} điểm` : `-${item.SoDiem} điểm`}</td>
+                      <td>{item.SoDiem}</td>
+                      <td>{new Date(item.NgayThayDoi).toLocaleString('vi-VN')}</td>
+                      <td>{item.LyDo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Không có lịch sử điểm nào.</p>
+            )}
           </div>
         </div>
       )}

@@ -129,10 +129,18 @@ namespace QuanLyDiemRenLuyen.Controllers
         {
             try
             {
-                if (!jsonElement.TryGetProperty("MaDangKy", out var maDangKyElement) ||
-                    !jsonElement.TryGetProperty("MaQl", out var maQlElement))
+                JsonElement processedElement = jsonElement;
+                if (jsonElement.ValueKind == JsonValueKind.String)
                 {
-                    return BadRequest("Thiếu thông tin mã đăng ký hoặc mã quản lý");
+                    string jsonString = jsonElement.GetString();
+                    using var doc = JsonDocument.Parse(jsonString);
+                    processedElement = doc.RootElement;
+                }
+
+                if (!processedElement.TryGetProperty("MaDangKy", out var maDangKyElement) ||
+                    !processedElement.TryGetProperty("MaQl", out var maQlElement))
+                {
+                    return BadRequest(new { success = false, message = "Thiếu thông tin mã đăng ký hoặc mã quản lý", data = processedElement.ToString() });
                 }
 
                 int maDangKy;
@@ -141,22 +149,27 @@ namespace QuanLyDiemRenLuyen.Controllers
 
                 if (!maDangKyElement.TryGetInt32(out maDangKy))
                 {
-                    return BadRequest("Mã đăng ký không hợp lệ, phải là số nguyên");
+                    return BadRequest(new { success = false, message = "Mã đăng ký không hợp lệ, phải là số nguyên", data = processedElement.ToString() });
                 }
 
                 maQl = maQlElement.GetString();
                 if (string.IsNullOrEmpty(maQl))
                 {
-                    return BadRequest("Mã quản lý không được để trống");
+                    return BadRequest(new { success = false, message = "Mã quản lý không được để trống", data = processedElement.ToString() });
                 }
 
-                if (jsonElement.TryGetProperty("GhiChu", out var ghiChuElement) &&
+                var quanLyKhoa = await _context.QuanLyKhoas.FindAsync(maQl);
+                if (quanLyKhoa == null)
+                {
+                    return BadRequest(new { success = false, message = $"Không tìm thấy quản lý khoa với mã {maQl}", data = processedElement.ToString() });
+                }
+
+                if (processedElement.TryGetProperty("GhiChu", out var ghiChuElement) &&
                     ghiChuElement.ValueKind != JsonValueKind.Null)
                 {
                     ghiChu = ghiChuElement.GetString();
                 }
 
-                // Lấy thông tin đăng ký, sinh viên, hoạt động
                 var dangKy = await _context.DangKyHoatDongs
                     .Include(dk => dk.MaSvNavigation)
                     .Include(dk => dk.MaHoatDongNavigation)
@@ -164,14 +177,14 @@ namespace QuanLyDiemRenLuyen.Controllers
 
                 if (dangKy == null || dangKy.MaHoatDongNavigation == null || dangKy.MaSvNavigation == null)
                 {
-                    return NotFound("Không tìm thấy đăng ký hoặc thông tin sinh viên/hoạt động.");
+                    return NotFound(new { success = false, message = "Không tìm thấy đăng ký hoặc thông tin sinh viên/hoạt động.", data = processedElement.ToString() });
                 }
 
                 var maSv = dangKy.MaSv;
                 var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+                var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong; // Lấy tên hoạt động
                 var diemCong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
 
-                // Xử lý điểm danh (update hoặc insert)
                 var diemDanhCu = await _context.DiemDanhHoatDongs
                     .FirstOrDefaultAsync(dd => dd.MaDangKy == maDangKy);
 
@@ -194,21 +207,19 @@ namespace QuanLyDiemRenLuyen.Controllers
                     _context.DiemDanhHoatDongs.Add(diemDanh);
                 }
 
-                // === KIỂM SOÁT CỘNG TRÙNG ĐIỂM RÈN LUYỆN VÀ RÀNG BUỘC ĐIỂM TỐI ĐA ===
                 var diemRenLuyen = await _context.DiemRenLuyens
                     .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
 
-                // Nếu đã chốt, không cộng nữa
                 if (diemRenLuyen != null &&
                     !string.IsNullOrEmpty(diemRenLuyen.TrangThai) &&
                     diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt")
                 {
-                    await _context.SaveChangesAsync(); // vẫn lưu điểm danh
+                    await _context.SaveChangesAsync();
                     return BadRequest(new { success = false, message = "Điểm rèn luyện đã chốt, không thể cộng thêm điểm!" });
                 }
 
-                // Kiểm tra đã điểm danh (và cộng điểm) cho hoạt động này trong học kỳ này chưa
                 bool daCongDiem = diemDanhCu != null;
+                bool daGhiLichSu = false;
                 if (diemRenLuyen == null)
                 {
                     diemRenLuyen = new DiemRenLuyen
@@ -218,21 +229,58 @@ namespace QuanLyDiemRenLuyen.Controllers
                         TongDiem = Math.Min(diemCong, 100)
                     };
                     _context.DiemRenLuyens.Add(diemRenLuyen);
+
+                    var lichSuDiem = new LichSuDiem
+                    {
+                        MaSv = maSv,
+                        KieuThayDoi = "+",
+                        SoDiem = (int)diemCong,
+                        LyDo = $"Tham gia hoạt động {tenHoatDong}",
+                        NgayThayDoi = DateTime.Now
+                    };
+                    _context.LichSuDiems.Add(lichSuDiem);
+                    daGhiLichSu = true;
                 }
                 else if (!daCongDiem)
                 {
                     var diemMoi = (diemRenLuyen.TongDiem ?? 0) + diemCong;
                     diemRenLuyen.TongDiem = diemMoi > 100 ? 100 : diemMoi;
                     _context.Entry(diemRenLuyen).State = EntityState.Modified;
-                }
-                else
-                {
-                    // Đã điểm danh trước đó, không trả thông báo cộng điểm
-                    await _context.SaveChangesAsync();
-                    return NoContent();
+
+                    var lichSuDiem = new LichSuDiem
+                    {
+                        MaSv = maSv,
+                        KieuThayDoi = "+",
+                        SoDiem = (int)diemCong,
+                        LyDo = $"Tham gia hoạt động {tenHoatDong}",
+                        NgayThayDoi = DateTime.Now
+                    };
+                    _context.LichSuDiems.Add(lichSuDiem);
+                    daGhiLichSu = true;
                 }
 
-                await _context.SaveChangesAsync();
+                if (!daGhiLichSu)
+                {
+                    var lichSuDiem = new LichSuDiem
+                    {
+                        MaSv = maSv,
+                        KieuThayDoi = "+",
+                        SoDiem = 0,
+                        LyDo = $"Điểm danh lại hoạt động {tenHoatDong} (đã điểm danh trước đó)",
+                        NgayThayDoi = DateTime.Now
+                    };
+                    _context.LichSuDiems.Add(lichSuDiem);
+                }
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(new { success = false, message = $"Lỗi khi lưu thay đổi: {ex.InnerException?.Message ?? ex.Message}" });
+                }
+
                 return Ok(new { success = true, message = "Điểm danh và cộng điểm rèn luyện thành công" });
             }
             catch (Exception ex)
@@ -250,16 +298,15 @@ namespace QuanLyDiemRenLuyen.Controllers
                 if (!jsonElement.TryGetProperty("DanhSachMaDangKy", out var danhSachElement) ||
                     !jsonElement.TryGetProperty("MaQl", out var maQlElement))
                 {
-                    return BadRequest("Thiếu thông tin danh sách mã đăng ký hoặc mã quản lý");
+                    return BadRequest(new { success = false, message = "Thiếu thông tin danh sách mã đăng ký hoặc mã quản lý", data = jsonElement.ToString() });
                 }
 
                 string maQl = maQlElement.GetString();
                 if (string.IsNullOrEmpty(maQl))
                 {
-                    return BadRequest("Mã quản lý không được để trống");
+                    return BadRequest(new { success = false, message = "Mã quản lý không được để trống", data = jsonElement.ToString() });
                 }
 
-                // Lấy danh sách mã đăng ký
                 List<int> danhSachMaDangKy = new List<int>();
                 foreach (JsonElement item in danhSachElement.EnumerateArray())
                 {
@@ -269,27 +316,25 @@ namespace QuanLyDiemRenLuyen.Controllers
                     }
                     else
                     {
-                        return BadRequest("Danh sách mã đăng ký chứa giá trị không hợp lệ");
+                        return BadRequest(new { success = false, message = "Danh sách mã đăng ký chứa giá trị không hợp lệ", data = jsonElement.ToString() });
                     }
                 }
                 if (danhSachMaDangKy.Count == 0)
                 {
-                    return BadRequest("Danh sách mã đăng ký không được để trống");
+                    return BadRequest(new { success = false, message = "Danh sách mã đăng ký không được để trống", data = jsonElement.ToString() });
                 }
 
-                // Lấy ghi chú (nếu có)
+                var quanLyKhoa = await _context.QuanLyKhoas.FindAsync(maQl);
+                if (quanLyKhoa == null)
+                {
+                    return BadRequest(new { success = false, message = $"Không tìm thấy quản lý khoa với mã {maQl}", data = jsonElement.ToString() });
+                }
+
                 string ghiChu = null;
                 if (jsonElement.TryGetProperty("GhiChu", out var ghiChuElement) &&
                     ghiChuElement.ValueKind != JsonValueKind.Null)
                 {
                     ghiChu = ghiChuElement.GetString();
-                }
-
-                // Kiểm tra quản lý khoa tồn tại
-                var quanLyKhoa = await _context.QuanLyKhoas.FindAsync(maQl);
-                if (quanLyKhoa == null)
-                {
-                    return BadRequest($"Không tìm thấy quản lý khoa với mã {maQl}");
                 }
 
                 int demDiemDanh = 0;
@@ -314,9 +359,9 @@ namespace QuanLyDiemRenLuyen.Controllers
 
                         var maSv = dangKy.MaSv;
                         var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+                        var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong; // Lấy tên hoạt động
                         var diemCong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
 
-                        // Xử lý điểm danh (update hoặc insert)
                         var diemDanhCu = await _context.DiemDanhHoatDongs
                             .FirstOrDefaultAsync(dd => dd.MaDangKy == maDangKy);
 
@@ -343,7 +388,6 @@ namespace QuanLyDiemRenLuyen.Controllers
                         var diemRenLuyen = await _context.DiemRenLuyens
                             .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
 
-                        // Nếu đã chốt thì không cộng, thêm vào danh sách thông báo
                         if (diemRenLuyen != null &&
                             !string.IsNullOrEmpty(diemRenLuyen.TrangThai) &&
                             diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt")
@@ -352,8 +396,8 @@ namespace QuanLyDiemRenLuyen.Controllers
                             continue;
                         }
 
-                        // Kiểm tra đã cộng điểm cho hoạt động này chưa (dựa vào điểm danh)
                         bool daCongDiem = false;
+                        bool daGhiLichSu = false;
                         if (diemRenLuyen != null)
                         {
                             daCongDiem = diemDanhCu != null;
@@ -368,25 +412,64 @@ namespace QuanLyDiemRenLuyen.Controllers
                                 TongDiem = Math.Min(diemCong, 100)
                             };
                             _context.DiemRenLuyens.Add(diemRenLuyen);
+
+                            var lichSuDiem = new LichSuDiem
+                            {
+                                MaSv = maSv,
+                                KieuThayDoi = "+",
+                                SoDiem = (int)diemCong,
+                                LyDo = $"Tham gia hoạt động {tenHoatDong}",
+                                NgayThayDoi = DateTime.Now
+                            };
+                            _context.LichSuDiems.Add(lichSuDiem);
                             demCongDiem++;
+                            daGhiLichSu = true;
                         }
                         else if (!daCongDiem)
                         {
                             var diemMoi = (diemRenLuyen.TongDiem ?? 0) + diemCong;
                             diemRenLuyen.TongDiem = diemMoi > 100 ? 100 : diemMoi;
                             _context.Entry(diemRenLuyen).State = EntityState.Modified;
+
+                            var lichSuDiem = new LichSuDiem
+                            {
+                                MaSv = maSv,
+                                KieuThayDoi = "+",
+                                SoDiem = (int)diemCong,
+                                LyDo = $"Tham gia hoạt động {tenHoatDong}",
+                                NgayThayDoi = DateTime.Now
+                            };
+                            _context.LichSuDiems.Add(lichSuDiem);
                             demCongDiem++;
+                            daGhiLichSu = true;
                         }
-                        else
+
+                        // Ghi lịch sử nếu không cộng điểm (đã điểm danh trước đó)
+                        if (!daGhiLichSu)
                         {
-                            // Đã điểm danh trước đó, không cộng điểm, không đưa vào thông báo
+                            var lichSuDiem = new LichSuDiem
+                            {
+                                MaSv = maSv,
+                                KieuThayDoi = "+",
+                                SoDiem = 0,
+                                LyDo = $"Điểm danh lại hoạt động {tenHoatDong} (đã điểm danh trước đó)",
+                                NgayThayDoi = DateTime.Now
+                            };
+                            _context.LichSuDiems.Add(lichSuDiem);
                             danhSachDaDiemDanhTruoc.Add($"{maSv} ({dangKy.MaSvNavigation.HoTen})");
-                            continue;
                         }
                     }
 
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return BadRequest(new { success = false, message = $"Lỗi khi lưu thay đổi: {ex.InnerException?.Message ?? ex.Message}" });
+                    }
 
                     string message = $"Đã điểm danh {demDiemDanh} lượt, cộng điểm rèn luyện cho {demCongDiem} sinh viên.";
                     if (danhSachKhongDuocCongDiem.Any())
@@ -394,7 +477,6 @@ namespace QuanLyDiemRenLuyen.Controllers
                         message += $" Các sinh viên không được cộng điểm do đã chốt điểm rèn luyện: {string.Join(", ", danhSachKhongDuocCongDiem)}";
                     }
 
-                    // Không thông báo ai đã điểm danh trước đó
                     return Ok(new { success = true, message });
                 }
                 catch (Exception ex)
@@ -413,19 +495,17 @@ namespace QuanLyDiemRenLuyen.Controllers
         [HttpPost("HoanThanhDiemDanh/{maHoatDong}")]
         public async Task<IActionResult> HoanThanhDiemDanh(int maHoatDong)
         {
-            // 1. Tìm hoạt động
-            var hoatDong = await _context.HoatDongs.FirstOrDefaultAsync(h => h.MaHoatDong == maHoatDong);
+            var hoatDong = await _context.HoatDongs
+         .FirstOrDefaultAsync(h => h.MaHoatDong == maHoatDong);
             if (hoatDong == null)
                 return NotFound("Không tìm thấy hoạt động");
 
-            // 2. Cập nhật trạng thái hoạt động
             hoatDong.TrangThai = "Đã kết thúc";
             _context.Entry(hoatDong).State = EntityState.Modified;
 
-            // 3. Lấy điểm cộng của hoạt động
-            double diemCong = hoatDong.DiemCong ?? 0;
+            // Sử dụng 5 điểm mặc định thay vì DiemCong
+            const int DIEM_TRU_MAC_DINH = 5;
 
-            // 4. Lấy danh sách đăng ký chưa điểm danh
             var danhSachDangKyChuaDiemDanh = await _context.DangKyHoatDongs
                 .Where(dk => dk.MaHoatDong == maHoatDong && dk.TrangThai == "Đăng ký thành công")
                 .Include(dk => dk.MaSvNavigation)
@@ -436,28 +516,47 @@ namespace QuanLyDiemRenLuyen.Controllers
             int soSinhVienTruDiem = 0;
             foreach (var dangKy in danhSachDangKyChuaDiemDanh)
             {
-                if (dangKy.DiemDanhHoatDongs.Any()) continue; // Đã điểm danh thì bỏ qua
+                if (dangKy.DiemDanhHoatDongs.Any()) continue;
 
                 var maSv = dangKy.MaSv;
                 var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
+                var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong; // Lấy tên hoạt động từ MaHoatDongNavigation
 
                 var diemRenLuyen = await _context.DiemRenLuyens
                     .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
 
-                // Nếu đã chốt thì không trừ điểm nữa
                 if (diemRenLuyen == null ||
                     (diemRenLuyen.TrangThai != null && diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt"))
                     continue;
 
-                // Trừ điểm, không cho điểm âm
-                diemRenLuyen.TongDiem = Math.Max((diemRenLuyen.TongDiem ?? 0) - diemCong, 0);
+                // Trừ 5 điểm mặc định, không thấp hơn 0
+                diemRenLuyen.TongDiem = Math.Max((diemRenLuyen.TongDiem ?? 0) - DIEM_TRU_MAC_DINH, 0);
                 _context.Entry(diemRenLuyen).State = EntityState.Modified;
+
+                // Ghi vào LichSuDiem với tên hoạt động
+                var lichSuDiem = new LichSuDiem
+                {
+                    MaSv = maSv,
+                    KieuThayDoi = "-",
+                    SoDiem = DIEM_TRU_MAC_DINH,
+                    LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong}",
+                    NgayThayDoi = DateTime.Now
+                };
+                _context.LichSuDiems.Add(lichSuDiem);
 
                 soSinhVienTruDiem++;
             }
 
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true, message = $"Đã chuyển hoạt động sang trạng thái 'Đã kết thúc'. Đã tự động trừ điểm cho {soSinhVienTruDiem} sinh viên không điểm danh." });
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(new { success = false, message = $"Lỗi khi lưu thay đổi: {ex.InnerException?.Message ?? ex.Message}" });
+            }
+
+            return Ok(new { success = true, message = $"Đã chuyển hoạt động sang trạng thái 'Đã kết thúc'. Đã tự động trừ {DIEM_TRU_MAC_DINH} điểm cho {soSinhVienTruDiem} sinh viên không điểm danh." });      
         }
         // GET: api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}
         [HttpGet("BaoCaoDiemDanh/{maHoatDong}")]

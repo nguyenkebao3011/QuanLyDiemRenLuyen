@@ -50,6 +50,8 @@ public partial class QlDrlContext : DbContext
 
     public virtual DbSet<OTPRecords> OTPRecords { get; set; } 
     public virtual DbSet<LichSuHuyDangKy> LichSuHuyDangKys { get; set; }
+
+    public virtual DbSet<LichSuDiem> LichSuDiems { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       //=> optionsBuilder.UseSqlServer("Server=EMANCOMCHUA\\SQL_COBAN;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
       //=> optionsBuilder.UseSqlServer("Server=DESKTOP-N9TFSHP\\SQL2022;Database=QL_DRL;User Id=sa;Password=123;TrustServerCertificate=True;");
@@ -77,6 +79,24 @@ public partial class QlDrlContext : DbContext
                 .HasForeignKey(d => d.MaThongBao)
                 .HasConstraintName("FK_ChiTietThongBao_ThongBao");
         });
+        modelBuilder.Entity<LichSuDiem>()
+            .HasKey(ls => ls.MaLichSu);
+
+        // Định nghĩa quan hệ khóa ngoại
+        modelBuilder.Entity<LichSuDiem>()
+            .HasOne(ls => ls.MaSvNavigation)
+            .WithMany() // Giả định SinhVien không có tập hợp LichSuDiem
+            .HasForeignKey(ls => ls.MaSv);
+
+        // Cấu hình độ dài tối đa cho KieuThayDoi (tùy chọn, EF Core không hỗ trợ trực tiếp CHECK constraint)
+        modelBuilder.Entity<LichSuDiem>()
+            .Property(ls => ls.KieuThayDoi)
+            .HasMaxLength(1);
+
+        // Cấu hình giá trị mặc định cho NgayThayDoi
+        modelBuilder.Entity<LichSuDiem>()
+            .Property(ls => ls.NgayThayDoi)
+            .HasDefaultValueSql("GETDATE()");
 
         modelBuilder.Entity<DangKyHoatDong>(entity =>
         {
