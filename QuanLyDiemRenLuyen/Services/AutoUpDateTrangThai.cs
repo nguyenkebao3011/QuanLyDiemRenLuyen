@@ -47,10 +47,11 @@ public class AutoUpdateHoatDongService : BackgroundService
                     .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã kết thúc"),
                                         stoppingToken);
                 // Sau khi cập nhật trạng thái "Đã kết thúc"
+                // Lấy tất cả hoạt động vừa chuyển sang "Đã kết thúc" (NgayKetThuc < currentDate)
                 var hoatDongKetThuc = await context.HoatDongs
                     .Where(h => h.TrangThai == "Đã kết thúc"
                              && h.NgayKetThuc.HasValue
-                             && h.NgayKetThuc.Value.Date == currentDate)
+                             && h.NgayKetThuc.Value.Date < currentDate)
                     .ToListAsync(stoppingToken);
 
                 const int DIEM_TRU_MAC_DINH = 5;
