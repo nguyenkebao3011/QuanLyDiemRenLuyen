@@ -7,7 +7,8 @@ import HoatDongDetail from "../../../../components/Admin/DiemDanh/HoatDongDetail
 import SinhVienList from "../../../../components/Admin/DiemDanh/SinhVienList";
 import BaoCaoDiemDanhView from "../../../../components/Admin/DiemDanh/BaoCaoDiemDanhView";
 import DiemDanhDialog from "../../../../components/Admin/DiemDanh/DiemDanhDialog";
-import { Info } from "lucide-react";
+import HoanThanhDialog from "../../../../components/Admin/DiemDanh/HoanThanhDialog";
+import { Info, CheckCircle } from "lucide-react";
 import "../css/notification.css";
 import Notification from "../views/Notification";
 // Import types
@@ -67,7 +68,6 @@ export default function DiemDanh() {
     null
   );
   const [loadingBaoCao, setLoadingBaoCao] = useState(false);
-
   // State cho điểm danh
   const [selectedSinhVien, setSelectedSinhVien] = useState<number[]>([]);
   const [ghiChu, setGhiChu] = useState("");
@@ -75,6 +75,10 @@ export default function DiemDanh() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quanLyKhoa, setQuanLyKhoa] = useState<QuanLyKhoa | null>(null);
   const [maQL, setMaQL] = useState<string | null>(null);
+  // State cho hoàn thành điểm danh
+  const [isHoanThanhDialogOpen, setIsHoanThanhDialogOpen] = useState(false);
+  const [isHoanThanhSubmitting, setIsHoanThanhSubmitting] = useState(false);
+  const [ghiChuHoanThanh, setGhiChuHoanThanh] = useState("");
 
   // State cho tab hiện tại
   const [activeTab, setActiveTab] = useState("danh-sach");
@@ -543,7 +547,6 @@ export default function DiemDanh() {
       setIsSubmitting(false);
     }
   };
-
   // Xuất báo cáo điểm danh ra Excel
   const exportToExcel = () => {
     if (!baoCaoDiemDanh) return;
@@ -553,6 +556,70 @@ export default function DiemDanh() {
       "Thông báo: Chức năng xuất Excel đang được phát triển",
       "info"
     );
+  };
+  // Hoàn thành điểm danh hoạt động
+  const hoanThanhHoatDong = async (ghiChu?: string) => {
+    if (!maQL) {
+      showNotification(
+        "Cảnh báo: Không thể hoàn thành khi chưa có thông tin quản lý.",
+        "error"
+      );
+      return;
+    }
+
+    if (!selectedHoatDong) {
+      showNotification(
+        "Cảnh báo: Vui lòng chọn hoạt động để hoàn thành.",
+        "error"
+      );
+      return;
+    }
+
+    try {
+      setIsHoanThanhSubmitting(true);
+      console.log("Gọi API hoàn thành hoạt động với:", {
+        MaHoatDong: selectedHoatDong,
+        MaQl: maQL,
+        GhiChu: ghiChu,
+      });
+
+      const response = await ApiService.hoanThanhHoatDong(
+        selectedHoatDong,
+        maQL,
+        ghiChu
+      );
+      if (response.success || response.message) {
+        showNotification(
+          "Thành công: Hoàn thành điểm danh hoạt động. Tự động trừ 5 điểm cho sinh viên vắng mặt.",
+          "success"
+        );
+        // Đóng dialog và reset state
+        setIsHoanThanhDialogOpen(false);
+        setGhiChuHoanThanh("");
+
+        // Reload lại trang để ngăn không cho điểm danh hoạt động đó nữa
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500); // Delay để người dùng có thể thấy thông báo thành công
+      }
+    } catch (error: any) {
+      console.error("Lỗi khi hoàn thành hoạt động:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Vui lòng thử lại sau.";
+      showNotification(
+        `Lỗi: Không thể hoàn thành hoạt động. ${errorMessage}`,
+        "error"
+      );
+    } finally {
+      setIsHoanThanhSubmitting(false);
+    }
+  };
+
+  // Wrapper function cho dialog hoàn thành
+  const handleHoanThanhConfirm = () => {
+    hoanThanhHoatDong(ghiChuHoanThanh);
   };
 
   // Xử lý chọn hoạt động
@@ -675,7 +742,6 @@ export default function DiemDanh() {
           </div>
         )}
       </div>
-
       <div className="grid">
         {/* Danh sách hoạt động */}
         <HoatDongList
@@ -716,6 +782,27 @@ export default function DiemDanh() {
                 loadingThongTin={loadingThongTin}
                 renderTrangThaiHoatDong={renderTrangThaiHoatDong}
               />
+
+              {/* Nút hoàn thành điểm danh */}
+              {thongTinHoatDong &&
+                thongTinHoatDong.TrangThai !== "Đã kết thúc" && (
+                  <div className="completion-button-container">
+                    <button
+                      className="btn btn-completion"
+                      onClick={() => setIsHoanThanhDialogOpen(true)}
+                      disabled={isHoanThanhSubmitting}
+                    >
+                      <CheckCircle className="icon" />
+                      {isHoanThanhSubmitting
+                        ? "Đang xử lý..."
+                        : "Hoàn thành điểm danh"}
+                    </button>
+                    <p className="completion-note">
+                      Hoàn thành sẽ tự động trừ 5 điểm cho sinh viên vắng mặt và
+                      đổi trạng thái hoạt động sang "Đã kết thúc"
+                    </p>
+                  </div>
+                )}
 
               <div className="card-content">
                 <div className="tabs">
@@ -781,8 +868,7 @@ export default function DiemDanh() {
             </>
           )}
         </div>
-      </div>
-
+      </div>{" "}
       {/* Dialog điểm danh nhóm */}
       <DiemDanhDialog
         isDialogOpen={isDialogOpen}
@@ -792,6 +878,19 @@ export default function DiemDanh() {
         setIsDialogOpen={setIsDialogOpen}
         setGhiChu={setGhiChu}
         diemDanhNhom={diemDanhNhom}
+      />{" "}
+      {/* Dialog hoàn thành điểm danh */}
+      <HoanThanhDialog
+        isOpen={isHoanThanhDialogOpen}
+        onClose={() => {
+          setIsHoanThanhDialogOpen(false);
+          setGhiChuHoanThanh("");
+        }}
+        onConfirm={handleHoanThanhConfirm}
+        isSubmitting={isHoanThanhSubmitting}
+        hoatDongName={thongTinHoatDong?.TenHoatDong || ""}
+        ghiChu={ghiChuHoanThanh}
+        setGhiChu={setGhiChuHoanThanh}
       />
       {notifications.map((n) => (
         <Notification

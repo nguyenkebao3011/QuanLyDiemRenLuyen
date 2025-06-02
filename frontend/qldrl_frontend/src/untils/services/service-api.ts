@@ -124,8 +124,8 @@ export const ApiService = {
         data.GhiChu = ghiChu;
       }
 
-      const response = await axios.put(
-        `api/HoatDong/hoan-thanh/${maHoatDong}`,
+      const response = await api.post(
+        `/DiemDanh/HoanThanhDiemDanh/${maHoatDong}`,
         data
       );
       return response.data;

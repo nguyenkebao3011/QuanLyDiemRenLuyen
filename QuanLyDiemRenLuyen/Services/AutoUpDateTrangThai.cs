@@ -46,6 +46,53 @@ public class AutoUpdateHoatDongService : BackgroundService
                              && h.NgayKetThuc.Value.Date < currentDate)
                     .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã kết thúc"),
                                         stoppingToken);
+                // Sau khi cập nhật trạng thái "Đã kết thúc"
+                var hoatDongKetThuc = await context.HoatDongs
+                    .Where(h => h.TrangThai == "Đã kết thúc"
+                             && h.NgayKetThuc.HasValue
+                             && h.NgayKetThuc.Value.Date == currentDate)
+                    .ToListAsync(stoppingToken);
+
+                const int DIEM_TRU_MAC_DINH = 5;
+
+                foreach (var hoatDong in hoatDongKetThuc)
+                {
+                    var danhSachDangKyChuaDiemDanh = await context.DangKyHoatDongs
+                                           .Where(dk => dk.MaHoatDong == hoatDong.MaHoatDong && dk.TrangThai == "Đăng ký thành công")
+                                           .Include(dk => dk.MaSvNavigation)
+                                           .Include(dk => dk.DiemDanhHoatDongs)
+                                           .ToListAsync(stoppingToken);
+    
+                foreach (var dangKy in danhSachDangKyChuaDiemDanh)
+                    {
+                        if (dangKy.DiemDanhHoatDongs.Any()) continue;
+
+                        var maSv = dangKy.MaSv;
+                        var maHocKy = hoatDong.MaHocKy;
+                        var tenHoatDong = hoatDong.TenHoatDong;
+
+                        var diemRenLuyen = await context.DiemRenLuyens
+                            .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy, stoppingToken);
+
+                        if (diemRenLuyen == null ||
+                            (diemRenLuyen.TrangThai != null && diemRenLuyen.TrangThai.Trim().ToLower() == "đã chốt"))
+                            continue;
+
+                        diemRenLuyen.TongDiem = Math.Max((diemRenLuyen.TongDiem ?? 0) - DIEM_TRU_MAC_DINH, 0);
+                        context.Entry(diemRenLuyen).State = EntityState.Modified;
+
+                        var lichSuDiem = new LichSuDiem
+                        {
+                            MaSv = maSv,
+                            KieuThayDoi = "-",
+                            SoDiem = DIEM_TRU_MAC_DINH,
+                            LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong}",
+                            NgayThayDoi = DateTime.Now
+                        };
+                        context.LichSuDiems.Add(lichSuDiem);
+                    }
+                }
+                await context.SaveChangesAsync(stoppingToken);
 
                 // Cập nhật trạng thái "Đang diễn ra" cho hoạt động có ngày bắt đầu trùng với ngày hiện tại
                 updatedCount += await context.HoatDongs
@@ -88,7 +135,6 @@ public class AutoUpdateHoatDongService : BackgroundService
             {
                 _logger.LogError(ex, "An error occurred while updating or deleting HoatDong records.");
             }
-
             // Chờ 1 tiếng trước khi kiểm tra lại
             await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }
