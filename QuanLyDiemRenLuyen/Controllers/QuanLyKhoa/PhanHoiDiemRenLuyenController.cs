@@ -104,9 +104,9 @@ namespace QuanLyDiemRenLuyen.Controllers
         public async Task<ActionResult> XuLyPhanHoi(int maPhanHoi, [FromBody] XuLyPhanHoiRequest request)
         {
             var phanHoi = await _context.PhanHoiDiemRenLuyens
-                .Include(p => p.MaDiemRenLuyenNavigation)
-                .Include(p => p.MaMinhChungNavigation)
-                .FirstOrDefaultAsync(p => p.MaPhanHoi == maPhanHoi);
+         .Include(p => p.MaDiemRenLuyenNavigation)
+         .Include(p => p.MaMinhChungNavigation)
+         .FirstOrDefaultAsync(p => p.MaPhanHoi == maPhanHoi);
 
             if (phanHoi == null)
                 return NotFound("Không tìm thấy phản hồi.");
@@ -117,7 +117,7 @@ namespace QuanLyDiemRenLuyen.Controllers
             phanHoi.NgayXuLy = DateTime.Now;
             phanHoi.MaQl = request.MaQl;
 
-            // Nếu check cộng điểm và điểm rèn luyện chưa "Đã chốt", thì cộng điểm hoạt động vào tổng điểm
+            // Nếu check cộng điểm và điểm rèn luyện chưa "Đã chốt", thì cộng điểm hoạt động và điểm đã trừ vào tổng điểm
             if (request.CoCongDiem == true && phanHoi.MaDiemRenLuyenNavigation != null && phanHoi.MaMinhChungNavigation != null)
             {
                 var diemRenLuyen = phanHoi.MaDiemRenLuyenNavigation;
@@ -133,15 +133,16 @@ namespace QuanLyDiemRenLuyen.Controllers
                         if (dangKy?.MaHoatDongNavigation != null)
                         {
                             double diemHoatDong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
-                            diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong;
+                            double diemDaTru = 5; // Số điểm đã trừ mặc định
+                            diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong + diemDaTru;
 
                             // GHI LỊCH SỬ CỘNG ĐIỂM
                             var lichSuDiem = new LichSuDiem
                             {
                                 MaSv = diemRenLuyen.MaSv,
                                 KieuThayDoi = "+",
-                                SoDiem = (int)diemHoatDong,
-                                LyDo = $"Cộng điểm từ xử lý phản hồi hoạt động: {dangKy.MaHoatDongNavigation.TenHoatDong}",
+                                SoDiem = (int)(diemHoatDong + diemDaTru),
+                                LyDo = $"Cộng điểm từ xử lý phản hồi hoạt động: {dangKy.MaHoatDongNavigation.TenHoatDong} và hoàn lại {diemDaTru} điểm đã trừ",
                                 NgayThayDoi = DateTime.Now
                             };
                             _context.LichSuDiems.Add(lichSuDiem);

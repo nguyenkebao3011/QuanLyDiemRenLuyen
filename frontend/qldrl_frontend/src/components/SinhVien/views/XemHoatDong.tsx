@@ -36,25 +36,35 @@ const HoatDongList: React.FC = () => {
   const [diemMax, setDiemMax] = useState("");
   const [trangThai, setTrangThai] = useState("");
   const [isLatest, setIsLatest] = useState(false);
-  const [isLongerThanTwoDays, setIsLongerThanTwoDays] = useState(false); // Thêm state mới
+  const [isLongerThanTwoDays, setIsLongerThanTwoDays] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
 
   // State cho modal đăng ký
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDong | null>(
-    null
-  );
+  const [selectedHoatDong, setSelectedHoatDong] = useState<HoatDong | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [modalSuccess, setModalSuccess] = useState<string | null>(null);
   const [modalLoading, setModalLoading] = useState(false);
 
   // State cho modal xem chi tiết
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedDetailHoatDong, setSelectedDetailHoatDong] =
-    useState<HoatDong | null>(null);
+  const [selectedDetailHoatDong, setSelectedDetailHoatDong] = useState<HoatDong | null>(null);
 
   // Hàm lấy token từ localStorage
   const getToken = () => localStorage.getItem("token");
+
+  // Hàm sắp xếp hoạt động
+  const sortHoatDongList = (list: HoatDong[]) => {
+    const closedStatuses = ["Đã đóng đăng ký", "Đã kết thúc", "Hủy bỏ"];
+    return list.sort((a, b) => {
+      const aIsClosed = closedStatuses.includes(a.TrangThai);
+      const bIsClosed = closedStatuses.includes(b.TrangThai);
+
+      if (aIsClosed && !bIsClosed) return 1; // a là trạng thái đóng, đẩy xuống dưới
+      if (!aIsClosed && bIsClosed) return -1; // b là trạng thái đóng, đẩy xuống dưới
+      return 0; // Giữ nguyên thứ tự nếu cả hai cùng trạng thái
+    });
+  };
 
   // Hàm xử lý khi nhấn nút đăng ký
   const handleRegisterClick = (hoatDong: HoatDong) => {
@@ -143,13 +153,12 @@ const HoatDongList: React.FC = () => {
 
       if (ten) url += `Ten=${encodeURIComponent(ten)}&`;
       if (batDauTu) url += `BatDauTu=${encodeURIComponent(batDauTu)}&`;
-      if (ketThucTruoc)
-        url += `KetThucTruoc=${encodeURIComponent(ketThucTruoc)}&`;
+      if (ketThucTruoc) url += `KetThucTruoc=${encodeURIComponent(ketThucTruoc)}&`;
       if (diemMin) url += `DiemMin=${encodeURIComponent(diemMin)}&`;
       if (diemMax) url += `DiemMax=${encodeURIComponent(diemMax)}&`;
       if (trangThai) url += `TrangThai=${encodeURIComponent(trangThai)}&`;
       if (isLatest) url += `IsLatest=${isLatest}&`;
-      if (isLongerThanTwoDays) url += `IsLongerThanTwoDays=${isLongerThanTwoDays}&`; // Thêm tham số mới
+      if (isLongerThanTwoDays) url += `IsLongerThanTwoDays=${isLongerThanTwoDays}&`;
 
       url = url.endsWith("&") ? url.slice(0, -1) : url;
 
@@ -162,7 +171,8 @@ const HoatDongList: React.FC = () => {
       });
 
       if (response.data) {
-        setHoatDongList(response.data);
+        const sortedList = sortHoatDongList(response.data); // Sắp xếp sau khi lấy dữ liệu
+        setHoatDongList(sortedList);
         setCurrentPage(1);
         setError(null);
       }
@@ -183,7 +193,7 @@ const HoatDongList: React.FC = () => {
     setDiemMax("");
     setTrangThai("");
     setIsLatest(false);
-    setIsLongerThanTwoDays(false); // Reset state mới
+    setIsLongerThanTwoDays(false);
     fetchHoatDong();
   };
 
@@ -204,7 +214,8 @@ const HoatDongList: React.FC = () => {
         const chuaKetThuc = response.data.filter(
           (hd: HoatDong) => hd.TrangThai !== "Đã kết thúc"
         );
-        setHoatDongList(chuaKetThuc);
+        const sortedList = sortHoatDongList(chuaKetThuc); // Sắp xếp sau khi lọc
+        setHoatDongList(sortedList);
         setError(null);
       }
     } catch (err: any) {
@@ -244,7 +255,8 @@ const HoatDongList: React.FC = () => {
             const chuaKetThuc = altResponse.data.filter(
               (hd: HoatDong) => hd.TrangThai !== "Đã kết thúc"
             );
-            setHoatDongList(chuaKetThuc);
+            const sortedList = sortHoatDongList(chuaKetThuc); // Sắp xếp sau khi lọc
+            setHoatDongList(sortedList);
             setError(null);
             setApiUrl(endpoint);
             dataFetched = true;
@@ -257,15 +269,13 @@ const HoatDongList: React.FC = () => {
       }
 
       if (!dataFetched) {
-        setHoatDongList([
+        const mockData = [
           {
             MaHoatDong: 1,
             TenHoatDong: "Hoạt động mẫu 1",
             MoTa: "Đây là dữ liệu mẫu khi không thể kết nối đến API",
             NgayBatDau: new Date().toISOString(),
-            NgayKetThuc: new Date(
-              Date.now() + 7 * 24 * 60 * 60 * 1000
-            ).toISOString(),
+            NgayKetThuc: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
             DiaDiem: "Trường Đại học",
             SoLuongToiDa: 100,
             SoLuongDaDangKy: 50,
@@ -278,9 +288,7 @@ const HoatDongList: React.FC = () => {
             TenHoatDong: "Hoạt động mẫu 2",
             MoTa: "Hoạt động thử nghiệm khi API gặp lỗi",
             NgayBatDau: new Date().toISOString(),
-            NgayKetThuc: new Date(
-              Date.now() + 14 * 24 * 60 * 60 * 1000
-            ).toISOString(),
+            NgayKetThuc: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
             DiaDiem: "Hội trường",
             SoLuongToiDa: 50,
             SoLuongDaDangKy: 20,
@@ -288,7 +296,9 @@ const HoatDongList: React.FC = () => {
             TrangThai: "Đang diễn ra",
             ThoiGianDienRa: "",
           },
-        ]);
+        ];
+        const sortedMockData = sortHoatDongList(mockData); // Sắp xếp dữ liệu mẫu
+        setHoatDongList(sortedMockData);
       }
     } finally {
       setLoading(false);
@@ -300,10 +310,7 @@ const HoatDongList: React.FC = () => {
   }, [apiUrl]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentHoatDongs = hoatDongList.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentHoatDongs = hoatDongList.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(hoatDongList.length / itemsPerPage) || 1;
 
   const formatDate = (dateString: string) => {
@@ -311,12 +318,10 @@ const HoatDongList: React.FC = () => {
     return date.toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
   };
 
-  // Hàm định dạng thời gian diễn ra từ NgayBatDau và NgayKetThuc
   const formatThoiGianDienRa = (ngayBatDau: string, ngayKetThuc: string) => {
     const start = new Date(ngayBatDau);
     const end = new Date(ngayKetThuc);
 
-    // Hàm định dạng giờ
     const formatTime = (date: Date) =>
       date.toLocaleTimeString("vi-VN", {
         timeZone: "Asia/Ho_Chi_Minh",
@@ -324,34 +329,21 @@ const HoatDongList: React.FC = () => {
         minute: "2-digit",
       });
 
-    // So sánh giờ (bỏ qua ngày)
-    const startTime = start.toLocaleTimeString("vi-VN", {
-      timeZone: "Asia/Ho_Chi_Minh",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const endTime = end.toLocaleTimeString("vi-VN", {
-      timeZone: "Asia/Ho_Chi_Minh",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const startTime = formatTime(start);
+    const endTime = formatTime(end);
 
-    // Nếu giờ giống nhau, trả về một khung giờ
     if (startTime === endTime) {
       return startTime;
     }
 
-    // Nếu giờ khác nhau, trả về khoảng giờ
     return `${startTime}-${endTime}`;
   };
 
-  // Hàm mở modal xem chi tiết
   const handleViewDetail = (hoatDong: HoatDong) => {
     setSelectedDetailHoatDong(hoatDong);
     setShowDetailModal(true);
   };
 
-  // Hàm đóng modal xem chi tiết
   const closeDetailModal = () => {
     setShowDetailModal(false);
     setSelectedDetailHoatDong(null);
@@ -361,7 +353,6 @@ const HoatDongList: React.FC = () => {
     <div className="hoatdong-container">
       <h2 className="hoatdong-title">Danh sách hoạt động</h2>
 
-      {/* Toggle button cho bộ lọc */}
       <div className="filter-toggle">
         <button
           className="btn-toggle-filter"
@@ -371,7 +362,6 @@ const HoatDongList: React.FC = () => {
         </button>
       </div>
 
-      {/* Bộ lọc hoạt động */}
       {filterVisible && (
         <div className="filter-container">
           <h3 className="filter-title">Lọc hoạt động</h3>
@@ -396,12 +386,8 @@ const HoatDongList: React.FC = () => {
                   className="filter-select"
                 >
                   <option value="">Tất cả</option>
-                  
                   <option value="Đang diễn ra">Đang diễn ra</option>
-                 
-
                   <option value="Đang mở đăng ký">Đang mở đăng ký</option>
-                
                 </select>
               </div>
             </div>
@@ -491,7 +477,6 @@ const HoatDongList: React.FC = () => {
         </div>
       )}
 
-      {/* Modal xác nhận đăng ký */}
       {showRegisterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -519,7 +504,6 @@ const HoatDongList: React.FC = () => {
               <p className="modal-body">Vui lòng đăng nhập để tiếp tục.</p>
             )}
 
-            {/* Thông báo thành công */}
             {modalSuccess && (
               <div className="success-message">
                 <svg
@@ -540,7 +524,6 @@ const HoatDongList: React.FC = () => {
               </div>
             )}
 
-            {/* Thông báo lỗi */}
             {modalError && (
               <div className="error-message">
                 <svg
@@ -550,13 +533,17 @@ const HoatDongList: React.FC = () => {
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
                 <span>{modalError}</span>
               </div>
             )}
 
-            {/* Nút điều khiển */}
             {!modalSuccess && (
               <div className="modal-footer">
                 <button
@@ -607,7 +594,6 @@ const HoatDongList: React.FC = () => {
         </div>
       )}
 
-      {/* Modal xem chi tiết */}
       {showDetailModal && selectedDetailHoatDong && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -726,9 +712,7 @@ const HoatDongList: React.FC = () => {
                   <div className="hoatdong-details">
                     <p>
                       <i className="icon-calendar"></i>{" "}
-                      <strong>Thời gian:</strong> {formatDate(hd.NgayBatDau)} 
-                      {/* →{" "}
-                      {formatDate(hd.NgayKetThuc)} */}
+                      <strong>Thời gian:</strong> {formatDate(hd.NgayBatDau)}
                     </p>
                     <p>
                       <i className="icon-location"></i>{" "}
@@ -755,8 +739,8 @@ const HoatDongList: React.FC = () => {
                     onClick={() => handleRegisterClick(hd)}
                     disabled={
                       hd.TrangThai === "Đã kết thúc" ||
-                      hd.TrangThai === "Hủy bỏ" 
-                    
+                      hd.TrangThai === "  Đã đóng đăng ký" ||
+                      hd.TrangThai === "Hủy bỏ"
                     }
                   >
                     Đăng ký tham gia

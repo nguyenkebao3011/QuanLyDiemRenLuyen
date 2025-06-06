@@ -54,3 +54,8 @@ wwwroot\avatars\GV01_638840472750673050.jpeg
 wwwroot\avatars\DHTH123478_638843278595920298.jpg
 wwwroot\avatars\GV01_638845036953521997.png
 wwwroot\avatars\GV01_638845037056216000.png
+wwwroot\HinhAnhMinhChung\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg
+wwwroot\HinhAnhMinhChung\a7028b77-c421-4d52-bee3-1d11720f0972.jpg
+wwwroot\HinhAnhMinhChung\7ff85b3f-dde0-470c-acac-8af1a0c02fd5.jpg
+wwwroot\HinhAnhMinhChung\a77c51e5-27c4-4563-afcc-a50352d92787.jpg
+wwwroot\HinhAnhMinhChung\8eb9c2f9-9c8b-4e49-8326-6603c1dc6671.jpg
