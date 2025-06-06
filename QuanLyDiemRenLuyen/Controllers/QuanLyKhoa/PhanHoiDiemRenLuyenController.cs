@@ -98,8 +98,6 @@ namespace QuanLyDiemRenLuyen.Controllers
             return Ok(dto);
         }
 
-        // 3. Quản lý khoa xử lý phản hồi, cập nhật trạng thái và nội dung xử lý (và có thể cập nhật điểm rèn luyện)
-        // PUT: api/PhanHoiDiemRenLuyen/xu_ly/{maPhanHoi}
         [HttpPut("xu_ly/{maPhanHoi}")]
         public async Task<ActionResult> XuLyPhanHoi(int maPhanHoi, [FromBody] XuLyPhanHoiRequest request)
         {
@@ -133,15 +131,37 @@ namespace QuanLyDiemRenLuyen.Controllers
                         if (dangKy?.MaHoatDongNavigation != null)
                         {
                             double diemHoatDong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
+                            var maSv = diemRenLuyen.MaSv;
+                            var maHoatDong = dangKy.MaHoatDong;
+                            var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong;
+
+                            // 1. Kiểm tra và xóa lịch sử trừ điểm trước đó (nếu có)
+                            var lichSuTruDiem = await _context.LichSuDiems
+                                .Where(ls =>
+                                    ls.MaSv == maSv &&
+                                    ls.KieuThayDoi == "-" &&
+                                    ls.SoDiem == 5 && // hoặc DIEM_TRU_MAC_DINH nếu bạn dùng hằng số
+                                    ls.LyDo.Contains($"Mã hoạt động: {maHoatDong}")
+                                )
+                                .ToListAsync();
+
+                            if (lichSuTruDiem.Any())
+                            {
+                                _context.LichSuDiems.RemoveRange(lichSuTruDiem);
+                                // Cộng lại điểm đã bị trừ
+                                diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + lichSuTruDiem.Sum(x => x.SoDiem);
+                            }
+
+                            // 2. Cộng điểm hoạt động
                             diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong;
 
-                            // GHI LỊCH SỬ CỘNG ĐIỂM
+                            // 3. Ghi lịch sử cộng điểm
                             var lichSuDiem = new LichSuDiem
                             {
-                                MaSv = diemRenLuyen.MaSv,
+                                MaSv = maSv,
                                 KieuThayDoi = "+",
                                 SoDiem = (int)diemHoatDong,
-                                LyDo = $"Cộng điểm từ xử lý phản hồi hoạt động: {dangKy.MaHoatDongNavigation.TenHoatDong}",
+                                LyDo = $"Cộng điểm từ xử lý phản hồi hoạt động: {tenHoatDong} (Mã hoạt động: {maHoatDong})",
                                 NgayThayDoi = DateTime.Now
                             };
                             _context.LichSuDiems.Add(lichSuDiem);
@@ -153,8 +173,8 @@ namespace QuanLyDiemRenLuyen.Controllers
             await _context.SaveChangesAsync();
 
             // --- Tạo thông báo cho sinh viên về phiếu phản hồi ---
-            var maSv = phanHoi.MaDiemRenLuyenNavigation?.MaSv;
-            if (!string.IsNullOrEmpty(maSv))
+            var maSvThongBao = phanHoi.MaDiemRenLuyenNavigation?.MaSv;
+            if (!string.IsNullOrEmpty(maSvThongBao))
             {
                 var thongBao = new ThongBao
                 {
@@ -171,7 +191,7 @@ namespace QuanLyDiemRenLuyen.Controllers
                 var chiTietThongBao = new ChiTietThongBao
                 {
                     MaThongBao = thongBao.MaThongBao,
-                    MaSv = maSv,
+                    MaSv = maSvThongBao,
                     DaDoc = false,
                     NgayDoc = null
                 };

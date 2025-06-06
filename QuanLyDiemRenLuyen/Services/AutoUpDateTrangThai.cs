@@ -73,14 +73,14 @@ public class AutoUpdateHoatDongService : BackgroundService
                         var maHoatDong = hoatDong.MaHoatDong;
                         var tenHoatDong = hoatDong.TenHoatDong;
 
-                        // Kiểm tra đã trừ điểm cho hoạt động này chưa (ưu tiên theo mã hoạt động)
-                        bool daTruDiem = await context.LichSuDiems.AnyAsync(ls =>
+                        // Kiểm tra đã cộng hoặc trừ điểm cho hoạt động này chưa
+                        bool daXuLyDiem = await context.LichSuDiems.AnyAsync(ls =>
                             ls.MaSv == maSv &&
-                            ls.KieuThayDoi == "-" &&
-                            ls.SoDiem == DIEM_TRU_MAC_DINH &&
-                            ls.LyDo.Contains($"Mã hoạt động: {maHoatDong}"), stoppingToken);
+                            (ls.KieuThayDoi == "+" || ls.KieuThayDoi == "-") &&
+                            ls.LyDo.Contains($"Mã hoạt động: {maHoatDong}"),
+                            stoppingToken);
 
-                        if (daTruDiem) continue;
+                        if (daXuLyDiem) continue;
 
                         var diemRenLuyen = await context.DiemRenLuyens
                             .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy, stoppingToken);
