@@ -29,32 +29,34 @@ public class AutoUpdateHoatDongService : BackgroundService
         {
             try
             {
+                // Tạo scope để quản lý vòng đời của DbContext
                 using var scope = _serviceProvider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<QlDrlContext>();
-                var currentDate = DateTime.Now.Date;
+                var currentDate = DateTime.Now.Date; // Chỉ lấy ngày để so sánh
 
                 _logger.LogInformation("Checking for expired and obsolete HoatDong records at {Time}.", currentDate);
 
+                // 1. Cập nhật trạng thái các hoạt động
                 var updatedCount = 0;
 
-                // Lấy danh sách các hoạt động sẽ được cập nhật trạng thái "Đã kết thúc"
-                var hoatDongCanKetThuc = await context.HoatDongs
-                    .Where(h => h.TrangThai != "Đã kết thúc"
-                             && h.NgayKetThuc.HasValue
-                             && h.NgayKetThuc.Value.Date < currentDate)
-                    .ToListAsync(stoppingToken);
-
-                // Cập nhật trạng thái "Đã kết thúc"
+                // Cập nhật trạng thái "Đã kết thúc" trước để tránh xung đột
                 updatedCount += await context.HoatDongs
                     .Where(h => h.TrangThai != "Đã kết thúc"
                              && h.NgayKetThuc.HasValue
                              && h.NgayKetThuc.Value.Date < currentDate)
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã kết thúc"), stoppingToken);
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã kết thúc"),
+                                        stoppingToken);
+                // Sau khi cập nhật trạng thái "Đã kết thúc"
+                // Lấy tất cả hoạt động vừa chuyển sang "Đã kết thúc" (NgayKetThuc < currentDate)
+                var hoatDongKetThuc = await context.HoatDongs
+                    .Where(h => h.TrangThai == "Đã kết thúc"
+                             && h.NgayKetThuc.HasValue
+                             && h.NgayKetThuc.Value.Date < currentDate)
+                    .ToListAsync(stoppingToken);
 
                 const int DIEM_TRU_MAC_DINH = 5;
 
-                // Chỉ xử lý các hoạt động vừa được cập nhật trạng thái trong lần chạy này
-                foreach (var hoatDong in hoatDongCanKetThuc)
+                foreach (var hoatDong in hoatDongKetThuc)
                 {
                     var danhSachDangKyChuaDiemDanh = await context.DangKyHoatDongs
                         .Where(dk => dk.MaHoatDong == hoatDong.MaHoatDong && dk.TrangThai == "Đăng ký thành công")
@@ -68,13 +70,15 @@ public class AutoUpdateHoatDongService : BackgroundService
 
                         var maSv = dangKy.MaSv;
                         var maHocKy = hoatDong.MaHocKy;
+                        var maHoatDong = hoatDong.MaHoatDong;
                         var tenHoatDong = hoatDong.TenHoatDong;
 
-                        // Kiểm tra xem đã trừ điểm cho sinh viên này chưa
-                        var daTruDiem = await context.LichSuDiems
-                            .AnyAsync(lsd => lsd.MaSv == maSv &&
-                                           lsd.LyDo.Contains(tenHoatDong) &&
-                                           lsd.KieuThayDoi == "-");
+                        // Kiểm tra đã trừ điểm cho hoạt động này chưa (ưu tiên theo mã hoạt động)
+                        bool daTruDiem = await context.LichSuDiems.AnyAsync(ls =>
+                            ls.MaSv == maSv &&
+                            ls.KieuThayDoi == "-" &&
+                            ls.SoDiem == DIEM_TRU_MAC_DINH &&
+                            ls.LyDo.Contains($"Mã hoạt động: {maHoatDong}"), stoppingToken);
 
                         if (daTruDiem) continue;
 
@@ -93,7 +97,7 @@ public class AutoUpdateHoatDongService : BackgroundService
                             MaSv = maSv,
                             KieuThayDoi = "-",
                             SoDiem = DIEM_TRU_MAC_DINH,
-                            LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong}",
+                            LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong} (Mã hoạt động: {maHoatDong})",
                             NgayThayDoi = DateTime.Now
                         };
                         context.LichSuDiems.Add(lichSuDiem);
@@ -101,26 +105,31 @@ public class AutoUpdateHoatDongService : BackgroundService
                 }
                 await context.SaveChangesAsync(stoppingToken);
 
+                // Cập nhật trạng thái "Đang diễn ra" cho hoạt động có ngày bắt đầu trùng với ngày hiện tại
                 updatedCount += await context.HoatDongs
                     .Where(h => h.TrangThai != "Đang diễn ra"
                              && h.TrangThai != "Đã kết thúc"
                              && h.NgayBatDau.HasValue
                              && h.NgayBatDau.Value.Date == currentDate)
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đang diễn ra"), stoppingToken);
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đang diễn ra"),
+                                        stoppingToken);
 
+                // Cập nhật trạng thái "Đã đóng đăng ký" cho hoạt động có ngày bắt đầu là ngày mai
                 updatedCount += await context.HoatDongs
                     .Where(h => h.TrangThai != "Đã đóng đăng ký"
                              && h.TrangThai != "Đang diễn ra"
                              && h.TrangThai != "Đã kết thúc"
                              && h.NgayBatDau.HasValue
                              && h.NgayBatDau.Value.Date == currentDate.AddDays(1))
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã đóng đăng ký"), stoppingToken);
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(h => h.TrangThai, "Đã đóng đăng ký"),
+                                        stoppingToken);
 
                 if (updatedCount > 0)
                 {
                     _logger.LogInformation("Updated {Count} HoatDong records.", updatedCount);
                 }
 
+                // 2. Xóa các hoạt động đã kết thúc quá 30 ngày
                 var thresholdDate = currentDate.AddDays(-30);
                 var deletedCount = await context.HoatDongs
                     .Where(h => h.TrangThai == "Đã kết thúc"
@@ -137,6 +146,7 @@ public class AutoUpdateHoatDongService : BackgroundService
             {
                 _logger.LogError(ex, "An error occurred while updating or deleting HoatDong records.");
             }
+            // Chờ 1 tiếng trước khi kiểm tra lại
             await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }
 
