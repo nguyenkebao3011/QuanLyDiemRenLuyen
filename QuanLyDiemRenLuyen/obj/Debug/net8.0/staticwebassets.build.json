@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "crznJVjmoxUbN1E3x0tMR/3mOMTh++z88+QN2uUofDQ=",
+  "Hash": "AYzLfzsINwmmg9h3b5Ey0kPPbKluFCv0out6vLdGk+s=",
   "Source": "QuanLyDiemRenLuyen",
   "BasePath": "_content/QuanLyDiemRenLuyen",
   "Mode": "Default",
@@ -584,6 +584,48 @@
       "OriginalItemSpec": "wwwroot\\avatars\\GV01_638840472750673050.jpeg"
     },
     {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845036953521997.png",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "avatars/GV01_638845036953521997#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8rooueayfn",
+      "Integrity": "VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\avatars\\GV01_638845036953521997.png"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845037056216000.png",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "avatars/GV01_638845037056216000#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8rooueayfn",
+      "Integrity": "VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\avatars\\GV01_638845037056216000.png"
+    },
+    {
       "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV03_638817898886213498.jpeg",
       "SourceId": "QuanLyDiemRenLuyen",
       "SourceType": "Discovered",
@@ -729,6 +771,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\14baf267-977d-43a3-b126-2e3fec540a4e.png"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "HinhAnhMinhChung/293c2f64-bf90-40ef-8c76-9fa6ba7b4c94#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gysu6ywxk1",
+      "Integrity": "GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg"
     },
     {
       "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg",
@@ -960,6 +1023,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg"
+    },
+    {
+      "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg",
+      "SourceId": "QuanLyDiemRenLuyen",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\",
+      "BasePath": "_content/QuanLyDiemRenLuyen",
+      "RelativePath": "HinhAnhMinhChung/a7028b77-c421-4d52-bee3-1d11720f0972#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gysu6ywxk1",
+      "Integrity": "GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg"
     },
     {
       "Identity": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg",
@@ -3258,6 +3342,170 @@
       ]
     },
     {
+      "Route": "avatars/GV01_638845036953521997.8rooueayfn.png",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845036953521997.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3755378"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 16:28:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8rooueayfn"
+        },
+        {
+          "Name": "label",
+          "Value": "avatars/GV01_638845036953521997.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/GV01_638845036953521997.png",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845036953521997.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3755378"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 16:28:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/GV01_638845037056216000.8rooueayfn.png",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845037056216000.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3755378"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 16:28:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8rooueayfn"
+        },
+        {
+          "Name": "label",
+          "Value": "avatars/GV01_638845037056216000.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4="
+        }
+      ]
+    },
+    {
+      "Route": "avatars/GV01_638845037056216000.png",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845037056216000.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3755378"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Jun 2025 16:28:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VIm9NAaV2TlWEPbiwDlnv6hQBktXQY1m5FUjwEuNbH4="
+        }
+      ]
+    },
+    {
       "Route": "avatars/GV03_638817898886213498.482fgvw0u9.jpeg",
       "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV03_638817898886213498.jpeg",
       "Selectors": [],
@@ -3828,6 +4076,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-JQCbvH/2OF6bl+zkedUNCHlzf6CxQXYocxmG4JClE1c="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.gysu6ywxk1.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43377"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Jun 2025 07:57:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gysu6ywxk1"
+        },
+        {
+          "Name": "label",
+          "Value": "HinhAnhMinhChung/293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43377"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Jun 2025 07:57:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o="
         }
       ]
     },
@@ -4720,6 +5050,88 @@
         {
           "Name": "Last-Modified",
           "Value": "Sat, 17 May 2025 14:50:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/a7028b77-c421-4d52-bee3-1d11720f0972.gysu6ywxk1.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43377"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Jun 2025 07:59:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gysu6ywxk1"
+        },
+        {
+          "Name": "label",
+          "Value": "HinhAnhMinhChung/a7028b77-c421-4d52-bee3-1d11720f0972.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o="
+        }
+      ]
+    },
+    {
+      "Route": "HinhAnhMinhChung/a7028b77-c421-4d52-bee3-1d11720f0972.jpg",
+      "AssetFile": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43377"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GLzp5vCG0JJ621Zd1FPbtwODmV3HvER0TintwGn+20o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Jun 2025 07:59:46 GMT"
         },
         {
           "Name": "Cache-Control",

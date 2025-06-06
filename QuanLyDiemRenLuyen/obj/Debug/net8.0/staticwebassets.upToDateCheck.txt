@@ -22,6 +22,8 @@ wwwroot\avatars\GV01_638817801503140603.jpeg
 wwwroot\avatars\GV01_638820778512920483.jpeg
 wwwroot\avatars\GV01_638823795629296066.jpeg
 wwwroot\avatars\GV01_638840472750673050.jpeg
+wwwroot\avatars\GV01_638845036953521997.png
+wwwroot\avatars\GV01_638845037056216000.png
 wwwroot\avatars\GV03_638817898886213498.jpeg
 wwwroot\avatars\GV03_638817926905878863.png
 wwwroot\avatars\hung.nguyen@huit.edu.vn_638817399485623523.jpg
@@ -29,6 +31,7 @@ wwwroot\avatars\hung.nguyen@huit.edu.vn_638817762322026392.jpeg
 wwwroot\HinhAnhMinhChung\06d267c7-5cd5-4be2-93f3-ad207a7fa9fb.jpg
 wwwroot\HinhAnhMinhChung\0a54def9-502e-4c60-9012-96e1889c0f1c.png
 wwwroot\HinhAnhMinhChung\14baf267-977d-43a3-b126-2e3fec540a4e.png
+wwwroot\HinhAnhMinhChung\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg
 wwwroot\HinhAnhMinhChung\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg
 wwwroot\HinhAnhMinhChung\2cc57806-a436-4d21-90d4-bc53597a66d5.png
 wwwroot\HinhAnhMinhChung\3867ed33-de11-492d-9193-77cd7801b9f0.jpeg
@@ -40,6 +43,7 @@ wwwroot\HinhAnhMinhChung\8dd93599-0ab8-4461-9f9b-8bcd327935f8.jpg
 wwwroot\HinhAnhMinhChung\8e1ee918-fce5-4cd5-b0c5-a9a2029cf202.jpg
 wwwroot\HinhAnhMinhChung\956f064c-cb02-4f81-aa94-8837b6d9801a.jpg
 wwwroot\HinhAnhMinhChung\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg
+wwwroot\HinhAnhMinhChung\a7028b77-c421-4d52-bee3-1d11720f0972.jpg
 wwwroot\HinhAnhMinhChung\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg
 wwwroot\HinhAnhMinhChung\ab4ac1f6-cb44-4bf8-8498-d9e899360e4d.jpeg
 wwwroot\HinhAnhMinhChung\b32223c9-4f23-4761-a15c-d6273d2f1bd2.jpg

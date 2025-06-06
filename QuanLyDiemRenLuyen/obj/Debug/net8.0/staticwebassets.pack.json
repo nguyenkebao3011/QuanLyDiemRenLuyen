@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\HinhAnhMinhChung\\14baf267-977d-43a3-b126-2e3fec540a4e.png"
     },
     {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg",
+      "PackagePath": "staticwebassets\\HinhAnhMinhChung\\293c2f64-bf90-40ef-8c76-9fa6ba7b4c94.jpg"
+    },
+    {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg",
       "PackagePath": "staticwebassets\\HinhAnhMinhChung\\2a2b3d75-95dc-4bf9-92a9-2d42e39294bd.jpg"
     },
@@ -55,6 +59,10 @@
     {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg",
       "PackagePath": "staticwebassets\\HinhAnhMinhChung\\99bd9d3f-4f10-4d86-8104-132d7834f557.jpg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg",
+      "PackagePath": "staticwebassets\\HinhAnhMinhChung\\a7028b77-c421-4d52-bee3-1d11720f0972.jpg"
     },
     {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\HinhAnhMinhChung\\a8344e95-9244-4ba5-8479-3c9a3dea1d14.jpg",
@@ -179,6 +187,14 @@
     {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638840472750673050.jpeg",
       "PackagePath": "staticwebassets\\avatars\\GV01_638840472750673050.jpeg"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845036953521997.png",
+      "PackagePath": "staticwebassets\\avatars\\GV01_638845036953521997.png"
+    },
+    {
+      "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV01_638845037056216000.png",
+      "PackagePath": "staticwebassets\\avatars\\GV01_638845037056216000.png"
     },
     {
       "Id": "D:\\DoAnChuyenNganh\\QuanLyDRL_Git\\QuanLyDiemRenLuyen\\QuanLyDiemRenLuyen\\wwwroot\\avatars\\GV03_638817898886213498.jpeg",

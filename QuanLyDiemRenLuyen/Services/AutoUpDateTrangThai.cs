@@ -59,18 +59,28 @@ public class AutoUpdateHoatDongService : BackgroundService
                 foreach (var hoatDong in hoatDongKetThuc)
                 {
                     var danhSachDangKyChuaDiemDanh = await context.DangKyHoatDongs
-                                           .Where(dk => dk.MaHoatDong == hoatDong.MaHoatDong && dk.TrangThai == "Đăng ký thành công")
-                                           .Include(dk => dk.MaSvNavigation)
-                                           .Include(dk => dk.DiemDanhHoatDongs)
-                                           .ToListAsync(stoppingToken);
-    
-                foreach (var dangKy in danhSachDangKyChuaDiemDanh)
+                        .Where(dk => dk.MaHoatDong == hoatDong.MaHoatDong && dk.TrangThai == "Đăng ký thành công")
+                        .Include(dk => dk.MaSvNavigation)
+                        .Include(dk => dk.DiemDanhHoatDongs)
+                        .ToListAsync(stoppingToken);
+
+                    foreach (var dangKy in danhSachDangKyChuaDiemDanh)
                     {
                         if (dangKy.DiemDanhHoatDongs.Any()) continue;
 
                         var maSv = dangKy.MaSv;
                         var maHocKy = hoatDong.MaHocKy;
+                        var maHoatDong = hoatDong.MaHoatDong;
                         var tenHoatDong = hoatDong.TenHoatDong;
+
+                        // Kiểm tra đã trừ điểm cho hoạt động này chưa (ưu tiên theo mã hoạt động)
+                        bool daTruDiem = await context.LichSuDiems.AnyAsync(ls =>
+                            ls.MaSv == maSv &&
+                            ls.KieuThayDoi == "-" &&
+                            ls.SoDiem == DIEM_TRU_MAC_DINH &&
+                            ls.LyDo.Contains($"Mã hoạt động: {maHoatDong}"), stoppingToken);
+
+                        if (daTruDiem) continue;
 
                         var diemRenLuyen = await context.DiemRenLuyens
                             .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy, stoppingToken);
@@ -87,7 +97,7 @@ public class AutoUpdateHoatDongService : BackgroundService
                             MaSv = maSv,
                             KieuThayDoi = "-",
                             SoDiem = DIEM_TRU_MAC_DINH,
-                            LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong}",
+                            LyDo = $"Trừ {DIEM_TRU_MAC_DINH} điểm do không tham gia hoạt động {tenHoatDong} (Mã hoạt động: {maHoatDong})",
                             NgayThayDoi = DateTime.Now
                         };
                         context.LichSuDiems.Add(lichSuDiem);

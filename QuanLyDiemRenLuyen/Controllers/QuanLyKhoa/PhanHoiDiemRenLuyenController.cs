@@ -134,6 +134,17 @@ namespace QuanLyDiemRenLuyen.Controllers
                         {
                             double diemHoatDong = dangKy.MaHoatDongNavigation.DiemCong ?? 0;
                             diemRenLuyen.TongDiem = (diemRenLuyen.TongDiem ?? 0) + diemHoatDong;
+
+                            // GHI LỊCH SỬ CỘNG ĐIỂM
+                            var lichSuDiem = new LichSuDiem
+                            {
+                                MaSv = diemRenLuyen.MaSv,
+                                KieuThayDoi = "+",
+                                SoDiem = (int)diemHoatDong,
+                                LyDo = $"Cộng điểm từ xử lý phản hồi hoạt động: {dangKy.MaHoatDongNavigation.TenHoatDong}",
+                                NgayThayDoi = DateTime.Now
+                            };
+                            _context.LichSuDiems.Add(lichSuDiem);
                         }
                     }
                 }
