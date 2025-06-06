@@ -75,9 +75,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                     return BadRequest(new { message = "Sinh viên đã đăng ký hoạt động này" });
                 }
 
-                // Kiểm tra chồng chéo thời gian
-                var ngayBatDauMoi = hoatDong.NgayBatDau?.Date;
-                var ngayKetThucMoi = hoatDong.NgayKetThuc?.Date;
+                // Kiểm tra chồng chéo thời gian (bao gồm cả giờ)
+                var ngayBatDauMoi = hoatDong.NgayBatDau;
+                var ngayKetThucMoi = hoatDong.NgayKetThuc;
 
                 if (ngayBatDauMoi == null || ngayKetThucMoi == null)
                 {
@@ -91,9 +91,9 @@ namespace QuanLyDiemRenLuyen.Controllers.SinhVien
                         (dk, hd) => new { DangKy = dk, HoatDong = hd })
                     .Where(x => x.DangKy.MaSv == maSV &&
                                 x.HoatDong.NgayBatDau.HasValue && x.HoatDong.NgayKetThuc.HasValue &&
-                                // Kiểm tra chồng chéo ngày
-                                ((x.HoatDong.NgayBatDau.Value.Date <= ngayKetThucMoi &&
-                                  x.HoatDong.NgayKetThuc.Value.Date >= ngayBatDauMoi)))
+                                // Kiểm tra chồng chéo thời gian (bao gồm giờ)
+                                (x.HoatDong.NgayBatDau.Value < ngayKetThucMoi &&
+                                 x.HoatDong.NgayKetThuc.Value > ngayBatDauMoi))
                     .AnyAsync();
 
                 if (overlappingActivity)

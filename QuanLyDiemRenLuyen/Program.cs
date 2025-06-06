@@ -9,6 +9,7 @@ using OfficeOpenXml;
 using QuanLyDiemRenLuyen.Bots;
 using QuanLyDiemRenLuyen.DTO;
 using QuanLyDiemRenLuyen.Models;
+using QuanLyDiemRenLuyen.Services;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -107,6 +108,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHostedService<ThongBaoScheduledService>();
  //Cap nhat trang thai
 builder.Services.AddHostedService<AutoUpdateHoatDongService>();
+builder.Services.AddHostedService<AutoUpdateXepLoai>();
 // Gộp chính sách CORS
 builder.Services.AddCors(options =>
 {

@@ -41,7 +41,7 @@ const XemDiemRenLuyen: React.FC = () => {
   const [isLichSuOpen, setIsLichSuOpen] = useState<boolean>(false);
 
   // Giả sử MaSv được lấy từ localStorage hoặc context (thay bằng logic thực tế của bạn)
-  const maSv = localStorage.getItem('username') || 'DHTH387104'; // Mặc định là DHTH387104 để thử nghiệm
+  const maSv = localStorage.getItem('username');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,7 +80,7 @@ const XemDiemRenLuyen: React.FC = () => {
           if (response.status === 401) {
             localStorage.removeItem('authToken');
             sessionStorage.removeItem('authToken');
-            throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+            throw new Error('Phiên đăng nhập  đã hết hạn. Vui lòng đăng nhập lại.');
           } else if (response.status === 400) {
             throw new Error('Dữ liệu không hợp lệ: ' + errorText);
           } else {
@@ -90,7 +90,7 @@ const XemDiemRenLuyen: React.FC = () => {
 
         const result = await response.json();
         setDiemRenLuyenData(result.data || []);
-        setSelectedHocKy(result.data[0] ?? null);
+        setSelectedHocKy(result.data[1] ?? null);
         setIsLoading(false);
       } catch (error: any) {
         console.error('Lỗi khi lấy điểm rèn luyện:', error);
@@ -104,57 +104,62 @@ const XemDiemRenLuyen: React.FC = () => {
 
   // Lấy lịch sử điểm khi nhấn nút
   const fetchLichSuDiem = async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null);
+  try {
+    setIsLoading(true);
+    setErrorMessage(null);
 
-      const localToken = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('jwt');
-      const sessionToken = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || sessionStorage.getItem('jwt');
-      const cookieToken = getCookie('authToken') || getCookie('token') || getCookie('jwt');
+    const localToken = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('jwt');
+    const sessionToken = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || sessionStorage.getItem('jwt');
+    const cookieToken = getCookie('authToken') || getCookie('token') || getCookie('jwt');
 
-      const token = localToken || sessionToken || cookieToken;
+    const token = localToken || sessionToken || cookieToken;
 
-      if (!token) {
-        throw new Error('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
-      }
-
-      const response = await fetch(`http://localhost:5163/api/DiemRenLuyens/LichSuDiem/${maSv}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        let errorText = '';
-        try {
-          errorText = await response.text();
-        } catch (e) {
-          errorText = 'Không thể đọc response';
-        }
-        console.log('Response body:', errorText);
-
-        if (response.status === 401) {
-          localStorage.removeItem('authToken');
-          sessionStorage.removeItem('authToken');
-          throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
-        } else {
-          throw new Error(`Lỗi ${response.status}: ${errorText || response.statusText}`);
-        }
-      }
-
-      const result = await response.json();
-      setLichSuDiem(result);
-      setIsLichSuOpen(true);
-      setIsLoading(false);
-    } catch (error: any) {
-      console.error('Lỗi khi lấy lịch sử điểm:', error);
-      setErrorMessage(error.message || 'Có lỗi xảy ra khi lấy lịch sử điểm.');
-      setIsLoading(false);
+    if (!token) {
+      throw new Error('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
     }
-  };
+
+    const response = await fetch(`http://localhost:5163/api/DiemRenLuyens/LichSuDiem/${maSv}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      let errorText = '';
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = 'Không thể đọc response';
+      }
+      console.log('Response body:', errorText);
+
+      if (response.status === 404) {
+        setLichSuDiem([]); // Đặt mảng lịch sử điểm thành rỗng
+        setIsLichSuOpen(true);
+        setIsLoading(false);
+        return; // Thoát khỏi hàm
+      } else if (response.status === 401) {
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
+        throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+      } else {
+        throw new Error(`Lỗi ${response.status}: ${errorText || response.statusText}`);
+      }
+    }
+
+    const result = await response.json();
+    setLichSuDiem(result);
+    setIsLichSuOpen(true);
+    setIsLoading(false);
+  } catch (error: any) {
+    console.error('Lỗi khi lấy lịch sử điểm:', error);
+    setErrorMessage(error.message || 'Có lỗi xảy ra khi lấy lịch sử điểm.');
+    setIsLoading(false);
+  }
+};
 
   const handleHocKyChange = (hocKy: HocKy) => {
     setSelectedHocKy(hocKy);
@@ -310,7 +315,7 @@ const XemDiemRenLuyen: React.FC = () => {
           <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
             <h3>Lịch Sử Điểm Rèn Luyện</h3>
             <button className="close-button2" onClick={() => setIsLichSuOpen(false)}>
-              &times;
+              ×
             </button>
             {lichSuDiem.length > 0 ? (
               <table className="lich-su-table">
@@ -336,7 +341,7 @@ const XemDiemRenLuyen: React.FC = () => {
                 </tbody>
               </table>
             ) : (
-              <p>Không có lịch sử điểm nào.</p>
+              <p>Bạn chưa có lịch sử điểm rèn luyện nào.</p>
             )}
           </div>
         </div>

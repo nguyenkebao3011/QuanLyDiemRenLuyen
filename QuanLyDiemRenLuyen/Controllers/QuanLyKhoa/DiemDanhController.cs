@@ -500,6 +500,10 @@ namespace QuanLyDiemRenLuyen.Controllers
             if (hoatDong == null)
                 return NotFound("Không tìm thấy hoạt động");
 
+            // Kiểm tra nếu hoạt động đã kết thúc thì không xử lý lại
+            if (hoatDong.TrangThai == "Đã kết thúc")
+                return BadRequest(new { success = false, message = "Hoạt động đã được kết thúc trước đó." });
+
             hoatDong.TrangThai = "Đã kết thúc";
             _context.Entry(hoatDong).State = EntityState.Modified;
 
@@ -520,7 +524,15 @@ namespace QuanLyDiemRenLuyen.Controllers
 
                 var maSv = dangKy.MaSv;
                 var maHocKy = dangKy.MaHoatDongNavigation.MaHocKy;
-                var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong; // Lấy tên hoạt động từ MaHoatDongNavigation
+                var tenHoatDong = dangKy.MaHoatDongNavigation.TenHoatDong;
+
+                // Kiểm tra xem sinh viên đã bị trừ điểm cho hoạt động này chưa
+                var daTruDiem = await _context.LichSuDiems
+                    .AnyAsync(lsd => lsd.MaSv == maSv &&
+                                   lsd.LyDo.Contains(tenHoatDong) &&
+                                   lsd.KieuThayDoi == "-");
+
+                if (daTruDiem) continue; // Bỏ qua nếu đã trừ điểm trước đó
 
                 var diemRenLuyen = await _context.DiemRenLuyens
                     .FirstOrDefaultAsync(drl => drl.MaSv == maSv && drl.MaHocKy == maHocKy);
@@ -556,7 +568,7 @@ namespace QuanLyDiemRenLuyen.Controllers
                 return BadRequest(new { success = false, message = $"Lỗi khi lưu thay đổi: {ex.InnerException?.Message ?? ex.Message}" });
             }
 
-            return Ok(new { success = true, message = $"Đã chuyển hoạt động sang trạng thái 'Đã kết thúc'. Đã tự động trừ {DIEM_TRU_MAC_DINH} điểm cho {soSinhVienTruDiem} sinh viên không điểm danh." });      
+            return Ok(new { success = true, message = $"Đã chuyển hoạt động sang trạng thái 'Đã kết thúc'. Đã tự động trừ {DIEM_TRU_MAC_DINH} điểm cho {soSinhVienTruDiem} sinh viên không điểm danh." });
         }
         // GET: api/DiemDanh/BaoCaoDiemDanh/{maHoatDong}
         [HttpGet("BaoCaoDiemDanh/{maHoatDong}")]

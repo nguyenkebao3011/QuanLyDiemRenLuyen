@@ -327,11 +327,21 @@ class XemLichTheoTuan extends React.Component<ActivityCalendarProps, ActivityCal
                               <span className="activity-time">{this.formatTime(activity.NgayBatDau)}</span>
                             </div>
                             <div className="activity-status-wrapper">
-                              <div
-                                className={`activity-status ${activity.TrangThaiHoatDong === "Đã kết thúc" ? "ended" : "active"}`}
-                              >
-                                {activity.TrangThaiHoatDong}
-                              </div>
+                                                        <div
+                              className={`activity-status ${
+                                activity.TrangThaiHoatDong === "Đã kết thúc"
+                                  ? "ended"
+                                  : activity.TrangThaiHoatDong === "Đang mở đăng ký"
+                                  ? "open"
+                                  : activity.TrangThaiHoatDong === "Đã đóng đăng ký"
+                                  ? "closed"
+                                  : activity.TrangThaiHoatDong === "Đang diễn ra"
+                                  ? "in-progress"
+                                  : ""
+                              }`}
+                            >
+                              {activity.TrangThaiHoatDong}
+                            </div>
                             </div>
                           </div>
                         ))}
